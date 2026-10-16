@@ -29,14 +29,7 @@ Most statistics run where Vega-Lite runs them: bins, densities, loess fits, aggr
 
 ## Differences from ggplot2
 
-- `bins:` is a maximum, and Vega-Lite picks rounded bin boundaries. Use `binwidth:` for exact widths.
-- `xlim()` and `ylim()` zoom without removing data.
-- The default density bandwidth is Vega-Lite's (Scott's rule). `adjust:` uses R's `bw.nrd0` rule.
-- Loess smoothing uses Vega-Lite's loess transform without a confidence band.
-- `size` on points is an area in square pixels, as in Vega-Lite, rather than a diameter in millimeters.
-- A discrete axis is 300 pixels by default and grows by 20 pixels per level beyond 15 levels. Vega-Lite's own default is 20 pixels per level.
-- There is no violin geom. Vega-Lite cannot draw a density inside each band of a discrete axis, so violins could not share an axis with boxplots or points.
-- Default colors are Vega-Lite's. `theme('gray')` gives ggplot2's panel and grid but keeps Vega-Lite's categorical palette.
+[Coming from ggplot2](ggplot2.qmd) lists the translations and the behaviors that differ.
 
 ## Versions
 

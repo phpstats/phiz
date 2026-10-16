@@ -1,0 +1,113 @@
+---
+title: "Coming from ggplot2"
+---
+
+phiz follows ggplot2's grammar: data, aesthetic mappings, layers of geoms, scales, coordinates, facets, labels, and themes. Most ggplot2 code translates line by line. This page lists the translations, then the places where phiz behaves differently because Vega-Lite renders the plot.
+
+## Translating a plot
+
+```r
+ggplot(mpg, aes(displ, hwy, colour = drv)) +
+  geom_point(alpha = 0.5) +
+  geom_smooth(method = "lm") +
+  facet_wrap(~year) +
+  scale_y_log10() +
+  labs(x = "Displacement (L)", y = "Highway mpg") +
+  theme_minimal()
+```
+
+```php
+Plot::of($mpg)
+    ->aes(x: 'displ', y: 'hwy', color: 'drv')
+    ->point(alpha: 0.5)
+    ->smooth(method: 'lm')
+    ->facetWrap('year')
+    ->scaleY(type: 'log')
+    ->labs(x: 'Displacement (L)', y: 'Highway mpg')
+    ->theme('minimal');
+```
+
+The pipe form is closer still:
+
+```php
+ggplot($mpg, aes(x: 'displ', y: 'hwy', color: 'drv'))
+    |> geom_point(alpha: 0.5)
+    |> geom_smooth(method: 'lm')
+    |> facet_wrap('year')
+    |> scale_y_log10()
+    |> labs(x: 'Displacement (L)', y: 'Highway mpg')
+    |> theme_minimal();
+```
+
+Aesthetics are named arguments, so `aes(displ, hwy)` becomes `aes(x: 'displ', y: 'hwy')`. Field names are strings. `colour` and `alpha` are accepted as aliases of `color` and `opacity`.
+
+## Geoms and stats
+
+| ggplot2 | phiz |
+| --- | --- |
+| `geom_point()`, `geom_jitter()` | `point()`, `jitter()` |
+| `geom_line()`, `geom_path()`, `geom_step()` | `line()`, `path()`, `step()` |
+| `geom_area()`, `geom_ribbon()` | `area()`, `ribbon()` |
+| `geom_bar()`, `geom_col()` | `bar()`, `col()` |
+| `geom_histogram()`, `geom_freqpoly()` | `histogram()`, `freqpoly()` |
+| `geom_density()` | `density()` |
+| `geom_boxplot()` | `boxplot()` |
+| `geom_errorbar()`, `geom_linerange()`, `geom_pointrange()` | `errorbar()`, `linerange()`, `pointrange()` |
+| `geom_hline()`, `geom_vline()`, `geom_abline()` | `hline()`, `vline()`, `abline()` |
+| `geom_segment()` | `segment()` |
+| `geom_text()`, `geom_label()` | `text()`, `label()` |
+| `geom_tile()`, `geom_raster()`, `geom_rect()` | `tile()`, `raster()`, `rect()` |
+| `geom_bin2d()` | `bin2d()` |
+| `geom_smooth()` | `smooth()` |
+| `geom_function()`, `stat_function()` | `curve()` |
+| `geom_rug()` | `rug()` |
+| `stat_ecdf()` | `ecdf()` |
+| `stat_qq()`, `stat_qq_line()` | `qq()`, `qqLine()` |
+| `coord_polar()` with bars | `arc()`, `pie()` |
+
+Geom arguments keep ggplot2's names where they exist: `bins`, `binwidth`, `boundary`, `position`, `method`, `se`, `level`, `span`, `adjust`, `coef`, `outliers`, `width`, `hjust`, `vjust`, `angle`, `nudge_x` (as `nudgeX`), and `inherit.aes` (as `inheritAes`). `position` takes the strings `'stack'`, `'dodge'`, `'fill'`, and `'identity'`.
+
+## Scales, coordinates, facets, and themes
+
+| ggplot2 | phiz |
+| --- | --- |
+| `scale_x_continuous(name, breaks, labels, limits)` | `scaleX(name:, breaks:, format:, domain:)` |
+| `scale_x_log10()`, `scale_x_sqrt()`, `scale_x_reverse()` | `scaleX(type: 'log')`, `scaleX(type: 'sqrt')`, `scaleX(reverse: true)` |
+| `scale_x_date(date_labels = "%Y")` | `scaleX(type: 'time', format: '%Y')` |
+| `scale_colour_manual(values = c(a = "red"))` | `scaleColor(values: ['a' => 'red'])` |
+| `scale_colour_brewer(palette = "Set2")` | `scaleColor(scheme: 'set2')` |
+| `scale_colour_viridis_c()` | `scaleColor(scheme: 'viridis')` |
+| `scale_colour_gradient2(midpoint = 0)` | `scale_color_gradient2(midpoint: 0)` |
+| `guides(colour = "none")` | `scaleColor(guide: false)` |
+| `coord_flip()` | `coordFlip()` |
+| `coord_cartesian(xlim, ylim)` | `coordCartesian(xlim:, ylim:)` |
+| `facet_wrap(~f, ncol, scales)` | `facetWrap('f', ncol:, scales:)` |
+| `facet_grid(r ~ c, labeller = label_both)` | `facetGrid(rows: 'r', cols: 'c', labeller: 'both')` |
+| `labs()`, `ggtitle()`, `xlab()`, `ylab()` | `labs()`, `title()`, and the functions of the same names |
+| `theme_gray()`, `theme_bw()`, `theme_minimal()`, `theme_classic()`, `theme_light()`, `theme_dark()`, `theme_void()` | `theme('gray')`, and so on |
+| `theme(legend.position = "bottom")` | `theme(legendPosition: 'bottom')` |
+| patchwork `p1 + p2`, `p1 / p2` | `Compose::beside($p1, $p2)`, `Compose::stack($p1, $p2)` |
+| `factor(cyl)` | `factor('cyl')` or `'cyl:N'` |
+| `after_stat(density)` in a histogram | `histogram(density: true)` |
+
+## Differences
+
+These differences follow from Vega-Lite rendering the plot.
+
+- **Sizes.** Point `size` is an area in square pixels, as in Vega-Lite, rather than a diameter in millimeters. The default is 30. `linewidth` is in pixels.
+- **Bins.** `bins:` is a maximum, and Vega-Lite rounds the boundaries. Use `binwidth:` and `boundary:` for exact bins.
+- **Limits.** `xlim()` and `ylim()` zoom without removing data. ggplot2 removes the data outside the limits, which changes statistics computed from it.
+- **Densities.** The default bandwidth is Vega-Lite's. `adjust:` multiplies R's `bw.nrd0`, so `adjust: 1` reproduces ggplot2's default.
+- **Smoothers.** `lm`, `quad`, and `poly` fits and their confidence bands are computed in PHP and match R. Loess fits use Vega-Lite's loess transform and have no confidence band. There is no `gam` method.
+- **Colors.** Categorical colors come from Vega-Lite's palette, also under `theme('gray')`. `scaleColor(values:)` or `scheme:` sets them.
+- **Panels.** A discrete axis is 300 pixels by default, the same as a continuous axis, and grows by 20 pixels per level beyond 15 levels.
+- **Not available.** There is no violin geom, no `geom_contour()` or `geom_density_2d()`, no `geom_hex()`, no `coord_polar()` for arbitrary geoms, no `coord_fixed()`, and no `sec_axis()`. Use `raw()` or `layer()` for any Vega-Lite feature phiz does not wrap.
+
+## Additions
+
+phiz adds features that ggplot2 leaves to other packages:
+
+- tooltips, pan and zoom, brushing, legend highlighting, and sliders (see [Interaction](interaction.qmd))
+- linked views across compositions
+- the statistics helpers for php-stats fits and CmdStanPHP draws (see [Statistics](statistics.qmd))
+- Vega-Lite aggregates and time units in field shorthand, such as `'mean(hwy)'` and `'year(date):O'`

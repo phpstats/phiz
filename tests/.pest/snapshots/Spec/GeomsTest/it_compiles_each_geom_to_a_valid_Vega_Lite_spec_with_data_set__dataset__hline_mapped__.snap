@@ -73,6 +73,7 @@
                 "y": {
                     "field": "lo",
                     "type": "quantitative",
+                    "title": "y",
                     "scale": {
                         "zero": false
                     }

@@ -217,6 +217,12 @@ ul.task-list li input[type="checkbox"] {
  <span class="menu-text">Get started</span></a>
   </div>
 </li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./ggplot2.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Coming from ggplot2</span></a>
+  </div>
+</li>
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
             <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true">
@@ -318,6 +324,12 @@ ul.task-list li input[type="checkbox"] {
   <div class="sidebar-item-container"> 
   <a href="./reference.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">API reference</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./cmdstanphp.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Plan: CmdStanPHP figures on phiz</span></a>
   </div>
 </li>
           <li class="sidebar-item">
@@ -444,16 +456,7 @@ ul.task-list li input[type="checkbox"] {
 </section>
 <section id="differences-from-ggplot2" class="level2">
 <h2 class="anchored" data-anchor-id="differences-from-ggplot2">Differences from ggplot2</h2>
-<ul>
-<li><code>bins:</code> is a maximum, and Vega-Lite picks rounded bin boundaries. Use <code>binwidth:</code> for exact widths.</li>
-<li><code>xlim()</code> and <code>ylim()</code> zoom without removing data.</li>
-<li>The default density bandwidth is Vega-Lite’s (Scott’s rule). <code>adjust:</code> uses R’s <code>bw.nrd0</code> rule.</li>
-<li>Loess smoothing uses Vega-Lite’s loess transform without a confidence band.</li>
-<li><code>size</code> on points is an area in square pixels, as in Vega-Lite, rather than a diameter in millimeters.</li>
-<li>A discrete axis is 300 pixels by default and grows by 20 pixels per level beyond 15 levels. Vega-Lite’s own default is 20 pixels per level.</li>
-<li>There is no violin geom. Vega-Lite cannot draw a density inside each band of a discrete axis, so violins could not share an axis with boxplots or points.</li>
-<li>Default colors are Vega-Lite’s. <code>theme('gray')</code> gives ggplot2’s panel and grid but keeps Vega-Lite’s categorical palette.</li>
-</ul>
+<p><a href="./ggplot2.html">Coming from ggplot2</a> lists the translations and the behaviors that differ.</p>
 </section>
 <section id="versions" class="level2">
 <h2 class="anchored" data-anchor-id="versions">Versions</h2>

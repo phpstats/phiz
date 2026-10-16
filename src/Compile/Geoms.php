@@ -428,7 +428,13 @@ final class Geoms
         if ($values === null) {
             $c->require($aesthetic);
 
-            return [['mark' => $mark, 'encoding' => [$axis => $c->def($aesthetic, $axis)] + $extra]];
+            // The axis keeps the plot's own title rather than adding the reference field's.
+            $def = $c->def($aesthetic, $axis);
+            if (! isset($def['title']) && $c->has($axis)) {
+                $def['title'] = $c->name($axis) ?? $def['title'] ?? null;
+            }
+
+            return [['mark' => $mark, 'encoding' => [$axis => array_filter($def, fn ($v) => $v !== null)] + $extra]];
         }
         $c->constant = true;
         $c->channels[$axis] = $axis;

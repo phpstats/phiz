@@ -19,6 +19,7 @@ website:
     contents:
       - index.qmd
       - get-started.qmd
+      - ggplot2.qmd
       - section: "Guide"
         contents:
           - data.qmd
@@ -38,6 +39,7 @@ website:
         contents:
           - design.qmd
           - reference.qmd
+          - cmdstanphp.qmd
           - development.qmd
 
 format:
