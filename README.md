@@ -121,6 +121,25 @@ Compose::stack(
 
 `Compose::beside()`, `Compose::stack()` and `Compose::grid()` lay plots out like patchwork does.
 
+## Statistics
+
+The statistics helpers build ordinary plots from php-stats results (`stats_lm`, `stats_glm`, `stats_lmer`, `stats_glmer`, `stats_ols`, `stats_logistic`) and CmdStanPHP draws:
+
+```php
+use function Phiz\{coefplot, diagnostic_plots, effect_plot, interval_plot};
+
+$fit = stats_lm('mpg ~ wt + hp + factor(cyl)', $mtcars);
+
+coefplot($fit);                                      // estimates with 95% intervals
+coefplot(['Full' => $fit, 'Reduced' => $reduced]);   // models compared side by side
+coefplot($glm, exponentiate: true);                  // odds ratios on a log scale
+diagnostic_plots($fit);                              // residuals, QQ, scale-location, observed vs fitted
+effect_plot($fit, $mtcars, 'wt', by: 'cyl');         // predictions with confidence bands
+interval_plot($stanFit->draws_columns());            // posterior intervals, as bayesplot's mcmc_intervals
+```
+
+The predictions match R's `predict(fit, interval = "confidence")`.
+
 ## Escape hatches
 
 - `toArray()` and `toJson()` return the raw spec.
@@ -147,6 +166,10 @@ The component adds the script tags once per page. To place them yourself, use `@
 - phiz's small loader script re-embeds the chart when the spec changes.
 
 If a component renders several charts, give each one a `wire:key`. To change the asset source and the default embed options, publish the config with `php artisan vendor:publish --tag=phiz-config`.
+
+## Documentation and gallery
+
+The documentation at <https://erikwestlund.github.io/phiz/> is a Quarto site built from `docs/`. Its examples are executed by `scripts/docs-examples.php`. `php examples/gallery.php` writes an HTML page of the 40 examples in `examples/catalog.php`.
 
 ## Testing
 
