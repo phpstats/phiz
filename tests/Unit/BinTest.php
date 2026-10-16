@@ -129,8 +129,8 @@ it('keeps tables lazy until a spec embeds them', function () {
 });
 
 it('warns when a spec embeds too many rows', function () {
-    $previous = Config::$warnRows;
-    Config::$warnRows = 100;
+    [$previous, $handler] = [Config::$warnRows, Config::$warn];
+    [Config::$warnRows, Config::$warn] = [100, null];
     $warnings = [];
     set_error_handler(function (int $level, string $message) use (&$warnings) {
         $warnings[] = $message;
@@ -142,9 +142,24 @@ it('warns when a spec embeds too many rows', function () {
         Plot::of(cloud())->aes(x: 'x', y: 'y')->hex(bins: 6)->toArray();
     } finally {
         restore_error_handler();
-        Config::$warnRows = $previous;
+        [Config::$warnRows, Config::$warn] = [$previous, $handler];
     }
 
     expect($warnings)->toHaveCount(1)
         ->and($warnings[0])->toContain('embeds 400 data rows');
+});
+
+it('sends the size warning to a handler when one is set', function () {
+    [$previous, $handler] = [Config::$warnRows, Config::$warn];
+    $messages = [];
+    [Config::$warnRows, Config::$warn] = [10, function (string $message) use (&$messages) {
+        $messages[] = $message;
+    }];
+    try {
+        Plot::of(cloud(50))->aes(x: 'x', y: 'y')->point()->toArray();
+    } finally {
+        [Config::$warnRows, Config::$warn] = [$previous, $handler];
+    }
+
+    expect($messages)->toHaveCount(1);
 });

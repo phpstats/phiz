@@ -79,7 +79,12 @@ final class Compose extends Chart
         $config = $this->config;
         foreach ($this->charts as $chart) {
             if ($config === [] && ($chart instanceof Plot || $chart instanceof self) && $chart->config !== []) {
-                $config = $chart->toArray()['config'] ?? []; // A composition takes its theme from the first themed plot.
+                [$limit, Config::$warnRows] = [Config::$warnRows, null]; // The composition warns once, below.
+                try {
+                    $config = $chart->toArray()['config'] ?? []; // A composition takes its theme from the first themed plot.
+                } finally {
+                    Config::$warnRows = $limit;
+                }
             }
         }
         if (($config['range']['category'] ?? null) === 'hue') {

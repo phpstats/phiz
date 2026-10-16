@@ -38,34 +38,26 @@
     "width": 300,
     "layer": [
         {
-            "transform": [
-                {
-                    "density": "y",
-                    "groupby": [
-                        "h"
-                    ],
-                    "as": [
-                        "y",
-                        "__density"
-                    ]
-                },
-                {
-                    "joinaggregate": [
-                        {
-                            "op": "max",
-                            "field": "__density",
-                            "as": "__peak"
-                        }
-                    ],
-                    "groupby": [
-                        "h"
-                    ]
-                },
-                {
-                    "calculate": "datum.__density / datum.__peak",
-                    "as": "__width"
-                }
-            ],
+            "data": {
+                "values": [
+                    {
+                        "h": "p",
+                        "y": 2.5,
+                        "__width": 0.5070963482684713
+                    },
+                    {
+                        "h": "p",
+                        "y": 2.512562814070352,
+                        "__width": 0.5071435155852184
+                    },
+                    {
+                        "h": "p",
+                        "y": 2.5251256281407035,
+                        "__width": 0.5070235438026514
+                    },
+                    "... 397 more rows"
+                ]
+            },
             "mark": {
                 "type": "trail",
                 "opacity": 0.5

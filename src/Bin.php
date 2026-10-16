@@ -32,10 +32,11 @@ final class Bin
         $totals = [];
         foreach (self::values($source, [$x, ...$groups]) as $values) {
             $v = $values[0];
-            if (! is_numeric($v) || $v < $lo || $v > $hi) {
+            if (! self::finite($v) || $v < $lo || $v > $hi) {
                 continue;
             }
-            $i = min($count - 1, max(0, (int) floor(($v - $start) / $width)));
+            // The epsilon keeps values on an edge in the bin they start, despite rounding, as Vega's bin does.
+            $i = min($count - 1, max(0, (int) floor(($v - $start) / $width + 1e-9)));
             $key = self::key($values, 1);
             $cells[$key][$i] = ($cells[$key][$i] ?? 0) + 1;
             $totals[$key] = ($totals[$key] ?? 0) + 1;
@@ -74,11 +75,11 @@ final class Bin
         $cells = [];
         foreach (self::values($source, [$x, $y, ...$groups]) as $values) {
             [$vx, $vy] = $values;
-            if (! is_numeric($vx) || ! is_numeric($vy) || $vx < $x0 || $vx > $x1 || $vy < $y0 || $vy > $y1) {
+            if (! self::finite($vx) || ! self::finite($vy) || $vx < $x0 || $vx > $x1 || $vy < $y0 || $vy > $y1) {
                 continue;
             }
-            $i = min($nx - 1, (int) floor(($vx - $x0) / $wx));
-            $j = min($ny - 1, (int) floor(($vy - $y0) / $wy));
+            $i = min($nx - 1, (int) floor(($vx - $x0) / $wx + 1e-9));
+            $j = min($ny - 1, (int) floor(($vy - $y0) / $wy + 1e-9));
             $key = self::key($values, 2);
             $cells[$key][$i * $ny + $j] = ($cells[$key][$i * $ny + $j] ?? 0) + 1;
         }
@@ -117,7 +118,7 @@ final class Bin
         $cells = [];
         foreach (self::values($source, [$x, $y, ...$groups]) as $values) {
             [$vx, $vy] = $values;
-            if (! is_numeric($vx) || ! is_numeric($vy) || $vx < $x0 || $vx > $x1 || $vy < $y0 || $vy > $y1) {
+            if (! self::finite($vx) || ! self::finite($vy) || $vx < $x0 || $vx > $x1 || $vy < $y0 || $vy > $y1) {
                 continue;
             }
             [$u, $v] = [($vx - $x0) * $sx, ($vy - $y0) * $sy];
@@ -243,7 +244,7 @@ final class Bin
         $lo = INF;
         $hi = -INF;
         foreach (self::values($source, [$field]) as [$v]) {
-            if (is_numeric($v)) {
+            if (self::finite($v)) {
                 $lo = min($lo, (float) $v);
                 $hi = max($hi, (float) $v);
             }
@@ -281,13 +282,13 @@ final class Bin
             $columns = array_map(fn ($f) => $source[$f] ?? throw new InvalidArgumentException("No column '{$f}'."), $fields);
             $n = count($columns[0]);
             for ($i = 0; $i < $n; $i++) {
-                yield array_map(fn ($column) => $column[$i] ?? null, $columns);
+                yield array_map(fn ($column) => Data::value($column[$i] ?? null), $columns);
             }
 
             return;
         }
         foreach (self::rows($source) as $row) {
-            yield array_map(fn ($f) => $row[$f] ?? null, $fields);
+            yield array_map(fn ($f) => Data::value($row[$f] ?? null), $fields);
         }
     }
 
@@ -320,7 +321,7 @@ final class Bin
             $anchor = $boundary ?? 0.0;
             $start = $anchor + floor(($lo - $anchor) / $binwidth) * $binwidth;
 
-            return [$start, (float) $binwidth, max(1, (int) ceil(($hi - $start) / $binwidth + 1e-9))];
+            return [$start, (float) $binwidth, max(1, (int) ceil(($hi - $start) / $binwidth - 1e-9))];
         }
         if ($bins < 1) {
             throw new InvalidArgumentException('bins must be positive.');
@@ -337,6 +338,12 @@ final class Bin
     private static function groupValues(string $key, array $groups): array
     {
         return $groups === [] ? [] : array_combine($groups, json_decode($key, true));
+    }
+
+    /** A finite number: NAN, INF, numeric strings, and dates are not binned. */
+    private static function finite(mixed $value): bool
+    {
+        return (is_int($value) || is_float($value)) && is_finite((float) $value);
     }
 
     private static function number(mixed $value): float

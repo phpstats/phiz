@@ -206,6 +206,60 @@ final class Fit
         return $t > 0 ? 1 - $tail : $tail;
     }
 
+    /**
+     * Gaussian kernel density of $values at n points evenly spaced over [from, to], as R's density(). Up to two
+     * million kernel evaluations are exact; beyond that the values are linearly binned onto 2048 points first, as
+     * density() does.
+     *
+     * @return list<array{0: float, 1: float}> [x, density] pairs.
+     */
+    public static function kde(array $values, float $bw, float $from, float $to, int $n = 512): array
+    {
+        $values = array_values(array_filter($values, fn ($v) => (is_int($v) || is_float($v)) && is_finite((float) $v)));
+        $count = count($values);
+        if ($count === 0 || ! ($bw > 0) || $n < 2) {
+            throw new InvalidArgumentException('kde needs values, a positive bandwidth, and n >= 2.');
+        }
+        $weights = array_fill(0, $count, 1.0);
+        if ($count * $n > 2_000_000) {
+            // Linear binning: each value splits its weight between the two nearest grid points.
+            $m = 2048;
+            [$lo, $hi] = [min(min($values), $from) - 4 * $bw, max(max($values), $to) + 4 * $bw];
+            $step = ($hi - $lo) / ($m - 1);
+            $grid = array_fill(0, $m, 0.0);
+            foreach ($values as $v) {
+                $pos = ($v - $lo) / $step;
+                $i = min($m - 2, (int) floor($pos));
+                $f = $pos - $i;
+                $grid[$i] += 1 - $f;
+                $grid[$i + 1] += $f;
+            }
+            $values = [];
+            $weights = [];
+            foreach ($grid as $i => $w) {
+                if ($w > 0) {
+                    $values[] = $lo + $i * $step;
+                    $weights[] = $w;
+                }
+            }
+        }
+        $norm = 1 / ($count * $bw * sqrt(2 * M_PI));
+        $out = [];
+        for ($i = 0; $i < $n; $i++) {
+            $x = $from + ($to - $from) * $i / ($n - 1);
+            $sum = 0.0;
+            foreach ($values as $j => $v) {
+                $u = ($x - $v) / $bw;
+                if ($u > -8 && $u < 8) {
+                    $sum += $weights[$j] * exp(-0.5 * $u * $u);
+                }
+            }
+            $out[] = [$x, $sum * $norm];
+        }
+
+        return $out;
+    }
+
     /** R's bw.nrd0: 0.9 * min(sd, IQR / 1.34) * n^-0.2. */
     public static function bandwidth(array $values): float
     {

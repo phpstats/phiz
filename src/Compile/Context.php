@@ -48,6 +48,7 @@ final class Context
         public readonly bool $flipped = false,
         public readonly int|string|null $width = null,
         public readonly int|string|null $height = null,
+        public readonly bool $transformed = false,
     ) {}
 
     public function has(string $aesthetic): bool

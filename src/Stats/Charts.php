@@ -222,6 +222,10 @@ final class Charts
         if ($rows === [] || ! array_key_exists($factor, $rows[0])) {
             throw new InvalidArgumentException("marginal_means needs the fitting data with a '{$factor}' column.");
         }
+        if (isset($fit['retained_rows']) && count($fit['retained_rows']) < count($rows)) {
+            // Means and levels come from the rows the model used, as emmeans takes them from the fitted data.
+            $rows = array_values(array_intersect_key($rows, array_flip($fit['retained_rows'])));
+        }
         $variables ??= self::modelVariables($fit, $rows);
         $categorical = [];
         $fixed = [];
@@ -319,33 +323,38 @@ final class Charts
             $byGroup[(string) $row[$term['group']]][] = $i;
         }
         $singular = (bool) ($fit['singular'] ?? $fit['diagnostics']['singular'] ?? false);
-        try {
-            $Ginv = self::invert($G);
-        } catch (InvalidArgumentException) {
-            $Ginv = null; // A variance estimated at zero: the conditional modes are zero with no spread.
-        }
         $z = Fit::normalQuantile((1 + $level) / 2);
+        $k = count($columns);
         $out = [];
         foreach ($labels as $g => $label) {
-            if ($Ginv === null) {
-                foreach ($columns as $a => $column) {
-                    $estimate = (float) ($effects[$g][$a] ?? 0.0);
-                    $out[] = ['group' => (string) $label, 'effect' => $column, 'estimate' => $estimate, 'std_error' => 0.0, 'lower' => $estimate, 'upper' => $estimate];
-                }
-                continue;
-            }
-            $precision = $Ginv;
+            // (Z'WZ / sigma^2 + G^-1)^-1 = (I + G Z'WZ / sigma^2)^-1 G, which needs no inverse of G, so it holds for
+            // singular fits (a zero variance or a correlation of +-1) too.
+            $A = array_fill(0, $k, array_fill(0, $k, 0.0));
             foreach ($byGroup[(string) $label] ?? [] as $i) {
-                foreach ($columns as $a => $_) {
-                    foreach ($columns as $b => $_) {
-                        $precision[$a][$b] += $weights[$i] * $Z[$i][$a] * $Z[$i][$b] / $sigma2;
+                for ($a = 0; $a < $k; $a++) {
+                    for ($b = 0; $b < $k; $b++) {
+                        $A[$a][$b] += $weights[$i] * $Z[$i][$a] * $Z[$i][$b] / $sigma2;
                     }
                 }
             }
-            $conditional = self::invert($precision);
+            $M = [];
+            for ($a = 0; $a < $k; $a++) {
+                for ($b = 0; $b < $k; $b++) {
+                    $sum = $a === $b ? 1.0 : 0.0;
+                    for ($c = 0; $c < $k; $c++) {
+                        $sum += $G[$a][$c] * $A[$c][$b];
+                    }
+                    $M[$a][$b] = $sum;
+                }
+            }
+            $Minv = self::invert($M);
             foreach ($columns as $a => $column) {
-                $estimate = (float) $effects[$g][$a];
-                $se = sqrt(max(0.0, $conditional[$a][$a]));
+                $variance = 0.0;
+                for ($c = 0; $c < $k; $c++) {
+                    $variance += $Minv[$a][$c] * $G[$c][$a];
+                }
+                $estimate = (float) ($effects[$g][$a] ?? 0.0);
+                $se = sqrt(max(0.0, $variance));
                 $out[] = ['group' => (string) $label, 'effect' => $column, 'estimate' => $estimate, 'std_error' => $se, 'lower' => $estimate - $z * $se, 'upper' => $estimate + $z * $se];
             }
         }
@@ -358,10 +367,22 @@ final class Charts
             ->aes(x: 'estimate', y: \Phiz\field('group', 'nominal', sort: array_reverse($order)), xmin: 'lower', xmax: 'upper')
             ->vline(0, linetype: 'dashed', color: '#888888')
             ->pointrange(size: 30)
-            ->labs(x: "Conditional mode ({$percent}% interval)", y: $term['group'], subtitle: $singular ? 'Singular fit: random-effect variance estimated at zero' : null)
+            ->labs(x: "Conditional mode ({$percent}% interval)", y: $term['group'], subtitle: $singular ? self::singularNote($G) : null)
             ->tooltip(['group', 'effect', 'estimate', 'lower', 'upper']);
 
         return count($columns) > 1 ? $plot->facetWrap('effect', ncol: count($columns), scales: 'free_x')->size(220, max(120, 16 * count($labels))) : $plot->height(max(120, 16 * count($labels)));
+    }
+
+    /** Why a mixed-model fit is singular: a variance at zero, or random effects perfectly correlated. */
+    private static function singularNote(array $G): string
+    {
+        foreach ($G as $a => $row) {
+            if ($row[$a] <= 1e-10 * max(1.0, max(array_map('abs', array_merge(...$G))))) {
+                return 'Singular fit: a random-effect variance is estimated at zero';
+            }
+        }
+
+        return 'Singular fit: random effects are perfectly correlated';
     }
 
     /** Predictions from design rows: estimate, interval, and std_error (on the link scale) per grid row. */

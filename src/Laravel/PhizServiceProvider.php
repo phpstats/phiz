@@ -26,6 +26,7 @@ final class PhizServiceProvider extends ServiceProvider
         \Phiz\Config::$serverRows = (int) config('phiz.server_rows', \Phiz\Config::$serverRows);
         $warn = config('phiz.warn_rows', \Phiz\Config::$warnRows);
         \Phiz\Config::$warnRows = $warn === null ? null : (int) $warn;
+        \Phiz\Config::$warn ??= static fn (string $message) => \Illuminate\Support\Facades\Log::warning($message);
         Blade::directive('phizScripts', fn () => '<?php echo \\'.self::class.'::scripts(); ?>');
     }
 

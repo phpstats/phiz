@@ -270,9 +270,9 @@ final class Geoms
         $axis = $c->has('x') ? 'x' : 'y';
         $other = $axis === 'x' ? 'y' : 'x';
         $c->require($axis);
-        if (self::server($c)) {
+        if (self::server($c, [$axis])) {
             $field = (string) $c->name($axis);
-            $c->computed = Bin::histogram($c->data->source(), $field, (int) $c->param('bins', 30), $c->param('binwidth'), $c->param('boundary'), groups: $c->groupFields());
+            $c->computed = Bin::histogram($c->data->source(), $field, (int) $c->param('bins', 30), $c->param('binwidth'), $c->param('boundary'), groups: self::binGroups($c));
             $c->transforms = [];
             $encoding = $c->encode(['fill' => 'color', 'color' => 'stroke', 'group' => 'detail']);
             $encoding[$axis] = ['field' => Field::escape($field.'_start'), 'type' => 'quantitative', 'bin' => ['binned' => true], 'title' => $field];
@@ -386,31 +386,41 @@ final class Geoms
             throw new InvalidArgumentException('violin needs a discrete x; use factor() or the :N shorthand for numeric codes.');
         }
         $y = (string) $c->name('y');
-        $groupby = array_values(array_unique([$c->ref('x'), ...$c->groupby()]));
-        $transform = ['density' => $c->ref('y'), 'groupby' => $groupby, 'as' => [$y, '__density']];
-        $bandwidth = $c->param('bw');
-        if ($c->param('adjust') !== null) {
-            $values = array_values(array_filter($c->data->column($y), is_numeric(...)));
-            if ($bandwidth === null && count($values) < 2) {
-                throw new InvalidArgumentException('violin(adjust:) computes the bandwidth from inline data; with URL data set bw: instead.');
+        if ($c->data->isInline() && $c->fieldOf('y')?->calculate === null && $c->fieldOf('x')?->calculate === null) {
+            // As ggplot2: each group's own bandwidth (bw, or R's bw.nrd0 times adjust), trimmed to its range.
+            $c->computed = self::violinDensities($c, (string) $c->name('x'), $y);
+        } else {
+            $groupby = array_values(array_unique([$c->ref('x'), ...$c->groupby()]));
+            $transform = ['density' => $c->ref('y'), 'groupby' => $groupby, 'as' => [$y, '__density']];
+            if ($c->param('adjust') !== null && $c->param('bw') === null) {
+                throw new InvalidArgumentException('violin(adjust:) computes bandwidths from inline data; with URL data set bw: instead.');
             }
-            $bandwidth = ($bandwidth ?? \Phiz\Stats\Fit::bandwidth($values)) * $c->param('adjust');
-        }
-        foreach (['bandwidth' => $bandwidth, 'steps' => $c->param('n')] as $key => $value) {
-            if ($value !== null) {
-                $transform[$key] = $value;
+            foreach (['bandwidth' => $c->param('bw') === null ? null : $c->param('bw') * $c->param('adjust', 1), 'steps' => $c->param('n')] as $key => $value) {
+                if ($value !== null) {
+                    $transform[$key] = $value;
+                }
             }
+            $c->transforms[] = $transform;
+            // Scale each violin to its own maximum density, so every violin spans the same width.
+            $c->transforms[] = ['joinaggregate' => [['op' => 'max', 'field' => '__density', 'as' => '__peak']], 'groupby' => $groupby];
+            $c->transforms[] = ['calculate' => 'datum.__density / datum.__peak', 'as' => '__width'];
         }
-        $c->transforms[] = $transform;
-        // Scale each violin to its own maximum density, so every violin spans the same width.
-        $c->transforms[] = ['joinaggregate' => [['op' => 'max', 'field' => '__density', 'as' => '__peak']], 'groupby' => $groupby];
-        $c->transforms[] = ['calculate' => 'datum.__density / datum.__peak', 'as' => '__width'];
 
         // The widest violin fills most of its band: the panel size along x divided by the number of levels.
         $levels = $c->data->isInline() ? max(1, count($c->data->levels((string) $c->name('x')))) : 4;
         $panel = $c->flipped ? $c->height : $c->width;
         $panel = is_int($panel) ? $panel : max(300, 20 * $levels);
-        $maxWidth = round($c->param('width', 0.9) * $panel / $levels, 1);
+        $maxWidth = $c->param('width', 0.9) * $panel / $levels;
+        if ($c->param('position') === 'dodge') {
+            // Dodged violins share their band.
+            foreach (['fill', 'color', 'group'] as $aesthetic) {
+                if ($c->has($aesthetic) && $c->name($aesthetic) !== $c->name('x')) {
+                    $maxWidth /= max(1, count($c->data->levels((string) $c->name($aesthetic))));
+                    break;
+                }
+            }
+        }
+        $maxWidth = round($maxWidth, 1);
 
         $encoding = $c->encode(['x' => 'x', 'fill' => 'color', 'color' => 'color', 'group' => 'detail'] + ['opacity' => 'opacity', 'tooltip' => 'tooltip']);
         $encoding['y'] = ['field' => Field::escape($y), 'type' => 'quantitative', 'title' => $y];
@@ -422,6 +432,41 @@ final class Geoms
         $encoding = self::dodge($c, $encoding);
 
         return [['mark' => $c->mark('trail', 'point', ['opacity' => 0.7]), 'encoding' => $encoding]];
+    }
+
+    /** Kernel densities of y per level of x (and grouping), scaled to each group's peak, for violin(). */
+    private static function violinDensities(Context $c, string $x, string $y): array
+    {
+        $groups = array_values(array_unique([$x, ...array_diff($c->groupFields(), ['__facet'])]));
+        $sets = [];
+        foreach ($c->data->rows ?? [] as $row) {
+            $v = $row[$y] ?? null;
+            if ((is_int($v) || is_float($v)) && is_finite((float) $v)) {
+                $key = array_map(fn ($g) => $row[$g] ?? null, $groups);
+                $sets[json_encode($key)] ??= ['key' => array_combine($groups, $key), 'values' => []];
+                $sets[json_encode($key)]['values'][] = (float) $v;
+            }
+        }
+        $n = (int) $c->param('n', 200);
+        $out = [];
+        foreach ($sets as $set) {
+            $values = $set['values'];
+            if (count($values) < 2) {
+                continue; // ggplot2 drops groups with fewer than two points.
+            }
+            $bw = ($c->param('bw') ?? Fit::bandwidth($values)) * $c->param('adjust', 1);
+            [$lo, $hi] = [min($values), max($values)];
+            if ($hi - $lo <= 0) {
+                continue;
+            }
+            $density = Fit::kde($values, $bw, $lo, $hi, $n);
+            $peak = max(array_column($density, 1));
+            foreach ($density as [$at, $d]) {
+                $out[] = $set['key'] + [$y => $at, '__width' => $peak > 0 ? $d / $peak : 0.0];
+            }
+        }
+
+        return $out;
     }
 
     /** Horizontal when xmin/xmax are mapped instead of ymin/ymax. */
@@ -614,9 +659,9 @@ final class Geoms
     private static function bin2d(Context $c): array
     {
         $c->require('x', 'y');
-        if (self::server($c)) {
+        if (self::server($c, ['x', 'y'])) {
             [$x, $y] = [(string) $c->name('x'), (string) $c->name('y')];
-            $c->computed = Bin::grid($c->data->source(), $x, $y, $c->param('bins', 30), groups: $c->groupFields());
+            $c->computed = Bin::grid($c->data->source(), $x, $y, $c->param('bins', 30), groups: self::binGroups($c));
             $c->transforms = [];
             $c->channels += ['x' => 'x', 'y' => 'y', 'fill' => 'color'];
 
@@ -639,22 +684,47 @@ final class Geoms
         return [['mark' => $c->mark('rect', 'filled'), 'encoding' => $encoding]];
     }
 
-    /** Whether a binning geom computes in PHP: compute 'server', or 'auto' above Config::$serverRows inline rows. */
-    private static function server(Context $c): bool
+    /**
+     * Whether a binning geom computes in PHP: compute 'server', or 'auto' above Config::$serverRows inline rows. Binning
+     * in PHP reads the data columns directly, so 'auto' leaves the work to Vega-Lite when a layer filter, a plot
+     * transform, a computed field, or a non-numeric axis needs the browser's data flow.
+     *
+     * @param list<string> $axes The aesthetics being binned.
+     */
+    private static function server(Context $c, array $axes, bool $always = false): bool
     {
-        $compute = $c->param('compute', 'auto');
+        $compute = $always ? 'server' : $c->param('compute', 'auto');
         if (! in_array($compute, ['auto', 'server', 'browser'], true)) {
             throw new InvalidArgumentException("compute must be 'auto', 'server', or 'browser'.");
         }
-        if ($compute === 'browser' || ! $c->data->isInline()) {
+        if ($compute === 'browser') {
+            return false;
+        }
+        $blocker = match (true) {
+            ! $c->data->isInline() => 'inline data',
+            $c->layer->filter !== null => 'no layer filter',
+            $c->transformed => 'no plot transform()',
+            default => null,
+        };
+        foreach ($axes as $axis) {
+            $blocker ??= $c->fieldOf($axis)?->calculate !== null || $c->fieldOf($axis)?->aggregate !== null ? "a plain {$axis} field" : null;
+            $blocker ??= $c->type($axis) !== 'quantitative' ? "a numeric {$axis}" : null;
+        }
+        if ($blocker !== null) {
             if ($compute === 'server') {
-                throw new InvalidArgumentException("compute: 'server' needs inline data.");
+                throw new InvalidArgumentException("Binning {$c->layer->geom} in PHP needs {$blocker}; use compute: 'browser' or bin2d().");
             }
 
             return false;
         }
 
         return $compute === 'server' || $c->data->count() > Config::$serverRows;
+    }
+
+    /** Group fields for PHP binning: the computed __facet field is rebuilt by the plot's transform afterwards. */
+    private static function binGroups(Context $c): array
+    {
+        return array_values(array_diff($c->groupFields(), ['__facet']));
     }
 
     /**
@@ -664,9 +734,7 @@ final class Geoms
     private static function hex(Context $c): array
     {
         $c->require('x', 'y');
-        if (! $c->data->isInline()) {
-            throw new InvalidArgumentException('hex bins in PHP and needs inline data; with URL data use bin2d().');
-        }
+        self::server($c, ['x', 'y'], always: true);
         [$x, $y] = [(string) $c->name('x'), (string) $c->name('y')];
         $bins = (int) $c->param('bins', 30);
         $rows = $c->data->source();
@@ -676,12 +744,13 @@ final class Geoms
         if ($c->flipped) {
             [$width, $height] = [$height, $width];
         }
-        $c->computed = Bin::hex($rows, $x, $y, $bins, $xlim, $ylim, $height / $width, $c->groupFields());
+        $c->computed = Bin::hex($rows, $x, $y, $bins, $xlim, $ylim, $height / $width, self::binGroups($c));
         $c->transforms = [];
         $c->channels += ['x' => 'x', 'y' => 'y', 'fill' => 'color'];
         $diameter = 2 * ($width / $bins) / sqrt(3);
-        // Pointy-top hexagon in Vega's unit square; size is the bounding box area in square pixels.
-        $shape = 'M0,-1L0.866,-0.5L0.866,0.5L0,1L-0.866,0.5L-0.866,-0.5Z';
+        // Pointy-top hexagons in Vega's unit square (size is the bounding box area in square pixels). coordFlip()
+        // turns the lattice a quarter turn, so the hexagons become flat-topped.
+        $shape = $c->flipped ? 'M-1,0L-0.5,-0.866L0.5,-0.866L1,0L0.5,0.866L-0.5,0.866Z' : 'M0,-1L0.866,-0.5L0.866,0.5L0,1L-0.866,0.5L-0.866,-0.5Z';
         $exact = ['nice' => false, 'zero' => false, 'padding' => 0];
 
         return [['mark' => $c->mark('point', 'point', ['shape' => $shape, 'filled' => true, 'opacity' => 1, 'size' => round($diameter * $diameter, 2), 'strokeWidth' => 0]), 'encoding' => [

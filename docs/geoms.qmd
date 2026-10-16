@@ -26,7 +26,7 @@ As in ggplot2, `color` is the outline of bars, areas, and tiles, and `fill` is t
 
 {{< include _generated/geom-boxplot.md >}}
 
-`violin()` draws a kernel density of y for each level of a discrete x. Every violin has the same maximum width, set by `width:` as a share of the band, and violins layer with boxplots and points on the same axis. `bw:` and `adjust:` work as in `density()`, and `position: 'dodge'` places groups side by side.
+`violin()` draws a kernel density of y for each level of a discrete x. Every violin has the same maximum width, set by `width:` as a share of the band, and violins layer with boxplots and points on the same axis. For inline data, each violin's density is computed in PHP as ggplot2 computes it: its own bandwidth (`bw:`, or R's `bw.nrd0` times `adjust:`), evaluated at `n:` points (200 by default) across the group's range. `position: 'dodge'` places groups side by side within the band.
 
 {{< include _generated/geom-violin.md >}}
 

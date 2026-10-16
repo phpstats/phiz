@@ -47,34 +47,26 @@
     "width": 300,
     "layer": [
         {
-            "transform": [
-                {
-                    "density": "hwy",
-                    "groupby": [
-                        "class"
-                    ],
-                    "as": [
-                        "hwy",
-                        "__density"
-                    ]
-                },
-                {
-                    "joinaggregate": [
-                        {
-                            "op": "max",
-                            "field": "__density",
-                            "as": "__peak"
-                        }
-                    ],
-                    "groupby": [
-                        "class"
-                    ]
-                },
-                {
-                    "calculate": "datum.__density / datum.__peak",
-                    "as": "__width"
-                }
-            ],
+            "data": {
+                "values": [
+                    {
+                        "class": "compact",
+                        "hwy": 23.0,
+                        "__width": 0.18813653603209338
+                    },
+                    {
+                        "class": "compact",
+                        "hwy": 23.105527638190956,
+                        "__width": 0.2101292198708465
+                    },
+                    {
+                        "class": "compact",
+                        "hwy": 23.21105527638191,
+                        "__width": 0.2339733966151917
+                    },
+                    "... 1397 more rows"
+                ]
+            },
             "mark": {
                 "type": "trail",
                 "opacity": 0.6

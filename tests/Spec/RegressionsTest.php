@@ -169,3 +169,56 @@ it('renders the fixed specs with vl-convert', function () {
         expect($chart->svg())->toStartWith('<svg');
     }
 })->skip(! Export::available(), 'vl-convert is not installed');
+
+it('turns hexagons flat-topped under coordFlip', function () {
+    $shape = Plot::of(grid())->aes(x: 'x', y: 'y')->hex(bins: 5)->coordFlip()->toArray()['mark']['shape'];
+
+    expect($shape)->toStartWith('M-1,0');
+});
+
+it('leaves binning to Vega-Lite when a filter or transform needs the browser', function () {
+    $previous = Phiz\Config::$serverRows;
+    Phiz\Config::$serverRows = 5;
+    try {
+        $filtered = Plot::of(grid())->aes(x: 'x')->histogram(filter: "datum.a === 'p'")->toArray();
+        $transformed = Plot::of(grid())->transform(['calculate' => 'datum.x * 2', 'as' => 'w'])->aes(x: 'w:Q')->histogram()->toArray();
+    } finally {
+        Phiz\Config::$serverRows = $previous;
+    }
+
+    expect($filtered['encoding']['x']['bin'])->toBe(['maxbins' => 30])
+        ->and($transformed['encoding']['x']['bin'])->toBe(['maxbins' => 30])
+        ->and(fn () => Plot::of(grid())->aes(x: 'x')->histogram(compute: 'server', filter: 'datum.x > 1')->toArray())->toThrow(InvalidArgumentException::class, 'no layer filter')
+        ->and(fn () => Plot::of(sample())->aes(x: 'date', y: 'y')->hex()->toArray())->toThrow(InvalidArgumentException::class, 'a numeric x');
+});
+
+it('bins multi-field facet panels in PHP from columns', function () {
+    $columns = ['a' => array_column(grid(), 'a'), 'b' => array_column(grid(), 'b'), 'x' => array_column(grid(), 'x'), 'y' => array_column(grid(), 'y')];
+    $plot = Plot::of($columns)->aes(x: 'x', y: 'y')->hex(bins: 4)->facetWrap(['a', 'b']);
+
+    expect($plot)->toBeValidVegaLite()
+        ->and(array_unique(array_map(fn ($r) => $r['a'].$r['b'], $plot->toArray()['data']['values'])))->toHaveCount(4);
+});
+
+it('reads phibble table column names', function () {
+    $data = Data::from(Phibble\Frame::fromColumns(['a' => [1, 2], 'b' => ['u', 'v']]));
+
+    expect($data->fields())->toBe(['a', 'b'])->and($data->has('a'))->toBeTrue()->and($data->has('z'))->toBeFalse();
+});
+
+it('narrows dodged violins to share their band', function () {
+    $single = Plot::of(sample())->aes(x: 'h', y: 'y')->violin()->toArray()['encoding']['size']['scale']['range'][1];
+    $dodged = Plot::of(sample())->aes(x: 'h', y: 'y', fill: 'g')->violin(position: 'dodge')->toArray()['encoding']['size']['scale']['range'][1];
+
+    expect($dodged)->toEqualWithDelta($single / 3, 0.1);
+});
+
+it('estimates violin densities per group with R bandwidths', function () {
+    $rows = Plot::of(Phiz\Datasets::faithful())->aes(x: calc("'all'", 'k', 'nominal'), y: 'eruptions')->violin(n: 5)->toArray();
+    $computed = Plot::of(array_map(fn ($r) => $r + ['k' => 'all'], Phiz\Datasets::faithful()))->aes(x: 'k', y: 'eruptions')->violin(n: 5)->toArray()['data']['values'];
+
+    // R: density(faithful$eruptions, n = 5, from = 1.6, to = 5.1); relative peak heights.
+    expect(array_column($computed, 'eruptions'))->toEqualWithDelta([1.6, 2.475, 3.35, 4.225, 5.1], 1e-12)
+        ->and($computed[1]['__width'])->toEqualWithDelta(0.17899231 / 0.46597958, 1e-3)
+        ->and($rows['transform'][0]['density'] ?? null)->toBe('eruptions');
+});

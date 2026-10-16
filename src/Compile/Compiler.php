@@ -41,7 +41,7 @@ final class Compiler
         $units = []; // Each: ['specs' => list<array>, 'channels' => array, 'context' => Context]
         foreach ($plot->layers as $layer) {
             $aes = $layer->inheritAes ? $plot->aes->merge($layer->aes) : $layer->aes;
-            $context = new Context($layer, $aes, $layer->data ?? $data, $facetFields, $plot->flip, $plot->width, $plot->height);
+            $context = new Context($layer, $aes, $layer->data ?? $data, $facetFields, $plot->flip, $plot->width, $plot->height, $plot->transforms !== []);
             $specs = Geoms::compile($context);
             foreach ($specs as $i => $spec) {
                 $transforms = [...$context->transforms, ...($spec['transform'] ?? [])];
@@ -146,13 +146,14 @@ final class Compiler
         }
         $rows = self::countRows($spec);
         if ($rows > Config::$warnRows) {
-            trigger_error(sprintf(
+            $message = sprintf(
                 'phiz: this plot embeds %s data rows in its spec, more than Config::$warnRows (%s). Browsers slow down with large inline data. '
                 .'Summarize first (bin2d(), hex(), histogram(compute: \'server\'), line(downsample:), Bin::sample(), or phplyr), '
                 .'or load the data from a URL with Data::url(). See https://erikwestlund.github.io/phiz/large-data.html.',
                 number_format($rows),
                 number_format(Config::$warnRows),
-            ), E_USER_WARNING);
+            );
+            Config::$warn !== null ? (Config::$warn)($message) : trigger_error($message, E_USER_WARNING);
         }
     }
 

@@ -129,7 +129,7 @@ final class Data
     public function fields(): array
     {
         return match (true) {
-            $this->table !== null => array_values(array_map('strval', method_exists($this->table, 'names') ? $this->table->names() : array_keys($this->table->columns()))),
+            $this->table !== null => self::tableFields($this->table),
             $this->columns !== null => array_keys($this->columns),
             default => array_keys($this->eager[0] ?? []),
         };
@@ -224,6 +224,14 @@ final class Data
     public function withRows(array $rows): self
     {
         return new self($rows);
+    }
+
+    /** Column names of a table: names(), or columns() as a list of names (phibble) or a name => values map. */
+    private static function tableFields(object $table): array
+    {
+        $columns = method_exists($table, 'names') ? $table->names() : $table->columns();
+
+        return array_map('strval', array_is_list($columns) ? $columns : array_keys($columns));
     }
 
     private static function isDate(string $value): bool
