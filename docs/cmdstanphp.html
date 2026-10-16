@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>Plan: CmdStanPHP figures on phiz – phiz</title>
+<title>Plan: CmdStanPHP figures on phit – phit</title>
 <style>
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
@@ -108,26 +108,26 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     "search-label": "Search"
   }
 }</script>
-<style>.phiz-figure{margin:0.5rem 0 1.5rem;overflow-x:auto}</style>
+<style>.phit-figure{margin:0.5rem 0 1.5rem;overflow-x:auto}</style>
 <script src="https://cdn.jsdelivr.net/npm/vega@6.4.0/build/vega.min.js" integrity="sha384-VKdcJr3ZaBIJMbVcopTAI/JEuUkSY6qnwVu9iLuw0DnQ9gQ1JjsfZJhXFQAgNi43" crossorigin="anonymous"></script>
 <script src="https://cdn.jsdelivr.net/npm/vega-lite@6.4.3/build/vega-lite.min.js" integrity="sha384-9/70gNCfOu6G7xXvkdreMfuqAEsoaGJVXV2BN/JLRXkSmcGvnMqtsRx8HZtUWAvI" crossorigin="anonymous"></script>
 <script src="https://cdn.jsdelivr.net/npm/vega-embed@7.3.0/build/vega-embed.min.js" integrity="sha384-Muy1QRxYFeNrA1zShc1KtN4OfipkR/61gt+HWqN57c1Zxu3Oe16TsilsruVVjfKL" crossorigin="anonymous"></script>
-<script>/* phiz: renders [data-phiz] elements with vega-embed, and re-renders when their spec changes (Livewire morphs). */
+<script>/* phit: renders [data-phit] elements with vega-embed, and re-renders when their spec changes (Livewire morphs). */
 (function () {
-  if (window.Phiz) return;
+  if (window.Phit) return;
   var views = new WeakMap();
   var dark = window.matchMedia ? window.matchMedia('(prefers-color-scheme: dark)') : null;
 
   function parse(json, fallback) {
     if (!json) return fallback;
-    try { return JSON.parse(json); } catch (e) { console.error('phiz: invalid JSON', e); return fallback; }
+    try { return JSON.parse(json); } catch (e) { console.error('phit: invalid JSON', e); return fallback; }
   }
 
   function target(el) {
-    var view = el.querySelector(':scope > [data-phiz-view]');
+    var view = el.querySelector(':scope > [data-phit-view]');
     if (!view) {
       view = document.createElement('div');
-      view.setAttribute('data-phiz-view', '');
+      view.setAttribute('data-phit-view', '');
       view.setAttribute('wire:ignore', '');
       el.appendChild(view);
     }
@@ -135,10 +135,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   }
 
   function render(el) {
-    var embed = Phiz.embed || window.vegaEmbed;
+    var embed = Phit.embed || window.vegaEmbed;
     if (!embed) { pending = true; return; }
-    var json = el.getAttribute('data-phiz');
-    var optionsJson = el.getAttribute('data-phiz-options') || '';
+    var json = el.getAttribute('data-phit');
+    var optionsJson = el.getAttribute('data-phit-options') || '';
     var key = json + '\u0000' + optionsJson + '\u0000' + (dark && dark.matches ? 'dark' : 'light');
     var state = views.get(el);
     if (state && state.key === key) return;
@@ -159,25 +159,25 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       if (!current || current.token !== token) { result.view.finalize(); holder.remove(); return; }
       Array.prototype.slice.call(holder.parentNode.children).forEach(function (child) { if (child !== holder) child.remove(); });
       current.view = result.view;
-      el.dispatchEvent(new CustomEvent('phiz:rendered', { detail: { view: result.view }, bubbles: true }));
+      el.dispatchEvent(new CustomEvent('phit:rendered', { detail: { view: result.view }, bubbles: true }));
     }).catch(function (error) {
       var current = views.get(el);
       if (!current || current.token !== token) { holder.remove(); return; }
-      console.error('phiz:', error);
+      console.error('phit:', error);
       holder.textContent = 'Chart error: ' + error.message;
     });
   }
 
   function scan(root) {
     if (root.nodeType !== 1) return;
-    if (root.hasAttribute('data-phiz')) render(root);
-    root.querySelectorAll('[data-phiz]').forEach(render);
+    if (root.hasAttribute('data-phit')) render(root);
+    root.querySelectorAll('[data-phit]').forEach(render);
   }
 
   function release(root) {
     if (root.nodeType !== 1) return;
-    var nodes = root.hasAttribute('data-phiz') ? [root] : [];
-    root.querySelectorAll('[data-phiz]').forEach(function (n) { nodes.push(n); });
+    var nodes = root.hasAttribute('data-phit') ? [root] : [];
+    root.querySelectorAll('[data-phit]').forEach(function (n) { nodes.push(n); });
     nodes.forEach(function (n) {
       if (n.isConnected) return;
       var state = views.get(n);
@@ -187,7 +187,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   }
 
   var pending = false;
-  var Phiz = window.Phiz = {
+  var Phit = window.Phit = {
     embed: null,
     render: render,
     scan: function () { scan(document.documentElement); },
@@ -200,11 +200,11 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       m.addedNodes.forEach(scan);
       m.removedNodes.forEach(release);
     });
-  }).observe(document.documentElement, { subtree: true, childList: true, attributes: true, attributeFilter: ['data-phiz', 'data-phiz-options'] });
+  }).observe(document.documentElement, { subtree: true, childList: true, attributes: true, attributeFilter: ['data-phit', 'data-phit-options'] });
 
-  if (dark && dark.addEventListener) dark.addEventListener('change', function () { Phiz.scan(); });
+  if (dark && dark.addEventListener) dark.addEventListener('change', function () { Phit.scan(); });
 
-  function start() { pending = false; Phiz.scan(); }
+  function start() { pending = false; Phit.scan(); }
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', start); else start();
   window.addEventListener('load', function () { if (pending) start(); });
 })();</script>
@@ -221,7 +221,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./design.html">Project</a></li><li class="breadcrumb-item"><a href="./cmdstanphp.html">Plan: CmdStanPHP figures on phiz</a></li></ol></nav>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./design.html">Project</a></li><li class="breadcrumb-item"><a href="./cmdstanphp.html">Plan: CmdStanPHP figures on phit</a></li></ol></nav>
         <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
         </a>
       <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
@@ -236,7 +236,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation docked overflow-auto">
     <div class="pt-lg-2 mt-2 text-left sidebar-header">
     <div class="sidebar-title mb-0 py-0">
-      <a href="./">phiz</a> 
+      <a href="./">phit</a> 
     </div>
       </div>
         <div class="mt-2 flex-shrink-0 align-items-center">
@@ -249,7 +249,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./index.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">phiz</span></a>
+ <span class="menu-text">phit</span></a>
   </div>
 </li>
         <li class="sidebar-item">
@@ -382,7 +382,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./cmdstanphp.html" class="sidebar-item-text sidebar-link active">
- <span class="menu-text">Plan: CmdStanPHP figures on phiz</span></a>
+ <span class="menu-text">Plan: CmdStanPHP figures on phit</span></a>
   </div>
 </li>
           <li class="sidebar-item">
@@ -408,14 +408,14 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <li><a href="#translations" id="toc-translations" class="nav-link" data-scroll-target="#translations">Translations</a></li>
   <li><a href="#open-questions" id="toc-open-questions" class="nav-link" data-scroll-target="#open-questions">Open questions</a></li>
   </ul>
-<div class="toc-actions"><ul><li><a href="https://github.com/erikwestlund/phiz/blob/main/cmdstanphp.qmd" class="toc-action"><i class="bi bi-github"></i>View source</a></li><li><a href="https://github.com/erikwestlund/phiz/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></nav>
+<div class="toc-actions"><ul><li><a href="https://github.com/erikwestlund/phit/blob/main/cmdstanphp.qmd" class="toc-action"><i class="bi bi-github"></i>View source</a></li><li><a href="https://github.com/erikwestlund/phit/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></nav>
     </div>
 <!-- main -->
 <main class="content" id="quarto-document-content">
 
-<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./design.html">Project</a></li><li class="breadcrumb-item"><a href="./cmdstanphp.html">Plan: CmdStanPHP figures on phiz</a></li></ol></nav>
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./design.html">Project</a></li><li class="breadcrumb-item"><a href="./cmdstanphp.html">Plan: CmdStanPHP figures on phit</a></li></ol></nav>
 <div class="quarto-title">
-<h1 class="title">Plan: CmdStanPHP figures on phiz</h1>
+<h1 class="title">Plan: CmdStanPHP figures on phit</h1>
 </div>
 
 
@@ -432,11 +432,11 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </header>
 
 
-<p>This page proposes how CmdStanPHP’s figures can use phiz. It is written as an issue for CmdStanPHP and changes nothing there. It builds on CmdStanPHP’s planning note, <code>docs/notes/phiz-readiness.md</code>. Whether and when to proceed is the CmdStanPHP maintainer’s decision.</p>
+<p>This page proposes how CmdStanPHP’s figures can use phit. It is written as an issue for CmdStanPHP and changes nothing there. It builds on CmdStanPHP’s planning note, <code>docs/notes/phit-readiness.md</code>. Whether and when to proceed is the CmdStanPHP maintainer’s decision.</p>
 <section id="background" class="level2">
 <h2 class="anchored" data-anchor-id="background">Background</h2>
 <p><code>CmdStan\Plot</code> computes each figure’s statistics in PHP and returns a <code>CmdStan\Figure</code>: a kind, a title, data rows, and metadata. <code>Figure</code> renders the rows as ASCII text, as a Vega-Lite 5 spec, as an HTML page, and as SVG or PNG through vl-convert. The R comparisons check the data rows, so they stay valid as long as the rows do not change.</p>
-<p>phiz now provides what the readiness note lists as prerequisites:</p>
+<p>phit now provides what the readiness note lists as prerequisites:</p>
 <table class="caption-top table">
 <colgroup>
 <col style="width: 50%">
@@ -445,7 +445,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <thead>
 <tr class="header">
 <th>Prerequisite</th>
-<th>phiz</th>
+<th>phit</th>
 </tr>
 </thead>
 <tbody>
@@ -479,17 +479,17 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="proposed-steps" class="level2">
 <h2 class="anchored" data-anchor-id="proposed-steps">Proposed steps</h2>
 <ol type="1">
-<li><strong>Optional <code>Figure::toPhiz()</code>.</strong> Add a method that returns a <code>Phiz\Chart</code> when phiz is installed, and throws a clear error otherwise. Detect phiz with <code>class_exists(\Phiz\Plot::class)</code>, as <code>to_frame()</code> detects phibble. Keep <code>vegaLite()</code>, <code>html()</code>, <code>svg()</code>, and <code>png()</code> unchanged for PHP 8.2 users.</li>
-<li><strong>Tests.</strong> For each figure kind, assert that <code>toPhiz()</code> produces a spec that validates against the Vega-Lite schema and renders with vl-convert. Compare its data values with <code>Figure::$data</code>. Exact spec equality with <code>VegaLite::spec()</code> is not a goal, because phiz targets Vega-Lite 6 and applies its own defaults.</li>
-<li><strong>Move shared rendering.</strong> When CmdStanPHP requires PHP 8.5, replace <code>Figure::html()</code> and the vl-convert code in <code>Figure::convert()</code> with phiz’s <code>Html</code> and <code>Export</code>. The binary discovery already honors the <code>VL_CONVERT</code> variable.</li>
-<li><strong>Rebuild the kinds.</strong> Replace <code>VegaLite::spec()</code> with the <code>toPhiz()</code> translations and keep the <code>Figure</code> data contract and the R comparisons.</li>
+<li><strong>Optional <code>Figure::toPhit()</code>.</strong> Add a method that returns a <code>Phit\Chart</code> when phit is installed, and throws a clear error otherwise. Detect phit with <code>class_exists(\Phit\Plot::class)</code>, as <code>to_frame()</code> detects phibble. Keep <code>vegaLite()</code>, <code>html()</code>, <code>svg()</code>, and <code>png()</code> unchanged for PHP 8.2 users.</li>
+<li><strong>Tests.</strong> For each figure kind, assert that <code>toPhit()</code> produces a spec that validates against the Vega-Lite schema and renders with vl-convert. Compare its data values with <code>Figure::$data</code>. Exact spec equality with <code>VegaLite::spec()</code> is not a goal, because phit targets Vega-Lite 6 and applies its own defaults.</li>
+<li><strong>Move shared rendering.</strong> When CmdStanPHP requires PHP 8.5, replace <code>Figure::html()</code> and the vl-convert code in <code>Figure::convert()</code> with phit’s <code>Html</code> and <code>Export</code>. The binary discovery already honors the <code>VL_CONVERT</code> variable.</li>
+<li><strong>Rebuild the kinds.</strong> Replace <code>VegaLite::spec()</code> with the <code>toPhit()</code> translations and keep the <code>Figure</code> data contract and the R comparisons.</li>
 </ol>
 </section>
 <section id="translations" class="level2">
 <h2 class="anchored" data-anchor-id="translations">Translations</h2>
-<p>Each kind maps to a short phiz plot over the existing <code>Figure::$data</code> rows. These translations were compiled and rendered with vl-convert, using rows shaped like each kind’s data.</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode php code-with-copy"><code class="sourceCode php"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="kw">use</span> Phiz\Plot<span class="ot">;</span></span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="kw">use</span> <span class="kw">function</span> Phiz\{aes<span class="ot">,</span> factor}<span class="ot">;</span></span>
+<p>Each kind maps to a short phit plot over the existing <code>Figure::$data</code> rows. These translations were compiled and rendered with vl-convert, using rows shaped like each kind’s data.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode php code-with-copy"><code class="sourceCode php"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="kw">use</span> Phit\Plot<span class="ot">;</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="kw">use</span> <span class="kw">function</span> Phit\{aes<span class="ot">,</span> factor}<span class="ot">;</span></span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="va">$rows</span> <span class="op">=</span> <span class="va">$figure</span>-&gt;data<span class="ot">;</span></span>
 <span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="va">$m</span> <span class="op">=</span> <span class="va">$figure</span>-&gt;meta<span class="ot">;</span></span>
@@ -510,7 +510,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a>        -&gt;labs(x<span class="ot">:</span> <span class="va">$m</span>[<span class="st">'variable'</span>])<span class="ot">,</span></span>
 <span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a>    <span class="st">'intervals'</span> =&gt; Plot::of(<span class="va">$rows</span>)</span>
-<span id="cb1-23"><a href="#cb1-23" aria-hidden="true" tabindex="-1"></a>        -&gt;aes(y<span class="ot">:</span> \Phiz\field(<span class="st">'variable'</span><span class="ot">,</span> <span class="st">'nominal'</span><span class="ot">,</span> <span class="fu">sort</span><span class="ot">:</span> <span class="fu">array_column</span>(<span class="va">$rows</span><span class="ot">,</span> <span class="st">'variable'</span>)))</span>
+<span id="cb1-23"><a href="#cb1-23" aria-hidden="true" tabindex="-1"></a>        -&gt;aes(y<span class="ot">:</span> \Phit\field(<span class="st">'variable'</span><span class="ot">,</span> <span class="st">'nominal'</span><span class="ot">,</span> <span class="fu">sort</span><span class="ot">:</span> <span class="fu">array_column</span>(<span class="va">$rows</span><span class="ot">,</span> <span class="st">'variable'</span>)))</span>
 <span id="cb1-24"><a href="#cb1-24" aria-hidden="true" tabindex="-1"></a>        -&gt;rule(aes(x<span class="ot">:</span> <span class="st">'ll'</span><span class="ot">,</span> xend<span class="ot">:</span> <span class="st">'hh'</span>)<span class="ot">,</span> linewidth<span class="ot">:</span> <span class="fl">1.5</span>)</span>
 <span id="cb1-25"><a href="#cb1-25" aria-hidden="true" tabindex="-1"></a>        -&gt;rule(aes(x<span class="ot">:</span> <span class="st">'l'</span><span class="ot">,</span> xend<span class="ot">:</span> <span class="st">'h'</span>)<span class="ot">,</span> linewidth<span class="ot">:</span> <span class="dv">5</span>)</span>
 <span id="cb1-26"><a href="#cb1-26" aria-hidden="true" tabindex="-1"></a>        -&gt;point(aes(x<span class="ot">:</span> <span class="st">'m'</span>)<span class="ot">,</span> size<span class="ot">:</span> <span class="dv">70</span><span class="ot">,</span> fill<span class="ot">:</span> <span class="st">'#FFFFFF'</span><span class="ot">,</span> stroke<span class="ot">:</span> <span class="st">'#000000'</span>)</span>
@@ -544,14 +544,14 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb1-54"><a href="#cb1-54" aria-hidden="true" tabindex="-1"></a>}<span class="ot">;</span></span>
 <span id="cb1-55"><a href="#cb1-55" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb1-56"><a href="#cb1-56" aria-hidden="true" tabindex="-1"></a><span class="cf">return</span> <span class="va">$plot</span>-&gt;title(<span class="va">$figure</span>-&gt;title)<span class="ot">;</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>The <code>intervals</code> kind uses the same column names (<code>ll</code>, <code>l</code>, <code>m</code>, <code>h</code>, <code>hh</code>) as phiz’s <code>interval_plot()</code>, which computes the rows itself from <code>draws_columns()</code> output. A CmdStanPHP user can call <code>interval_plot($fit-&gt;draws_columns())</code> directly.</p>
+<p>The <code>intervals</code> kind uses the same column names (<code>ll</code>, <code>l</code>, <code>m</code>, <code>h</code>, <code>hh</code>) as phit’s <code>interval_plot()</code>, which computes the rows itself from <code>draws_columns()</code> output. A CmdStanPHP user can call <code>interval_plot($fit-&gt;draws_columns())</code> directly.</p>
 </section>
 <section id="open-questions" class="level2">
 <h2 class="anchored" data-anchor-id="open-questions">Open questions</h2>
 <ul>
-<li><strong>PHP floor.</strong> phiz requires PHP 8.5. Until CmdStanPHP raises its floor from 8.2, phiz stays an optional dependency, and steps 3 and 4 wait.</li>
-<li><strong>Thinning.</strong> <code>VegaLite::thin()</code> keeps every k-th draw and every divergent draw. It belongs in CmdStanPHP as a row filter applied before <code>toPhiz()</code>.</li>
-<li><strong>ASCII output.</strong> phiz has no text backend. <code>AsciiChart</code> stays in CmdStanPHP.</li>
+<li><strong>PHP floor.</strong> phit requires PHP 8.5. Until CmdStanPHP raises its floor from 8.2, phit stays an optional dependency, and steps 3 and 4 wait.</li>
+<li><strong>Thinning.</strong> <code>VegaLite::thin()</code> keeps every k-th draw and every divergent draw. It belongs in CmdStanPHP as a row filter applied before <code>toPhit()</code>.</li>
+<li><strong>ASCII output.</strong> phit has no text backend. <code>AsciiChart</code> stays in CmdStanPHP.</li>
 </ul>
 
 
@@ -631,7 +631,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     }
       var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
       var mailtoRegex = new RegExp(/^mailto:/);
-        var filterRegex = new RegExp("https:\/\/erikwestlund\.github\.io\/phiz\/");
+        var filterRegex = new RegExp("https:\/\/erikwestlund\.github\.io\/phit\/");
       var isInternal = (href) => {
           return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
       }
@@ -963,4 +963,4 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 
 
-<footer class="footer"><div class="nav-footer"><div class="nav-footer-center"><div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.com/erikwestlund/phiz/blob/main/cmdstanphp.qmd" class="toc-action"><i class="bi bi-github"></i>View source</a></li><li><a href="https://github.com/erikwestlund/phiz/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></div></div></footer></body></html>
+<footer class="footer"><div class="nav-footer"><div class="nav-footer-center"><div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.com/erikwestlund/phit/blob/main/cmdstanphp.qmd" class="toc-action"><i class="bi bi-github"></i>View source</a></li><li><a href="https://github.com/erikwestlund/phit/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></div></div></footer></body></html>

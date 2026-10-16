@@ -1,6 +1,6 @@
 <?php
 
-use function Phiz\coefplot;
+use function Phit\coefplot;
 
 // stats_glm('am ~ wt + hp', $mtcars, 'binomial')
 $glm = json_decode(file_get_contents(__DIR__.'/fits/mtcars-glm.json'), true);

@@ -1,8 +1,8 @@
 <?php
 
-use Phiz\Datasets;
+use Phit\Datasets;
 
-use function Phiz\{aes, geom_point, geom_smooth, ggplot, labs, theme_minimal};
+use function Phit\{aes, geom_point, geom_smooth, ggplot, labs, theme_minimal};
 
 return ggplot(Datasets::mpg(), aes(x: 'displ', y: 'hwy', color: 'drv'))
     |> geom_point(alpha: 0.5)

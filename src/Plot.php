@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Phiz;
+namespace Phit;
 
 use InvalidArgumentException;
-use Phiz\Compile\Compiler;
+use Phit\Compile\Compiler;
 
 /**
  * A ggplot2-style plot that compiles to Vega-Lite.

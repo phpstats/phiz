@@ -2,25 +2,25 @@
 
 declare(strict_types=1);
 
-namespace Phiz\Laravel;
+namespace Phit\Laravel;
 
 use Illuminate\Contracts\Support\Htmlable;
 use Illuminate\View\Component;
-use Phiz\Chart;
-use Phiz\Html;
+use Phit\Chart;
+use Phit\Html;
 
 /**
- * <x-phiz :plot="$plot" class="h-80" :options="['theme' => 'auto']" />
+ * <x-phit :plot="$plot" class="h-80" :options="['theme' => 'auto']" />
  *
  * Renders a Plot (or any Chart, spec array, or spec JSON). Inside Livewire components it re-renders whenever the
- * component does: the spec rides on an attribute Livewire morphs, and the phiz loader re-embeds on change while
+ * component does: the spec rides on an attribute Livewire morphs, and the phit loader re-embeds on change while
  * the drawn chart sits in a wire:ignore child. Give each chart a wire:key when a component renders several.
  */
-final class PhizComponent extends Component
+final class PhitComponent extends Component
 {
     /**
      * @param Chart|array<string, mixed>|string $plot
-     * @param array<string, mixed> $options vega-embed options, merged over config('phiz.embed_options').
+     * @param array<string, mixed> $options vega-embed options, merged over config('phit.embed_options').
      */
     public function __construct(
         public Chart|array|string $plot,
@@ -47,7 +47,7 @@ final class PhizComponent extends Component
             is_string($this->plot) => json_decode($this->plot, true, 512, JSON_THROW_ON_ERROR),
             default => $this->plot,
         };
-        $options = array_replace((array) config('phiz.embed_options', []), $this->options);
+        $options = array_replace((array) config('phit.embed_options', []), $this->options);
         $attributes = $this->attributes->getAttributes();
         // Blade passes :class and :style as arrays; render them as Blade's own components do.
         if (isset($attributes['class']) && is_array($attributes['class'])) {
@@ -59,8 +59,8 @@ final class PhizComponent extends Component
         $html = Html::container($spec, $options, $attributes);
 
         $state = app(ScriptState::class);
-        if (config('phiz.inject_scripts', true) && ! $state->included && ! request()->hasHeader('X-Livewire')) {
-            $html .= "\n".PhizServiceProvider::scripts();
+        if (config('phit.inject_scripts', true) && ! $state->included && ! request()->hasHeader('X-Livewire')) {
+            $html .= "\n".PhitServiceProvider::scripts();
         }
 
         return $html;

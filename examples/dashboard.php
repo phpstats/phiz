@@ -9,9 +9,9 @@ declare(strict_types=1);
  */
 
 use Phibble\Contracts\Table;
-use Phiz\Plot;
+use Phit\Plot;
 
-use function Phiz\aes;
+use function Phit\aes;
 
 use function Phplyr\{arrange, desc, filter, group_by, mean, n, summarise};
 
@@ -36,7 +36,7 @@ function fuel_dashboard(Table $cars, ?string $drive = null, ?int $year = null, ?
         |> summarise(hwy: mean('hwy'));
 
     $bars = Plot::of($byClass)
-        ->aes(x: 'hwy', y: \Phiz\field('class', sort: '-x'), fill: \Phiz\calc('datum.class === '.json_encode($selected ?? ''), 'selected', 'nominal'))
+        ->aes(x: 'hwy', y: \Phit\field('class', sort: '-x'), fill: \Phit\calc('datum.class === '.json_encode($selected ?? ''), 'selected', 'nominal'))
         ->col()
         ->scaleFill(domain: [false, true], range: ['#9ECAE1', '#08519C'], guide: false)
         ->tooltip(['class', 'cars', 'hwy', 'cty'])

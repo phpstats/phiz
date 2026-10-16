@@ -21,7 +21,7 @@ title: "API reference"
 
 ## Functions
 
-The `Phiz\` namespace provides:
+The `Phit\` namespace provides:
 
 - Construction: `aes`, `ggplot`, `field`, `factor`, `calc`, and `expr`.
 - Every geom as `geom_*`, plus `stat_ecdf`, `stat_qq`, and `stat_qq_line`.

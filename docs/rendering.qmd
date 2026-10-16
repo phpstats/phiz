@@ -6,7 +6,7 @@ title: "Rendering"
 
 `toArray()` returns the Vega-Lite specification and `toJson()` encodes it. Plots also implement `JsonSerializable`. The specification declares the Vega-Lite 6 schema.
 
-Four escape hatches reach the parts of Vega-Lite that phiz does not wrap:
+Four escape hatches reach the parts of Vega-Lite that phit does not wrap:
 
 - `raw([...])` deep-merges arbitrary Vega-Lite into the top level. Nested objects merge, and lists and scalars replace.
 - `transform(...)` adds Vega-Lite transforms that run before every layer.
@@ -17,7 +17,7 @@ Four escape hatches reach the parts of Vega-Lite that phiz does not wrap:
 
 `embed()` returns a container element followed by the script tags, and `html()` returns a standalone page. Both pass vega-embed options, such as `['actions' => false]` or `['renderer' => 'svg']`.
 
-The container carries the specification in a `data-phiz` attribute. A small loader script, about 100 lines, renders every such element with vega-embed. It renders them again when the attribute changes. The same markup therefore works in static pages, Blade views, and Livewire components.
+The container carries the specification in a `data-phit` attribute. A small loader script, about 100 lines, renders every such element with vega-embed. It renders them again when the attribute changes. The same markup therefore works in static pages, Blade views, and Livewire components.
 
 The browser libraries are pinned:
 
@@ -30,7 +30,7 @@ The browser libraries are pinned:
 `Assets` chooses where they come from:
 
 ```php
-use Phiz\Assets;
+use Phit\Assets;
 
 $plot->embed(assets: Assets::cdn());                 // jsDelivr, with subresource integrity (the default)
 $plot->embed(assets: Assets::local('/js/vega'));     // copies you serve: vega.min.js, vega-lite.min.js, vega-embed.min.js
@@ -41,7 +41,7 @@ $plot->embed(assets: false);                         // just the container
 
 ## Static export
 
-`svg()`, `png()`, `pdf()`, and `save()` run the [vl-convert](https://github.com/vega/vl-convert) command-line tool. It renders without a browser, which suits reports, email, and print. vl-convert bundles its own Vega-Lite, and phiz runs it with Vega-Lite 6.1. The test suite validates every specification against the Vega-Lite 6.1 schema, so the same specification renders in both places.
+`svg()`, `png()`, `pdf()`, and `save()` run the [vl-convert](https://github.com/vega/vl-convert) command-line tool. It renders without a browser, which suits reports, email, and print. vl-convert bundles its own Vega-Lite, and phit runs it with Vega-Lite 6.1. The test suite validates every specification against the Vega-Lite 6.1 schema, so the same specification renders in both places.
 
 ```php
 $plot->save('figure.svg');
@@ -49,4 +49,4 @@ $plot->save('figure.png', scale: 3);
 file_put_contents('figure.pdf', $plot->pdf());
 ```
 
-phiz finds the binary through the `PHIZ_VL_CONVERT` or `VL_CONVERT` environment variable, then `PATH`. Download it from the [vl-convert releases](https://github.com/vega/vl-convert/releases). Version 1.9.0 is tested. If the binary is missing, phiz throws `Phiz\Exceptions\VlConvertNotFound` with these instructions. `new Export(binary: ..., timeout: ..., fontDir: ...)` sets the binary path, the timeout, and an extra font directory explicitly.
+phit finds the binary through the `PHIT_VL_CONVERT` or `VL_CONVERT` environment variable, then `PATH`. Download it from the [vl-convert releases](https://github.com/vega/vl-convert/releases). Version 1.9.0 is tested. If the binary is missing, phit throws `Phit\Exceptions\VlConvertNotFound` with these instructions. `new Export(binary: ..., timeout: ..., fontDir: ...)` sets the binary path, the timeout, and an extra font directory explicitly.

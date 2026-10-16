@@ -2,8 +2,8 @@
 
 declare(strict_types=1);
 
-use Phiz\Chart;
-use Phiz\Export;
+use Phit\Chart;
+use Phit\Export;
 
 $catalog = require __DIR__.'/../../examples/catalog.php';
 
@@ -22,13 +22,13 @@ it('renders every gallery example to SVG with vl-convert', function (Closure $bu
 })->with('examples')->skip(! Export::available(), 'vl-convert is not installed');
 
 it('writes the gallery page', function () {
-    $output = sys_get_temp_dir().'/phiz-gallery-'.bin2hex(random_bytes(4)).'.html';
+    $output = sys_get_temp_dir().'/phit-gallery-'.bin2hex(random_bytes(4)).'.html';
     $php = escapeshellarg(PHP_BINARY);
     exec("{$php} ".escapeshellarg(__DIR__.'/../../examples/gallery.php').' '.escapeshellarg($output).' 2>&1', $lines, $status);
 
     expect($status)->toBe(0);
     $html = (string) file_get_contents($output);
     unlink($output);
-    expect(substr_count($html, 'data-phiz="'))->toBe(count(require __DIR__.'/../../examples/catalog.php'))
+    expect(substr_count($html, 'data-phit="'))->toBe(count(require __DIR__.'/../../examples/catalog.php'))
         ->and($html)->toContain('<details><summary>Code</summary>');
 });

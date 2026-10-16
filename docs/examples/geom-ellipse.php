@@ -1,7 +1,7 @@
 <?php
 
-use Phiz\Datasets;
-use Phiz\Plot;
+use Phit\Datasets;
+use Phit\Plot;
 
 $faithful = array_map(fn ($row) => $row + ['wait' => $row['waiting'] > 70 ? 'long' : 'short'], Datasets::faithful());
 

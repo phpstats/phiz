@@ -2,7 +2,7 @@
 title: "Large data"
 ---
 
-phiz embeds inline data in the specification, and the browser keeps every row in memory to draw it. A few thousand rows render immediately. Hundreds of thousands of rows make the page heavy and slow, so large data should be summarized before it is sent. phiz does that summarizing in PHP.
+phit embeds inline data in the specification, and the browser keeps every row in memory to draw it. A few thousand rows render immediately. Hundreds of thousands of rows make the page heavy and slow, so large data should be summarized before it is sent. phit does that summarizing in PHP.
 
 ## Sizes to expect
 
@@ -10,14 +10,14 @@ phiz embeds inline data in the specification, and the browser keeps every row in
 | --- | --- |
 | up to about 5,000 | renders immediately, and interaction stays smooth |
 | 5,000 to 20,000 | renders, but brushing and tooltips slow down |
-| above 20,000 | phiz raises a warning; the page grows by several megabytes |
+| above 20,000 | phit raises a warning; the page grows by several megabytes |
 | millions | summarize in PHP or in the database |
 
-`Config::$warnRows` sets the warning threshold (20,000 by default, or `null` to turn it off). In Laravel it is `config('phiz.warn_rows')`. The warning is an `E_USER_WARNING` that names the alternatives below.
+`Config::$warnRows` sets the warning threshold (20,000 by default, or `null` to turn it off). In Laravel it is `config('phit.warn_rows')`. The warning is an `E_USER_WARNING` that names the alternatives below.
 
 ## Binning in PHP
 
-`hex()`, `bin2d()`, and `histogram()` count in PHP and embed only the counts. `hex()` always bins in PHP. `bin2d()` and `histogram()` take `compute:`, which is `'server'`, `'browser'`, or `'auto'`. The default `'auto'` bins in PHP above `Config::$serverRows` rows (10,000 by default, or `config('phiz.server_rows')`). The examples on this page use 200,000 points.
+`hex()`, `bin2d()`, and `histogram()` count in PHP and embed only the counts. `hex()` always bins in PHP. `bin2d()` and `histogram()` take `compute:`, which is `'server'`, `'browser'`, or `'auto'`. The default `'auto'` bins in PHP above `Config::$serverRows` rows (10,000 by default, or `config('phit.server_rows')`). The examples on this page use 200,000 points.
 
 {{< include _generated/large-hex.md >}}
 
@@ -52,7 +52,7 @@ Peak memory was about 100 MB, of which the table took 51 MB.
 The `Bin` class exposes the same computations for data you summarize yourself. Each helper returns a short list of rows. The helpers read phibble tables, column arrays, row lists, or any iterable of rows. A generator streams in one pass when the limits are given.
 
 ```php
-use Phiz\Bin;
+use Phit\Bin;
 
 Bin::histogram($source, 'price', bins: 50);          // price_start, price_end, count, density
 Bin::grid($source, 'x', 'y', bins: [40, 30]);         // x_start, x_end, y_start, y_end, count

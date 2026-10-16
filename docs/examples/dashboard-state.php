@@ -1,8 +1,8 @@
 <?php
 
 use Phibble\Frame;
-use Phiz\Compose;
-use Phiz\Datasets;
+use Phit\Compose;
+use Phit\Datasets;
 
 require_once __DIR__.'/../../examples/dashboard.php';
 

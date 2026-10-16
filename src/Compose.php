@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Phiz;
+namespace Phit;
 
 use InvalidArgumentException;
 

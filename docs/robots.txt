@@ -1,1 +1,1 @@
-Sitemap: https://erikwestlund.github.io/phiz/sitemap.xml
+Sitemap: https://erikwestlund.github.io/phit/sitemap.xml

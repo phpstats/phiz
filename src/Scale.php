@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Phiz;
+namespace Phit;
 
 /**
  * A scale and its guide (axis or legend) for one aesthetic, as ggplot2's scale_*() functions.

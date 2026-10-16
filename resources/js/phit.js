@@ -1,19 +1,19 @@
-/* phiz: renders [data-phiz] elements with vega-embed, and re-renders when their spec changes (Livewire morphs). */
+/* phit: renders [data-phit] elements with vega-embed, and re-renders when their spec changes (Livewire morphs). */
 (function () {
-  if (window.Phiz) return;
+  if (window.Phit) return;
   var views = new WeakMap();
   var dark = window.matchMedia ? window.matchMedia('(prefers-color-scheme: dark)') : null;
 
   function parse(json, fallback) {
     if (!json) return fallback;
-    try { return JSON.parse(json); } catch (e) { console.error('phiz: invalid JSON', e); return fallback; }
+    try { return JSON.parse(json); } catch (e) { console.error('phit: invalid JSON', e); return fallback; }
   }
 
   function target(el) {
-    var view = el.querySelector(':scope > [data-phiz-view]');
+    var view = el.querySelector(':scope > [data-phit-view]');
     if (!view) {
       view = document.createElement('div');
-      view.setAttribute('data-phiz-view', '');
+      view.setAttribute('data-phit-view', '');
       view.setAttribute('wire:ignore', '');
       el.appendChild(view);
     }
@@ -21,10 +21,10 @@
   }
 
   function render(el) {
-    var embed = Phiz.embed || window.vegaEmbed;
+    var embed = Phit.embed || window.vegaEmbed;
     if (!embed) { pending = true; return; }
-    var json = el.getAttribute('data-phiz');
-    var optionsJson = el.getAttribute('data-phiz-options') || '';
+    var json = el.getAttribute('data-phit');
+    var optionsJson = el.getAttribute('data-phit-options') || '';
     var key = json + '\u0000' + optionsJson + '\u0000' + (dark && dark.matches ? 'dark' : 'light');
     var state = views.get(el);
     if (state && state.key === key) return;
@@ -45,25 +45,25 @@
       if (!current || current.token !== token) { result.view.finalize(); holder.remove(); return; }
       Array.prototype.slice.call(holder.parentNode.children).forEach(function (child) { if (child !== holder) child.remove(); });
       current.view = result.view;
-      el.dispatchEvent(new CustomEvent('phiz:rendered', { detail: { view: result.view }, bubbles: true }));
+      el.dispatchEvent(new CustomEvent('phit:rendered', { detail: { view: result.view }, bubbles: true }));
     }).catch(function (error) {
       var current = views.get(el);
       if (!current || current.token !== token) { holder.remove(); return; }
-      console.error('phiz:', error);
+      console.error('phit:', error);
       holder.textContent = 'Chart error: ' + error.message;
     });
   }
 
   function scan(root) {
     if (root.nodeType !== 1) return;
-    if (root.hasAttribute('data-phiz')) render(root);
-    root.querySelectorAll('[data-phiz]').forEach(render);
+    if (root.hasAttribute('data-phit')) render(root);
+    root.querySelectorAll('[data-phit]').forEach(render);
   }
 
   function release(root) {
     if (root.nodeType !== 1) return;
-    var nodes = root.hasAttribute('data-phiz') ? [root] : [];
-    root.querySelectorAll('[data-phiz]').forEach(function (n) { nodes.push(n); });
+    var nodes = root.hasAttribute('data-phit') ? [root] : [];
+    root.querySelectorAll('[data-phit]').forEach(function (n) { nodes.push(n); });
     nodes.forEach(function (n) {
       if (n.isConnected) return;
       var state = views.get(n);
@@ -73,7 +73,7 @@
   }
 
   var pending = false;
-  var Phiz = window.Phiz = {
+  var Phit = window.Phit = {
     embed: null,
     render: render,
     scan: function () { scan(document.documentElement); },
@@ -86,11 +86,11 @@
       m.addedNodes.forEach(scan);
       m.removedNodes.forEach(release);
     });
-  }).observe(document.documentElement, { subtree: true, childList: true, attributes: true, attributeFilter: ['data-phiz', 'data-phiz-options'] });
+  }).observe(document.documentElement, { subtree: true, childList: true, attributes: true, attributeFilter: ['data-phit', 'data-phit-options'] });
 
-  if (dark && dark.addEventListener) dark.addEventListener('change', function () { Phiz.scan(); });
+  if (dark && dark.addEventListener) dark.addEventListener('change', function () { Phit.scan(); });
 
-  function start() { pending = false; Phiz.scan(); }
+  function start() { pending = false; Phit.scan(); }
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', start); else start();
   window.addEventListener('load', function () { if (pending) start(); });
 })();

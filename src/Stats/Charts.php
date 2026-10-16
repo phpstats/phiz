@@ -2,14 +2,14 @@
 
 declare(strict_types=1);
 
-namespace Phiz\Stats;
+namespace Phit\Stats;
 
 use InvalidArgumentException;
-use Phiz\Compose;
-use Phiz\Data;
-use Phiz\Plot;
+use Phit\Compose;
+use Phit\Data;
+use Phit\Plot;
 
-use function Phiz\aes;
+use function Phit\aes;
 
 /**
  * Plots of fitted models and posterior draws, built from ordinary Plot layers so they can be restyled and extended.
@@ -78,7 +78,7 @@ final class Charts
         };
 
         $plot = Plot::of($rows)
-            ->aes(x: 'estimate', y: \Phiz\field('term', 'nominal', sort: $order), xmin: 'lower', xmax: 'upper', color: $labelled ? 'model' : null)
+            ->aes(x: 'estimate', y: \Phit\field('term', 'nominal', sort: $order), xmin: 'lower', xmax: 'upper', color: $labelled ? 'model' : null)
             ->vline($exponentiate ? 1 : 0, linetype: 'dashed', color: '#888888')
             ->pointrange(position: $labelled && count($fits) > 1 ? 'dodge' : null)
             ->labs(x: "{$what} ({$percent}% CI)", y: null)
@@ -184,13 +184,13 @@ final class Charts
         $link = $fit['link'] ?? 'identity';
         $onLink = $scale === 'link' && ! in_array($link, ['identity', ''], true);
 
-        $plot = Plot::of($predicted)->aes(x: $x, y: 'estimate', color: $by === null ? null : \Phiz\factor($by));
+        $plot = Plot::of($predicted)->aes(x: $x, y: 'estimate', color: $by === null ? null : \Phit\factor($by));
         if ($points && ! $onLink && isset($rows[0][$response])) {
-            $plot = $plot->point(aes(x: $x, y: $response, color: $by === null ? null : \Phiz\factor($by)), data: $rows, inheritAes: false, alpha: 0.35);
+            $plot = $plot->point(aes(x: $x, y: $response, color: $by === null ? null : \Phit\factor($by)), data: $rows, inheritAes: false, alpha: 0.35);
         }
 
         return $plot
-            ->geom('ribbon', aes(ymin: 'lower', ymax: 'upper', fill: $by === null ? null : \Phiz\factor($by)), style: ['alpha' => 0.2] + ($by === null ? ['fill' => '#3366FF'] : []))
+            ->geom('ribbon', aes(ymin: 'lower', ymax: 'upper', fill: $by === null ? null : \Phit\factor($by)), style: ['alpha' => 0.2] + ($by === null ? ['fill' => '#3366FF'] : []))
             ->line(linewidth: 2, color: $by === null ? '#3366FF' : null)
             ->labs(y: $onLink ? "{$response} ({$link} scale)" : $response, fill: $by, color: $by);
     }
@@ -283,7 +283,7 @@ final class Charts
         $percent = rtrim(rtrim(sprintf('%.1f', 100 * $level), '0'), '.');
 
         return Plot::of($means)
-            ->aes(x: \Phiz\factor($factor, self::sortedLevels(array_column($rows, $factor))), y: 'estimate', ymin: 'lower', ymax: 'upper', color: $by === null ? null : \Phiz\factor($by))
+            ->aes(x: \Phit\factor($factor, self::sortedLevels(array_column($rows, $factor))), y: 'estimate', ymin: 'lower', ymax: 'upper', color: $by === null ? null : \Phit\factor($by))
             ->pointrange(position: $by === null ? null : 'dodge')
             ->labs(x: $factor, y: ($scale === 'link' && $link !== 'identity' ? "{$response} ({$link} scale)" : $response)." (marginal mean, {$percent}% CI)", color: $by)
             ->tooltip([$factor, ...($by === null ? [] : [$by]), 'estimate', 'lower', 'upper']);
@@ -325,7 +325,7 @@ final class Charts
         $percent = rtrim(rtrim(sprintf('%.1f', 100 * $level), '0'), '.');
 
         $plot = Plot::of($out)
-            ->aes(x: 'estimate', y: \Phiz\field('group', 'nominal', sort: array_reverse($order)), xmin: 'lower', xmax: 'upper')
+            ->aes(x: 'estimate', y: \Phit\field('group', 'nominal', sort: array_reverse($order)), xmin: 'lower', xmax: 'upper')
             ->vline(0, linetype: 'dashed', color: '#888888')
             ->pointrange(size: 30)
             ->labs(x: "Conditional mode ({$percent}% interval)", y: $term['group'], subtitle: $singular ? self::singularNote($G) : null)
@@ -603,7 +603,7 @@ final class Charts
         $percent = fn (float $p) => rtrim(rtrim(sprintf('%.1f', 100 * $p), '0'), '.').'%';
 
         $plot = Plot::of($rows)
-            ->aes(y: \Phiz\field('variable', 'nominal', sort: $order))
+            ->aes(y: \Phit\field('variable', 'nominal', sort: $order))
             ->vline(0, color: '#CCCCCC')
             ->rule(aes(x: 'll', xend: 'hh'), linewidth: 1.5, color: '#6497B1');
         if ($inner) {

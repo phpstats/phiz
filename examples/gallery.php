@@ -10,8 +10,8 @@ declare(strict_types=1);
  * --svg also renders each example to dir/{id}.svg through vl-convert.
  */
 
-use Phiz\Assets;
-use Phiz\Html;
+use Phit\Assets;
+use Phit\Html;
 
 require __DIR__.'/../vendor/autoload.php';
 
@@ -63,7 +63,7 @@ foreach ($catalog as $id => [$section, $title, $description, $build]) {
 }
 
 $nav = implode(' · ', array_map(fn ($s) => '<a href="#'.strtolower(preg_replace('/\W+/', '-', $s)).'">'.htmlspecialchars($s).'</a>', array_keys($sections)));
-$body = "<header><h1>phiz gallery</h1><p>{$count} examples of phiz, a ggplot2-flavored grammar of graphics for PHP that emits Vega-Lite "
+$body = "<header><h1>phit gallery</h1><p>{$count} examples of phit, a ggplot2-flavored grammar of graphics for PHP that emits Vega-Lite "
     .'(vega '.Assets::VEGA.', vega-lite '.Assets::VEGA_LITE.', vega-embed '.Assets::VEGA_EMBED.").</p><nav>{$nav}</nav></header>\n";
 foreach ($sections as $section => $html) {
     $body .= '<section id="'.strtolower(preg_replace('/\W+/', '-', $section)).'"><h2>'.htmlspecialchars($section)."</h2><div class=\"grid\">\n{$html}</div></section>\n";
@@ -74,6 +74,6 @@ $style = '<style>body{max-width:1400px;margin:0 auto;padding:24px}h2{margin-top:
     .'pre{background:#f6f6f6;padding:12px;border-radius:6px;overflow:auto;font-size:12px}nav a{margin:0 4px}'
     .'@media (max-width:600px){body{padding:16px}.grid{grid-template-columns:1fr}}</style>';
 
-$page = Html::page(null, 'phiz gallery', body: $style.$body);
+$page = Html::page(null, 'phit gallery', body: $style.$body);
 file_put_contents($output, $page);
 fwrite(STDERR, "Wrote {$count} examples to {$output}\n");

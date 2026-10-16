@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>Coming from ggplot2 – phiz</title>
+<title>Coming from ggplot2 – phit</title>
 <style>
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
@@ -108,26 +108,26 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     "search-label": "Search"
   }
 }</script>
-<style>.phiz-figure{margin:0.5rem 0 1.5rem;overflow-x:auto}</style>
+<style>.phit-figure{margin:0.5rem 0 1.5rem;overflow-x:auto}</style>
 <script src="https://cdn.jsdelivr.net/npm/vega@6.4.0/build/vega.min.js" integrity="sha384-VKdcJr3ZaBIJMbVcopTAI/JEuUkSY6qnwVu9iLuw0DnQ9gQ1JjsfZJhXFQAgNi43" crossorigin="anonymous"></script>
 <script src="https://cdn.jsdelivr.net/npm/vega-lite@6.4.3/build/vega-lite.min.js" integrity="sha384-9/70gNCfOu6G7xXvkdreMfuqAEsoaGJVXV2BN/JLRXkSmcGvnMqtsRx8HZtUWAvI" crossorigin="anonymous"></script>
 <script src="https://cdn.jsdelivr.net/npm/vega-embed@7.3.0/build/vega-embed.min.js" integrity="sha384-Muy1QRxYFeNrA1zShc1KtN4OfipkR/61gt+HWqN57c1Zxu3Oe16TsilsruVVjfKL" crossorigin="anonymous"></script>
-<script>/* phiz: renders [data-phiz] elements with vega-embed, and re-renders when their spec changes (Livewire morphs). */
+<script>/* phit: renders [data-phit] elements with vega-embed, and re-renders when their spec changes (Livewire morphs). */
 (function () {
-  if (window.Phiz) return;
+  if (window.Phit) return;
   var views = new WeakMap();
   var dark = window.matchMedia ? window.matchMedia('(prefers-color-scheme: dark)') : null;
 
   function parse(json, fallback) {
     if (!json) return fallback;
-    try { return JSON.parse(json); } catch (e) { console.error('phiz: invalid JSON', e); return fallback; }
+    try { return JSON.parse(json); } catch (e) { console.error('phit: invalid JSON', e); return fallback; }
   }
 
   function target(el) {
-    var view = el.querySelector(':scope > [data-phiz-view]');
+    var view = el.querySelector(':scope > [data-phit-view]');
     if (!view) {
       view = document.createElement('div');
-      view.setAttribute('data-phiz-view', '');
+      view.setAttribute('data-phit-view', '');
       view.setAttribute('wire:ignore', '');
       el.appendChild(view);
     }
@@ -135,10 +135,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   }
 
   function render(el) {
-    var embed = Phiz.embed || window.vegaEmbed;
+    var embed = Phit.embed || window.vegaEmbed;
     if (!embed) { pending = true; return; }
-    var json = el.getAttribute('data-phiz');
-    var optionsJson = el.getAttribute('data-phiz-options') || '';
+    var json = el.getAttribute('data-phit');
+    var optionsJson = el.getAttribute('data-phit-options') || '';
     var key = json + '\u0000' + optionsJson + '\u0000' + (dark && dark.matches ? 'dark' : 'light');
     var state = views.get(el);
     if (state && state.key === key) return;
@@ -159,25 +159,25 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       if (!current || current.token !== token) { result.view.finalize(); holder.remove(); return; }
       Array.prototype.slice.call(holder.parentNode.children).forEach(function (child) { if (child !== holder) child.remove(); });
       current.view = result.view;
-      el.dispatchEvent(new CustomEvent('phiz:rendered', { detail: { view: result.view }, bubbles: true }));
+      el.dispatchEvent(new CustomEvent('phit:rendered', { detail: { view: result.view }, bubbles: true }));
     }).catch(function (error) {
       var current = views.get(el);
       if (!current || current.token !== token) { holder.remove(); return; }
-      console.error('phiz:', error);
+      console.error('phit:', error);
       holder.textContent = 'Chart error: ' + error.message;
     });
   }
 
   function scan(root) {
     if (root.nodeType !== 1) return;
-    if (root.hasAttribute('data-phiz')) render(root);
-    root.querySelectorAll('[data-phiz]').forEach(render);
+    if (root.hasAttribute('data-phit')) render(root);
+    root.querySelectorAll('[data-phit]').forEach(render);
   }
 
   function release(root) {
     if (root.nodeType !== 1) return;
-    var nodes = root.hasAttribute('data-phiz') ? [root] : [];
-    root.querySelectorAll('[data-phiz]').forEach(function (n) { nodes.push(n); });
+    var nodes = root.hasAttribute('data-phit') ? [root] : [];
+    root.querySelectorAll('[data-phit]').forEach(function (n) { nodes.push(n); });
     nodes.forEach(function (n) {
       if (n.isConnected) return;
       var state = views.get(n);
@@ -187,7 +187,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   }
 
   var pending = false;
-  var Phiz = window.Phiz = {
+  var Phit = window.Phit = {
     embed: null,
     render: render,
     scan: function () { scan(document.documentElement); },
@@ -200,11 +200,11 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       m.addedNodes.forEach(scan);
       m.removedNodes.forEach(release);
     });
-  }).observe(document.documentElement, { subtree: true, childList: true, attributes: true, attributeFilter: ['data-phiz', 'data-phiz-options'] });
+  }).observe(document.documentElement, { subtree: true, childList: true, attributes: true, attributeFilter: ['data-phit', 'data-phit-options'] });
 
-  if (dark && dark.addEventListener) dark.addEventListener('change', function () { Phiz.scan(); });
+  if (dark && dark.addEventListener) dark.addEventListener('change', function () { Phit.scan(); });
 
-  function start() { pending = false; Phiz.scan(); }
+  function start() { pending = false; Phit.scan(); }
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', start); else start();
   window.addEventListener('load', function () { if (pending) start(); });
 })();</script>
@@ -236,7 +236,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation docked overflow-auto">
     <div class="pt-lg-2 mt-2 text-left sidebar-header">
     <div class="sidebar-title mb-0 py-0">
-      <a href="./">phiz</a> 
+      <a href="./">phit</a> 
     </div>
       </div>
         <div class="mt-2 flex-shrink-0 align-items-center">
@@ -249,7 +249,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./index.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">phiz</span></a>
+ <span class="menu-text">phit</span></a>
   </div>
 </li>
         <li class="sidebar-item">
@@ -382,7 +382,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./cmdstanphp.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Plan: CmdStanPHP figures on phiz</span></a>
+ <span class="menu-text">Plan: CmdStanPHP figures on phit</span></a>
   </div>
 </li>
           <li class="sidebar-item">
@@ -409,7 +409,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <li><a href="#differences" id="toc-differences" class="nav-link" data-scroll-target="#differences">Differences</a></li>
   <li><a href="#additions" id="toc-additions" class="nav-link" data-scroll-target="#additions">Additions</a></li>
   </ul>
-<div class="toc-actions"><ul><li><a href="https://github.com/erikwestlund/phiz/blob/main/ggplot2.qmd" class="toc-action"><i class="bi bi-github"></i>View source</a></li><li><a href="https://github.com/erikwestlund/phiz/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></nav>
+<div class="toc-actions"><ul><li><a href="https://github.com/erikwestlund/phit/blob/main/ggplot2.qmd" class="toc-action"><i class="bi bi-github"></i>View source</a></li><li><a href="https://github.com/erikwestlund/phit/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></nav>
     </div>
 <!-- main -->
 <main class="content" id="quarto-document-content">
@@ -433,7 +433,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </header>
 
 
-<p>phiz follows ggplot2’s grammar: data, aesthetic mappings, layers of geoms, scales, coordinates, facets, labels, and themes. Most ggplot2 code translates line by line. This page lists the translations, then the places where phiz behaves differently because Vega-Lite renders the plot.</p>
+<p>phit follows ggplot2’s grammar: data, aesthetic mappings, layers of geoms, scales, coordinates, facets, labels, and themes. Most ggplot2 code translates line by line. This page lists the translations, then the places where phit behaves differently because Vega-Lite renders the plot.</p>
 <section id="translating-a-plot" class="level2">
 <h2 class="anchored" data-anchor-id="translating-a-plot">Translating a plot</h2>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(mpg, <span class="fu">aes</span>(displ, hwy, <span class="at">colour =</span> drv)) <span class="sc">+</span></span>
@@ -471,7 +471,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <thead>
 <tr class="header">
 <th>ggplot2</th>
-<th>phiz</th>
+<th>phit</th>
 </tr>
 </thead>
 <tbody>
@@ -601,7 +601,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <thead>
 <tr class="header">
 <th>ggplot2</th>
-<th>phiz</th>
+<th>phit</th>
 </tr>
 </thead>
 <tbody>
@@ -733,12 +733,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <li><strong>Panels.</strong> A discrete axis is 300 pixels by default, the same as a continuous axis, and grows by 20 pixels per level beyond 15 levels.</li>
 <li><strong>Violins.</strong> <code>violin()</code> draws each violin as a Vega-Lite trail, whose ends are rounded. There is no <code>draw_quantiles</code> option; layer a <code>boxplot()</code> instead.</li>
 <li><strong>Polar coordinates.</strong> <code>coordPolar()</code> draws bars, columns, and arcs. Vega-Lite has no polar form for lines, points, or areas, so radar charts are not available.</li>
-<li><strong>Not available.</strong> There is no <code>sec_axis()</code>, no <code>geom_dotplot()</code>, and no <code>geom_quantile()</code>. Use <code>raw()</code> or <code>layer()</code> for any Vega-Lite feature phiz does not wrap.</li>
+<li><strong>Not available.</strong> There is no <code>sec_axis()</code>, no <code>geom_dotplot()</code>, and no <code>geom_quantile()</code>. Use <code>raw()</code> or <code>layer()</code> for any Vega-Lite feature phit does not wrap.</li>
 </ul>
 </section>
 <section id="additions" class="level2">
 <h2 class="anchored" data-anchor-id="additions">Additions</h2>
-<p>phiz adds features that ggplot2 leaves to other packages:</p>
+<p>phit adds features that ggplot2 leaves to other packages:</p>
 <ul>
 <li>tooltips, pan and zoom, brushing, legend highlighting, and sliders (see <a href="./interaction.html">Interaction</a>)</li>
 <li>linked views across compositions</li>
@@ -823,7 +823,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     }
       var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
       var mailtoRegex = new RegExp(/^mailto:/);
-        var filterRegex = new RegExp("https:\/\/erikwestlund\.github\.io\/phiz\/");
+        var filterRegex = new RegExp("https:\/\/erikwestlund\.github\.io\/phit\/");
       var isInternal = (href) => {
           return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
       }
@@ -1155,4 +1155,4 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 
 
-<footer class="footer"><div class="nav-footer"><div class="nav-footer-center"><div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.com/erikwestlund/phiz/blob/main/ggplot2.qmd" class="toc-action"><i class="bi bi-github"></i>View source</a></li><li><a href="https://github.com/erikwestlund/phiz/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></div></div></footer></body></html>
+<footer class="footer"><div class="nav-footer"><div class="nav-footer-center"><div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.com/erikwestlund/phit/blob/main/ggplot2.qmd" class="toc-action"><i class="bi bi-github"></i>View source</a></li><li><a href="https://github.com/erikwestlund/phit/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></div></div></footer></body></html>

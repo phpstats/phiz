@@ -1,6 +1,6 @@
 <?php
 
-use Phiz\Plot;
+use Phit\Plot;
 
 $points = require __DIR__.'/_cloud.php';
 

@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 use Opis\JsonSchema\Errors\ErrorFormatter;
 use Opis\JsonSchema\Validator;
-use Phiz\Chart;
+use Phit\Chart;
 
 /*
  * Specs are validated against the Vega-Lite 6.1.0 JSON schema (tests/fixtures), the version vl-convert renders
@@ -17,8 +17,8 @@ function vegaLiteValidator(): array
         $validator = new Validator();
         $validator->setMaxErrors(5);
         $schema = json_decode((string) file_get_contents(__DIR__.'/fixtures/vega-lite-v6.1.0.schema.json'));
-        $validator->resolver()->registerRaw($schema, 'https://phiz.test/vega-lite.json');
-        $state = [$validator, 'https://phiz.test/vega-lite.json'];
+        $validator->resolver()->registerRaw($schema, 'https://phit.test/vega-lite.json');
+        $state = [$validator, 'https://phit.test/vega-lite.json'];
     }
 
     return $state;
@@ -86,4 +86,4 @@ function sample(): array
     ];
 }
 
-pest()->extend(Phiz\Tests\Laravel\TestCase::class)->in('Laravel');
+pest()->extend(Phit\Tests\Laravel\TestCase::class)->in('Laravel');

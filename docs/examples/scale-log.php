@@ -1,7 +1,7 @@
 <?php
 
-use Phiz\Datasets;
-use Phiz\Plot;
+use Phit\Datasets;
+use Phit\Plot;
 
 return Plot::of(Datasets::economics())
     ->aes(x: 'pop', y: 'pce')

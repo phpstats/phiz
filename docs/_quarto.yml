@@ -9,9 +9,9 @@ project:
     - examples/
 
 website:
-  site-url: "https://erikwestlund.github.io/phiz/"
-  title: "phiz"
-  repo-url: https://github.com/erikwestlund/phiz
+  site-url: "https://erikwestlund.github.io/phit/"
+  title: "phit"
+  repo-url: https://github.com/erikwestlund/phit
   repo-actions: [source, issue]
   sidebar:
     style: docked
@@ -49,4 +49,4 @@ format:
     theme: cosmo
     toc: true
     code-copy: true
-    include-in-header: _phiz-scripts.html
+    include-in-header: _phit-scripts.html

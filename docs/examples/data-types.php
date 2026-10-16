@@ -1,9 +1,9 @@
 <?php
 
-use Phiz\Datasets;
-use Phiz\Plot;
+use Phit\Datasets;
+use Phit\Plot;
 
-use function Phiz\factor;
+use function Phit\factor;
 
 return Plot::of(Datasets::mtcars())
     ->aes(x: 'wt', y: 'mpg', color: factor('cyl'), shape: 'am:N')

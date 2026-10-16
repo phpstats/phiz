@@ -2,19 +2,19 @@
 
 declare(strict_types=1);
 
-namespace Phiz\Compile;
+namespace Phit\Compile;
 
 use InvalidArgumentException;
-use Phiz\Aes;
-use Phiz\Bin;
-use Phiz\Config;
-use Phiz\Data;
-use Phiz\Expr;
-use Phiz\Field;
-use Phiz\Layer;
-use Phiz\Stats\Contour;
-use Phiz\Stats\Fit;
-use Phiz\Style;
+use Phit\Aes;
+use Phit\Bin;
+use Phit\Config;
+use Phit\Data;
+use Phit\Expr;
+use Phit\Field;
+use Phit\Layer;
+use Phit\Stats\Contour;
+use Phit\Stats\Fit;
+use Phit\Style;
 
 /**
  * Compiles each geom to Vega-Lite layers (mark, encoding, transform; data is attached by the Compiler).

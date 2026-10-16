@@ -2,7 +2,7 @@
 title: "Coming from ggplot2"
 ---
 
-phiz follows ggplot2's grammar: data, aesthetic mappings, layers of geoms, scales, coordinates, facets, labels, and themes. Most ggplot2 code translates line by line. This page lists the translations, then the places where phiz behaves differently because Vega-Lite renders the plot.
+phit follows ggplot2's grammar: data, aesthetic mappings, layers of geoms, scales, coordinates, facets, labels, and themes. Most ggplot2 code translates line by line. This page lists the translations, then the places where phit behaves differently because Vega-Lite renders the plot.
 
 ## Translating a plot
 
@@ -43,7 +43,7 @@ Aesthetics are named arguments, so `aes(displ, hwy)` becomes `aes(x: 'displ', y:
 
 ## Geoms and stats
 
-| ggplot2 | phiz |
+| ggplot2 | phit |
 | --- | --- |
 | `geom_point()`, `geom_jitter()` | `point()`, `jitter()` |
 | `geom_line()`, `geom_path()`, `geom_step()` | `line()`, `path()`, `step()` |
@@ -78,7 +78,7 @@ Geom arguments keep ggplot2's names where they exist: `bins`, `binwidth`, `bound
 
 ## Scales, coordinates, facets, and themes
 
-| ggplot2 | phiz |
+| ggplot2 | phit |
 | --- | --- |
 | `scale_x_continuous(name, breaks, labels, limits)` | `scaleX(name:, breaks:, format:, domain:)` |
 | `scale_x_log10()`, `scale_x_sqrt()`, `scale_x_reverse()` | `scaleX(type: 'log')`, `scaleX(type: 'sqrt')`, `scaleX(reverse: true)` |
@@ -122,11 +122,11 @@ These differences follow from Vega-Lite rendering the plot.
 - **Panels.** A discrete axis is 300 pixels by default, the same as a continuous axis, and grows by 20 pixels per level beyond 15 levels.
 - **Violins.** `violin()` draws each violin as a Vega-Lite trail, whose ends are rounded. There is no `draw_quantiles` option; layer a `boxplot()` instead.
 - **Polar coordinates.** `coordPolar()` draws bars, columns, and arcs. Vega-Lite has no polar form for lines, points, or areas, so radar charts are not available.
-- **Not available.** There is no `sec_axis()`, no `geom_dotplot()`, and no `geom_quantile()`. Use `raw()` or `layer()` for any Vega-Lite feature phiz does not wrap.
+- **Not available.** There is no `sec_axis()`, no `geom_dotplot()`, and no `geom_quantile()`. Use `raw()` or `layer()` for any Vega-Lite feature phit does not wrap.
 
 ## Additions
 
-phiz adds features that ggplot2 leaves to other packages:
+phit adds features that ggplot2 leaves to other packages:
 
 - tooltips, pan and zoom, brushing, legend highlighting, and sliders (see [Interaction](interaction.qmd))
 - linked views across compositions

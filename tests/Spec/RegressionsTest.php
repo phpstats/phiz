@@ -2,15 +2,15 @@
 
 declare(strict_types=1);
 
-use Phiz\Compose;
-use Phiz\Data;
-use Phiz\Export;
-use Phiz\Plot;
-use Phiz\Stats\Charts;
+use Phit\Compose;
+use Phit\Data;
+use Phit\Export;
+use Phit\Plot;
+use Phit\Stats\Charts;
 
-use function Phiz\aes;
-use function Phiz\calc;
-use function Phiz\expr;
+use function Phit\aes;
+use function Phit\calc;
+use function Phit\expr;
 
 function dotted(): array
 {
@@ -177,13 +177,13 @@ it('turns hexagons flat-topped under coordFlip', function () {
 });
 
 it('leaves binning to Vega-Lite when a filter or transform needs the browser', function () {
-    $previous = Phiz\Config::$serverRows;
-    Phiz\Config::$serverRows = 5;
+    $previous = Phit\Config::$serverRows;
+    Phit\Config::$serverRows = 5;
     try {
         $filtered = Plot::of(grid())->aes(x: 'x')->histogram(filter: "datum.a === 'p'")->toArray();
         $transformed = Plot::of(grid())->transform(['calculate' => 'datum.x * 2', 'as' => 'w'])->aes(x: 'w:Q')->histogram()->toArray();
     } finally {
-        Phiz\Config::$serverRows = $previous;
+        Phit\Config::$serverRows = $previous;
     }
 
     expect($filtered['encoding']['x']['bin'])->toBe(['maxbins' => 30])
@@ -214,8 +214,8 @@ it('narrows dodged violins to share their band', function () {
 });
 
 it('estimates violin densities per group with R bandwidths', function () {
-    $rows = Plot::of(Phiz\Datasets::faithful())->aes(x: calc("'all'", 'k', 'nominal'), y: 'eruptions')->violin(n: 5)->toArray();
-    $computed = Plot::of(array_map(fn ($r) => $r + ['k' => 'all'], Phiz\Datasets::faithful()))->aes(x: 'k', y: 'eruptions')->violin(n: 5)->toArray()['data']['values'];
+    $rows = Plot::of(Phit\Datasets::faithful())->aes(x: calc("'all'", 'k', 'nominal'), y: 'eruptions')->violin(n: 5)->toArray();
+    $computed = Plot::of(array_map(fn ($r) => $r + ['k' => 'all'], Phit\Datasets::faithful()))->aes(x: 'k', y: 'eruptions')->violin(n: 5)->toArray()['data']['values'];
 
     // R: density(faithful$eruptions, n = 5, from = 1.6, to = 5.1); relative peak heights.
     expect(array_column($computed, 'eruptions'))->toEqualWithDelta([1.6, 2.475, 3.35, 4.225, 5.1], 1e-12)

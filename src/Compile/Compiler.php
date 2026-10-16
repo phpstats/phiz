@@ -2,18 +2,18 @@
 
 declare(strict_types=1);
 
-namespace Phiz\Compile;
+namespace Phit\Compile;
 
 use InvalidArgumentException;
-use Phiz\Aes;
-use Phiz\Assets;
-use Phiz\Config;
-use Phiz\Data;
-use Phiz\Field;
-use Phiz\Palette;
-use Phiz\Plot;
-use Phiz\Scale;
-use Phiz\Theme;
+use Phit\Aes;
+use Phit\Assets;
+use Phit\Config;
+use Phit\Data;
+use Phit\Field;
+use Phit\Palette;
+use Phit\Plot;
+use Phit\Scale;
+use Phit\Theme;
 
 /**
  * Compiles a Plot to a Vega-Lite spec.
@@ -214,9 +214,9 @@ final class Compiler
         $rows = self::countRows($spec);
         if ($rows > Config::$warnRows) {
             $message = sprintf(
-                'phiz: this plot embeds %s data rows in its spec, more than Config::$warnRows (%s). Browsers slow down with large inline data. '
+                'phit: this plot embeds %s data rows in its spec, more than Config::$warnRows (%s). Browsers slow down with large inline data. '
                 .'Summarize first (bin2d(), hex(), histogram(compute: \'server\'), line(downsample:), Bin::sample(), or phplyr), '
-                .'or load the data from a URL with Data::url(). See https://erikwestlund.github.io/phiz/large-data.html.',
+                .'or load the data from a URL with Data::url(). See https://erikwestlund.github.io/phit/large-data.html.',
                 number_format($rows),
                 number_format(Config::$warnRows),
             );

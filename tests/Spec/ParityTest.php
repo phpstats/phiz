@@ -2,35 +2,35 @@
 
 declare(strict_types=1);
 
-use Phiz\Datasets;
-use Phiz\Palette;
-use Phiz\Plot;
-use Phiz\Stats\Contour;
+use Phit\Datasets;
+use Phit\Palette;
+use Phit\Plot;
+use Phit\Stats\Contour;
 
-use function Phiz\factor;
-use function Phiz\ggplot;
-use function Phiz\aes;
-use function Phiz\geom_point;
-use function Phiz\guide_axis;
-use function Phiz\guide_legend;
-use function Phiz\guides;
-use function Phiz\label_comma;
-use function Phiz\label_date;
-use function Phiz\label_dollar;
-use function Phiz\label_number;
-use function Phiz\label_percent;
-use function Phiz\label_scientific;
-use function Phiz\scale_color_distiller;
-use function Phiz\scale_color_grey;
-use function Phiz\scale_color_hue;
-use function Phiz\scale_color_identity;
-use function Phiz\scale_color_viridis_c;
-use function Phiz\scale_color_viridis_d;
-use function Phiz\scale_fill_fermenter;
-use function Phiz\scale_fill_gradientn;
-use function Phiz\scale_x_discrete;
-use function Phiz\scale_y_continuous;
-use function Phiz\theme_linedraw;
+use function Phit\factor;
+use function Phit\ggplot;
+use function Phit\aes;
+use function Phit\geom_point;
+use function Phit\guide_axis;
+use function Phit\guide_legend;
+use function Phit\guides;
+use function Phit\label_comma;
+use function Phit\label_date;
+use function Phit\label_dollar;
+use function Phit\label_number;
+use function Phit\label_percent;
+use function Phit\label_scientific;
+use function Phit\scale_color_distiller;
+use function Phit\scale_color_grey;
+use function Phit\scale_color_hue;
+use function Phit\scale_color_identity;
+use function Phit\scale_color_viridis_c;
+use function Phit\scale_color_viridis_d;
+use function Phit\scale_fill_fermenter;
+use function Phit\scale_fill_gradientn;
+use function Phit\scale_x_discrete;
+use function Phit\scale_y_continuous;
+use function Phit\theme_linedraw;
 
 /** A smooth 2D field on a regular grid, for contour(). */
 function surface(): array

@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Phiz;
+namespace Phit;
 
 /**
- * Process-wide settings for large data. In Laravel they come from config/phiz.php.
+ * Process-wide settings for large data. In Laravel they come from config/phit.php.
  */
 final class Config
 {

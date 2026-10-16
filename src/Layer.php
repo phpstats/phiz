@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Phiz;
+namespace Phit;
 
 /**
  * One geom with its own mappings, options, and optional data. Plot's geom methods create layers; Compiler turns each

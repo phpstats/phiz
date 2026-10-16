@@ -68,7 +68,7 @@ As in ggplot2, `color` is the outline of bars, areas, and tiles, and `fill` is t
 
 ## Fitted curves
 
-`smooth()` fits a curve per group and, for inline data, draws a pointwise confidence band for the mean at `level:`, as ggplot2's `geom_smooth()` does. The default method is loess: a local quadratic fit over the nearest `span:` share of the points (0.75 by default). phiz fits it in PHP, and the fit, its standard errors, and the t interval match R's `loess(y ~ x, span = 0.75, degree = 2)` with `surface = "direct"` to within 1e-9. ggplot2's own default interpolates the loess surface, so its curve can differ from R's direct fit in the third decimal place.
+`smooth()` fits a curve per group and, for inline data, draws a pointwise confidence band for the mean at `level:`, as ggplot2's `geom_smooth()` does. The default method is loess: a local quadratic fit over the nearest `span:` share of the points (0.75 by default). phit fits it in PHP, and the fit, its standard errors, and the t interval match R's `loess(y ~ x, span = 0.75, degree = 2)` with `surface = "direct"` to within 1e-9. ggplot2's own default interpolates the loess surface, so its curve can differ from R's direct fit in the third decimal place.
 
 {{< include _generated/geom-smooth-loess.md >}}
 
@@ -113,7 +113,7 @@ A callable can take the place of any of them, returning `[y, ymin, ymax]`. `fun:
 
 {{< include _generated/geom-density2d-filled.md >}}
 
-`contour()` and `contourFilled()` draw the same lines and bands for a `z` field on a regular grid of `x` and `y`, as `geom_contour()` and `geom_contour_filled()` do. phiz traces the contours in PHP with marching squares. The lines match ggplot2's: the same levels and the same pieces.
+`contour()` and `contourFilled()` draw the same lines and bands for a `z` field on a regular grid of `x` and `y`, as `geom_contour()` and `geom_contour_filled()` do. phit traces the contours in PHP with marching squares. The lines match ggplot2's: the same levels and the same pieces.
 
 {{< include _generated/geom-contour.md >}}
 
