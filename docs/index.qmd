@@ -1,0 +1,31 @@
+---
+title: "phiz"
+subtitle: "A ggplot2-flavored grammar of graphics for PHP that emits Vega-Lite"
+---
+
+phiz builds [Vega-Lite](https://vega.github.io/vega-lite/) specifications from PHP with a grammar modeled on ggplot2. Vega-Lite handles the layout, scales, interaction, and rendering. PHP code describes the plot, and you write no JavaScript. The same specification renders in the browser through vega-embed, or to SVG, PNG, or PDF through the [vl-convert](https://github.com/vega/vl-convert) binary for reports and email.
+
+{{< include _generated/index-hero.md >}}
+
+Every chart on this site was produced by running the code shown above it. The examples live in `docs/examples/`, and `scripts/docs-examples.php` runs them and embeds the specifications they returned.
+
+## Install
+
+```sh
+composer require erikwestlund/phiz
+```
+
+phiz requires PHP 8.5 and has no other dependencies. Static export needs the vl-convert binary. Laravel support is optional and is discovered automatically.
+
+## What phiz covers
+
+- A fluent, immutable `Plot` builder, and ggplot2-style functions for PHP's pipe operator.
+- About 30 geoms, including points, lines, areas, bars, histograms, densities, boxplots, intervals, reference lines, text, heatmaps, smoothers, QQ plots, and arcs.
+- Scales, coordinate flips and limits, facets, compositions, labels, and themes modeled on ggplot2's complete themes.
+- Tooltips, pan and zoom, brushing, legend highlighting, sliders, and linked views, all expressed as Vega-Lite parameters.
+- Statistical plots built from php-stats model results and CmdStanPHP draws: coefficient plots, regression diagnostics, predicted values with confidence bands, and posterior intervals.
+- HTML output, static export, and an `<x-phiz>` Blade component that re-renders inside Livewire.
+
+## The phpstats family
+
+phiz is the visualization package of the phpstats family. [php-stats](https://github.com/erikwestlund/php-stats) fits the models, [phibble](https://github.com/erikwestlund/phibble) provides data frames, [phplyr](https://github.com/erikwestlund/phplyr) provides dplyr verbs, and [CmdStanPHP](https://github.com/erikwestlund/cmdstanphp) runs Stan. phiz depends on none of them. It reads any of their tables directly.

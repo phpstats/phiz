@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+# Run the documentation examples, render the Quarto site, and publish it into docs/ for GitHub Pages.
+set -euo pipefail
+root="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")/.." && pwd -P)"
+cd "$root"
+"${PHP:-php}" scripts/docs-examples.php
+quarto render docs
+rsync -a --exclude '.DS_Store' docs/_site/ docs/
+touch docs/.nojekyll
+echo "Published the rendered documentation to docs/index.html"

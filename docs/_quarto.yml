@@ -1,0 +1,48 @@
+project:
+  type: website
+  output-dir: _site
+  render:
+    - "*.qmd"
+  resources:
+    - gallery.html
+    - figures/
+    - examples/
+
+website:
+  site-url: "https://erikwestlund.github.io/phiz/"
+  title: "phiz"
+  repo-url: https://github.com/erikwestlund/phiz
+  repo-actions: [source, issue]
+  sidebar:
+    style: docked
+    search: true
+    contents:
+      - index.qmd
+      - get-started.qmd
+      - section: "Guide"
+        contents:
+          - data.qmd
+          - geoms.qmd
+          - scales.qmd
+          - facets.qmd
+          - themes.qmd
+          - interaction.qmd
+          - statistics.qmd
+      - section: "Output"
+        contents:
+          - rendering.qmd
+          - laravel.qmd
+      - href: gallery.html
+        text: Gallery
+      - section: "Project"
+        contents:
+          - design.qmd
+          - reference.qmd
+          - development.qmd
+
+format:
+  html:
+    theme: cosmo
+    toc: true
+    code-copy: true
+    include-in-header: _phiz-scripts.html

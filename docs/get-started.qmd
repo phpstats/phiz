@@ -1,0 +1,57 @@
+---
+title: "Get started"
+---
+
+## A first plot
+
+A plot starts with data and aesthetic mappings. `Plot::of()` takes the data, `aes()` maps fields to visual channels, and a geom such as `point()` adds a layer. The bundled `Datasets` class provides a few classic datasets for examples.
+
+{{< include _generated/start-point.md >}}
+
+Mapping another field to `color` gives each class its own color and adds a legend. Fixed properties, such as a point size or an opacity, are geom arguments.
+
+{{< include _generated/start-color.md >}}
+
+## Layers
+
+Each geom adds a layer, and layers inherit the plot's mappings. This plot overlays a loess smoother on the points and labels the axes.
+
+{{< include _generated/start-layers.md >}}
+
+Plots are immutable. Every method returns a new plot, so a base plot can be stored and extended in several directions.
+
+```php
+$base = Plot::of($mpg)->aes(x: 'displ', y: 'hwy');
+
+$scatter = $base->point();
+$smooth = $base->point(alpha: 0.3)->smooth(method: 'lm');
+```
+
+## Pipes
+
+PHP 8.5's pipe operator composes ggplot2-style functions. `ggplot()` starts a plot, and each `geom_*()`, `scale_*()`, `labs()`, or `theme_*()` function returns a closure that takes a plot and returns the next one.
+
+{{< include _generated/start-pipe.md >}}
+
+The fluent methods and the functions accept the same arguments. A plot can also apply reusable fragments with `apply()`:
+
+```php
+$house = fn (Plot $plot) => $plot->theme('minimal', baseSize: 12)->size(480, 300);
+
+$plot = Plot::of($mpg)->aes(x: 'displ', y: 'hwy')->point()->apply($house);
+```
+
+## Output
+
+A plot compiles to a Vega-Lite specification on demand.
+
+```php
+$plot->toArray();        // the specification as a PHP array
+$plot->toJson();         // as JSON
+$plot->embed();          // an HTML fragment with the container and script tags
+$plot->html();           // a standalone HTML page
+$plot->svg();            // SVG through vl-convert
+$plot->save('plot.pdf'); // the file extension picks the format
+```
+
+[Rendering](rendering.qmd) covers the options for each output, and [Laravel and Livewire](laravel.qmd) covers the Blade component.

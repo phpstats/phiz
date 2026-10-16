@@ -46,7 +46,8 @@
             "bin": {
                 "step": 0.5,
                 "anchor": 0
-            }
+            },
+            "title": "y"
         },
         "color": {
             "field": "h",

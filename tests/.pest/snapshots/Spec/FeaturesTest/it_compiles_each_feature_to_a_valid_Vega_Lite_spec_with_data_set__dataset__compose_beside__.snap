@@ -111,7 +111,8 @@
                     "type": "quantitative",
                     "bin": {
                         "maxbins": 30
-                    }
+                    },
+                    "title": "y"
                 },
                 "y": {
                     "aggregate": "count",

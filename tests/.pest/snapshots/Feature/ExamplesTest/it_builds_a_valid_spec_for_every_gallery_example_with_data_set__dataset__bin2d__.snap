@@ -26,14 +26,16 @@
             "type": "quantitative",
             "bin": {
                 "maxbins": 20
-            }
+            },
+            "title": "eruptions"
         },
         "y": {
             "field": "waiting",
             "type": "quantitative",
             "bin": {
                 "maxbins": 20
-            }
+            },
+            "title": "waiting"
         },
         "color": {
             "aggregate": "count",

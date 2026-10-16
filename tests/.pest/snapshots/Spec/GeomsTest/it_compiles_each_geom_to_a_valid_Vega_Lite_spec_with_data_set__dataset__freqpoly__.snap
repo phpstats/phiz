@@ -44,7 +44,8 @@
             "type": "quantitative",
             "bin": {
                 "step": 1
-            }
+            },
+            "title": "y"
         },
         "color": {
             "field": "h",

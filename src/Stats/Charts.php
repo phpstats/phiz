@@ -74,6 +74,7 @@ final class Charts
             ->vline($exponentiate ? 1 : 0, linetype: 'dashed', color: '#888888')
             ->pointrange(position: $labelled && count($fits) > 1 ? 'dodge' : null)
             ->labs(x: "{$what} ({$percent}% CI)", y: null)
+            ->height(max(120, count($order) * ($labelled && count($fits) > 1 ? 18 * count($fits) + 12 : 36)))
             ->tooltip(['term', ...($labelled ? ['model'] : []), 'estimate', 'lower', 'upper', 'std_error', 'p_value']);
 
         return $exponentiate ? $plot->scaleX(type: 'log') : $plot;
@@ -252,6 +253,7 @@ final class Charts
 
         return $plot
             ->point(aes(x: 'm'), size: 70, fill: '#FFFFFF', stroke: '#03396C', strokeWidth: 1.5, filled: true)
+            ->height(max(120, 30 * count($rows)))
             ->labs(x: 'value', y: null, subtitle: ($inner ? $percent($prob).' and ' : '').$percent($probOuter).' intervals, '.$pointEst)
             ->tooltip(['variable', 'm', 'll', 'hh']);
     }

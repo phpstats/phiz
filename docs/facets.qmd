@@ -1,0 +1,23 @@
+---
+title: "Facets and composition"
+---
+
+## Small multiples
+
+`facetWrap()` draws one panel per level of a field and wraps them into rows. `ncol:` or `nrow:` sets the layout. `scales:` is `fixed`, `free`, `free_x`, or `free_y`. Statistical layers, such as the linear fits below, are computed per panel.
+
+{{< include _generated/facet-wrap.md >}}
+
+`facetGrid()` lays panels out by a `rows:` field and a `cols:` field.
+
+{{< include _generated/facet-grid.md >}}
+
+`size()` sets the size of each panel when a plot is faceted. Reference lines and `curve()` layers appear in every panel.
+
+## Composition
+
+`Compose::beside()`, `Compose::stack()`, and `Compose::grid()` lay out separate plots as patchwork does for ggplot2. A composition takes a title, a theme, and Vega-Lite `resolve` rules for shared or independent scales and legends.
+
+{{< include _generated/facet-compose.md >}}
+
+Selections defined in one plot of a composition can filter or highlight the others. [Interaction](interaction.qmd) shows a linked brush.

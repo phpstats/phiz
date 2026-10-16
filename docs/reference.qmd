@@ -1,0 +1,46 @@
+---
+title: "API reference"
+---
+
+## Plot
+
+| Group | Methods |
+| --- | --- |
+| Start | `Plot::of($data, $aes)`, `aes(...)`, `data($data)` |
+| Geoms | `point`, `jitter`, `line`, `path`, `step`, `area`, `ribbon`, `bar`, `col`, `histogram`, `freqpoly`, `density`, `boxplot`, `errorbar`, `linerange`, `pointrange`, `hline`, `vline`, `abline`, `rule`, `segment`, `text`, `label`, `tile`, `raster`, `rect`, `bin2d`, `smooth`, `curve`, `rug`, `ecdf`, `qq`, `qqLine`, `arc`, `pie`, `layer`, `geom` |
+| Scales | `scale`, `scaleX`, `scaleY`, `scaleColor`, `scaleFill`, `scaleSize`, `scaleShape`, `scaleOpacity`, `scaleLinetype`, `xlim`, `ylim` |
+| Coordinates and facets | `coordFlip`, `coordCartesian`, `facetWrap`, `facetGrid` |
+| Labels, theme, size | `labs`, `title`, `theme`, `size`, `width`, `height`, `description` |
+| Interaction | `tooltip`, `interactive`, `brush`, `highlight`, `slider`, `dropdown`, `param`, `select` |
+| Escape hatches | `transform`, `raw`, `apply` |
+| Output | `toArray`, `toJson`, `toSpec`, `embed`, `html`, `svg`, `png`, `pdf`, `save` |
+
+## Aesthetics
+
+`x`, `y`, `xmin`, `xmax`, `ymin`, `ymax`, `xend`, `yend`, `color` (or `colour`), `fill`, `size`, `shape`, `opacity` (or `alpha`), `linetype`, `group`, `detail`, `tooltip`, `label` (or `text`), `order`, `href`, `theta`, `radius`, `xintercept`, `yintercept`, `sample`, `key`, and `description`.
+
+## Functions
+
+The `Phiz\` namespace provides:
+
+- Construction: `aes`, `ggplot`, `field`, `factor`, `calc`, and `expr`.
+- Every geom as `geom_*`, plus `stat_ecdf`, `stat_qq`, and `stat_qq_line`.
+- Scales: `scale_x_continuous`, `scale_x_log10`, `scale_x_sqrt`, `scale_x_reverse`, `scale_x_date`, and their `y` versions, plus `scale_color`, `scale_fill`, `scale_*_manual`, `scale_*_scheme`, `scale_*_viridis`, `scale_*_brewer`, `scale_*_gradient`, `scale_*_gradient2`, `scale_size`, `scale_shape`, `scale_alpha`, and `scale_linetype`.
+- Layout and labels: `xlim`, `ylim`, `coord_flip`, `coord_cartesian`, `facet_wrap`, `facet_grid`, `labs`, `ggtitle`, `xlab`, and `ylab`.
+- Themes and size: `theme`, the `theme_*` presets, and `size`.
+- Interaction: `tooltip`, `interactive`, `brush`, and `highlight`.
+- Statistics: `coefplot`, `residual_plot`, `qq_plot`, `fitted_plot`, `scale_location_plot`, `diagnostic_plots`, `effect_plot`, `predictions`, and `interval_plot`.
+
+## Other classes
+
+| Class | Purpose |
+| --- | --- |
+| `Compose` | `beside`, `stack`, and `grid` compositions |
+| `Data` | `from`, `url`, and `named` data sources |
+| `Field` | field definitions and shorthand parsing |
+| `Scale`, `Theme`, `Style` | scale, theme, and style translation |
+| `Html`, `Assets` | HTML output and the pinned browser libraries |
+| `Export` | vl-convert export |
+| `Datasets` | `mpg`, `mtcars`, `economics`, and `faithful` |
+| `Stats\Charts` | the statistics helpers |
+| `Stats\Fit` | least squares, smoothing bands, and normal and t quantiles |

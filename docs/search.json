@@ -1,0 +1,697 @@
+[
+  {
+    "objectID": "themes.html",
+    "href": "themes.html",
+    "title": "Themes",
+    "section": "",
+    "text": "theme() takes a preset and individual options. The presets follow ggplot2’s complete themes:\n\n\n\nPreset\nLook\n\n\n\n\nvega\nVega-Lite’s defaults\n\n\ngray (also grey, ggplot2)\ngray panel with white grid lines\n\n\nbw\nwhite panel with a dark border and light grid\n\n\nminimal\nlight grid, no border, and no axis lines\n\n\nclassic\naxis lines and no grid\n\n\nlight\nlight gray border and grid\n\n\ndark\ndark background\n\n\nvoid\nno axes or grid\n\n\n\nbaseSize: scales every font size, with ggplot2’s proportions. Themes are written into the specification as Vega-Lite config, so HTML and static exports look the same.\nuse Phiz\\Datasets;\nuse Phiz\\Plot;\n\n$plot = Plot::of(Datasets::mpg())\n    -&gt;aes(x: 'displ', y: 'hwy', color: 'drv')\n    -&gt;point()\n    -&gt;theme('gray', baseSize: 12);\n\nThe individual options are font, legendPosition (right, left, top, bottom, or none), background, panelBackground, panelBorder, grid, titleAnchor, and padding. config: accepts raw Vega-Lite config, merged last. Calls without a preset build on the current theme.\nuse Phiz\\Datasets;\nuse Phiz\\Plot;\n\n$plot = Plot::of(Datasets::mpg())\n    -&gt;aes(x: 'displ', y: 'hwy', color: 'drv')\n    -&gt;point()\n    -&gt;theme('minimal', legendPosition: 'bottom', font: 'Georgia, serif', config: ['axis' =&gt; ['labelColor' =&gt; '#666666']])\n    -&gt;labs(title: 'A minimal theme with the legend below');\n\nA page can also choose a theme at render time. The vega-embed option theme accepts the vega-themes names, and phiz adds 'auto', which follows the reader’s light or dark mode preference:\n$plot-&gt;embed(['theme' =&gt; 'auto']);",
+    "crumbs": [
+      "Guide",
+      "Themes"
+    ]
+  },
+  {
+    "objectID": "scales.html",
+    "href": "scales.html",
+    "title": "Scales, coordinates, and labels",
+    "section": "",
+    "text": "scaleX(), scaleY(), scaleColor(), scaleFill(), scaleSize(), scaleShape(), scaleOpacity(), and scaleLinetype() configure the scale and guide for one aesthetic. Successive calls for the same aesthetic merge.\nScale options are passed to the Vega-Lite scale:\n\ntype: linear, log, sqrt, pow, symlog, time, ordinal, quantile, quantize, or threshold\ndomain and range\nscheme, a Vega color scheme such as viridis, blues, set2, or tableau10\nvalues, a manual palette as a level-to-value map or a list in level order\nzero, nice, reverse, clamp, base, exponent, domainMid, and padding\n\nGuide options are passed to the axis or legend:\n\nname, the title\nbreaks, the tick or legend values\nformat, a d3 number or time format\nlabels, a Vega label expression\nguide: false, which hides the axis or legend\n\nuse Phiz\\Datasets;\nuse Phiz\\Plot;\n\n$plot = Plot::of(Datasets::economics())\n    -&gt;aes(x: 'pop', y: 'pce')\n    -&gt;point(alpha: 0.4)\n    -&gt;scaleY(type: 'log', breaks: [500, 1000, 2000, 5000, 10000], name: 'Personal consumption ($bn, log scale)')\n    -&gt;scaleX(format: '.3s', name: 'Population (thousands)');\n\nuse Phiz\\Datasets;\nuse Phiz\\Plot;\n\n$plot = Plot::of(Datasets::mpg())\n    -&gt;aes(x: 'displ', y: 'hwy', color: 'drv')\n    -&gt;point(size: 40)\n    -&gt;scaleColor(values: ['f' =&gt; '#1B9E77', 'r' =&gt; '#7570B3', '4' =&gt; '#D95F02'], name: 'Drive');\n\nContinuous position scales fit the data as in ggplot2: points and lines do not force the axis to include zero. Plots with bars, areas, histograms, or densities keep zero, since their lengths are measured from it. zero: true restores Vega-Lite’s default for a single scale.\nThe functions in Phiz\\ include ggplot2’s common shortcuts, such as scale_x_log10(), scale_y_reverse(), scale_color_manual(), scale_fill_viridis(), scale_color_brewer(), scale_color_gradient(), and scale_color_gradient2().",
+    "crumbs": [
+      "Guide",
+      "Scales, coordinates, and labels"
+    ]
+  },
+  {
+    "objectID": "scales.html#scales",
+    "href": "scales.html#scales",
+    "title": "Scales, coordinates, and labels",
+    "section": "",
+    "text": "scaleX(), scaleY(), scaleColor(), scaleFill(), scaleSize(), scaleShape(), scaleOpacity(), and scaleLinetype() configure the scale and guide for one aesthetic. Successive calls for the same aesthetic merge.\nScale options are passed to the Vega-Lite scale:\n\ntype: linear, log, sqrt, pow, symlog, time, ordinal, quantile, quantize, or threshold\ndomain and range\nscheme, a Vega color scheme such as viridis, blues, set2, or tableau10\nvalues, a manual palette as a level-to-value map or a list in level order\nzero, nice, reverse, clamp, base, exponent, domainMid, and padding\n\nGuide options are passed to the axis or legend:\n\nname, the title\nbreaks, the tick or legend values\nformat, a d3 number or time format\nlabels, a Vega label expression\nguide: false, which hides the axis or legend\n\nuse Phiz\\Datasets;\nuse Phiz\\Plot;\n\n$plot = Plot::of(Datasets::economics())\n    -&gt;aes(x: 'pop', y: 'pce')\n    -&gt;point(alpha: 0.4)\n    -&gt;scaleY(type: 'log', breaks: [500, 1000, 2000, 5000, 10000], name: 'Personal consumption ($bn, log scale)')\n    -&gt;scaleX(format: '.3s', name: 'Population (thousands)');\n\nuse Phiz\\Datasets;\nuse Phiz\\Plot;\n\n$plot = Plot::of(Datasets::mpg())\n    -&gt;aes(x: 'displ', y: 'hwy', color: 'drv')\n    -&gt;point(size: 40)\n    -&gt;scaleColor(values: ['f' =&gt; '#1B9E77', 'r' =&gt; '#7570B3', '4' =&gt; '#D95F02'], name: 'Drive');\n\nContinuous position scales fit the data as in ggplot2: points and lines do not force the axis to include zero. Plots with bars, areas, histograms, or densities keep zero, since their lengths are measured from it. zero: true restores Vega-Lite’s default for a single scale.\nThe functions in Phiz\\ include ggplot2’s common shortcuts, such as scale_x_log10(), scale_y_reverse(), scale_color_manual(), scale_fill_viridis(), scale_color_brewer(), scale_color_gradient(), and scale_color_gradient2().",
+    "crumbs": [
+      "Guide",
+      "Scales, coordinates, and labels"
+    ]
+  },
+  {
+    "objectID": "scales.html#coordinates",
+    "href": "scales.html#coordinates",
+    "title": "Scales, coordinates, and labels",
+    "section": "Coordinates",
+    "text": "Coordinates\ncoordFlip() turns the plot sideways while the mappings stay as written. This is the usual way to give long category labels room.\nuse Phiz\\Datasets;\nuse Phiz\\Plot;\n\n$plot = Plot::of(Datasets::mpg())\n    -&gt;aes(x: 'manufacturer', y: 'hwy')\n    -&gt;boxplot(fill: '#C6DBEF')\n    -&gt;coordFlip()\n    -&gt;labs(x: null, y: 'Highway mpg');\n\ncoordCartesian(xlim:, ylim:), xlim(), and ylim() fix the domains and clip marks outside them. ggplot2’s xlim() removes the data outside the limits, which changes statistics such as smoothers. phiz keeps the data and only zooms.",
+    "crumbs": [
+      "Guide",
+      "Scales, coordinates, and labels"
+    ]
+  },
+  {
+    "objectID": "scales.html#labels",
+    "href": "scales.html#labels",
+    "title": "Scales, coordinates, and labels",
+    "section": "Labels",
+    "text": "Labels\nlabs() sets the title, subtitle, and the title for any aesthetic. A null title removes it. Titles for position aesthetics apply to everything drawn on that axis, including ranges and reference lines. A facet field’s name sets its panel header title.\n$plot-&gt;labs(title: 'Fuel economy', subtitle: 'EPA data, 1999 and 2008', x: 'Displacement (L)', y: 'Highway mpg', color: 'Drive');",
+    "crumbs": [
+      "Guide",
+      "Scales, coordinates, and labels"
+    ]
+  },
+  {
+    "objectID": "reference.html",
+    "href": "reference.html",
+    "title": "API reference",
+    "section": "",
+    "text": "Group\nMethods\n\n\n\n\nStart\nPlot::of($data, $aes), aes(...), data($data)\n\n\nGeoms\npoint, jitter, line, path, step, area, ribbon, bar, col, histogram, freqpoly, density, boxplot, errorbar, linerange, pointrange, hline, vline, abline, rule, segment, text, label, tile, raster, rect, bin2d, smooth, curve, rug, ecdf, qq, qqLine, arc, pie, layer, geom\n\n\nScales\nscale, scaleX, scaleY, scaleColor, scaleFill, scaleSize, scaleShape, scaleOpacity, scaleLinetype, xlim, ylim\n\n\nCoordinates and facets\ncoordFlip, coordCartesian, facetWrap, facetGrid\n\n\nLabels, theme, size\nlabs, title, theme, size, width, height, description\n\n\nInteraction\ntooltip, interactive, brush, highlight, slider, dropdown, param, select\n\n\nEscape hatches\ntransform, raw, apply\n\n\nOutput\ntoArray, toJson, toSpec, embed, html, svg, png, pdf, save",
+    "crumbs": [
+      "Project",
+      "API reference"
+    ]
+  },
+  {
+    "objectID": "reference.html#plot",
+    "href": "reference.html#plot",
+    "title": "API reference",
+    "section": "",
+    "text": "Group\nMethods\n\n\n\n\nStart\nPlot::of($data, $aes), aes(...), data($data)\n\n\nGeoms\npoint, jitter, line, path, step, area, ribbon, bar, col, histogram, freqpoly, density, boxplot, errorbar, linerange, pointrange, hline, vline, abline, rule, segment, text, label, tile, raster, rect, bin2d, smooth, curve, rug, ecdf, qq, qqLine, arc, pie, layer, geom\n\n\nScales\nscale, scaleX, scaleY, scaleColor, scaleFill, scaleSize, scaleShape, scaleOpacity, scaleLinetype, xlim, ylim\n\n\nCoordinates and facets\ncoordFlip, coordCartesian, facetWrap, facetGrid\n\n\nLabels, theme, size\nlabs, title, theme, size, width, height, description\n\n\nInteraction\ntooltip, interactive, brush, highlight, slider, dropdown, param, select\n\n\nEscape hatches\ntransform, raw, apply\n\n\nOutput\ntoArray, toJson, toSpec, embed, html, svg, png, pdf, save",
+    "crumbs": [
+      "Project",
+      "API reference"
+    ]
+  },
+  {
+    "objectID": "reference.html#aesthetics",
+    "href": "reference.html#aesthetics",
+    "title": "API reference",
+    "section": "Aesthetics",
+    "text": "Aesthetics\nx, y, xmin, xmax, ymin, ymax, xend, yend, color (or colour), fill, size, shape, opacity (or alpha), linetype, group, detail, tooltip, label (or text), order, href, theta, radius, xintercept, yintercept, sample, key, and description.",
+    "crumbs": [
+      "Project",
+      "API reference"
+    ]
+  },
+  {
+    "objectID": "reference.html#functions",
+    "href": "reference.html#functions",
+    "title": "API reference",
+    "section": "Functions",
+    "text": "Functions\nThe Phiz\\ namespace provides:\n\nConstruction: aes, ggplot, field, factor, calc, and expr.\nEvery geom as geom_*, plus stat_ecdf, stat_qq, and stat_qq_line.\nScales: scale_x_continuous, scale_x_log10, scale_x_sqrt, scale_x_reverse, scale_x_date, and their y versions, plus scale_color, scale_fill, scale_*_manual, scale_*_scheme, scale_*_viridis, scale_*_brewer, scale_*_gradient, scale_*_gradient2, scale_size, scale_shape, scale_alpha, and scale_linetype.\nLayout and labels: xlim, ylim, coord_flip, coord_cartesian, facet_wrap, facet_grid, labs, ggtitle, xlab, and ylab.\nThemes and size: theme, the theme_* presets, and size.\nInteraction: tooltip, interactive, brush, and highlight.\nStatistics: coefplot, residual_plot, qq_plot, fitted_plot, scale_location_plot, diagnostic_plots, effect_plot, predictions, and interval_plot.",
+    "crumbs": [
+      "Project",
+      "API reference"
+    ]
+  },
+  {
+    "objectID": "reference.html#other-classes",
+    "href": "reference.html#other-classes",
+    "title": "API reference",
+    "section": "Other classes",
+    "text": "Other classes\n\n\n\n\n\n\n\nClass\nPurpose\n\n\n\n\nCompose\nbeside, stack, and grid compositions\n\n\nData\nfrom, url, and named data sources\n\n\nField\nfield definitions and shorthand parsing\n\n\nScale, Theme, Style\nscale, theme, and style translation\n\n\nHtml, Assets\nHTML output and the pinned browser libraries\n\n\nExport\nvl-convert export\n\n\nDatasets\nmpg, mtcars, economics, and faithful\n\n\nStats\\Charts\nthe statistics helpers\n\n\nStats\\Fit\nleast squares, smoothing bands, and normal and t quantiles",
+    "crumbs": [
+      "Project",
+      "API reference"
+    ]
+  },
+  {
+    "objectID": "interaction.html",
+    "href": "interaction.html",
+    "title": "Interaction",
+    "section": "",
+    "text": "Interaction in phiz is expressed as Vega-Lite parameters, so it works in any page that renders the specification. Static exports draw the initial state.",
+    "crumbs": [
+      "Guide",
+      "Interaction"
+    ]
+  },
+  {
+    "objectID": "interaction.html#tooltips-pan-and-zoom",
+    "href": "interaction.html#tooltips-pan-and-zoom",
+    "title": "Interaction",
+    "section": "Tooltips, pan, and zoom",
+    "text": "Tooltips, pan, and zoom\ntooltip() adds tooltips to every layer. With no argument the tooltip shows the encoded fields, and a list of fields shows those fields. interactive() binds the scales to dragging and scrolling.\nuse Phiz\\Datasets;\nuse Phiz\\Plot;\n\n$plot = Plot::of(Datasets::mtcars())\n    -&gt;aes(x: 'wt', y: 'mpg', color: 'hp')\n    -&gt;point(size: 70)\n    -&gt;tooltip(['model', 'mpg', 'wt', 'hp'])\n    -&gt;interactive()\n    -&gt;scaleColor(scheme: 'plasma');",
+    "crumbs": [
+      "Guide",
+      "Interaction"
+    ]
+  },
+  {
+    "objectID": "interaction.html#brushing-and-linked-views",
+    "href": "interaction.html#brushing-and-linked-views",
+    "title": "Interaction",
+    "section": "Brushing and linked views",
+    "text": "Brushing and linked views\nbrush() adds a drag-to-select interval named brush. Marks outside the selection turn gray. Another layer, or another plot in a composition, can react with filter: ['param' =&gt; 'brush']. Brush the scatterplot to filter the bar chart:\nuse Phiz\\Compose;\nuse Phiz\\Datasets;\nuse Phiz\\Plot;\n\n$mpg = Datasets::mpg();\n\n$plot = Compose::stack(\n    Plot::of($mpg)-&gt;aes(x: 'displ', y: 'hwy', color: 'drv')-&gt;point()-&gt;brush(encodings: ['x', 'y'])-&gt;size(420, 220),\n    Plot::of($mpg)-&gt;aes(x: 'class', fill: 'drv')-&gt;bar(filter: ['param' =&gt; 'brush'])-&gt;size(420, 140),\n);",
+    "crumbs": [
+      "Guide",
+      "Interaction"
+    ]
+  },
+  {
+    "objectID": "interaction.html#legend-highlighting",
+    "href": "interaction.html#legend-highlighting",
+    "title": "Interaction",
+    "section": "Legend highlighting",
+    "text": "Legend highlighting\nhighlight() binds a selection to the legend of an aesthetic. Clicking an entry fades the other groups. Shift-click selects several.\nuse Phiz\\Datasets;\nuse Phiz\\Plot;\n\n$long = [];\nforeach (Datasets::economics() as $row) {\n    if ($row['date'] &gt;= '2000-01-01') {\n        $long[] = ['date' =&gt; $row['date'], 'series' =&gt; 'Savings rate (%)', 'value' =&gt; $row['psavert']];\n        $long[] = ['date' =&gt; $row['date'], 'series' =&gt; 'Median weeks unemployed', 'value' =&gt; $row['uempmed']];\n    }\n}\n\n$plot = Plot::of($long)\n    -&gt;aes(x: 'date', y: 'value', color: 'series')\n    -&gt;line(linewidth: 2)\n    -&gt;highlight()\n    -&gt;labs(x: null, y: null, color: 'Click a series');",
+    "crumbs": [
+      "Guide",
+      "Interaction"
+    ]
+  },
+  {
+    "objectID": "interaction.html#sliders-and-inputs",
+    "href": "interaction.html#sliders-and-inputs",
+    "title": "Interaction",
+    "section": "Sliders and inputs",
+    "text": "Sliders and inputs\nslider() and dropdown() add parameters bound to inputs. Expressions in filters and expr() values read them by name.\nuse Phiz\\Datasets;\nuse Phiz\\Plot;\n\nuse function Phiz\\expr;\n\n$plot = Plot::of(Datasets::mpg())\n    -&gt;aes(x: 'displ', y: 'hwy')\n    -&gt;slider('cutoff', 15, 40, step: 1, value: 30, label: 'Highway mpg cutoff')\n    -&gt;point(filter: 'datum.hwy &gt;= cutoff', color: '#D62728')\n    -&gt;point(filter: 'datum.hwy &lt; cutoff', color: '#BBBBBB')\n    -&gt;hline(expr('cutoff'), linetype: 'dashed');\n\nparam() and select() add any Vega-Lite parameter.",
+    "crumbs": [
+      "Guide",
+      "Interaction"
+    ]
+  },
+  {
+    "objectID": "get-started.html",
+    "href": "get-started.html",
+    "title": "Get started",
+    "section": "",
+    "text": "A plot starts with data and aesthetic mappings. Plot::of() takes the data, aes() maps fields to visual channels, and a geom such as point() adds a layer. The bundled Datasets class provides a few classic datasets for examples.\nuse Phiz\\Datasets;\nuse Phiz\\Plot;\n\n$plot = Plot::of(Datasets::mpg())\n    -&gt;aes(x: 'displ', y: 'hwy')\n    -&gt;point();\n\nMapping another field to color gives each class its own color and adds a legend. Fixed properties, such as a point size or an opacity, are geom arguments.\nuse Phiz\\Datasets;\nuse Phiz\\Plot;\n\n$plot = Plot::of(Datasets::mpg())\n    -&gt;aes(x: 'displ', y: 'hwy', color: 'class')\n    -&gt;point(size: 40, alpha: 0.7);",
+    "crumbs": [
+      "Get started"
+    ]
+  },
+  {
+    "objectID": "get-started.html#a-first-plot",
+    "href": "get-started.html#a-first-plot",
+    "title": "Get started",
+    "section": "",
+    "text": "A plot starts with data and aesthetic mappings. Plot::of() takes the data, aes() maps fields to visual channels, and a geom such as point() adds a layer. The bundled Datasets class provides a few classic datasets for examples.\nuse Phiz\\Datasets;\nuse Phiz\\Plot;\n\n$plot = Plot::of(Datasets::mpg())\n    -&gt;aes(x: 'displ', y: 'hwy')\n    -&gt;point();\n\nMapping another field to color gives each class its own color and adds a legend. Fixed properties, such as a point size or an opacity, are geom arguments.\nuse Phiz\\Datasets;\nuse Phiz\\Plot;\n\n$plot = Plot::of(Datasets::mpg())\n    -&gt;aes(x: 'displ', y: 'hwy', color: 'class')\n    -&gt;point(size: 40, alpha: 0.7);",
+    "crumbs": [
+      "Get started"
+    ]
+  },
+  {
+    "objectID": "get-started.html#layers",
+    "href": "get-started.html#layers",
+    "title": "Get started",
+    "section": "Layers",
+    "text": "Layers\nEach geom adds a layer, and layers inherit the plot’s mappings. This plot overlays a loess smoother on the points and labels the axes.\nuse Phiz\\Datasets;\nuse Phiz\\Plot;\n\n$plot = Plot::of(Datasets::mpg())\n    -&gt;aes(x: 'displ', y: 'hwy')\n    -&gt;point(alpha: 0.4)\n    -&gt;smooth(span: 0.6)\n    -&gt;labs(x: 'Displacement (L)', y: 'Highway mpg');\n\nPlots are immutable. Every method returns a new plot, so a base plot can be stored and extended in several directions.\n$base = Plot::of($mpg)-&gt;aes(x: 'displ', y: 'hwy');\n\n$scatter = $base-&gt;point();\n$smooth = $base-&gt;point(alpha: 0.3)-&gt;smooth(method: 'lm');",
+    "crumbs": [
+      "Get started"
+    ]
+  },
+  {
+    "objectID": "get-started.html#pipes",
+    "href": "get-started.html#pipes",
+    "title": "Get started",
+    "section": "Pipes",
+    "text": "Pipes\nPHP 8.5’s pipe operator composes ggplot2-style functions. ggplot() starts a plot, and each geom_*(), scale_*(), labs(), or theme_*() function returns a closure that takes a plot and returns the next one.\nuse Phiz\\Datasets;\n\nuse function Phiz\\{aes, geom_point, geom_smooth, ggplot, labs, theme_minimal};\n\n$plot = ggplot(Datasets::mpg(), aes(x: 'displ', y: 'hwy', color: 'drv'))\n    |&gt; geom_point(alpha: 0.5)\n    |&gt; geom_smooth(method: 'lm', se: false)\n    |&gt; labs(x: 'Displacement (L)', y: 'Highway mpg', color: 'Drive')\n    |&gt; theme_minimal();\n\nThe fluent methods and the functions accept the same arguments. A plot can also apply reusable fragments with apply():\n$house = fn (Plot $plot) =&gt; $plot-&gt;theme('minimal', baseSize: 12)-&gt;size(480, 300);\n\n$plot = Plot::of($mpg)-&gt;aes(x: 'displ', y: 'hwy')-&gt;point()-&gt;apply($house);",
+    "crumbs": [
+      "Get started"
+    ]
+  },
+  {
+    "objectID": "get-started.html#output",
+    "href": "get-started.html#output",
+    "title": "Get started",
+    "section": "Output",
+    "text": "Output\nA plot compiles to a Vega-Lite specification on demand.\n$plot-&gt;toArray();        // the specification as a PHP array\n$plot-&gt;toJson();         // as JSON\n$plot-&gt;embed();          // an HTML fragment with the container and script tags\n$plot-&gt;html();           // a standalone HTML page\n$plot-&gt;svg();            // SVG through vl-convert\n$plot-&gt;save('plot.pdf'); // the file extension picks the format\nRendering covers the options for each output, and Laravel and Livewire covers the Blade component.",
+    "crumbs": [
+      "Get started"
+    ]
+  },
+  {
+    "objectID": "facets.html",
+    "href": "facets.html",
+    "title": "Facets and composition",
+    "section": "",
+    "text": "facetWrap() draws one panel per level of a field and wraps them into rows. ncol: or nrow: sets the layout. scales: is fixed, free, free_x, or free_y. Statistical layers, such as the linear fits below, are computed per panel.\nuse Phiz\\Datasets;\nuse Phiz\\Plot;\n\n$plot = Plot::of(Datasets::mpg())\n    -&gt;aes(x: 'displ', y: 'hwy')\n    -&gt;point(alpha: 0.5)\n    -&gt;smooth(method: 'lm', color: '#D62728')\n    -&gt;facetWrap('drv', ncol: 3)\n    -&gt;size(180, 160);\n\nfacetGrid() lays panels out by a rows: field and a cols: field.\nuse Phiz\\Datasets;\nuse Phiz\\Plot;\n\n$plot = Plot::of(Datasets::mpg())\n    -&gt;aes(x: 'hwy')\n    -&gt;histogram(binwidth: 2)\n    -&gt;facetGrid(rows: 'year', cols: 'drv', scales: 'free_y')\n    -&gt;size(160, 100);\n\nsize() sets the size of each panel when a plot is faceted. Reference lines and curve() layers appear in every panel.",
+    "crumbs": [
+      "Guide",
+      "Facets and composition"
+    ]
+  },
+  {
+    "objectID": "facets.html#small-multiples",
+    "href": "facets.html#small-multiples",
+    "title": "Facets and composition",
+    "section": "",
+    "text": "facetWrap() draws one panel per level of a field and wraps them into rows. ncol: or nrow: sets the layout. scales: is fixed, free, free_x, or free_y. Statistical layers, such as the linear fits below, are computed per panel.\nuse Phiz\\Datasets;\nuse Phiz\\Plot;\n\n$plot = Plot::of(Datasets::mpg())\n    -&gt;aes(x: 'displ', y: 'hwy')\n    -&gt;point(alpha: 0.5)\n    -&gt;smooth(method: 'lm', color: '#D62728')\n    -&gt;facetWrap('drv', ncol: 3)\n    -&gt;size(180, 160);\n\nfacetGrid() lays panels out by a rows: field and a cols: field.\nuse Phiz\\Datasets;\nuse Phiz\\Plot;\n\n$plot = Plot::of(Datasets::mpg())\n    -&gt;aes(x: 'hwy')\n    -&gt;histogram(binwidth: 2)\n    -&gt;facetGrid(rows: 'year', cols: 'drv', scales: 'free_y')\n    -&gt;size(160, 100);\n\nsize() sets the size of each panel when a plot is faceted. Reference lines and curve() layers appear in every panel.",
+    "crumbs": [
+      "Guide",
+      "Facets and composition"
+    ]
+  },
+  {
+    "objectID": "facets.html#composition",
+    "href": "facets.html#composition",
+    "title": "Facets and composition",
+    "section": "Composition",
+    "text": "Composition\nCompose::beside(), Compose::stack(), and Compose::grid() lay out separate plots as patchwork does for ggplot2. A composition takes a title, a theme, and Vega-Lite resolve rules for shared or independent scales and legends.\nuse Phiz\\Compose;\nuse Phiz\\Datasets;\nuse Phiz\\Plot;\n\n$faithful = Datasets::faithful();\n\n$plot = Compose::beside(\n    Plot::of($faithful)-&gt;aes(x: 'eruptions', y: 'waiting')-&gt;point(alpha: 0.5)-&gt;size(280, 240),\n    Plot::of($faithful)-&gt;aes(x: 'waiting')-&gt;histogram(binwidth: 3)-&gt;coordFlip()-&gt;size(120, 240),\n)-&gt;title('Old Faithful: eruption length and waiting time');\n\nSelections defined in one plot of a composition can filter or highlight the others. Interaction shows a linked brush.",
+    "crumbs": [
+      "Guide",
+      "Facets and composition"
+    ]
+  },
+  {
+    "objectID": "design.html",
+    "href": "design.html",
+    "title": "Design",
+    "section": "",
+    "text": "phiz does not draw graphics. It translates a ggplot2-style description into a Vega-Lite specification. Vega-Lite then resolves scales, lays out facets and legends, runs transforms, handles interaction, and renders to canvas or SVG. The PHP side stays small, and plots behave the same in the browser and in static export.\nMost statistics run where Vega-Lite runs them: bins, densities, loess fits, aggregates, quantiles, and window functions are Vega-Lite transforms. phiz computes a statistic in PHP only when Vega-Lite cannot:\n\nthe confidence bands of smooth() with lm, quad, or poly\ncurve() evaluations of PHP functions\nthe bandwidth behind density(adjust:)\nthe statistics helpers’ intervals and predictions",
+    "crumbs": [
+      "Project",
+      "Design"
+    ]
+  },
+  {
+    "objectID": "design.html#vega-lite-does-the-drawing",
+    "href": "design.html#vega-lite-does-the-drawing",
+    "title": "Design",
+    "section": "",
+    "text": "phiz does not draw graphics. It translates a ggplot2-style description into a Vega-Lite specification. Vega-Lite then resolves scales, lays out facets and legends, runs transforms, handles interaction, and renders to canvas or SVG. The PHP side stays small, and plots behave the same in the browser and in static export.\nMost statistics run where Vega-Lite runs them: bins, densities, loess fits, aggregates, quantiles, and window functions are Vega-Lite transforms. phiz computes a statistic in PHP only when Vega-Lite cannot:\n\nthe confidence bands of smooth() with lm, quad, or poly\ncurve() evaluations of PHP functions\nthe bandwidth behind density(adjust:)\nthe statistics helpers’ intervals and predictions",
+    "crumbs": [
+      "Project",
+      "Design"
+    ]
+  },
+  {
+    "objectID": "design.html#mapping-ggplot2-to-vega-lite",
+    "href": "design.html#mapping-ggplot2-to-vega-lite",
+    "title": "Design",
+    "section": "Mapping ggplot2 to Vega-Lite",
+    "text": "Mapping ggplot2 to Vega-Lite\n\n\n\n\n\n\n\n\nggplot2\nphiz\nVega-Lite\n\n\n\n\nggplot(data, aes(...))\nPlot::of($data)-&gt;aes(...)\ndata and encoding\n\n\ngeom_*()\n-&gt;point(), -&gt;line(), …\na layer with a mark\n\n\nstat_*()\ngeom parameters\ntransform\n\n\nposition = \"dodge\"\nposition: 'dodge'\nxOffset\n\n\nscale_*()\n-&gt;scaleX(), …\nthe channel’s scale, axis, and legend\n\n\ncoord_flip()\n-&gt;coordFlip()\nswapped channels\n\n\nfacet_wrap(), facet_grid()\n-&gt;facetWrap(), -&gt;facetGrid()\nfacet with an inner spec\n\n\ntheme()\n-&gt;theme()\nconfig\n\n\npatchwork\nCompose\nhconcat, vconcat, concat",
+    "crumbs": [
+      "Project",
+      "Design"
+    ]
+  },
+  {
+    "objectID": "design.html#differences-from-ggplot2",
+    "href": "design.html#differences-from-ggplot2",
+    "title": "Design",
+    "section": "Differences from ggplot2",
+    "text": "Differences from ggplot2\n\nbins: is a maximum, and Vega-Lite picks rounded bin boundaries. Use binwidth: for exact widths.\nxlim() and ylim() zoom without removing data.\nThe default density bandwidth is Vega-Lite’s (Scott’s rule). adjust: uses R’s bw.nrd0 rule.\nLoess smoothing uses Vega-Lite’s loess transform without a confidence band.\nsize on points is an area in square pixels, as in Vega-Lite, rather than a diameter in millimeters.\nA discrete axis is 300 pixels by default and grows by 20 pixels per level beyond 15 levels. Vega-Lite’s own default is 20 pixels per level.\nDefault colors are Vega-Lite’s. theme('gray') gives ggplot2’s panel and grid but keeps Vega-Lite’s categorical palette.",
+    "crumbs": [
+      "Project",
+      "Design"
+    ]
+  },
+  {
+    "objectID": "design.html#versions",
+    "href": "design.html#versions",
+    "title": "Design",
+    "section": "Versions",
+    "text": "Versions\nphiz emits Vega-Lite 6 specifications. The pinned browser libraries are vega 6.4.0, vega-lite 6.4.3, and vega-embed 7.3.0. Static export uses vl-convert with Vega-Lite 6.1, and the tests validate every specification against the Vega-Lite 6.1.0 JSON schema, the version both renderers support.",
+    "crumbs": [
+      "Project",
+      "Design"
+    ]
+  },
+  {
+    "objectID": "data.html",
+    "href": "data.html",
+    "title": "Data and fields",
+    "section": "",
+    "text": "Plot::of() and each geom’s data: argument accept data in several shapes:\n\na list of row arrays, such as [['x' =&gt; 1, 'y' =&gt; 2], ...]\nan array of equal-length columns, such as ['x' =&gt; [1, 2], 'y' =&gt; [2, 3]]\na phibble table, or any object with toRows() or toColumns()\na Laravel Collection, or any object with toArray()\nany iterable of rows, where rows may be arrays or objects\nData::url('cars.csv'), which Vega-Lite fetches in the browser\nData::named('live'), a data source the page supplies at runtime\n\nInline data is embedded in the specification. Values are made safe for JSON: DateTimeInterface values become ISO 8601 strings, enums become their values, and NAN and INF become null, which Vega-Lite treats as missing.\nuse Phiz\\Plot;\n\n$columns = [\n    'month' =&gt; ['2026-01-01', '2026-02-01', '2026-03-01', '2026-04-01', '2026-05-01', '2026-06-01'],\n    'visits' =&gt; [1200, 1350, 1290, 1610, 1820, 1765],\n];\n\n$plot = Plot::of($columns)\n    -&gt;aes(x: 'month', y: 'visits')\n    -&gt;line()\n    -&gt;point(size: 50);",
+    "crumbs": [
+      "Guide",
+      "Data and fields"
+    ]
+  },
+  {
+    "objectID": "data.html#data-inputs",
+    "href": "data.html#data-inputs",
+    "title": "Data and fields",
+    "section": "",
+    "text": "Plot::of() and each geom’s data: argument accept data in several shapes:\n\na list of row arrays, such as [['x' =&gt; 1, 'y' =&gt; 2], ...]\nan array of equal-length columns, such as ['x' =&gt; [1, 2], 'y' =&gt; [2, 3]]\na phibble table, or any object with toRows() or toColumns()\na Laravel Collection, or any object with toArray()\nany iterable of rows, where rows may be arrays or objects\nData::url('cars.csv'), which Vega-Lite fetches in the browser\nData::named('live'), a data source the page supplies at runtime\n\nInline data is embedded in the specification. Values are made safe for JSON: DateTimeInterface values become ISO 8601 strings, enums become their values, and NAN and INF become null, which Vega-Lite treats as missing.\nuse Phiz\\Plot;\n\n$columns = [\n    'month' =&gt; ['2026-01-01', '2026-02-01', '2026-03-01', '2026-04-01', '2026-05-01', '2026-06-01'],\n    'visits' =&gt; [1200, 1350, 1290, 1610, 1820, 1765],\n];\n\n$plot = Plot::of($columns)\n    -&gt;aes(x: 'month', y: 'visits')\n    -&gt;line()\n    -&gt;point(size: 50);",
+    "crumbs": [
+      "Guide",
+      "Data and fields"
+    ]
+  },
+  {
+    "objectID": "data.html#field-types",
+    "href": "data.html#field-types",
+    "title": "Data and fields",
+    "section": "Field types",
+    "text": "Field types\nVega-Lite needs a measurement type for every mapped field. phiz infers it from inline data:\n\nquantitative, when every non-null value is an integer or a float\ntemporal, when every value is an ISO date or date-time string\nnominal, otherwise\n\nA numeric code such as a cylinder count is quantitative by this rule. It gets a continuous color scale and gradient legend unless you mark it as categorical. Field shorthand sets the type explicitly with a suffix: :Q (quantitative), :N (nominal), :O (ordinal), or :T (temporal). factor('cyl') is the equivalent of R’s factor(cyl), and its levels: argument sets the order.\nuse Phiz\\Datasets;\nuse Phiz\\Plot;\n\nuse function Phiz\\factor;\n\n$plot = Plot::of(Datasets::mtcars())\n    -&gt;aes(x: 'wt', y: 'mpg', color: factor('cyl'), shape: 'am:N')\n    -&gt;point(size: 60)\n    -&gt;labs(color: 'Cylinders', shape: 'Manual');\n\nURL data cannot be inspected in PHP, so phiz assumes quantitative positions and nominal groupings. Use shorthand types for anything else.",
+    "crumbs": [
+      "Guide",
+      "Data and fields"
+    ]
+  },
+  {
+    "objectID": "data.html#aggregates-and-time-units",
+    "href": "data.html#aggregates-and-time-units",
+    "title": "Data and fields",
+    "section": "Aggregates and time units",
+    "text": "Aggregates and time units\nShorthand also covers Vega-Lite’s aggregates and time units: 'mean(hwy)', 'count()', 'median(price)', 'year(date):O', and 'yearmonth(date)'. The aggregation runs in Vega-Lite, grouped by the other mapped fields.\nuse Phiz\\Datasets;\nuse Phiz\\Plot;\n\n$plot = Plot::of(Datasets::economics())\n    -&gt;aes(x: 'year(date):O', y: 'mean(psavert)')\n    -&gt;col(fill: '#4C78A8')\n    -&gt;labs(x: null, y: 'Mean personal savings rate (%)');",
+    "crumbs": [
+      "Guide",
+      "Data and fields"
+    ]
+  },
+  {
+    "objectID": "data.html#computed-fields",
+    "href": "data.html#computed-fields",
+    "title": "Data and fields",
+    "section": "Computed fields",
+    "text": "Computed fields\ncalc() maps an aesthetic to a field computed from a Vega expression. The expression refers to the row as datum.\nuse Phiz\\Datasets;\nuse Phiz\\Plot;\n\nuse function Phiz\\calc;\n\n$plot = Plot::of(Datasets::mpg())\n    -&gt;aes(x: 'cty', y: calc('datum.hwy - datum.cty', as: 'gap'))\n    -&gt;jitter(width: 0.3, height: 0.3, alpha: 0.5)\n    -&gt;labs(x: 'City mpg', y: 'Highway minus city mpg');",
+    "crumbs": [
+      "Guide",
+      "Data and fields"
+    ]
+  },
+  {
+    "objectID": "data.html#field-definitions",
+    "href": "data.html#field-definitions",
+    "title": "Data and fields",
+    "section": "Field definitions",
+    "text": "Field definitions\nfield() builds a Field with any Vega-Lite field-definition property, such as field('date', timeUnit: 'month', title: 'Month') or field('term', sort: ['b', 'a', 'c']). A raw array is also accepted for any aesthetic and is used as given.\nField names containing dots or brackets, such as R’s Sepal.Length, are escaped automatically. Vega-Lite would otherwise read them as nested access.",
+    "crumbs": [
+      "Guide",
+      "Data and fields"
+    ]
+  },
+  {
+    "objectID": "development.html",
+    "href": "development.html",
+    "title": "Development",
+    "section": "",
+    "text": "composer test\nThe suite runs with Pest and covers several layers:\n\nSpec snapshots for every geom, feature, statistics helper, and gallery example, in tests/.pest/snapshots/. After an intended change, run vendor/bin/pest --update-snapshots and review the diff.\nValidation of every specification against the pinned Vega-Lite 6.1.0 JSON schema in tests/fixtures/.\nNumerical checks of quantiles, least squares, smoothing bands, and predictions against values from R.\nBlade component tests on Orchestra Testbench.\nWhen vl-convert is available, a render of every gallery example to SVG. Some specifications pass the schema but fail to compile, and this smoke test catches them.\n\nTests that need the php_stats extension skip when it is not loaded. The saved fits in tests/fixtures/fits.json cover the rest.",
+    "crumbs": [
+      "Project",
+      "Development"
+    ]
+  },
+  {
+    "objectID": "development.html#tests",
+    "href": "development.html#tests",
+    "title": "Development",
+    "section": "",
+    "text": "composer test\nThe suite runs with Pest and covers several layers:\n\nSpec snapshots for every geom, feature, statistics helper, and gallery example, in tests/.pest/snapshots/. After an intended change, run vendor/bin/pest --update-snapshots and review the diff.\nValidation of every specification against the pinned Vega-Lite 6.1.0 JSON schema in tests/fixtures/.\nNumerical checks of quantiles, least squares, smoothing bands, and predictions against values from R.\nBlade component tests on Orchestra Testbench.\nWhen vl-convert is available, a render of every gallery example to SVG. Some specifications pass the schema but fail to compile, and this smoke test catches them.\n\nTests that need the php_stats extension skip when it is not loaded. The saved fits in tests/fixtures/fits.json cover the rest.",
+    "crumbs": [
+      "Project",
+      "Development"
+    ]
+  },
+  {
+    "objectID": "development.html#gallery",
+    "href": "development.html#gallery",
+    "title": "Development",
+    "section": "Gallery",
+    "text": "Gallery\nphp examples/gallery.php [output.html] [--svg=dir]\nThe gallery writes an HTML page of every example in examples/catalog.php, with each example’s code. The catalog is a plain PHP array, so other projects can reuse it.",
+    "crumbs": [
+      "Project",
+      "Development"
+    ]
+  },
+  {
+    "objectID": "development.html#documentation",
+    "href": "development.html#documentation",
+    "title": "Development",
+    "section": "Documentation",
+    "text": "Documentation\nThe documentation is a Quarto website in docs/. The pages include generated fragments for their examples:\n\nEach file in docs/examples/ returns a chart.\nphp scripts/docs-examples.php runs every example. For each one it writes the code and the resulting specification to docs/_generated/, and an SVG to docs/figures/. It also copies the gallery.\nquarto render docs builds the site into docs/_site/.\nscripts/render-docs runs steps 2 and 3, then copies the site into docs/ for GitHub Pages.",
+    "crumbs": [
+      "Project",
+      "Development"
+    ]
+  },
+  {
+    "objectID": "geoms.html",
+    "href": "geoms.html",
+    "title": "Geoms",
+    "section": "",
+    "text": "Each geom adds a layer. Every geom method accepts these common arguments:\nAs in ggplot2, color is the outline of bars, areas, and tiles, and fill is their interior. For points, lines, and text, color is the main color. linetype accepts ggplot2’s names (dashed, dotted, dotdash, longdash, twodash), hex dash strings such as '44', or a dash array.",
+    "crumbs": [
+      "Guide",
+      "Geoms"
+    ]
+  },
+  {
+    "objectID": "geoms.html#distributions",
+    "href": "geoms.html#distributions",
+    "title": "Geoms",
+    "section": "Distributions",
+    "text": "Distributions\nhistogram() bins a continuous variable. bins: sets the maximum number of bins, and Vega-Lite chooses rounded boundaries. binwidth: sets the width exactly and boundary: anchors the bins.\nuse Phiz\\Datasets;\nuse Phiz\\Plot;\n\n$plot = Plot::of(Datasets::faithful())\n    -&gt;aes(x: 'waiting')\n    -&gt;histogram(binwidth: 2, fill: '#4C78A8')\n    -&gt;labs(x: 'Minutes between eruptions');\n\ndensity() draws a kernel density estimate per group with Vega-Lite’s density transform. bw: sets the bandwidth. adjust: multiplies a bandwidth computed with R’s bw.nrd0 rule. Mapping fill draws filled areas; otherwise the densities are lines.\nuse Phiz\\Datasets;\nuse Phiz\\Plot;\n\n$plot = Plot::of(Datasets::mpg())\n    -&gt;aes(x: 'hwy', fill: 'drv')\n    -&gt;density(alpha: 0.4, adjust: 1.5)\n    -&gt;labs(x: 'Highway mpg', fill: 'Drive');\n\nboxplot() draws Tukey boxplots with whiskers at coef: interquartile ranges. Points layered on top show the raw data.\nuse Phiz\\Datasets;\nuse Phiz\\Plot;\n\n$plot = Plot::of(Datasets::mpg())\n    -&gt;aes(x: 'drv', y: 'hwy')\n    -&gt;boxplot(outliers: false, fill: '#DDDDDD', color: '#333333')\n    -&gt;jitter(width: 0.25, alpha: 0.35)\n    -&gt;labs(x: 'Drive', y: 'Highway mpg');\n\necdf(), freqpoly(), qq(), qqLine(), and rug() complete the set.",
+    "crumbs": [
+      "Guide",
+      "Geoms"
+    ]
+  },
+  {
+    "objectID": "geoms.html#amounts",
+    "href": "geoms.html#amounts",
+    "title": "Geoms",
+    "section": "Amounts",
+    "text": "Amounts\nbar() counts rows per level of x when y is unmapped, and col() draws the y values. position: is stack (the default), dodge, fill (stacked to 100%), or identity.\nuse Phiz\\Datasets;\nuse Phiz\\Plot;\n\n$plot = Plot::of(Datasets::mpg())\n    -&gt;aes(x: 'class', fill: 'drv')\n    -&gt;bar(position: 'dodge')\n    -&gt;labs(x: null, y: 'Cars', fill: 'Drive');\n\ncol() with xmin and xmax mapped draws precomputed bins. tile() and rect() draw heatmaps and rectangles, and bin2d() counts points in a two-dimensional grid.\nuse Phiz\\Datasets;\nuse Phiz\\Plot;\n\nuse function Phiz\\factor;\n\n$plot = Plot::of(Datasets::mpg())\n    -&gt;aes(x: 'class', y: factor('cyl'), fill: 'mean(hwy)')\n    -&gt;tile(color: 'white')\n    -&gt;scaleFill(scheme: 'viridis')\n    -&gt;labs(x: null, y: 'Cylinders', fill: 'Mean hwy');",
+    "crumbs": [
+      "Guide",
+      "Geoms"
+    ]
+  },
+  {
+    "objectID": "geoms.html#lines-and-areas",
+    "href": "geoms.html#lines-and-areas",
+    "title": "Geoms",
+    "section": "Lines and areas",
+    "text": "Lines and areas\nline() connects points in order of x. path() connects them in data order, and step() draws stairsteps. area() fills from zero and stacks by fill, and ribbon() fills between ymin and ymax.\nuse Phiz\\Datasets;\nuse Phiz\\Plot;\n\n$recent = array_slice(Datasets::economics(), -180);\n\n$plot = Plot::of($recent)\n    -&gt;aes(x: 'date', y: 'uempmed')\n    -&gt;area(fill: '#9ECAE1', alpha: 0.5)\n    -&gt;line(color: '#08519C')\n    -&gt;labs(x: null, y: 'Median weeks unemployed');",
+    "crumbs": [
+      "Guide",
+      "Geoms"
+    ]
+  },
+  {
+    "objectID": "geoms.html#intervals",
+    "href": "geoms.html#intervals",
+    "title": "Geoms",
+    "section": "Intervals",
+    "text": "Intervals\nerrorbar(), linerange(), and pointrange() draw intervals from ymin to ymax. With xmin and xmax they are horizontal. position: 'dodge' places groups side by side, which the coefficient plots use to compare models.\nuse Phiz\\Plot;\n\n$estimates = [\n    ['site' =&gt; 'North', 'mean' =&gt; 4.1, 'lower' =&gt; 3.2, 'upper' =&gt; 5.0],\n    ['site' =&gt; 'East', 'mean' =&gt; 5.3, 'lower' =&gt; 4.6, 'upper' =&gt; 6.1],\n    ['site' =&gt; 'South', 'mean' =&gt; 3.4, 'lower' =&gt; 2.1, 'upper' =&gt; 4.6],\n    ['site' =&gt; 'West', 'mean' =&gt; 4.8, 'lower' =&gt; 4.2, 'upper' =&gt; 5.5],\n];\n\n$plot = Plot::of($estimates)\n    -&gt;aes(x: 'site', y: 'mean', ymin: 'lower', ymax: 'upper')\n    -&gt;errorbar(width: 10)\n    -&gt;point(size: 60)\n    -&gt;hline(4.5, linetype: 'dashed', color: '#888888')\n    -&gt;labs(x: null, y: 'Mean score (95% CI)');",
+    "crumbs": [
+      "Guide",
+      "Geoms"
+    ]
+  },
+  {
+    "objectID": "geoms.html#reference-lines",
+    "href": "geoms.html#reference-lines",
+    "title": "Geoms",
+    "section": "Reference lines",
+    "text": "Reference lines\nhline() and vline() draw rules at fixed values, at every value of a list, or at a mapped yintercept or xintercept field. abline() draws y = intercept + slope * x across the range of the data.\nuse Phiz\\Datasets;\nuse Phiz\\Plot;\n\n$plot = Plot::of(Datasets::mpg())\n    -&gt;aes(x: 'cty', y: 'hwy')\n    -&gt;point(alpha: 0.4)\n    -&gt;abline(0, 1, linetype: 'dashed')\n    -&gt;hline(30, color: '#D62728')\n    -&gt;vline(20, color: '#1F77B4')\n    -&gt;labs(x: 'City mpg', y: 'Highway mpg');",
+    "crumbs": [
+      "Guide",
+      "Geoms"
+    ]
+  },
+  {
+    "objectID": "geoms.html#text",
+    "href": "geoms.html#text",
+    "title": "Geoms",
+    "section": "Text",
+    "text": "Text\ntext() and label() draw the label aesthetic. hjust, vjust, and angle follow ggplot2: angle turns text counterclockwise. nudgeX and nudgeY move labels in pixels.\nuse Phiz\\Datasets;\nuse Phiz\\Plot;\n\n$fast = array_values(array_filter(Datasets::mtcars(), fn ($car) =&gt; $car['hp'] &gt; 180));\n\n$plot = Plot::of($fast)\n    -&gt;aes(x: 'hp', y: 'qsec', label: 'model')\n    -&gt;point()\n    -&gt;text(hjust: 0, nudgeX: 6, size: 10)\n    -&gt;labs(x: 'Horsepower', y: 'Quarter-mile time (s)');",
+    "crumbs": [
+      "Guide",
+      "Geoms"
+    ]
+  },
+  {
+    "objectID": "geoms.html#fitted-curves",
+    "href": "geoms.html#fitted-curves",
+    "title": "Geoms",
+    "section": "Fitted curves",
+    "text": "Fitted curves\nsmooth() fits a curve per group. With method: 'lm', 'quad', or 'poly' and inline data, phiz fits the model in PHP by least squares and draws a pointwise confidence band for the mean at level:, as ggplot2’s geom_smooth() does. These bands match R’s predict(fit, interval = \"confidence\"). se: false and the other methods (loess, log, exp, pow) use Vega-Lite’s regression and loess transforms in the browser, without a band. span: sets the loess bandwidth.\nuse Phiz\\Datasets;\nuse Phiz\\Plot;\n\n$plot = Plot::of(Datasets::mtcars())\n    -&gt;aes(x: 'hp', y: 'mpg')\n    -&gt;point()\n    -&gt;smooth(method: 'poly', order: 2, level: 0.9)\n    -&gt;labs(x: 'Horsepower', y: 'mpg');\n\ncurve() draws a PHP function over a range, as ggplot2’s geom_function() does.\nuse Phiz\\Datasets;\nuse Phiz\\Plot;\n\n$eruptions = array_column(Datasets::faithful(), 'eruptions');\n$mean = array_sum($eruptions) / count($eruptions);\n$sd = sqrt(array_sum(array_map(fn ($x) =&gt; ($x - $mean) ** 2, $eruptions)) / (count($eruptions) - 1));\n$normal = fn (float $x) =&gt; exp(-0.5 * (($x - $mean) / $sd) ** 2) / ($sd * sqrt(2 * M_PI));\n\n$plot = Plot::of(Datasets::faithful())\n    -&gt;aes(x: 'eruptions')\n    -&gt;histogram(binwidth: 0.2, density: true, fill: '#DDDDDD')\n    -&gt;curve($normal, 1.5, 5.5, aes: ['x' =&gt; 'eruptions', 'y' =&gt; 'density'], color: '#D62728')\n    -&gt;labs(x: 'Eruption length (min)', subtitle: 'A single normal curve fits this bimodal distribution poorly');",
+    "crumbs": [
+      "Guide",
+      "Geoms"
+    ]
+  },
+  {
+    "objectID": "geoms.html#raw-layers",
+    "href": "geoms.html#raw-layers",
+    "title": "Geoms",
+    "section": "Raw layers",
+    "text": "Raw layers\nlayer() adds any Vega-Lite layer as given, and geom() adds a geom by name with explicit parameter and style arrays.",
+    "crumbs": [
+      "Guide",
+      "Geoms"
+    ]
+  },
+  {
+    "objectID": "index.html",
+    "href": "index.html",
+    "title": "phiz",
+    "section": "",
+    "text": "phiz builds Vega-Lite specifications from PHP with a grammar modeled on ggplot2. Vega-Lite handles the layout, scales, interaction, and rendering. PHP code describes the plot, and you write no JavaScript. The same specification renders in the browser through vega-embed, or to SVG, PNG, or PDF through the vl-convert binary for reports and email.\nEvery chart on this site was produced by running the code shown above it. The examples live in docs/examples/, and scripts/docs-examples.php runs them and embeds the specifications they returned.",
+    "crumbs": [
+      "phiz"
+    ]
+  },
+  {
+    "objectID": "index.html#install",
+    "href": "index.html#install",
+    "title": "phiz",
+    "section": "Install",
+    "text": "Install\ncomposer require erikwestlund/phiz\nphiz requires PHP 8.5 and has no other dependencies. Static export needs the vl-convert binary. Laravel support is optional and is discovered automatically.",
+    "crumbs": [
+      "phiz"
+    ]
+  },
+  {
+    "objectID": "index.html#what-phiz-covers",
+    "href": "index.html#what-phiz-covers",
+    "title": "phiz",
+    "section": "What phiz covers",
+    "text": "What phiz covers\n\nA fluent, immutable Plot builder, and ggplot2-style functions for PHP’s pipe operator.\nAbout 30 geoms, including points, lines, areas, bars, histograms, densities, boxplots, intervals, reference lines, text, heatmaps, smoothers, QQ plots, and arcs.\nScales, coordinate flips and limits, facets, compositions, labels, and themes modeled on ggplot2’s complete themes.\nTooltips, pan and zoom, brushing, legend highlighting, sliders, and linked views, all expressed as Vega-Lite parameters.\nStatistical plots built from php-stats model results and CmdStanPHP draws: coefficient plots, regression diagnostics, predicted values with confidence bands, and posterior intervals.\nHTML output, static export, and an &lt;x-phiz&gt; Blade component that re-renders inside Livewire.",
+    "crumbs": [
+      "phiz"
+    ]
+  },
+  {
+    "objectID": "index.html#the-phpstats-family",
+    "href": "index.html#the-phpstats-family",
+    "title": "phiz",
+    "section": "The phpstats family",
+    "text": "The phpstats family\nphiz is the visualization package of the phpstats family. php-stats fits the models, phibble provides data frames, phplyr provides dplyr verbs, and CmdStanPHP runs Stan. phiz depends on none of them. It reads any of their tables directly.",
+    "crumbs": [
+      "phiz"
+    ]
+  },
+  {
+    "objectID": "laravel.html",
+    "href": "laravel.html",
+    "title": "Laravel and Livewire",
+    "section": "",
+    "text": "phiz’s Laravel service provider is discovered automatically. It registers the &lt;x-phiz&gt; Blade component and the @phizScripts directive. Without Laravel, the same classes are never loaded.",
+    "crumbs": [
+      "Output",
+      "Laravel and Livewire"
+    ]
+  },
+  {
+    "objectID": "laravel.html#blade",
+    "href": "laravel.html#blade",
+    "title": "Laravel and Livewire",
+    "section": "Blade",
+    "text": "Blade\n&lt;x-phiz :plot=\"$plot\" class=\"h-80\" /&gt;\nThe component accepts a Plot, a Compose, a specification array, or specification JSON. :options passes vega-embed options, merged over config('phiz.embed_options'). Other attributes go to the container element.\nThe first &lt;x-phiz&gt; on a page adds the script tags. To place them yourself, put @phizScripts in the layout.",
+    "crumbs": [
+      "Output",
+      "Laravel and Livewire"
+    ]
+  },
+  {
+    "objectID": "laravel.html#livewire",
+    "href": "laravel.html#livewire",
+    "title": "Laravel and Livewire",
+    "section": "Livewire",
+    "text": "Livewire\nThe component re-renders inside Livewire without extra code. The specification is an attribute of the container, which Livewire’s morphing updates on each render. The drawn chart sits in a child element marked wire:ignore, and the phiz loader embeds the new specification when the attribute changes. When a component renders several charts, give each a wire:key.\nclass RentChart extends Component\n{\n    public int $bedrooms = 2;\n\n    public function render()\n    {\n        $plot = Plot::of(Rental::where('bedrooms', $this-&gt;bedrooms)-&gt;get())\n            -&gt;aes(x: 'area_m2', y: 'rent', color: 'neighborhood')\n            -&gt;point(alpha: 0.6)\n            -&gt;smooth(method: 'lm', se: false);\n\n        return view('livewire.rent-chart', ['plot' =&gt; $plot]);\n    }\n}\n&lt;div&gt;\n    &lt;select wire:model.live=\"bedrooms\"&gt;...&lt;/select&gt;\n    &lt;x-phiz :plot=\"$plot\" wire:key=\"rents\" :options=\"['theme' =&gt; 'auto']\" /&gt;\n&lt;/div&gt;\n'theme' =&gt; 'auto' follows the reader’s light or dark mode preference.",
+    "crumbs": [
+      "Output",
+      "Laravel and Livewire"
+    ]
+  },
+  {
+    "objectID": "laravel.html#configuration",
+    "href": "laravel.html#configuration",
+    "title": "Laravel and Livewire",
+    "section": "Configuration",
+    "text": "Configuration\nPublish the configuration with php artisan vendor:publish --tag=phiz-config.\n\n\n\n\n\n\n\n\nKey\nDefault\nMeaning\n\n\n\n\nassets\ncdn\ncdn, a URL prefix serving the three library files, or none\n\n\ninject_scripts\ntrue\nwhether &lt;x-phiz&gt; adds the script tags once per page\n\n\nembed_options\n['actions' =&gt; false]\ndefault vega-embed options\n\n\n\nIf your Vite bundle already imports vega-embed, set assets to none and assign it to window.vegaEmbed in your bundle. The phiz loader uses it.",
+    "crumbs": [
+      "Output",
+      "Laravel and Livewire"
+    ]
+  },
+  {
+    "objectID": "rendering.html",
+    "href": "rendering.html",
+    "title": "Rendering",
+    "section": "",
+    "text": "toArray() returns the Vega-Lite specification and toJson() encodes it. Plots also implement JsonSerializable. The specification declares the Vega-Lite 6 schema.\nFour escape hatches reach the parts of Vega-Lite that phiz does not wrap:\n\nraw([...]) deep-merges arbitrary Vega-Lite into the top level. Nested objects merge, and lists and scalars replace.\ntransform(...) adds Vega-Lite transforms that run before every layer.\nlayer([...]) adds a raw Vega-Lite layer.\nparam() and select() add raw parameters.",
+    "crumbs": [
+      "Output",
+      "Rendering"
+    ]
+  },
+  {
+    "objectID": "rendering.html#specifications",
+    "href": "rendering.html#specifications",
+    "title": "Rendering",
+    "section": "",
+    "text": "toArray() returns the Vega-Lite specification and toJson() encodes it. Plots also implement JsonSerializable. The specification declares the Vega-Lite 6 schema.\nFour escape hatches reach the parts of Vega-Lite that phiz does not wrap:\n\nraw([...]) deep-merges arbitrary Vega-Lite into the top level. Nested objects merge, and lists and scalars replace.\ntransform(...) adds Vega-Lite transforms that run before every layer.\nlayer([...]) adds a raw Vega-Lite layer.\nparam() and select() add raw parameters.",
+    "crumbs": [
+      "Output",
+      "Rendering"
+    ]
+  },
+  {
+    "objectID": "rendering.html#html",
+    "href": "rendering.html#html",
+    "title": "Rendering",
+    "section": "HTML",
+    "text": "HTML\nembed() returns a container element followed by the script tags, and html() returns a standalone page. Both pass vega-embed options, such as ['actions' =&gt; false] or ['renderer' =&gt; 'svg'].\nThe container carries the specification in a data-phiz attribute. A small loader script, about 100 lines, renders every such element with vega-embed. It renders them again when the attribute changes. The same markup therefore works in static pages, Blade views, and Livewire components.\nThe browser libraries are pinned:\n\n\n\nLibrary\nVersion\n\n\n\n\nvega\n6.4.0\n\n\nvega-lite\n6.4.3\n\n\nvega-embed\n7.3.0\n\n\n\nAssets chooses where they come from:\nuse Phiz\\Assets;\n\n$plot-&gt;embed(assets: Assets::cdn());                 // jsDelivr, with subresource integrity (the default)\n$plot-&gt;embed(assets: Assets::local('/js/vega'));     // copies you serve: vega.min.js, vega-lite.min.js, vega-embed.min.js\n$plot-&gt;html(assets: Assets::inline('/path/to/js'));  // embedded in the page, for offline files\n$plot-&gt;embed(assets: Assets::none());                // your bundle already sets window.vegaEmbed\n$plot-&gt;embed(assets: false);                         // just the container",
+    "crumbs": [
+      "Output",
+      "Rendering"
+    ]
+  },
+  {
+    "objectID": "rendering.html#static-export",
+    "href": "rendering.html#static-export",
+    "title": "Rendering",
+    "section": "Static export",
+    "text": "Static export\nsvg(), png(), pdf(), and save() run the vl-convert command-line tool. It renders without a browser, which suits reports, email, and print. vl-convert bundles its own Vega-Lite, and phiz runs it with Vega-Lite 6.1. The test suite validates every specification against the Vega-Lite 6.1 schema, so the same specification renders in both places.\n$plot-&gt;save('figure.svg');\n$plot-&gt;save('figure.png', scale: 3);\nfile_put_contents('figure.pdf', $plot-&gt;pdf());\nphiz finds the binary through the PHIZ_VL_CONVERT or VL_CONVERT environment variable, then PATH. Download it from the vl-convert releases. Version 1.9.0 is tested. If the binary is missing, phiz throws Phiz\\Exceptions\\VlConvertNotFound with these instructions. new Export(binary: ..., timeout: ..., fontDir: ...) sets the binary path, the timeout, and an extra font directory explicitly.",
+    "crumbs": [
+      "Output",
+      "Rendering"
+    ]
+  },
+  {
+    "objectID": "statistics.html",
+    "href": "statistics.html",
+    "title": "Statistics",
+    "section": "",
+    "text": "The statistics helpers build ordinary plots from model results, so their output can be restyled with any Plot method. They read the arrays that php-stats returns. Formula fits from stats_lm, stats_glm, stats_lmer, and stats_glmer name their coefficients in columns. Matrix fits from stats_ols and stats_logistic take a names: argument.\nThe fits on this page were produced by php-stats from the mtcars data and saved in docs/examples/fits/.",
+    "crumbs": [
+      "Guide",
+      "Statistics"
+    ]
+  },
+  {
+    "objectID": "statistics.html#coefficient-plots",
+    "href": "statistics.html#coefficient-plots",
+    "title": "Statistics",
+    "section": "Coefficient plots",
+    "text": "Coefficient plots\ncoefplot() draws estimates with confidence intervals and a reference line at no effect. It drops the intercept unless intercept: true. It uses the fit’s conf_int by default, and level: recomputes the intervals from the standard errors with t or normal quantiles to match the fit.\nuse function Phiz\\coefplot;\n\n// The fit as php-stats returns it: stats_lm('mpg ~ wt + hp + am', $mtcars).\n$fit = json_decode(file_get_contents(__DIR__.'/fits/mtcars-lm.json'), true);\n\n$plot = coefplot($fit)-&gt;labs(title: 'mpg ~ wt + hp + am');\n\nSeveral fits keyed by label are compared side by side, with one color per model. sort: true orders terms by estimate, and terms: selects and orders them.\nuse function Phiz\\coefplot;\n\n$full = json_decode(file_get_contents(__DIR__.'/fits/mtcars-lm.json'), true);\n$reduced = json_decode(file_get_contents(__DIR__.'/fits/mtcars-lm-reduced.json'), true);\n\n$plot = coefplot(['mpg ~ wt + hp + am' =&gt; $full, 'mpg ~ wt + hp' =&gt; $reduced]);\n\nexponentiate: true shows odds or rate ratios from a GLM on a log scale with the reference at 1.\nuse function Phiz\\coefplot;\n\n// stats_glm('am ~ wt + hp', $mtcars, 'binomial')\n$glm = json_decode(file_get_contents(__DIR__.'/fits/mtcars-glm.json'), true);\n\n$plot = coefplot($glm, exponentiate: true)-&gt;labs(x: 'Odds ratio (95% CI)');",
+    "crumbs": [
+      "Guide",
+      "Statistics"
+    ]
+  },
+  {
+    "objectID": "statistics.html#regression-diagnostics",
+    "href": "statistics.html#regression-diagnostics",
+    "title": "Statistics",
+    "section": "Regression diagnostics",
+    "text": "Regression diagnostics\nresidual_plot(), qq_plot(), scale_location_plot(), and fitted_plot() draw the standard diagnostic panels. diagnostic_plots() arranges all four in a grid.\nuse function Phiz\\diagnostic_plots;\n\n// The fit as php-stats returns it: stats_lm('mpg ~ wt + hp + am', $mtcars).\n$fit = json_decode(file_get_contents(__DIR__.'/fits/mtcars-lm.json'), true);\n\n$plot = diagnostic_plots($fit, width: 240, height: 180);\n\nqq_plot() also accepts a plain list of values. The QQ geoms compute sample quantiles at (i - 0.5) / n and draw the line through the quartiles, as ggplot2’s stat_qq_line() does.",
+    "crumbs": [
+      "Guide",
+      "Statistics"
+    ]
+  },
+  {
+    "objectID": "statistics.html#predicted-values",
+    "href": "statistics.html#predicted-values",
+    "title": "Statistics",
+    "section": "Predicted values",
+    "text": "Predicted values\neffect_plot() draws predictions with confidence bands as one variable varies across its observed range. by: draws one line per level of a grouping variable. Other variables are held at their mean, or at their most common value when they are categorical.\nFor formula fits, phiz builds the prediction design with stats_model_matrix() on the fitting data and the grid together, so factor levels and reference categories match the fit. For matrix fits, pass design:, a function from a grid row to a design row. GLM intervals are computed on the link scale and transformed to the response scale. The predictions match R’s predict() with interval = \"confidence\".\nuse Phiz\\Datasets;\n\nuse function Phiz\\effect_plot;\n\n// The fit as php-stats returns it: stats_lm('mpg ~ wt + hp + am', $mtcars).\n$fit = json_decode(file_get_contents(__DIR__.'/fits/mtcars-lm.json'), true);\n\n// Formula fits build the prediction design with stats_model_matrix(); here we pass it directly.\n$plot = effect_plot($fit, Datasets::mtcars(), 'wt', by: 'am', design: fn (array $row) =&gt; [1, $row['wt'], $row['hp'], $row['am']])\n    -&gt;labs(x: 'Weight (1000 lbs)', y: 'mpg', color: 'Manual', fill: 'Manual');\n\nuse Phiz\\Datasets;\n\nuse function Phiz\\effect_plot;\n\n// stats_glm('am ~ wt + hp', $mtcars, 'binomial'): predictions on the probability scale.\n$glm = json_decode(file_get_contents(__DIR__.'/fits/mtcars-glm.json'), true);\n\n$plot = effect_plot($glm, Datasets::mtcars(), 'wt', design: fn (array $row) =&gt; [1, $row['wt'], $row['hp']])\n    -&gt;labs(x: 'Weight (1000 lbs)', y: 'P(manual transmission)');\n\npredictions($fit, $grid) returns the predicted rows without plotting them.",
+    "crumbs": [
+      "Guide",
+      "Statistics"
+    ]
+  },
+  {
+    "objectID": "statistics.html#posterior-intervals",
+    "href": "statistics.html#posterior-intervals",
+    "title": "Statistics",
+    "section": "Posterior intervals",
+    "text": "Posterior intervals\ninterval_plot() draws posterior intervals by variable, as bayesplot’s mcmc_intervals() does. It shows a thick inner interval (50% by default), a thin outer interval (90%), and the median. It takes draws in the shape CmdStanPHP’s draws_columns() returns, or a summary from summary_columns(). Selecting a base name such as theta selects all of its elements. These draws come from the eight schools model, sampled with CmdStanPHP.\nuse function Phiz\\interval_plot;\n\n// Draws as CmdStanPHP's $fit-&gt;draws_columns() returns them: variable =&gt; draws, plus .chain, .iteration, .draw.\n$draws = json_decode(file_get_contents(__DIR__.'/fits/eight-schools-draws.json'), true);\n\n$plot = interval_plot($draws, variables: ['mu', 'tau', 'theta']);",
+    "crumbs": [
+      "Guide",
+      "Statistics"
+    ]
+  }
+]

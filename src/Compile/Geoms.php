@@ -274,6 +274,7 @@ final class Geoms
             $encoding[$other] = ['field' => 'density', 'type' => 'quantitative', 'title' => 'density'];
         } else {
             $encoding[$axis]['bin'] = self::bin($c);
+            $encoding[$axis]['title'] ??= $c->name($axis);
             $encoding[$other] = ['aggregate' => 'count', 'type' => 'quantitative', 'title' => 'count'];
         }
         $encoding = self::position($c, $encoding, $other, $axis);
@@ -286,6 +287,7 @@ final class Geoms
         $c->require('x');
         $encoding = $c->encode(['x' => 'x', 'color' => 'color', 'linetype' => 'strokeDash', 'group' => 'detail'] + self::COMMON);
         $encoding['x']['bin'] = self::bin($c);
+        $encoding['x']['title'] ??= $c->name('x');
         $encoding['y'] = ['aggregate' => 'count', 'type' => 'quantitative', 'title' => 'count'];
         $c->channels['y'] = 'y';
 
@@ -515,6 +517,8 @@ final class Geoms
         [$bx, $by] = is_array($bins) ? $bins : [$bins, $bins];
         $encoding['x']['bin'] = ['maxbins' => $bx];
         $encoding['y']['bin'] = ['maxbins' => $by];
+        $encoding['x']['title'] ??= $c->name('x');
+        $encoding['y']['title'] ??= $c->name('y');
         $encoding['color'] = ['aggregate' => 'count', 'type' => 'quantitative', 'title' => 'count'];
         $c->channels['fill'] = 'color';
 

@@ -4,3 +4,5 @@
 /examples/gallery.html
 /examples/output/
 .DS_Store
+/docs/_site/
+/docs/.quarto/

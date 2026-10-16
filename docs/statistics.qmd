@@ -1,0 +1,47 @@
+---
+title: "Statistics"
+---
+
+The statistics helpers build ordinary plots from model results, so their output can be restyled with any `Plot` method. They read the arrays that php-stats returns. Formula fits from `stats_lm`, `stats_glm`, `stats_lmer`, and `stats_glmer` name their coefficients in `columns`. Matrix fits from `stats_ols` and `stats_logistic` take a `names:` argument.
+
+The fits on this page were produced by php-stats from the `mtcars` data and saved in `docs/examples/fits/`.
+
+## Coefficient plots
+
+`coefplot()` draws estimates with confidence intervals and a reference line at no effect. It drops the intercept unless `intercept: true`. It uses the fit's `conf_int` by default, and `level:` recomputes the intervals from the standard errors with t or normal quantiles to match the fit.
+
+{{< include _generated/stats-coefplot.md >}}
+
+Several fits keyed by label are compared side by side, with one color per model. `sort: true` orders terms by estimate, and `terms:` selects and orders them.
+
+{{< include _generated/stats-coefplot-compare.md >}}
+
+`exponentiate: true` shows odds or rate ratios from a GLM on a log scale with the reference at 1.
+
+{{< include _generated/stats-odds.md >}}
+
+## Regression diagnostics
+
+`residual_plot()`, `qq_plot()`, `scale_location_plot()`, and `fitted_plot()` draw the standard diagnostic panels. `diagnostic_plots()` arranges all four in a grid.
+
+{{< include _generated/stats-diagnostics.md >}}
+
+`qq_plot()` also accepts a plain list of values. The QQ geoms compute sample quantiles at (i - 0.5) / n and draw the line through the quartiles, as ggplot2's `stat_qq_line()` does.
+
+## Predicted values
+
+`effect_plot()` draws predictions with confidence bands as one variable varies across its observed range. `by:` draws one line per level of a grouping variable. Other variables are held at their mean, or at their most common value when they are categorical.
+
+For formula fits, phiz builds the prediction design with `stats_model_matrix()` on the fitting data and the grid together, so factor levels and reference categories match the fit. For matrix fits, pass `design:`, a function from a grid row to a design row. GLM intervals are computed on the link scale and transformed to the response scale. The predictions match R's `predict()` with `interval = "confidence"`.
+
+{{< include _generated/stats-effects.md >}}
+
+{{< include _generated/stats-effects-glm.md >}}
+
+`predictions($fit, $grid)` returns the predicted rows without plotting them.
+
+## Posterior intervals
+
+`interval_plot()` draws posterior intervals by variable, as bayesplot's `mcmc_intervals()` does. It shows a thick inner interval (50% by default), a thin outer interval (90%), and the median. It takes draws in the shape CmdStanPHP's `draws_columns()` returns, or a summary from `summary_columns()`. Selecting a base name such as `theta` selects all of its elements. These draws come from the eight schools model, sampled with CmdStanPHP.
+
+{{< include _generated/stats-intervals.md >}}

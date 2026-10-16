@@ -1,0 +1,31 @@
+---
+title: "Interaction"
+---
+
+Interaction in phiz is expressed as Vega-Lite parameters, so it works in any page that renders the specification. Static exports draw the initial state.
+
+## Tooltips, pan, and zoom
+
+`tooltip()` adds tooltips to every layer. With no argument the tooltip shows the encoded fields, and a list of fields shows those fields. `interactive()` binds the scales to dragging and scrolling.
+
+{{< include _generated/interact-tooltip.md >}}
+
+## Brushing and linked views
+
+`brush()` adds a drag-to-select interval named `brush`. Marks outside the selection turn gray. Another layer, or another plot in a composition, can react with `filter: ['param' => 'brush']`. Brush the scatterplot to filter the bar chart:
+
+{{< include _generated/interact-brush.md >}}
+
+## Legend highlighting
+
+`highlight()` binds a selection to the legend of an aesthetic. Clicking an entry fades the other groups. Shift-click selects several.
+
+{{< include _generated/interact-highlight.md >}}
+
+## Sliders and inputs
+
+`slider()` and `dropdown()` add parameters bound to inputs. Expressions in filters and `expr()` values read them by name.
+
+{{< include _generated/interact-slider.md >}}
+
+`param()` and `select()` add any Vega-Lite parameter.

@@ -1,0 +1,77 @@
+---
+title: "Geoms"
+---
+
+Each geom adds a layer. Every geom method accepts these common arguments:
+
+- `aes:`, mappings for this layer only
+- `data:`, data for this layer only
+- `inheritAes: false`, to ignore the plot's mappings
+- `filter:`, a Vega expression string or a selection predicate such as `['param' => 'brush']`
+- fixed styles by their ggplot2 names (`alpha`, `color`, `fill`, `size`, `linewidth`, `linetype`, `shape`) or as any Vega-Lite mark property (`strokeWidth: 2`, `cursor: 'pointer'`)
+
+As in ggplot2, `color` is the outline of bars, areas, and tiles, and `fill` is their interior. For points, lines, and text, `color` is the main color. `linetype` accepts ggplot2's names (`dashed`, `dotted`, `dotdash`, `longdash`, `twodash`), hex dash strings such as `'44'`, or a dash array.
+
+## Distributions
+
+`histogram()` bins a continuous variable. `bins:` sets the maximum number of bins, and Vega-Lite chooses rounded boundaries. `binwidth:` sets the width exactly and `boundary:` anchors the bins.
+
+{{< include _generated/geom-histogram.md >}}
+
+`density()` draws a kernel density estimate per group with Vega-Lite's density transform. `bw:` sets the bandwidth. `adjust:` multiplies a bandwidth computed with R's `bw.nrd0` rule. Mapping `fill` draws filled areas; otherwise the densities are lines.
+
+{{< include _generated/geom-density.md >}}
+
+`boxplot()` draws Tukey boxplots with whiskers at `coef:` interquartile ranges. Points layered on top show the raw data.
+
+{{< include _generated/geom-boxplot.md >}}
+
+`ecdf()`, `freqpoly()`, `qq()`, `qqLine()`, and `rug()` complete the set.
+
+## Amounts
+
+`bar()` counts rows per level of x when y is unmapped, and `col()` draws the y values. `position:` is `stack` (the default), `dodge`, `fill` (stacked to 100%), or `identity`.
+
+{{< include _generated/geom-bars.md >}}
+
+`col()` with `xmin` and `xmax` mapped draws precomputed bins. `tile()` and `rect()` draw heatmaps and rectangles, and `bin2d()` counts points in a two-dimensional grid.
+
+{{< include _generated/geom-tile.md >}}
+
+## Lines and areas
+
+`line()` connects points in order of x. `path()` connects them in data order, and `step()` draws stairsteps. `area()` fills from zero and stacks by `fill`, and `ribbon()` fills between `ymin` and `ymax`.
+
+{{< include _generated/geom-line-area.md >}}
+
+## Intervals
+
+`errorbar()`, `linerange()`, and `pointrange()` draw intervals from `ymin` to `ymax`. With `xmin` and `xmax` they are horizontal. `position: 'dodge'` places groups side by side, which the [coefficient plots](statistics.qmd) use to compare models.
+
+{{< include _generated/geom-intervals.md >}}
+
+## Reference lines
+
+`hline()` and `vline()` draw rules at fixed values, at every value of a list, or at a mapped `yintercept` or `xintercept` field. `abline()` draws `y = intercept + slope * x` across the range of the data.
+
+{{< include _generated/geom-reference.md >}}
+
+## Text
+
+`text()` and `label()` draw the `label` aesthetic. `hjust`, `vjust`, and `angle` follow ggplot2: `angle` turns text counterclockwise. `nudgeX` and `nudgeY` move labels in pixels.
+
+{{< include _generated/geom-text.md >}}
+
+## Fitted curves
+
+`smooth()` fits a curve per group. With `method: 'lm'`, `'quad'`, or `'poly'` and inline data, phiz fits the model in PHP by least squares and draws a pointwise confidence band for the mean at `level:`, as ggplot2's `geom_smooth()` does. These bands match R's `predict(fit, interval = "confidence")`. `se: false` and the other methods (`loess`, `log`, `exp`, `pow`) use Vega-Lite's regression and loess transforms in the browser, without a band. `span:` sets the loess bandwidth.
+
+{{< include _generated/geom-smooth.md >}}
+
+`curve()` draws a PHP function over a range, as ggplot2's `geom_function()` does.
+
+{{< include _generated/geom-curve.md >}}
+
+## Raw layers
+
+`layer()` adds any Vega-Lite layer as given, and `geom()` adds a geom by name with explicit parameter and style arrays.

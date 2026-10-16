@@ -1,0 +1,47 @@
+---
+title: "Scales, coordinates, and labels"
+---
+
+## Scales
+
+`scaleX()`, `scaleY()`, `scaleColor()`, `scaleFill()`, `scaleSize()`, `scaleShape()`, `scaleOpacity()`, and `scaleLinetype()` configure the scale and guide for one aesthetic. Successive calls for the same aesthetic merge.
+
+Scale options are passed to the Vega-Lite scale:
+
+- `type`: `linear`, `log`, `sqrt`, `pow`, `symlog`, `time`, `ordinal`, `quantile`, `quantize`, or `threshold`
+- `domain` and `range`
+- `scheme`, a Vega color scheme such as `viridis`, `blues`, `set2`, or `tableau10`
+- `values`, a manual palette as a level-to-value map or a list in level order
+- `zero`, `nice`, `reverse`, `clamp`, `base`, `exponent`, `domainMid`, and `padding`
+
+Guide options are passed to the axis or legend:
+
+- `name`, the title
+- `breaks`, the tick or legend values
+- `format`, a d3 number or time format
+- `labels`, a Vega label expression
+- `guide: false`, which hides the axis or legend
+
+{{< include _generated/scale-log.md >}}
+
+{{< include _generated/scale-color.md >}}
+
+Continuous position scales fit the data as in ggplot2: points and lines do not force the axis to include zero. Plots with bars, areas, histograms, or densities keep zero, since their lengths are measured from it. `zero: true` restores Vega-Lite's default for a single scale.
+
+The functions in `Phiz\` include ggplot2's common shortcuts, such as `scale_x_log10()`, `scale_y_reverse()`, `scale_color_manual()`, `scale_fill_viridis()`, `scale_color_brewer()`, `scale_color_gradient()`, and `scale_color_gradient2()`.
+
+## Coordinates
+
+`coordFlip()` turns the plot sideways while the mappings stay as written. This is the usual way to give long category labels room.
+
+{{< include _generated/scale-flip.md >}}
+
+`coordCartesian(xlim:, ylim:)`, `xlim()`, and `ylim()` fix the domains and clip marks outside them. ggplot2's `xlim()` removes the data outside the limits, which changes statistics such as smoothers. phiz keeps the data and only zooms.
+
+## Labels
+
+`labs()` sets the title, subtitle, and the title for any aesthetic. A null title removes it. Titles for position aesthetics apply to everything drawn on that axis, including ranges and reference lines. A facet field's name sets its panel header title.
+
+```php
+$plot->labs(title: 'Fuel economy', subtitle: 'EPA data, 1999 and 2008', x: 'Displacement (L)', y: 'Highway mpg', color: 'Drive');
+```

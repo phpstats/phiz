@@ -1,0 +1,36 @@
+---
+title: "Development"
+---
+
+## Tests
+
+```sh
+composer test
+```
+
+The suite runs with Pest and covers several layers:
+
+- Spec snapshots for every geom, feature, statistics helper, and gallery example, in `tests/.pest/snapshots/`. After an intended change, run `vendor/bin/pest --update-snapshots` and review the diff.
+- Validation of every specification against the pinned Vega-Lite 6.1.0 JSON schema in `tests/fixtures/`.
+- Numerical checks of quantiles, least squares, smoothing bands, and predictions against values from R.
+- Blade component tests on Orchestra Testbench.
+- When vl-convert is available, a render of every gallery example to SVG. Some specifications pass the schema but fail to compile, and this smoke test catches them.
+
+Tests that need the php_stats extension skip when it is not loaded. The saved fits in `tests/fixtures/fits.json` cover the rest.
+
+## Gallery
+
+```sh
+php examples/gallery.php [output.html] [--svg=dir]
+```
+
+The gallery writes an HTML page of every example in `examples/catalog.php`, with each example's code. The catalog is a plain PHP array, so other projects can reuse it.
+
+## Documentation
+
+The documentation is a Quarto website in `docs/`. The pages include generated fragments for their examples:
+
+1. Each file in `docs/examples/` returns a chart.
+2. `php scripts/docs-examples.php` runs every example. For each one it writes the code and the resulting specification to `docs/_generated/`, and an SVG to `docs/figures/`. It also copies the gallery.
+3. `quarto render docs` builds the site into `docs/_site/`.
+4. `scripts/render-docs` runs steps 2 and 3, then copies the site into `docs/` for GitHub Pages.

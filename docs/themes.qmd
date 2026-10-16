@@ -1,0 +1,30 @@
+---
+title: "Themes"
+---
+
+`theme()` takes a preset and individual options. The presets follow ggplot2's complete themes:
+
+| Preset | Look |
+| --- | --- |
+| `vega` | Vega-Lite's defaults |
+| `gray` (also `grey`, `ggplot2`) | gray panel with white grid lines |
+| `bw` | white panel with a dark border and light grid |
+| `minimal` | light grid, no border, and no axis lines |
+| `classic` | axis lines and no grid |
+| `light` | light gray border and grid |
+| `dark` | dark background |
+| `void` | no axes or grid |
+
+`baseSize:` scales every font size, with ggplot2's proportions. Themes are written into the specification as Vega-Lite `config`, so HTML and static exports look the same.
+
+{{< include _generated/theme-gray.md >}}
+
+The individual options are `font`, `legendPosition` (`right`, `left`, `top`, `bottom`, or `none`), `background`, `panelBackground`, `panelBorder`, `grid`, `titleAnchor`, and `padding`. `config:` accepts raw Vega-Lite config, merged last. Calls without a preset build on the current theme.
+
+{{< include _generated/theme-options.md >}}
+
+A page can also choose a theme at render time. The vega-embed option `theme` accepts the vega-themes names, and phiz adds `'auto'`, which follows the reader's light or dark mode preference:
+
+```php
+$plot->embed(['theme' => 'auto']);
+```

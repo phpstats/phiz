@@ -1,0 +1,51 @@
+---
+title: "Data and fields"
+---
+
+## Data inputs
+
+`Plot::of()` and each geom's `data:` argument accept data in several shapes:
+
+- a list of row arrays, such as `[['x' => 1, 'y' => 2], ...]`
+- an array of equal-length columns, such as `['x' => [1, 2], 'y' => [2, 3]]`
+- a phibble table, or any object with `toRows()` or `toColumns()`
+- a Laravel Collection, or any object with `toArray()`
+- any iterable of rows, where rows may be arrays or objects
+- `Data::url('cars.csv')`, which Vega-Lite fetches in the browser
+- `Data::named('live')`, a data source the page supplies at runtime
+
+Inline data is embedded in the specification. Values are made safe for JSON: `DateTimeInterface` values become ISO 8601 strings, enums become their values, and `NAN` and `INF` become null, which Vega-Lite treats as missing.
+
+{{< include _generated/data-columns.md >}}
+
+## Field types
+
+Vega-Lite needs a measurement type for every mapped field. phiz infers it from inline data:
+
+- quantitative, when every non-null value is an integer or a float
+- temporal, when every value is an ISO date or date-time string
+- nominal, otherwise
+
+A numeric code such as a cylinder count is quantitative by this rule. It gets a continuous color scale and gradient legend unless you mark it as categorical. Field shorthand sets the type explicitly with a suffix: `:Q` (quantitative), `:N` (nominal), `:O` (ordinal), or `:T` (temporal). `factor('cyl')` is the equivalent of R's `factor(cyl)`, and its `levels:` argument sets the order.
+
+{{< include _generated/data-types.md >}}
+
+URL data cannot be inspected in PHP, so phiz assumes quantitative positions and nominal groupings. Use shorthand types for anything else.
+
+## Aggregates and time units
+
+Shorthand also covers Vega-Lite's aggregates and time units: `'mean(hwy)'`, `'count()'`, `'median(price)'`, `'year(date):O'`, and `'yearmonth(date)'`. The aggregation runs in Vega-Lite, grouped by the other mapped fields.
+
+{{< include _generated/data-aggregate.md >}}
+
+## Computed fields
+
+`calc()` maps an aesthetic to a field computed from a Vega expression. The expression refers to the row as `datum`.
+
+{{< include _generated/data-calc.md >}}
+
+## Field definitions
+
+`field()` builds a `Field` with any Vega-Lite field-definition property, such as `field('date', timeUnit: 'month', title: 'Month')` or `field('term', sort: ['b', 'a', 'c'])`. A raw array is also accepted for any aesthetic and is used as given.
+
+Field names containing dots or brackets, such as R's `Sepal.Length`, are escaped automatically. Vega-Lite would otherwise read them as nested access.

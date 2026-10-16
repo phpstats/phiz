@@ -44,14 +44,16 @@
             "type": "quantitative",
             "bin": {
                 "maxbins": 5
-            }
+            },
+            "title": "x"
         },
         "y": {
             "field": "y",
             "type": "quantitative",
             "bin": {
                 "maxbins": 5
-            }
+            },
+            "title": "y"
         },
         "color": {
             "aggregate": "count",

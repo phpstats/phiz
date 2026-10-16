@@ -73,7 +73,8 @@
                     "type": "quantitative",
                     "bin": {
                         "maxbins": 20
-                    }
+                    },
+                    "title": "waiting"
                 },
                 "x": {
                     "aggregate": "count",

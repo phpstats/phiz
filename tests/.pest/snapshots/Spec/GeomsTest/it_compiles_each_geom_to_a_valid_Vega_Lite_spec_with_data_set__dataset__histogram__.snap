@@ -44,7 +44,8 @@
             "type": "quantitative",
             "bin": {
                 "maxbins": 10
-            }
+            },
+            "title": "y"
         },
         "y": {
             "aggregate": "count",
