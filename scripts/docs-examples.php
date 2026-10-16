@@ -55,6 +55,12 @@ foreach (glob("{$docs}/examples/*.php") as $file) {
     $count++;
 }
 
+// Source listings of shared example code, for pages that show it whole.
+foreach (glob(dirname(__DIR__).'/examples/dashboard.php') as $file) {
+    $code = preg_replace('/^<\?php\s*(declare\(strict_types=1\);\s*)?/', '', (string) file_get_contents($file));
+    file_put_contents("{$docs}/_generated/source-".basename($file, '.php').'.md', "```php\n".trim($code)."\n```\n");
+}
+
 if ($only === []) {
     passthru(escapeshellarg(PHP_BINARY).' '.escapeshellarg(dirname(__DIR__).'/examples/gallery.php').' '.escapeshellarg("{$docs}/gallery.html"), $status);
     if ($status !== 0) {

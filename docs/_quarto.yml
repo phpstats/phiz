@@ -33,6 +33,7 @@ website:
         contents:
           - rendering.qmd
           - laravel.qmd
+          - dashboard.qmd
       - href: gallery.html
         text: Gallery
       - section: "Project"

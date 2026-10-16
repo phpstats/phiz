@@ -42,7 +42,7 @@ class RentChart extends Component
 </div>
 ```
 
-`'theme' => 'auto'` follows the reader's light or dark mode preference.
+`'theme' => 'auto'` follows the reader's light or dark mode preference. [Dashboards with Livewire](dashboard.qmd) builds a complete example with several linked charts.
 
 ## Configuration
 

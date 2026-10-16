@@ -1,0 +1,111 @@
+---
+title: "Dashboards with Livewire"
+---
+
+This page builds a small dashboard of linked charts. A Livewire component holds the filters, phplyr summarizes a phibble table on the server, and phiz renders three charts that all follow the same state. Changing a filter re-renders the component, and each chart re-embeds in place.
+
+## The charts
+
+`fuel_dashboard()` takes the cars table and the filter state and returns three plots and the class summary behind the bar chart. It lives in `examples/dashboard.php`, and the Livewire component below calls it from `render()`.
+
+- The bar chart shows mean highway mpg by class, from `group_by('class') |> summarise(...)`. The selected class is highlighted with a computed field.
+- The scatterplot shows the filtered cars, with one linear fit across all of them.
+- The trend chart compares each manufacturer's mean in 1999 and 2008. It ignores the year filter, so the comparison stays visible.
+
+{{< include _generated/source-dashboard.md >}}
+
+With the drive filter on front-wheel drive, the year on 2008, and the compact class selected, the charts look like this:
+
+{{< include _generated/dashboard-state.md >}}
+
+## The Livewire component
+
+The component keeps the filters as public properties. `render()` passes them to `fuel_dashboard()`. Livewire calls `render()` after every update, so a new selection produces new specifications, and the phiz loader re-embeds each chart whose specification changed.
+
+```php
+namespace App\Livewire;
+
+use Livewire\Attributes\Url;
+use Livewire\Component;
+use Phibble\Frame;
+use Phiz\Datasets;
+
+class FuelDashboard extends Component
+{
+    #[Url]
+    public ?string $drive = null;
+
+    #[Url]
+    public ?int $year = null;
+
+    public ?string $selected = null;
+
+    public function select(string $class): void
+    {
+        $this->selected = $this->selected === $class ? null : $class;
+    }
+
+    public function render()
+    {
+        // In an application this would be Frame::fromQuery(Car::query()) or a cached table.
+        $cars = Frame::fromRows(Datasets::mpg());
+
+        return view('livewire.fuel-dashboard', fuel_dashboard($cars, $this->drive, $this->year, $this->selected));
+    }
+}
+```
+
+The view puts the filters and the three charts side by side. Each `<x-phiz>` has a `wire:key`, so Livewire matches each chart to its element across renders.
+
+```blade
+<div class="space-y-4">
+    <div class="flex gap-4">
+        <select wire:model.live="drive">
+            <option value="">All drives</option>
+            <option value="f">Front</option>
+            <option value="r">Rear</option>
+            <option value="4">4WD</option>
+        </select>
+        <select wire:model.live="year">
+            <option value="">Both years</option>
+            <option value="1999">1999</option>
+            <option value="2008">2008</option>
+        </select>
+    </div>
+
+    <div class="grid grid-cols-3 gap-4">
+        <x-phiz :plot="$bars" wire:key="bars" />
+        <x-phiz :plot="$scatter" wire:key="scatter" />
+        <x-phiz :plot="$trend" wire:key="trend" />
+    </div>
+
+    <ul class="flex gap-2 text-sm">
+        @foreach ($summary->toRows() as $row)
+            <li><button wire:click="select('{{ $row['class'] }}')">{{ $row['class'] }} ({{ $row['cars'] }})</button></li>
+        @endforeach
+    </ul>
+</div>
+```
+
+A click on a chart can also drive the component. The loader dispatches a `phiz:rendered` event with the Vega view, and a small Alpine handler can forward selections with `$wire`:
+
+```blade
+<div x-on:phiz:rendered="$event.detail.view.addEventListener('click', (e, item) => item?.datum?.class && $wire.select(item.datum.class))">
+    <x-phiz :plot="$bars" wire:key="bars" />
+</div>
+```
+
+## Linking in the browser
+
+When the data is small enough to send to the page, a composition links charts without a request to the server. A brush on the scatterplot filters the bar chart, and Vega-Lite recomputes the means in the browser.
+
+{{< include _generated/dashboard-client.md >}}
+
+## Choosing where to compute
+
+The two approaches suit different data:
+
+- **Server-side summaries** send only the summarized rows to the page. They suit large tables, database queries, and statistics that need PHP, such as model fits. Each interaction costs a Livewire round trip.
+- **Browser-side linking** sends the raw rows once and responds to every interaction immediately. It suits up to a few thousand rows.
+
+Both approaches can share a page. For example, a Livewire filter can choose the rows, and a brush can explore them in the browser.
