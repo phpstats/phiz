@@ -44,7 +44,6 @@
             "field": "x",
             "type": "quantitative",
             "scale": {
-                "zero": false,
                 "type": "log"
             },
             "axis": {
@@ -60,8 +59,8 @@
             "field": "y",
             "type": "quantitative",
             "scale": {
-                "zero": false,
-                "type": "sqrt"
+                "type": "sqrt",
+                "zero": false
             },
             "axis": {
                 "format": ".1f"

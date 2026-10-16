@@ -60,18 +60,18 @@
                         "x": {
                             "field": "fitted",
                             "type": "quantitative",
+                            "title": "Fitted values",
                             "scale": {
                                 "zero": false
-                            },
-                            "title": "Fitted values"
+                            }
                         },
                         "y": {
                             "field": "residual",
                             "type": "quantitative",
+                            "title": "Residuals",
                             "scale": {
                                 "zero": false
-                            },
-                            "title": "Residuals"
+                            }
                         }
                     }
                 },
@@ -96,18 +96,18 @@
                         "x": {
                             "field": "fitted",
                             "type": "quantitative",
+                            "title": "Fitted values",
                             "scale": {
                                 "zero": false
-                            },
-                            "title": "Fitted values"
+                            }
                         },
                         "y": {
                             "field": "residual",
                             "type": "quantitative",
+                            "title": "Residuals",
                             "scale": {
                                 "zero": false
-                            },
-                            "title": "Residuals"
+                            }
                         }
                     }
                 }
@@ -310,18 +310,18 @@
                         "x": {
                             "field": "fitted",
                             "type": "quantitative",
+                            "title": "Fitted values",
                             "scale": {
                                 "zero": false
-                            },
-                            "title": "Fitted values"
+                            }
                         },
                         "y": {
                             "field": "root_abs",
                             "type": "quantitative",
+                            "title": "√|standardized residual|",
                             "scale": {
                                 "zero": false
-                            },
-                            "title": "√|standardized residual|"
+                            }
                         }
                     }
                 },
@@ -346,18 +346,18 @@
                         "x": {
                             "field": "fitted",
                             "type": "quantitative",
+                            "title": "Fitted values",
                             "scale": {
                                 "zero": false
-                            },
-                            "title": "Fitted values"
+                            }
                         },
                         "y": {
                             "field": "root_abs",
                             "type": "quantitative",
+                            "title": "√|standardized residual|",
                             "scale": {
                                 "zero": false
-                            },
-                            "title": "√|standardized residual|"
+                            }
                         }
                     }
                 }
@@ -401,18 +401,18 @@
                         "x": {
                             "field": "fitted",
                             "type": "quantitative",
+                            "title": "Fitted values",
                             "scale": {
                                 "zero": false
-                            },
-                            "title": "Fitted values"
+                            }
                         },
                         "y": {
                             "field": "observed",
                             "type": "quantitative",
+                            "title": "Observed",
                             "scale": {
                                 "zero": false
-                            },
-                            "title": "Observed"
+                            }
                         }
                     }
                 },

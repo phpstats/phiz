@@ -1,0 +1,180 @@
+{
+    "$schema": "https://vega.github.io/schema/vega-lite/v6.json",
+    "data": {
+        "values": [
+            {
+                "manufacturer": "audi",
+                "model": "a4",
+                "displ": 1.8,
+                "year": 1999,
+                "cyl": 4,
+                "trans": "auto(l5)",
+                "drv": "f",
+                "cty": 18,
+                "hwy": 29,
+                "fl": "p",
+                "class": "compact"
+            },
+            {
+                "manufacturer": "audi",
+                "model": "a4",
+                "displ": 1.8,
+                "year": 1999,
+                "cyl": 4,
+                "trans": "manual(m5)",
+                "drv": "f",
+                "cty": 21,
+                "hwy": 29,
+                "fl": "p",
+                "class": "compact"
+            },
+            {
+                "manufacturer": "audi",
+                "model": "a4",
+                "displ": 2,
+                "year": 2008,
+                "cyl": 4,
+                "trans": "manual(m6)",
+                "drv": "f",
+                "cty": 20,
+                "hwy": 31,
+                "fl": "p",
+                "class": "compact"
+            },
+            "... 231 more rows"
+        ]
+    },
+    "layer": [
+        {
+            "transform": [
+                {
+                    "quantile": "hwy",
+                    "as": [
+                        "__prob",
+                        "hwy"
+                    ],
+                    "step": 0.004273504273504274
+                },
+                {
+                    "calculate": "quantileNormal(datum.__prob)",
+                    "as": "theoretical"
+                }
+            ],
+            "mark": {
+                "type": "point",
+                "filled": true,
+                "opacity": 0.6
+            },
+            "encoding": {
+                "x": {
+                    "field": "theoretical",
+                    "type": "quantitative",
+                    "title": "theoretical",
+                    "scale": {
+                        "zero": false
+                    }
+                },
+                "y": {
+                    "field": "hwy",
+                    "type": "quantitative",
+                    "title": "hwy",
+                    "scale": {
+                        "zero": false
+                    }
+                }
+            }
+        },
+        {
+            "transform": [
+                {
+                    "quantile": "hwy",
+                    "as": [
+                        "__prob",
+                        "hwy"
+                    ],
+                    "step": 0.004273504273504274
+                },
+                {
+                    "calculate": "quantileNormal(datum.__prob)",
+                    "as": "theoretical"
+                },
+                {
+                    "joinaggregate": [
+                        {
+                            "op": "q1",
+                            "field": "hwy",
+                            "as": "__q1"
+                        },
+                        {
+                            "op": "q3",
+                            "field": "hwy",
+                            "as": "__q3"
+                        }
+                    ]
+                },
+                {
+                    "calculate": "(datum.__q3 - datum.__q1) / (quantileNormal(0.75) - quantileNormal(0.25))",
+                    "as": "__slope"
+                },
+                {
+                    "calculate": "datum.__q1 - datum.__slope * quantileNormal(0.25)",
+                    "as": "__intercept"
+                },
+                {
+                    "aggregate": [
+                        {
+                            "op": "min",
+                            "field": "theoretical",
+                            "as": "__x1"
+                        },
+                        {
+                            "op": "max",
+                            "field": "theoretical",
+                            "as": "__x2"
+                        }
+                    ],
+                    "groupby": [
+                        "__slope",
+                        "__intercept"
+                    ]
+                },
+                {
+                    "calculate": "datum.__intercept + datum.__slope * datum.__x1",
+                    "as": "__y1"
+                },
+                {
+                    "calculate": "datum.__intercept + datum.__slope * datum.__x2",
+                    "as": "__y2"
+                }
+            ],
+            "mark": {
+                "type": "rule",
+                "color": "#D62728"
+            },
+            "encoding": {
+                "x": {
+                    "field": "__x1",
+                    "type": "quantitative",
+                    "title": "theoretical",
+                    "scale": {
+                        "zero": false
+                    }
+                },
+                "x2": {
+                    "field": "__x2"
+                },
+                "y": {
+                    "field": "__y1",
+                    "type": "quantitative",
+                    "title": "hwy",
+                    "scale": {
+                        "zero": false
+                    }
+                },
+                "y2": {
+                    "field": "__y2"
+                }
+            }
+        }
+    ]
+}

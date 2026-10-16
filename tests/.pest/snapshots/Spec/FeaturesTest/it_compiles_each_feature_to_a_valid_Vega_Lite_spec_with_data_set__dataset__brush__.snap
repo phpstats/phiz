@@ -55,12 +55,16 @@
             }
         },
         "color": {
+            "field": "g",
+            "type": "nominal",
             "condition": {
-                "param": "brush",
-                "field": "g",
-                "type": "nominal"
-            },
-            "value": "#cccccc"
+                "test": {
+                    "not": {
+                        "param": "brush"
+                    }
+                },
+                "value": "#cccccc"
+            }
         }
     },
     "params": [

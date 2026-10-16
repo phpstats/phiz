@@ -1,0 +1,113 @@
+{
+    "$schema": "https://vega.github.io/schema/vega-lite/v6.json",
+    "data": {
+        "values": [
+            {
+                "eruptions": 3.6,
+                "waiting": 79
+            },
+            {
+                "eruptions": 1.8,
+                "waiting": 54
+            },
+            {
+                "eruptions": 3.333,
+                "waiting": 74
+            },
+            "... 269 more rows"
+        ]
+    },
+    "layer": [
+        {
+            "transform": [
+                {
+                    "bin": {
+                        "step": 0.25
+                    },
+                    "field": "eruptions",
+                    "as": [
+                        "__bin_start",
+                        "__bin_end"
+                    ]
+                },
+                {
+                    "aggregate": [
+                        {
+                            "op": "count",
+                            "as": "__count"
+                        }
+                    ],
+                    "groupby": [
+                        "__bin_start",
+                        "__bin_end"
+                    ]
+                },
+                {
+                    "joinaggregate": [
+                        {
+                            "op": "sum",
+                            "field": "__count",
+                            "as": "__total"
+                        }
+                    ],
+                    "groupby": []
+                },
+                {
+                    "calculate": "datum.__count / datum.__total / (datum.__bin_end - datum.__bin_start)",
+                    "as": "density"
+                }
+            ],
+            "mark": {
+                "type": "bar",
+                "fill": "#DDDDDD",
+                "stroke": "#999999"
+            },
+            "encoding": {
+                "x": {
+                    "field": "__bin_start",
+                    "type": "quantitative",
+                    "bin": {
+                        "binned": true
+                    },
+                    "title": "Eruption length (minutes)"
+                },
+                "x2": {
+                    "field": "__bin_end"
+                },
+                "y": {
+                    "field": "density",
+                    "type": "quantitative",
+                    "title": "density"
+                }
+            }
+        },
+        {
+            "transform": [
+                {
+                    "density": "eruptions",
+                    "as": [
+                        "eruptions",
+                        "density"
+                    ]
+                }
+            ],
+            "mark": {
+                "type": "line",
+                "color": "#D62728",
+                "strokeWidth": 2
+            },
+            "encoding": {
+                "x": {
+                    "field": "eruptions",
+                    "type": "quantitative",
+                    "title": "Eruption length (minutes)"
+                },
+                "y": {
+                    "field": "density",
+                    "type": "quantitative",
+                    "title": "density"
+                }
+            }
+        }
+    ]
+}

@@ -35,6 +35,7 @@
             "... 3 more rows"
         ]
     },
+    "height": 300,
     "mark": {
         "type": "errorbar",
         "ticks": true

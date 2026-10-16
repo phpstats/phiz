@@ -1,0 +1,115 @@
+{
+    "$schema": "https://vega.github.io/schema/vega-lite/v6.json",
+    "data": {
+        "values": [
+            {
+                "z": -3.090232306167814
+            },
+            {
+                "z": -2.747781385444993
+            },
+            {
+                "z": -2.5758293035489013
+            },
+            "... 497 more rows"
+        ]
+    },
+    "layer": [
+        {
+            "transform": [
+                {
+                    "bin": {
+                        "step": 0.25
+                    },
+                    "field": "z",
+                    "as": [
+                        "__bin_start",
+                        "__bin_end"
+                    ]
+                },
+                {
+                    "aggregate": [
+                        {
+                            "op": "count",
+                            "as": "__count"
+                        }
+                    ],
+                    "groupby": [
+                        "__bin_start",
+                        "__bin_end"
+                    ]
+                },
+                {
+                    "joinaggregate": [
+                        {
+                            "op": "sum",
+                            "field": "__count",
+                            "as": "__total"
+                        }
+                    ],
+                    "groupby": []
+                },
+                {
+                    "calculate": "datum.__count / datum.__total / (datum.__bin_end - datum.__bin_start)",
+                    "as": "density"
+                }
+            ],
+            "mark": {
+                "type": "bar",
+                "fill": "#DDDDDD"
+            },
+            "encoding": {
+                "x": {
+                    "field": "__bin_start",
+                    "type": "quantitative",
+                    "bin": {
+                        "binned": true
+                    },
+                    "title": "z"
+                },
+                "x2": {
+                    "field": "__bin_end"
+                },
+                "y": {
+                    "field": "density",
+                    "type": "quantitative",
+                    "title": "density"
+                }
+            }
+        },
+        {
+            "data": {
+                "values": [
+                    {
+                        "z": -3.5,
+                        "density": 0.0008726826950457602
+                    },
+                    {
+                        "z": -3.43,
+                        "density": 0.0011122297072655649
+                    },
+                    {
+                        "z": -3.36,
+                        "density": 0.001410602256941385
+                    },
+                    "... 98 more rows"
+                ]
+            },
+            "mark": {
+                "type": "line",
+                "color": "#D62728",
+                "strokeWidth": 2
+            },
+            "encoding": {
+                "x": {
+                    "field": "z",
+                    "type": "quantitative"
+                },
+                "y": {
+                    "field": "density",
+                    "type": "quantitative"
+                }
+            }
+        }
+    ]
+}

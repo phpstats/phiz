@@ -417,7 +417,7 @@ final class Geoms
         $c->channels[$axis] = $axis;
         $layers = [];
         foreach (is_array($values) ? $values : [$values] as $value) {
-            $layers[] = ['data' => ['values' => [new \stdClass]], 'mark' => $mark, 'encoding' => [$axis => ['datum' => $value]] + $extra];
+            $layers[] = ['data' => ['values' => [new \stdClass]], 'mark' => $mark, 'encoding' => [$axis => ['datum' => $value] + ($value instanceof Expr ? ['type' => 'quantitative'] : [])] + $extra];
         }
 
         return $layers;

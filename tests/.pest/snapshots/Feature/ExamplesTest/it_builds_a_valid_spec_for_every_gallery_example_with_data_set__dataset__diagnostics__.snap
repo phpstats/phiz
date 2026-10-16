@@ -1,0 +1,481 @@
+{
+    "$schema": "https://vega.github.io/schema/vega-lite/v6.json",
+    "concat": [
+        {
+            "title": "Residuals vs fitted",
+            "data": {
+                "values": [
+                    {
+                        "row": 0,
+                        "fitted": 24.42205781419056,
+                        "residual": -3.422057814190559,
+                        "observed": 21.0
+                    },
+                    {
+                        "row": 1,
+                        "fitted": 23.688021083669767,
+                        "residual": -2.688021083669767,
+                        "observed": 21.0
+                    },
+                    {
+                        "row": 2,
+                        "fitted": 25.92276877954019,
+                        "residual": -3.1227687795401877,
+                        "observed": 22.8
+                    },
+                    "... 29 more rows"
+                ]
+            },
+            "width": 230,
+            "height": 170,
+            "layer": [
+                {
+                    "data": {
+                        "values": [
+                            []
+                        ]
+                    },
+                    "mark": {
+                        "type": "rule",
+                        "color": "#888888",
+                        "strokeDash": [
+                            4,
+                            4
+                        ]
+                    },
+                    "encoding": {
+                        "y": {
+                            "datum": 0,
+                            "title": "Residuals"
+                        }
+                    }
+                },
+                {
+                    "mark": {
+                        "type": "point",
+                        "filled": true,
+                        "opacity": 0.6
+                    },
+                    "encoding": {
+                        "x": {
+                            "field": "fitted",
+                            "type": "quantitative",
+                            "title": "Fitted values",
+                            "scale": {
+                                "zero": false
+                            }
+                        },
+                        "y": {
+                            "field": "residual",
+                            "type": "quantitative",
+                            "title": "Residuals",
+                            "scale": {
+                                "zero": false
+                            }
+                        }
+                    }
+                },
+                {
+                    "transform": [
+                        {
+                            "loess": "residual",
+                            "on": "fitted",
+                            "bandwidth": 0.75,
+                            "as": [
+                                "fitted",
+                                "residual"
+                            ]
+                        }
+                    ],
+                    "mark": {
+                        "type": "line",
+                        "strokeWidth": 1.5,
+                        "color": "#D62728"
+                    },
+                    "encoding": {
+                        "x": {
+                            "field": "fitted",
+                            "type": "quantitative",
+                            "title": "Fitted values",
+                            "scale": {
+                                "zero": false
+                            }
+                        },
+                        "y": {
+                            "field": "residual",
+                            "type": "quantitative",
+                            "title": "Residuals",
+                            "scale": {
+                                "zero": false
+                            }
+                        }
+                    }
+                }
+            ]
+        },
+        {
+            "title": "Normal QQ",
+            "data": {
+                "values": [
+                    {
+                        "sample": -3.422057814190559
+                    },
+                    {
+                        "sample": -2.688021083669767
+                    },
+                    {
+                        "sample": -3.1227687795401877
+                    },
+                    "... 29 more rows"
+                ]
+            },
+            "width": 230,
+            "height": 170,
+            "layer": [
+                {
+                    "transform": [
+                        {
+                            "quantile": "sample",
+                            "as": [
+                                "__prob",
+                                "sample"
+                            ],
+                            "step": 0.03125
+                        },
+                        {
+                            "calculate": "quantileNormal(datum.__prob)",
+                            "as": "theoretical"
+                        },
+                        {
+                            "joinaggregate": [
+                                {
+                                    "op": "q1",
+                                    "field": "sample",
+                                    "as": "__q1"
+                                },
+                                {
+                                    "op": "q3",
+                                    "field": "sample",
+                                    "as": "__q3"
+                                }
+                            ]
+                        },
+                        {
+                            "calculate": "(datum.__q3 - datum.__q1) / (quantileNormal(0.75) - quantileNormal(0.25))",
+                            "as": "__slope"
+                        },
+                        {
+                            "calculate": "datum.__q1 - datum.__slope * quantileNormal(0.25)",
+                            "as": "__intercept"
+                        },
+                        {
+                            "aggregate": [
+                                {
+                                    "op": "min",
+                                    "field": "theoretical",
+                                    "as": "__x1"
+                                },
+                                {
+                                    "op": "max",
+                                    "field": "theoretical",
+                                    "as": "__x2"
+                                }
+                            ],
+                            "groupby": [
+                                "__slope",
+                                "__intercept"
+                            ]
+                        },
+                        {
+                            "calculate": "datum.__intercept + datum.__slope * datum.__x1",
+                            "as": "__y1"
+                        },
+                        {
+                            "calculate": "datum.__intercept + datum.__slope * datum.__x2",
+                            "as": "__y2"
+                        }
+                    ],
+                    "mark": {
+                        "type": "rule",
+                        "color": "#888888",
+                        "strokeDash": [
+                            4,
+                            4
+                        ]
+                    },
+                    "encoding": {
+                        "x": {
+                            "field": "__x1",
+                            "type": "quantitative",
+                            "title": "Theoretical quantiles",
+                            "scale": {
+                                "zero": false
+                            }
+                        },
+                        "x2": {
+                            "field": "__x2"
+                        },
+                        "y": {
+                            "field": "__y1",
+                            "type": "quantitative",
+                            "title": "Residuals",
+                            "scale": {
+                                "zero": false
+                            }
+                        },
+                        "y2": {
+                            "field": "__y2"
+                        }
+                    }
+                },
+                {
+                    "transform": [
+                        {
+                            "quantile": "sample",
+                            "as": [
+                                "__prob",
+                                "sample"
+                            ],
+                            "step": 0.03125
+                        },
+                        {
+                            "calculate": "quantileNormal(datum.__prob)",
+                            "as": "theoretical"
+                        }
+                    ],
+                    "mark": {
+                        "type": "point",
+                        "filled": true,
+                        "opacity": 0.7
+                    },
+                    "encoding": {
+                        "x": {
+                            "field": "theoretical",
+                            "type": "quantitative",
+                            "title": "Theoretical quantiles",
+                            "scale": {
+                                "zero": false
+                            }
+                        },
+                        "y": {
+                            "field": "sample",
+                            "type": "quantitative",
+                            "title": "Residuals",
+                            "scale": {
+                                "zero": false
+                            }
+                        }
+                    }
+                }
+            ]
+        },
+        {
+            "title": "Scale-location",
+            "data": {
+                "values": [
+                    {
+                        "row": 0,
+                        "fitted": 24.42205781419056,
+                        "residual": -3.422057814190559,
+                        "observed": 21.0,
+                        "root_abs": 1.1612871595125602
+                    },
+                    {
+                        "row": 1,
+                        "fitted": 23.688021083669767,
+                        "residual": -2.688021083669767,
+                        "observed": 21.0,
+                        "root_abs": 1.0292296484130812
+                    },
+                    {
+                        "row": 2,
+                        "fitted": 25.92276877954019,
+                        "residual": -3.1227687795401877,
+                        "observed": 22.8,
+                        "root_abs": 1.1093430507442463
+                    },
+                    "... 29 more rows"
+                ]
+            },
+            "width": 230,
+            "height": 170,
+            "layer": [
+                {
+                    "mark": {
+                        "type": "point",
+                        "filled": true,
+                        "opacity": 0.6
+                    },
+                    "encoding": {
+                        "x": {
+                            "field": "fitted",
+                            "type": "quantitative",
+                            "title": "Fitted values",
+                            "scale": {
+                                "zero": false
+                            }
+                        },
+                        "y": {
+                            "field": "root_abs",
+                            "type": "quantitative",
+                            "title": "√|standardized residual|",
+                            "scale": {
+                                "zero": false
+                            }
+                        }
+                    }
+                },
+                {
+                    "transform": [
+                        {
+                            "loess": "root_abs",
+                            "on": "fitted",
+                            "bandwidth": 0.75,
+                            "as": [
+                                "fitted",
+                                "root_abs"
+                            ]
+                        }
+                    ],
+                    "mark": {
+                        "type": "line",
+                        "strokeWidth": 1.5,
+                        "color": "#D62728"
+                    },
+                    "encoding": {
+                        "x": {
+                            "field": "fitted",
+                            "type": "quantitative",
+                            "title": "Fitted values",
+                            "scale": {
+                                "zero": false
+                            }
+                        },
+                        "y": {
+                            "field": "root_abs",
+                            "type": "quantitative",
+                            "title": "√|standardized residual|",
+                            "scale": {
+                                "zero": false
+                            }
+                        }
+                    }
+                }
+            ]
+        },
+        {
+            "title": "Observed vs fitted",
+            "data": {
+                "values": [
+                    {
+                        "row": 0,
+                        "fitted": 24.42205781419056,
+                        "residual": -3.422057814190559,
+                        "observed": 21.0
+                    },
+                    {
+                        "row": 1,
+                        "fitted": 23.688021083669767,
+                        "residual": -2.688021083669767,
+                        "observed": 21.0
+                    },
+                    {
+                        "row": 2,
+                        "fitted": 25.92276877954019,
+                        "residual": -3.1227687795401877,
+                        "observed": 22.8
+                    },
+                    "... 29 more rows"
+                ]
+            },
+            "width": 230,
+            "height": 170,
+            "layer": [
+                {
+                    "mark": {
+                        "type": "point",
+                        "filled": true,
+                        "opacity": 0.6
+                    },
+                    "encoding": {
+                        "x": {
+                            "field": "fitted",
+                            "type": "quantitative",
+                            "title": "Fitted values",
+                            "scale": {
+                                "zero": false
+                            }
+                        },
+                        "y": {
+                            "field": "observed",
+                            "type": "quantitative",
+                            "title": "Observed",
+                            "scale": {
+                                "zero": false
+                            }
+                        }
+                    }
+                },
+                {
+                    "transform": [
+                        {
+                            "aggregate": [
+                                {
+                                    "op": "min",
+                                    "field": "fitted",
+                                    "as": "__x1"
+                                },
+                                {
+                                    "op": "max",
+                                    "field": "fitted",
+                                    "as": "__x2"
+                                }
+                            ]
+                        },
+                        {
+                            "calculate": "0 + 1 * datum.__x1",
+                            "as": "__y1"
+                        },
+                        {
+                            "calculate": "0 + 1 * datum.__x2",
+                            "as": "__y2"
+                        }
+                    ],
+                    "mark": {
+                        "type": "rule",
+                        "color": "#888888",
+                        "strokeDash": [
+                            4,
+                            4
+                        ]
+                    },
+                    "encoding": {
+                        "x": {
+                            "field": "__x1",
+                            "type": "quantitative",
+                            "title": "Fitted values",
+                            "scale": {
+                                "zero": false
+                            }
+                        },
+                        "x2": {
+                            "field": "__x2"
+                        },
+                        "y": {
+                            "field": "__y1",
+                            "type": "quantitative",
+                            "title": "Observed",
+                            "scale": {
+                                "zero": false
+                            }
+                        },
+                        "y2": {
+                            "field": "__y2"
+                        }
+                    }
+                }
+            ]
+        }
+    ],
+    "columns": 2
+}

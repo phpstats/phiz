@@ -1,0 +1,97 @@
+{
+    "$schema": "https://vega.github.io/schema/vega-lite/v6.json",
+    "data": {
+        "values": [
+            {
+                "manufacturer": "audi",
+                "model": "a4",
+                "displ": 1.8,
+                "year": 1999,
+                "cyl": 4,
+                "trans": "auto(l5)",
+                "drv": "f",
+                "cty": 18,
+                "hwy": 29,
+                "fl": "p",
+                "class": "compact"
+            },
+            {
+                "manufacturer": "audi",
+                "model": "a4",
+                "displ": 1.8,
+                "year": 1999,
+                "cyl": 4,
+                "trans": "manual(m5)",
+                "drv": "f",
+                "cty": 21,
+                "hwy": 29,
+                "fl": "p",
+                "class": "compact"
+            },
+            {
+                "manufacturer": "audi",
+                "model": "a4",
+                "displ": 2,
+                "year": 2008,
+                "cyl": 4,
+                "trans": "manual(m6)",
+                "drv": "f",
+                "cty": 20,
+                "hwy": 31,
+                "fl": "p",
+                "class": "compact"
+            },
+            "... 231 more rows"
+        ]
+    },
+    "mark": {
+        "type": "point",
+        "filled": true
+    },
+    "encoding": {
+        "x": {
+            "field": "displ",
+            "type": "quantitative",
+            "scale": {
+                "zero": false
+            }
+        },
+        "y": {
+            "field": "hwy",
+            "type": "quantitative",
+            "scale": {
+                "zero": false
+            }
+        }
+    },
+    "config": {
+        "axis": {
+            "labelFontSize": 10.4,
+            "titleFontSize": 13,
+            "titleFontWeight": "normal",
+            "grid": false,
+            "domain": true,
+            "domainColor": "#000000",
+            "tickColor": "#000000",
+            "labelColor": "#4D4D4D"
+        },
+        "legend": {
+            "labelFontSize": 10.4,
+            "titleFontSize": 13,
+            "titleFontWeight": "normal"
+        },
+        "header": {
+            "labelFontSize": 10.4,
+            "titleFontSize": 13
+        },
+        "title": {
+            "fontSize": 15.6,
+            "subtitleFontSize": 13,
+            "anchor": "start",
+            "fontWeight": "normal"
+        },
+        "view": {
+            "stroke": null
+        }
+    }
+}

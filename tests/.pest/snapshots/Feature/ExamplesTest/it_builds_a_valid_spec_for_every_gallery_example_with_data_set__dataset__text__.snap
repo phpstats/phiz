@@ -1,0 +1,105 @@
+{
+    "$schema": "https://vega.github.io/schema/vega-lite/v6.json",
+    "data": {
+        "values": [
+            {
+                "model": "Mazda RX4",
+                "mpg": 21,
+                "cyl": 6,
+                "disp": 160,
+                "hp": 110,
+                "drat": 3.9,
+                "wt": 2.62,
+                "qsec": 16.46,
+                "vs": 0,
+                "am": 1,
+                "gear": 4,
+                "carb": 4
+            },
+            {
+                "model": "Mazda RX4 Wag",
+                "mpg": 21,
+                "cyl": 6,
+                "disp": 160,
+                "hp": 110,
+                "drat": 3.9,
+                "wt": 2.875,
+                "qsec": 17.02,
+                "vs": 0,
+                "am": 1,
+                "gear": 4,
+                "carb": 4
+            },
+            {
+                "model": "Datsun 710",
+                "mpg": 22.8,
+                "cyl": 4,
+                "disp": 108,
+                "hp": 93,
+                "drat": 3.85,
+                "wt": 2.32,
+                "qsec": 18.61,
+                "vs": 1,
+                "am": 1,
+                "gear": 4,
+                "carb": 1
+            },
+            "... 9 more rows"
+        ]
+    },
+    "layer": [
+        {
+            "mark": {
+                "type": "point",
+                "filled": true
+            },
+            "encoding": {
+                "x": {
+                    "field": "wt",
+                    "type": "quantitative",
+                    "title": "Weight (1000 lbs)",
+                    "scale": {
+                        "zero": false
+                    }
+                },
+                "y": {
+                    "field": "mpg",
+                    "type": "quantitative",
+                    "title": "mpg",
+                    "scale": {
+                        "zero": false
+                    }
+                }
+            }
+        },
+        {
+            "mark": {
+                "type": "text",
+                "fontSize": 9,
+                "dy": -8
+            },
+            "encoding": {
+                "x": {
+                    "field": "wt",
+                    "type": "quantitative",
+                    "title": "Weight (1000 lbs)",
+                    "scale": {
+                        "zero": false
+                    }
+                },
+                "y": {
+                    "field": "mpg",
+                    "type": "quantitative",
+                    "title": "mpg",
+                    "scale": {
+                        "zero": false
+                    }
+                },
+                "text": {
+                    "field": "model",
+                    "type": "nominal"
+                }
+            }
+        }
+    ]
+}

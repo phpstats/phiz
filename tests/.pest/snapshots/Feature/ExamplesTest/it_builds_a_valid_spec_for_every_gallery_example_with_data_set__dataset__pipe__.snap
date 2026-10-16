@@ -1,0 +1,141 @@
+{
+    "$schema": "https://vega.github.io/schema/vega-lite/v6.json",
+    "title": "Loess smooth",
+    "data": {
+        "values": [
+            {
+                "manufacturer": "audi",
+                "model": "a4",
+                "displ": 1.8,
+                "year": 1999,
+                "cyl": 4,
+                "trans": "auto(l5)",
+                "drv": "f",
+                "cty": 18,
+                "hwy": 29,
+                "fl": "p",
+                "class": "compact"
+            },
+            {
+                "manufacturer": "audi",
+                "model": "a4",
+                "displ": 1.8,
+                "year": 1999,
+                "cyl": 4,
+                "trans": "manual(m5)",
+                "drv": "f",
+                "cty": 21,
+                "hwy": 29,
+                "fl": "p",
+                "class": "compact"
+            },
+            {
+                "manufacturer": "audi",
+                "model": "a4",
+                "displ": 2,
+                "year": 2008,
+                "cyl": 4,
+                "trans": "manual(m6)",
+                "drv": "f",
+                "cty": 20,
+                "hwy": 31,
+                "fl": "p",
+                "class": "compact"
+            },
+            "... 231 more rows"
+        ]
+    },
+    "layer": [
+        {
+            "mark": {
+                "type": "point",
+                "filled": true,
+                "opacity": 0.4
+            },
+            "encoding": {
+                "x": {
+                    "field": "displ",
+                    "type": "quantitative",
+                    "title": "Displacement (L)",
+                    "scale": {
+                        "zero": false
+                    }
+                },
+                "y": {
+                    "field": "hwy",
+                    "type": "quantitative",
+                    "title": "Highway mpg",
+                    "scale": {
+                        "zero": false
+                    }
+                }
+            }
+        },
+        {
+            "transform": [
+                {
+                    "loess": "hwy",
+                    "on": "displ",
+                    "bandwidth": 0.5,
+                    "as": [
+                        "displ",
+                        "hwy"
+                    ]
+                }
+            ],
+            "mark": {
+                "type": "line",
+                "strokeWidth": 2,
+                "color": "#3366FF"
+            },
+            "encoding": {
+                "x": {
+                    "field": "displ",
+                    "type": "quantitative",
+                    "title": "Displacement (L)",
+                    "scale": {
+                        "zero": false
+                    }
+                },
+                "y": {
+                    "field": "hwy",
+                    "type": "quantitative",
+                    "title": "Highway mpg",
+                    "scale": {
+                        "zero": false
+                    }
+                }
+            }
+        }
+    ],
+    "config": {
+        "axis": {
+            "labelFontSize": 8.8,
+            "titleFontSize": 11,
+            "titleFontWeight": "normal",
+            "grid": true,
+            "gridColor": "#EBEBEB",
+            "domain": false,
+            "ticks": false,
+            "labelColor": "#4D4D4D"
+        },
+        "legend": {
+            "labelFontSize": 8.8,
+            "titleFontSize": 11,
+            "titleFontWeight": "normal"
+        },
+        "header": {
+            "labelFontSize": 8.8,
+            "titleFontSize": 11
+        },
+        "title": {
+            "fontSize": 13.2,
+            "subtitleFontSize": 11,
+            "anchor": "start",
+            "fontWeight": "normal"
+        },
+        "view": {
+            "stroke": null
+        }
+    }
+}

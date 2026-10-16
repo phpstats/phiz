@@ -1,0 +1,91 @@
+{
+    "$schema": "https://vega.github.io/schema/vega-lite/v6.json",
+    "data": {
+        "values": [
+            {
+                "date": "1967-07-01",
+                "pce": 506.7,
+                "pop": 198712,
+                "psavert": 12.6,
+                "uempmed": 4.5,
+                "unemploy": 2944
+            },
+            {
+                "date": "1967-08-01",
+                "pce": 509.8,
+                "pop": 198911,
+                "psavert": 12.6,
+                "uempmed": 4.7,
+                "unemploy": 2945
+            },
+            {
+                "date": "1967-09-01",
+                "pce": 515.6,
+                "pop": 199113,
+                "psavert": 11.9,
+                "uempmed": 4.6,
+                "unemploy": 2958
+            },
+            "... 571 more rows"
+        ]
+    },
+    "mark": {
+        "type": "line",
+        "color": "#F58518"
+    },
+    "encoding": {
+        "x": {
+            "field": "date",
+            "type": "temporal"
+        },
+        "y": {
+            "field": "psavert",
+            "type": "quantitative",
+            "scale": {
+                "zero": false
+            }
+        }
+    },
+    "config": {
+        "axis": {
+            "labelFontSize": 8.8,
+            "titleFontSize": 11,
+            "titleFontWeight": "normal",
+            "grid": true,
+            "gridColor": "#424242",
+            "domain": false,
+            "tickColor": "#888888",
+            "labelColor": "#CCCCCC",
+            "titleColor": "#EEEEEE"
+        },
+        "legend": {
+            "labelFontSize": 8.8,
+            "titleFontSize": 11,
+            "titleFontWeight": "normal",
+            "labelColor": "#CCCCCC",
+            "titleColor": "#EEEEEE"
+        },
+        "header": {
+            "labelFontSize": 8.8,
+            "titleFontSize": 11,
+            "labelColor": "#CCCCCC",
+            "titleColor": "#EEEEEE"
+        },
+        "title": {
+            "fontSize": 13.2,
+            "subtitleFontSize": 11,
+            "anchor": "start",
+            "fontWeight": "normal",
+            "color": "#EEEEEE",
+            "subtitleColor": "#CCCCCC"
+        },
+        "background": "#1F1F1F",
+        "view": {
+            "fill": "#303030",
+            "stroke": null
+        },
+        "mark": {
+            "color": "#9ECAE1"
+        }
+    }
+}

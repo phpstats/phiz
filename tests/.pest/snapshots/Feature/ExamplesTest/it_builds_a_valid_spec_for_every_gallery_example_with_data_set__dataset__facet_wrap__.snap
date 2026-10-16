@@ -1,0 +1,147 @@
+{
+    "$schema": "https://vega.github.io/schema/vega-lite/v6.json",
+    "data": {
+        "values": [
+            {
+                "manufacturer": "audi",
+                "model": "a4",
+                "displ": 1.8,
+                "year": 1999,
+                "cyl": 4,
+                "trans": "auto(l5)",
+                "drv": "f",
+                "cty": 18,
+                "hwy": 29,
+                "fl": "p",
+                "class": "compact"
+            },
+            {
+                "manufacturer": "audi",
+                "model": "a4",
+                "displ": 1.8,
+                "year": 1999,
+                "cyl": 4,
+                "trans": "manual(m5)",
+                "drv": "f",
+                "cty": 21,
+                "hwy": 29,
+                "fl": "p",
+                "class": "compact"
+            },
+            {
+                "manufacturer": "audi",
+                "model": "a4",
+                "displ": 2,
+                "year": 2008,
+                "cyl": 4,
+                "trans": "manual(m6)",
+                "drv": "f",
+                "cty": 20,
+                "hwy": 31,
+                "fl": "p",
+                "class": "compact"
+            },
+            "... 791 more rows"
+        ]
+    },
+    "facet": {
+        "field": "class",
+        "type": "nominal",
+        "title": null
+    },
+    "columns": 4,
+    "spec": {
+        "width": 150,
+        "height": 120,
+        "layer": [
+            {
+                "transform": [
+                    {
+                        "filter": "!isValid(datum.__layer)"
+                    }
+                ],
+                "mark": {
+                    "type": "point",
+                    "filled": true,
+                    "opacity": 0.5
+                },
+                "encoding": {
+                    "x": {
+                        "field": "displ",
+                        "type": "quantitative",
+                        "scale": {
+                            "zero": false
+                        }
+                    },
+                    "y": {
+                        "field": "hwy",
+                        "type": "quantitative",
+                        "scale": {
+                            "zero": false
+                        }
+                    }
+                }
+            },
+            {
+                "transform": [
+                    {
+                        "filter": "datum.__layer === 1"
+                    }
+                ],
+                "mark": {
+                    "type": "area",
+                    "color": "#999999",
+                    "opacity": 0.4
+                },
+                "encoding": {
+                    "x": {
+                        "field": "displ",
+                        "type": "quantitative",
+                        "scale": {
+                            "zero": false
+                        }
+                    },
+                    "y": {
+                        "field": "__ymin",
+                        "type": "quantitative",
+                        "title": "hwy",
+                        "scale": {
+                            "zero": false
+                        }
+                    },
+                    "y2": {
+                        "field": "__ymax"
+                    }
+                }
+            },
+            {
+                "transform": [
+                    {
+                        "filter": "datum.__layer === 1"
+                    }
+                ],
+                "mark": {
+                    "type": "line",
+                    "strokeWidth": 2,
+                    "color": "#3366FF"
+                },
+                "encoding": {
+                    "x": {
+                        "field": "displ",
+                        "type": "quantitative",
+                        "scale": {
+                            "zero": false
+                        }
+                    },
+                    "y": {
+                        "field": "hwy",
+                        "type": "quantitative",
+                        "scale": {
+                            "zero": false
+                        }
+                    }
+                }
+            }
+        ]
+    }
+}

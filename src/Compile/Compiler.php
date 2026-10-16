@@ -59,11 +59,11 @@ final class Compiler
                 if (! isset($spec['encoding'])) {
                     continue;
                 }
+                $spec['encoding'] = self::label($spec['encoding'], $unit['channels'], $plot->labels);
+                $spec['encoding'] = self::scale($spec['encoding'], $unit['channels'], $plot->scales);
                 if ($zeroFree) {
                     $spec['encoding'] = self::unzero($spec['encoding']);
                 }
-                $spec['encoding'] = self::label($spec['encoding'], $unit['channels'], $plot->labels);
-                $spec['encoding'] = self::scale($spec['encoding'], $unit['channels'], $plot->scales);
                 if ($plot->limits !== []) {
                     $spec = self::limit($spec, $plot->limits);
                 }
@@ -82,7 +82,7 @@ final class Compiler
         $layers = self::interact($layers, $units, $plot);
         $unit = count($layers) === 1 ? $layers[0] : ['layer' => $layers];
 
-        $size = array_filter(['width' => $plot->width, 'height' => $plot->height], fn ($v) => $v !== null);
+        $size = array_filter(['width' => $plot->width ?? self::discreteSize($layers, 'x', $data), 'height' => $plot->height ?? self::discreteSize($layers, 'y', $data)], fn ($v) => $v !== null);
         $spec = $topLevel ? ['$schema' => Assets::SCHEMA] : [];
         if ($plot->description !== null) {
             $spec['description'] = $plot->description;
@@ -119,6 +119,27 @@ final class Compiler
     }
 
     /**
+     * Vega-Lite sizes a discrete axis at 20 pixels per level, which squeezes few levels into a sliver. As ggplot2
+     * keeps the panel size, a discrete axis gets the 300 pixels a continuous one has, growing past that by 20 pixels
+     * per level when there are many.
+     */
+    private static function discreteSize(array $layers, string $channel, Data $data): ?int
+    {
+        $size = null;
+        foreach ($layers as $layer) {
+            $def = $layer['encoding'][$channel] ?? null;
+            if (! is_array($def) || array_is_list($def) || ! in_array($def['type'] ?? null, ['nominal', 'ordinal'], true) || isset($def['bin'])) {
+                continue;
+            }
+            $field = isset($def['field']) && is_string($def['field']) ? stripslashes($def['field']) : null;
+            $levels = $field !== null && $data->isInline() ? count($data->levels($field)) : 0;
+            $size = max($size ?? 0, 300, 20 * $levels);
+        }
+
+        return $size;
+    }
+
+    /**
      * Continuous position scales fit the data, as in ggplot2, rather than Vega-Lite's default of including zero.
      * Plots with bars or areas keep zero, which their lengths are measured from.
      */
@@ -127,7 +148,8 @@ final class Compiler
         foreach (['x', 'y'] as $channel) {
             $def = $encoding[$channel] ?? null;
             if (! is_array($def) || array_is_list($def) || ($def['type'] ?? null) !== 'quantitative' || ! isset($def['field'])
-                || isset($def['bin']) || isset($def['aggregate']) || array_key_exists('zero', $def['scale'] ?? [])) {
+                || isset($def['bin']) || isset($def['aggregate']) || array_key_exists('zero', $def['scale'] ?? [])
+                || in_array($def['scale']['type'] ?? null, ['log', 'symlog'], true) || isset($def['scale']['domain'])) {
                 continue;
             }
             $encoding[$channel]['scale']['zero'] = false;
@@ -332,9 +354,12 @@ final class Compiler
                 if (is_array($current) && isset($current['condition'])) {
                     continue;
                 }
-                $selected = $current !== null && isset($current['field'])
-                    ? ['param' => $condition['param']] + $current
-                    : ['param' => $condition['param'], 'value' => $condition['selected'] ?? ($current['value'] ?? self::markValue($layer, $channel))];
+                if ($current !== null && isset($current['field'])) {
+                    // Keep the field definition (and its legend); unselected marks take the fixed value.
+                    $layers[$i]['encoding'][$channel] = $current + ['condition' => ['test' => ['not' => ['param' => $condition['param']]], 'value' => $condition['unselected']]];
+                    continue;
+                }
+                $selected = ['param' => $condition['param'], 'value' => $condition['selected'] ?? ($current['value'] ?? self::markValue($layer, $channel))];
                 $layers[$i]['encoding'][$channel] = ['condition' => $selected, 'value' => $condition['unselected']];
             }
         }

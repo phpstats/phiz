@@ -35,18 +35,18 @@
                 "x": {
                     "field": "fitted",
                     "type": "quantitative",
+                    "title": "Fitted values",
                     "scale": {
                         "zero": false
-                    },
-                    "title": "Fitted values"
+                    }
                 },
                 "y": {
                     "field": "observed",
                     "type": "quantitative",
+                    "title": "Observed",
                     "scale": {
                         "zero": false
-                    },
-                    "title": "Observed"
+                    }
                 }
             }
         },

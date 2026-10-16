@@ -83,7 +83,8 @@
                 "y": {
                     "datum": {
                         "expr": "cutoff"
-                    }
+                    },
+                    "type": "quantitative"
                 }
             }
         }

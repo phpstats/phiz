@@ -38,18 +38,18 @@
                 "x": {
                     "field": "fitted",
                     "type": "quantitative",
+                    "title": "Fitted values",
                     "scale": {
                         "zero": false
-                    },
-                    "title": "Fitted values"
+                    }
                 },
                 "y": {
                     "field": "root_abs",
                     "type": "quantitative",
+                    "title": "√|standardized residual|",
                     "scale": {
                         "zero": false
-                    },
-                    "title": "√|standardized residual|"
+                    }
                 }
             }
         },
@@ -74,18 +74,18 @@
                 "x": {
                     "field": "fitted",
                     "type": "quantitative",
+                    "title": "Fitted values",
                     "scale": {
                         "zero": false
-                    },
-                    "title": "Fitted values"
+                    }
                 },
                 "y": {
                     "field": "root_abs",
                     "type": "quantitative",
+                    "title": "√|standardized residual|",
                     "scale": {
                         "zero": false
-                    },
-                    "title": "√|standardized residual|"
+                    }
                 }
             }
         }

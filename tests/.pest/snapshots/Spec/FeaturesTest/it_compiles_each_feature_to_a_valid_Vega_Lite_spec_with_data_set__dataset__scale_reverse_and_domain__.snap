@@ -51,11 +51,11 @@
             "field": "y",
             "type": "quantitative",
             "scale": {
-                "zero": true,
                 "domain": [
                     0,
                     10
                 ],
+                "zero": true,
                 "reverse": true
             }
         },

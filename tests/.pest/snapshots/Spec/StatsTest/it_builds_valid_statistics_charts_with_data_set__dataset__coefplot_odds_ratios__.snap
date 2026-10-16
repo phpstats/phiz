@@ -20,6 +20,7 @@
             }
         ]
     },
+    "height": 300,
     "layer": [
         {
             "data": {
@@ -91,7 +92,6 @@
                     "type": "quantitative",
                     "title": "exp(estimate) (95% CI)",
                     "scale": {
-                        "zero": false,
                         "type": "log"
                     }
                 },
@@ -136,11 +136,10 @@
                 "x": {
                     "field": "estimate",
                     "type": "quantitative",
+                    "title": "exp(estimate) (95% CI)",
                     "scale": {
-                        "zero": false,
                         "type": "log"
-                    },
-                    "title": "exp(estimate) (95% CI)"
+                    }
                 },
                 "y": {
                     "field": "term",

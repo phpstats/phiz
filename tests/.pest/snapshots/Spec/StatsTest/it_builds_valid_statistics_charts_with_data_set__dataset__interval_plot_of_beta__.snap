@@ -24,6 +24,7 @@
             }
         ]
     },
+    "height": 300,
     "layer": [
         {
             "data": {
@@ -70,10 +71,10 @@
                 "x": {
                     "field": "ll",
                     "type": "quantitative",
+                    "title": "value",
                     "scale": {
                         "zero": false
-                    },
-                    "title": "value"
+                    }
                 },
                 "y": {
                     "field": "variable",
@@ -117,10 +118,10 @@
                 "x": {
                     "field": "l",
                     "type": "quantitative",
+                    "title": "value",
                     "scale": {
                         "zero": false
-                    },
-                    "title": "value"
+                    }
                 },
                 "y": {
                     "field": "variable",
@@ -167,10 +168,10 @@
                 "x": {
                     "field": "m",
                     "type": "quantitative",
+                    "title": "value",
                     "scale": {
                         "zero": false
-                    },
-                    "title": "value"
+                    }
                 },
                 "y": {
                     "field": "variable",

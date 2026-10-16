@@ -1,0 +1,193 @@
+{
+    "$schema": "https://vega.github.io/schema/vega-lite/v6.json",
+    "title": "Bigger engines, fewer miles",
+    "data": {
+        "values": [
+            {
+                "manufacturer": "audi",
+                "model": "a4",
+                "displ": 1.8,
+                "year": 1999,
+                "cyl": 4,
+                "trans": "auto(l5)",
+                "drv": "f",
+                "cty": 18,
+                "hwy": 29,
+                "fl": "p",
+                "class": "compact"
+            },
+            {
+                "manufacturer": "audi",
+                "model": "a4",
+                "displ": 1.8,
+                "year": 1999,
+                "cyl": 4,
+                "trans": "manual(m5)",
+                "drv": "f",
+                "cty": 21,
+                "hwy": 29,
+                "fl": "p",
+                "class": "compact"
+            },
+            {
+                "manufacturer": "audi",
+                "model": "a4",
+                "displ": 2,
+                "year": 2008,
+                "cyl": 4,
+                "trans": "manual(m6)",
+                "drv": "f",
+                "cty": 20,
+                "hwy": 31,
+                "fl": "p",
+                "class": "compact"
+            },
+            "... 231 more rows"
+        ]
+    },
+    "layer": [
+        {
+            "mark": {
+                "type": "point",
+                "filled": true,
+                "opacity": 0.5
+            },
+            "encoding": {
+                "x": {
+                    "field": "displ",
+                    "type": "quantitative",
+                    "title": "Displacement (L)",
+                    "scale": {
+                        "zero": false
+                    }
+                },
+                "y": {
+                    "field": "hwy",
+                    "type": "quantitative",
+                    "title": "Highway mpg",
+                    "scale": {
+                        "zero": false
+                    }
+                },
+                "color": {
+                    "field": "drv",
+                    "type": "nominal",
+                    "title": "Drive"
+                }
+            }
+        },
+        {
+            "data": {
+                "values": [
+                    {
+                        "drv": "f",
+                        "displ": 1.6,
+                        "hwy": 31.613615586581144,
+                        "__ymin": 30.50720149724262,
+                        "__ymax": 32.72002967591967
+                    },
+                    {
+                        "drv": "f",
+                        "displ": 1.6468354430379748,
+                        "hwy": 31.444877418403987,
+                        "__ymin": 30.373493787826135,
+                        "__ymax": 32.51626104898184
+                    },
+                    {
+                        "drv": "f",
+                        "displ": 1.6936708860759495,
+                        "hwy": 31.27613925022683,
+                        "__ymin": 30.239126826410008,
+                        "__ymax": 32.31315167404365
+                    },
+                    "... 237 more rows"
+                ]
+            },
+            "mark": {
+                "type": "area",
+                "color": "#999999",
+                "opacity": 0.4
+            },
+            "encoding": {
+                "x": {
+                    "field": "displ",
+                    "type": "quantitative",
+                    "title": "Displacement (L)",
+                    "scale": {
+                        "zero": false
+                    }
+                },
+                "y": {
+                    "field": "__ymin",
+                    "type": "quantitative",
+                    "title": "Highway mpg",
+                    "scale": {
+                        "zero": false
+                    }
+                },
+                "y2": {
+                    "field": "__ymax"
+                },
+                "detail": {
+                    "field": "drv",
+                    "type": "nominal"
+                }
+            }
+        },
+        {
+            "data": {
+                "values": [
+                    {
+                        "drv": "f",
+                        "displ": 1.6,
+                        "hwy": 31.613615586581144,
+                        "__ymin": 30.50720149724262,
+                        "__ymax": 32.72002967591967
+                    },
+                    {
+                        "drv": "f",
+                        "displ": 1.6468354430379748,
+                        "hwy": 31.444877418403987,
+                        "__ymin": 30.373493787826135,
+                        "__ymax": 32.51626104898184
+                    },
+                    {
+                        "drv": "f",
+                        "displ": 1.6936708860759495,
+                        "hwy": 31.27613925022683,
+                        "__ymin": 30.239126826410008,
+                        "__ymax": 32.31315167404365
+                    },
+                    "... 237 more rows"
+                ]
+            },
+            "mark": {
+                "type": "line",
+                "strokeWidth": 2
+            },
+            "encoding": {
+                "x": {
+                    "field": "displ",
+                    "type": "quantitative",
+                    "title": "Displacement (L)",
+                    "scale": {
+                        "zero": false
+                    }
+                },
+                "y": {
+                    "field": "hwy",
+                    "type": "quantitative",
+                    "title": "Highway mpg",
+                    "scale": {
+                        "zero": false
+                    }
+                },
+                "color": {
+                    "field": "drv",
+                    "type": "nominal",
+                    "title": "Drive"
+                }
+            }
+        }
+    ]
+}

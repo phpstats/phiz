@@ -1,0 +1,77 @@
+{
+    "$schema": "https://vega.github.io/schema/vega-lite/v6.json",
+    "data": {
+        "values": [
+            {
+                "class": "compact",
+                "mean": 28.29787234042553,
+                "lower": 27.216724726922926,
+                "upper": 29.379019953928136
+            },
+            {
+                "class": "midsize",
+                "mean": 27.29268292682927,
+                "lower": 26.63887366135374,
+                "upper": 27.9464921923048
+            },
+            {
+                "class": "suv",
+                "mean": 18.129032258064516,
+                "lower": 17.387754458837748,
+                "upper": 18.870310057291285
+            },
+            "... 4 more rows"
+        ]
+    },
+    "width": 300,
+    "layer": [
+        {
+            "mark": {
+                "type": "errorbar",
+                "ticks": {
+                    "size": 8
+                }
+            },
+            "encoding": {
+                "x": {
+                    "field": "class",
+                    "type": "nominal",
+                    "title": null
+                },
+                "y": {
+                    "field": "lower",
+                    "type": "quantitative",
+                    "title": "Mean highway mpg (95% CI)",
+                    "scale": {
+                        "zero": false
+                    }
+                },
+                "y2": {
+                    "field": "upper"
+                }
+            }
+        },
+        {
+            "mark": {
+                "type": "point",
+                "filled": true,
+                "size": 50
+            },
+            "encoding": {
+                "x": {
+                    "field": "class",
+                    "type": "nominal",
+                    "title": null
+                },
+                "y": {
+                    "field": "mean",
+                    "type": "quantitative",
+                    "title": "Mean highway mpg (95% CI)",
+                    "scale": {
+                        "zero": false
+                    }
+                }
+            }
+        }
+    ]
+}

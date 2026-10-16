@@ -112,6 +112,7 @@
                     "... 3 more rows"
                 ]
             },
+            "width": 300,
             "transform": [
                 {
                     "filter": {

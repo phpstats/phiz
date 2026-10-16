@@ -47,18 +47,18 @@
         "x": {
             "field": "x",
             "type": "quantitative",
+            "title": "X axis",
             "scale": {
                 "zero": false
-            },
-            "title": "X axis"
+            }
         },
         "y": {
             "field": "y",
             "type": "quantitative",
+            "title": "Y axis",
             "scale": {
                 "zero": false
-            },
-            "title": "Y axis"
+            }
         },
         "color": {
             "field": "g",

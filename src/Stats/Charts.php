@@ -179,7 +179,7 @@ final class Charts
         }
 
         return $plot
-            ->geom('ribbon', aes(ymin: 'lower', ymax: 'upper', fill: $by === null ? null : \Phiz\factor($by)), style: ['alpha' => 0.2] + ($by === null ? ['fill' => '#3366FF'] : []), raw: $by === null ? [] : ['encoding' => ['color' => ['legend' => null]]])
+            ->geom('ribbon', aes(ymin: 'lower', ymax: 'upper', fill: $by === null ? null : \Phiz\factor($by)), style: ['alpha' => 0.2] + ($by === null ? ['fill' => '#3366FF'] : []))
             ->line(linewidth: 2, color: $by === null ? '#3366FF' : null)
             ->labs(y: $response, fill: $by, color: $by);
     }

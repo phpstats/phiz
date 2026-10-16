@@ -29,6 +29,7 @@
             "... 2 more rows"
         ]
     },
+    "height": 300,
     "layer": [
         {
             "data": {
@@ -144,10 +145,10 @@
                 "x": {
                     "field": "estimate",
                     "type": "quantitative",
+                    "title": "Estimate (90% CI)",
                     "scale": {
                         "zero": false
-                    },
-                    "title": "Estimate (90% CI)"
+                    }
                 },
                 "y": {
                     "field": "term",

@@ -56,18 +56,18 @@
                 "x": {
                     "field": "fitted",
                     "type": "quantitative",
+                    "title": "Fitted values",
                     "scale": {
                         "zero": false
-                    },
-                    "title": "Fitted values"
+                    }
                 },
                 "y": {
                     "field": "residual",
                     "type": "quantitative",
+                    "title": "Residuals",
                     "scale": {
                         "zero": false
-                    },
-                    "title": "Residuals"
+                    }
                 }
             }
         },
@@ -92,18 +92,18 @@
                 "x": {
                     "field": "fitted",
                     "type": "quantitative",
+                    "title": "Fitted values",
                     "scale": {
                         "zero": false
-                    },
-                    "title": "Fitted values"
+                    }
                 },
                 "y": {
                     "field": "residual",
                     "type": "quantitative",
+                    "title": "Residuals",
                     "scale": {
                         "zero": false
-                    },
-                    "title": "Residuals"
+                    }
                 }
             }
         }

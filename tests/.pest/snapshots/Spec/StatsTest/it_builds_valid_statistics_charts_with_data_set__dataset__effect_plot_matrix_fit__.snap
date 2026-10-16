@@ -104,10 +104,10 @@
                 "y": {
                     "field": "estimate",
                     "type": "quantitative",
+                    "title": "y",
                     "scale": {
                         "zero": false
-                    },
-                    "title": "y"
+                    }
                 }
             }
         }

@@ -1,0 +1,27 @@
+name: tests
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.5'
+          coverage: none
+
+      - name: Install vl-convert
+        run: |
+          curl -sSfL -o vl-convert.zip https://github.com/vega/vl-convert/releases/download/v1.9.0/vl-convert_linux-64.zip
+          unzip -q vl-convert.zip -d "$HOME/vl-convert"
+          echo "PHIZ_VL_CONVERT=$(find "$HOME/vl-convert" -type f -name vl-convert | head -1)" >> "$GITHUB_ENV"
+
+      - run: composer install --no-interaction --no-progress
+
+      - run: vendor/bin/pest

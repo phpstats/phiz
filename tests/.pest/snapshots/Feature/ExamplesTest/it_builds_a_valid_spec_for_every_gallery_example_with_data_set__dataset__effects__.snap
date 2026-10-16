@@ -1,0 +1,204 @@
+{
+    "$schema": "https://vega.github.io/schema/vega-lite/v6.json",
+    "data": {
+        "values": [
+            {
+                "model": "Mazda RX4",
+                "cyl": 6.1875,
+                "disp": 230.72187500000004,
+                "hp": 146.6875,
+                "drat": 3.5965625000000006,
+                "qsec": 17.848750000000003,
+                "vs": 0,
+                "gear": 3.6875,
+                "carb": 2.8125,
+                "wt": 1.513,
+                "am": 0,
+                "estimate": 24.149929908536784,
+                "lower": 19.976697314113874,
+                "upper": 28.323162502959693,
+                "std_error": 2.037306211872236
+            },
+            {
+                "model": "Mazda RX4",
+                "cyl": 6.1875,
+                "disp": 230.72187500000004,
+                "hp": 146.6875,
+                "drat": 3.5965625000000006,
+                "qsec": 17.848750000000003,
+                "vs": 0,
+                "gear": 3.6875,
+                "carb": 2.8125,
+                "wt": 1.5928163265306121,
+                "am": 0,
+                "estimate": 23.920172593365365,
+                "lower": 19.888341998836218,
+                "upper": 27.952003187894512,
+                "std_error": 1.968275989799374
+            },
+            {
+                "model": "Mazda RX4",
+                "cyl": 6.1875,
+                "disp": 230.72187500000004,
+                "hp": 146.6875,
+                "drat": 3.5965625000000006,
+                "qsec": 17.848750000000003,
+                "vs": 0,
+                "gear": 3.6875,
+                "carb": 2.8125,
+                "wt": 1.6726326530612243,
+                "am": 0,
+                "estimate": 23.69041527819395,
+                "lower": 19.799498992019252,
+                "upper": 27.581331564368647,
+                "std_error": 1.8994838510300514
+            },
+            "... 97 more rows"
+        ]
+    },
+    "layer": [
+        {
+            "data": {
+                "values": [
+                    {
+                        "model": "Mazda RX4",
+                        "mpg": 21,
+                        "cyl": 6,
+                        "disp": 160,
+                        "hp": 110,
+                        "drat": 3.9,
+                        "wt": 2.62,
+                        "qsec": 16.46,
+                        "vs": 0,
+                        "am": 1,
+                        "gear": 4,
+                        "carb": 4
+                    },
+                    {
+                        "model": "Mazda RX4 Wag",
+                        "mpg": 21,
+                        "cyl": 6,
+                        "disp": 160,
+                        "hp": 110,
+                        "drat": 3.9,
+                        "wt": 2.875,
+                        "qsec": 17.02,
+                        "vs": 0,
+                        "am": 1,
+                        "gear": 4,
+                        "carb": 4
+                    },
+                    {
+                        "model": "Datsun 710",
+                        "mpg": 22.8,
+                        "cyl": 4,
+                        "disp": 108,
+                        "hp": 93,
+                        "drat": 3.85,
+                        "wt": 2.32,
+                        "qsec": 18.61,
+                        "vs": 1,
+                        "am": 1,
+                        "gear": 4,
+                        "carb": 1
+                    },
+                    "... 29 more rows"
+                ]
+            },
+            "mark": {
+                "type": "point",
+                "filled": true,
+                "opacity": 0.35
+            },
+            "encoding": {
+                "x": {
+                    "field": "wt",
+                    "type": "quantitative",
+                    "title": "Weight (1000 lbs)",
+                    "scale": {
+                        "zero": false
+                    }
+                },
+                "y": {
+                    "field": "mpg",
+                    "type": "quantitative",
+                    "title": "mpg",
+                    "scale": {
+                        "zero": false
+                    }
+                },
+                "color": {
+                    "field": "am",
+                    "type": "nominal",
+                    "title": "Manual"
+                }
+            }
+        },
+        {
+            "mark": {
+                "type": "area",
+                "opacity": 0.2
+            },
+            "encoding": {
+                "x": {
+                    "field": "wt",
+                    "type": "quantitative",
+                    "title": "Weight (1000 lbs)",
+                    "scale": {
+                        "zero": false
+                    }
+                },
+                "y": {
+                    "field": "lower",
+                    "type": "quantitative",
+                    "title": "mpg",
+                    "scale": {
+                        "zero": false
+                    }
+                },
+                "y2": {
+                    "field": "upper"
+                },
+                "color": {
+                    "field": "am",
+                    "type": "nominal",
+                    "title": "Manual"
+                },
+                "stroke": {
+                    "field": "am",
+                    "type": "nominal",
+                    "title": "Manual"
+                }
+            }
+        },
+        {
+            "mark": {
+                "type": "line",
+                "strokeWidth": 2
+            },
+            "encoding": {
+                "x": {
+                    "field": "wt",
+                    "type": "quantitative",
+                    "title": "Weight (1000 lbs)",
+                    "scale": {
+                        "zero": false
+                    }
+                },
+                "y": {
+                    "field": "estimate",
+                    "type": "quantitative",
+                    "title": "mpg",
+                    "scale": {
+                        "zero": false
+                    }
+                },
+                "color": {
+                    "field": "am",
+                    "type": "nominal",
+                    "title": "Manual"
+                }
+            }
+        }
+    ]
+}

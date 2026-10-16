@@ -20,6 +20,7 @@
             }
         ]
     },
+    "height": 300,
     "layer": [
         {
             "data": {
@@ -132,10 +133,10 @@
                 "x": {
                     "field": "estimate",
                     "type": "quantitative",
+                    "title": "Estimate (95% CI)",
                     "scale": {
                         "zero": false
-                    },
-                    "title": "Estimate (95% CI)"
+                    }
                 },
                 "y": {
                     "field": "term",

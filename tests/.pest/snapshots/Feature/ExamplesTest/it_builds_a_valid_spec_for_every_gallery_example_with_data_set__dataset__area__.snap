@@ -1,0 +1,46 @@
+{
+    "$schema": "https://vega.github.io/schema/vega-lite/v6.json",
+    "data": {
+        "values": [
+            {
+                "date": "2005-05-01",
+                "series": "Unemployed",
+                "value": 7651
+            },
+            {
+                "date": "2005-05-01",
+                "series": "Median weeks unemployed (x1000)",
+                "value": 9100.0
+            },
+            {
+                "date": "2005-06-01",
+                "series": "Unemployed",
+                "value": 7524
+            },
+            "... 237 more rows"
+        ]
+    },
+    "mark": {
+        "type": "area",
+        "opacity": 0.8
+    },
+    "encoding": {
+        "x": {
+            "field": "date",
+            "type": "temporal"
+        },
+        "y": {
+            "field": "value",
+            "type": "quantitative"
+        },
+        "color": {
+            "field": "series",
+            "type": "nominal"
+        }
+    },
+    "config": {
+        "legend": {
+            "orient": "bottom"
+        }
+    }
+}

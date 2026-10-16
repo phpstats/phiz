@@ -1,0 +1,86 @@
+{
+    "$schema": "https://vega.github.io/schema/vega-lite/v6.json",
+    "title": "Old Faithful",
+    "hconcat": [
+        {
+            "data": {
+                "values": [
+                    {
+                        "eruptions": 3.6,
+                        "waiting": 79
+                    },
+                    {
+                        "eruptions": 1.8,
+                        "waiting": 54
+                    },
+                    {
+                        "eruptions": 3.333,
+                        "waiting": 74
+                    },
+                    "... 269 more rows"
+                ]
+            },
+            "width": 260,
+            "height": 220,
+            "mark": {
+                "type": "point",
+                "filled": true,
+                "opacity": 0.5
+            },
+            "encoding": {
+                "x": {
+                    "field": "eruptions",
+                    "type": "quantitative",
+                    "scale": {
+                        "zero": false
+                    }
+                },
+                "y": {
+                    "field": "waiting",
+                    "type": "quantitative",
+                    "scale": {
+                        "zero": false
+                    }
+                }
+            }
+        },
+        {
+            "data": {
+                "values": [
+                    {
+                        "eruptions": 3.6,
+                        "waiting": 79
+                    },
+                    {
+                        "eruptions": 1.8,
+                        "waiting": 54
+                    },
+                    {
+                        "eruptions": 3.333,
+                        "waiting": 74
+                    },
+                    "... 269 more rows"
+                ]
+            },
+            "width": 120,
+            "height": 220,
+            "mark": {
+                "type": "bar"
+            },
+            "encoding": {
+                "y": {
+                    "field": "waiting",
+                    "type": "quantitative",
+                    "bin": {
+                        "maxbins": 20
+                    }
+                },
+                "x": {
+                    "aggregate": "count",
+                    "type": "quantitative",
+                    "title": "count"
+                }
+            }
+        }
+    ]
+}

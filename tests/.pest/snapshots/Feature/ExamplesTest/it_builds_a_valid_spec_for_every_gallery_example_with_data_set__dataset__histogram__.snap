@@ -1,0 +1,39 @@
+{
+    "$schema": "https://vega.github.io/schema/vega-lite/v6.json",
+    "data": {
+        "values": [
+            {
+                "eruptions": 3.6,
+                "waiting": 79
+            },
+            {
+                "eruptions": 1.8,
+                "waiting": 54
+            },
+            {
+                "eruptions": 3.333,
+                "waiting": 74
+            },
+            "... 269 more rows"
+        ]
+    },
+    "mark": {
+        "type": "bar",
+        "fill": "#4C78A8"
+    },
+    "encoding": {
+        "x": {
+            "field": "waiting",
+            "type": "quantitative",
+            "bin": {
+                "maxbins": 30
+            },
+            "title": "Minutes between eruptions"
+        },
+        "y": {
+            "aggregate": "count",
+            "type": "quantitative",
+            "title": "Count"
+        }
+    }
+}
