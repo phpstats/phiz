@@ -71,6 +71,12 @@
             }
         },
         {
+            "transform": [
+                {
+                    "calculate": "cutoff",
+                    "as": "yintercept"
+                }
+            ],
             "data": {
                 "values": [
                     []
@@ -81,10 +87,11 @@
             },
             "encoding": {
                 "y": {
-                    "datum": {
-                        "expr": "cutoff"
-                    },
-                    "type": "quantitative"
+                    "field": "yintercept",
+                    "type": "quantitative",
+                    "scale": {
+                        "zero": false
+                    }
                 }
             }
         }

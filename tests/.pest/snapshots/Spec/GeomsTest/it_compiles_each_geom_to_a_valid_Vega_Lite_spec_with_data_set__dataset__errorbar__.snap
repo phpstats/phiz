@@ -42,7 +42,8 @@
                 "type": "errorbar",
                 "ticks": {
                     "size": 6
-                }
+                },
+                "color": "#4C78A8"
             },
             "encoding": {
                 "x": {

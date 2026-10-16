@@ -71,5 +71,10 @@
             },
             "bind": "scales"
         }
-    ]
+    ],
+    "config": {
+        "legend": {
+            "labelLimit": 320
+        }
+    }
 }

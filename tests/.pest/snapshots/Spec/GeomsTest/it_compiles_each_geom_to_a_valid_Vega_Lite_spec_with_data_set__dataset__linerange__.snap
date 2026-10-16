@@ -37,7 +37,8 @@
     },
     "mark": {
         "type": "rule",
-        "strokeWidth": 3
+        "strokeWidth": 3,
+        "color": "#4C78A8"
     },
     "encoding": {
         "x": {

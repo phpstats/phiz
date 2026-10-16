@@ -71,5 +71,10 @@
         "scale": {
             "y": "independent"
         }
+    },
+    "config": {
+        "legend": {
+            "labelLimit": 320
+        }
     }
 }

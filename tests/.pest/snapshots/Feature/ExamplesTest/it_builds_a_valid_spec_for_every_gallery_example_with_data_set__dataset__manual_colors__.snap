@@ -81,5 +81,10 @@
             },
             "title": "Drive"
         }
+    },
+    "config": {
+        "legend": {
+            "labelLimit": 320
+        }
     }
 }

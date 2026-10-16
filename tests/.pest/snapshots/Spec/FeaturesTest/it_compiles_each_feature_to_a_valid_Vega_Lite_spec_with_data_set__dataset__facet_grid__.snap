@@ -77,5 +77,10 @@
                 "type": "nominal"
             }
         }
+    },
+    "config": {
+        "legend": {
+            "labelLimit": 320
+        }
     }
 }

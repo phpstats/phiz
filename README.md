@@ -1,6 +1,6 @@
 # phiz
 
-A ggplot2-flavoured grammar of graphics for PHP that emits [Vega-Lite](https://vega.github.io/vega-lite/).
+A ggplot2-flavored grammar of graphics for PHP that emits [Vega-Lite](https://vega.github.io/vega-lite/).
 
 phiz builds the spec in PHP. Vega-Lite handles the grammar, layout, scales, interaction and rendering, so you don't write any JavaScript. For static output (PDF reports, email), the [vl-convert](https://github.com/vega/vl-convert) binary turns the same spec into SVG, PNG or PDF.
 

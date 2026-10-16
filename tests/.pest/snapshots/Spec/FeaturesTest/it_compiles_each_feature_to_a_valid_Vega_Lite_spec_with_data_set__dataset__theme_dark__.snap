@@ -76,7 +76,8 @@
             "titleFontSize": 11,
             "titleFontWeight": "normal",
             "labelColor": "#CCCCCC",
-            "titleColor": "#EEEEEE"
+            "titleColor": "#EEEEEE",
+            "labelLimit": 320
         },
         "header": {
             "labelFontSize": 8.8,

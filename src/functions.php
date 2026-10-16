@@ -114,11 +114,11 @@ function scale_shape(mixed ...$args): Closure { return chain('scaleShape', $args
 function scale_alpha(mixed ...$args): Closure { return chain('scaleOpacity', $args); }
 function scale_linetype(mixed ...$args): Closure { return chain('scaleLinetype', $args); }
 
-/** Manual colours: a level => colour map, or colours in level order. */
+/** Manual colors: a level => color map, or colors in level order. */
 function scale_color_manual(array $values, mixed ...$args): Closure { return chain('scaleColor', ['values' => $values] + $args); }
 function scale_fill_manual(array $values, mixed ...$args): Closure { return chain('scaleFill', ['values' => $values] + $args); }
 
-/** Vega colour schemes by name, such as 'viridis', 'blues', 'set2', 'dark2', 'tableau10'. */
+/** Vega color schemes by name, such as 'viridis', 'blues', 'set2', 'dark2', 'tableau10'. */
 function scale_color_scheme(string $scheme, mixed ...$args): Closure { return chain('scaleColor', ['scheme' => $scheme] + $args); }
 function scale_fill_scheme(string $scheme, mixed ...$args): Closure { return chain('scaleFill', ['scheme' => $scheme] + $args); }
 function scale_color_viridis(string $option = 'viridis', mixed ...$args): Closure { return chain('scaleColor', ['scheme' => $option] + $args); }
@@ -126,7 +126,7 @@ function scale_fill_viridis(string $option = 'viridis', mixed ...$args): Closure
 function scale_color_brewer(string $palette = 'set1', mixed ...$args): Closure { return chain('scaleColor', ['scheme' => strtolower($palette)] + $args); }
 function scale_fill_brewer(string $palette = 'set1', mixed ...$args): Closure { return chain('scaleFill', ['scheme' => strtolower($palette)] + $args); }
 
-/** A two-colour gradient, as ggplot2's scale_colour_gradient (defaults #132B43 to #56B1F7). */
+/** A two-color gradient, as ggplot2's scale_colour_gradient (defaults #132B43 to #56B1F7). */
 function scale_color_gradient(string $low = '#132B43', string $high = '#56B1F7', mixed ...$args): Closure { return chain('scaleColor', ['range' => [$low, $high]] + $args); }
 function scale_fill_gradient(string $low = '#132B43', string $high = '#56B1F7', mixed ...$args): Closure { return chain('scaleFill', ['range' => [$low, $high]] + $args); }
 

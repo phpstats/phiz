@@ -63,7 +63,7 @@ foreach ($catalog as $id => [$section, $title, $description, $build]) {
 }
 
 $nav = implode(' · ', array_map(fn ($s) => '<a href="#'.strtolower(preg_replace('/\W+/', '-', $s)).'">'.htmlspecialchars($s).'</a>', array_keys($sections)));
-$body = "<header><h1>phiz gallery</h1><p>{$count} examples of phiz, a ggplot2-flavoured grammar of graphics for PHP that emits Vega-Lite "
+$body = "<header><h1>phiz gallery</h1><p>{$count} examples of phiz, a ggplot2-flavored grammar of graphics for PHP that emits Vega-Lite "
     .'(vega '.Assets::VEGA.', vega-lite '.Assets::VEGA_LITE.', vega-embed '.Assets::VEGA_EMBED.").</p><nav>{$nav}</nav></header>\n";
 foreach ($sections as $section => $html) {
     $body .= '<section id="'.strtolower(preg_replace('/\W+/', '-', $section)).'"><h2>'.htmlspecialchars($section)."</h2><div class=\"grid\">\n{$html}</div></section>\n";

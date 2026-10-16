@@ -54,5 +54,10 @@
             "field": "y",
             "type": "quantitative"
         }
+    },
+    "config": {
+        "legend": {
+            "labelLimit": 320
+        }
     }
 }

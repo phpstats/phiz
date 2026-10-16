@@ -54,5 +54,10 @@
             "title": "count",
             "stack": "normalize"
         }
+    },
+    "config": {
+        "legend": {
+            "labelLimit": 320
+        }
     }
 }

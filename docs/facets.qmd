@@ -8,6 +8,8 @@ title: "Facets and composition"
 
 {{< include _generated/facet-wrap.md >}}
 
+`labeller: 'both'` labels panels as "field: value", as ggplot2's `label_both` does, and `header:` passes Vega-Lite header properties such as `labelFontWeight`.
+
 `facetGrid()` lays panels out by a `rows:` field and a `cols:` field.
 
 {{< include _generated/facet-grid.md >}}

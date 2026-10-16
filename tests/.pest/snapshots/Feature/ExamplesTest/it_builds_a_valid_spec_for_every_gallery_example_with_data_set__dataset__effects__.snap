@@ -200,5 +200,10 @@
                 }
             }
         }
-    ]
+    ],
+    "config": {
+        "legend": {
+            "labelLimit": 320
+        }
+    }
 }

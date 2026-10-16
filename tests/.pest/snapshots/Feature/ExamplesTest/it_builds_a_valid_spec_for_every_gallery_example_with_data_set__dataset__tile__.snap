@@ -71,5 +71,10 @@
                 "scheme": "viridis"
             }
         }
+    },
+    "config": {
+        "legend": {
+            "labelLimit": 320
+        }
     }
 }

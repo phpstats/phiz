@@ -45,5 +45,10 @@
                 "scheme": "blues"
             }
         }
+    },
+    "config": {
+        "legend": {
+            "labelLimit": 320
+        }
     }
 }

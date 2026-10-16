@@ -62,5 +62,10 @@
             "field": "h",
             "type": "nominal"
         }
+    },
+    "config": {
+        "legend": {
+            "labelLimit": 320
+        }
     }
 }

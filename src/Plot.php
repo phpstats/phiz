@@ -349,7 +349,7 @@ final class Plot extends Chart
         return $this->scale('y', ...$options);
     }
 
-    /** Colour scale: scheme ('viridis', 'blues', 'category10', ...), range, values (manual palette), domainMid, ... */
+    /** Color scale: scheme ('viridis', 'blues', 'category10', ...), range, values (manual palette), domainMid, ... */
     public function scaleColor(mixed ...$options): self
     {
         return $this->scale('color', ...$options);
@@ -407,28 +407,38 @@ final class Plot extends Chart
 
     /**
      * Small multiples wrapped into rows. scales: fixed, free, free_x, free_y. With several fields the panels are
-     * their combinations.
+     * their combinations. labeller: 'both' labels panels "field: value", as ggplot2's label_both.
      *
      * @param array<string, mixed> $header Vega-Lite header properties for the panel labels.
      */
-    public function facetWrap(string|array $facets, ?int $ncol = null, ?int $nrow = null, string $scales = 'fixed', array $header = []): self
+    public function facetWrap(string|array $facets, ?int $ncol = null, ?int $nrow = null, string $scales = 'fixed', string $labeller = 'value', array $header = []): self
     {
         $facets = (array) $facets;
         if ($facets === []) {
             throw new InvalidArgumentException('facetWrap needs a field.');
         }
 
-        return clone($this, ['facet' => ['type' => 'wrap', 'facets' => array_values($facets), 'ncol' => $ncol, 'nrow' => $nrow, 'scales' => $scales, 'header' => $header]]);
+        return clone($this, ['facet' => ['type' => 'wrap', 'facets' => array_values($facets), 'ncol' => $ncol, 'nrow' => $nrow, 'scales' => $scales, 'labeller' => self::labeller($labeller), 'header' => $header]]);
     }
 
     /** A grid of panels by rows and/or cols fields. */
-    public function facetGrid(?string $rows = null, ?string $cols = null, string $scales = 'fixed', array $header = []): self
+    public function facetGrid(?string $rows = null, ?string $cols = null, string $scales = 'fixed', string $labeller = 'value', array $header = []): self
     {
         if ($rows === null && $cols === null) {
             throw new InvalidArgumentException('facetGrid needs rows, cols, or both.');
         }
 
-        return clone($this, ['facet' => ['type' => 'grid', 'rows' => $rows, 'cols' => $cols, 'scales' => $scales, 'header' => $header]]);
+        return clone($this, ['facet' => ['type' => 'grid', 'rows' => $rows, 'cols' => $cols, 'scales' => $scales, 'labeller' => self::labeller($labeller), 'header' => $header]]);
+    }
+
+    /** Panel labels: 'value' (ggplot2's label_value) or 'both' (label_both, "field: value"). */
+    private static function labeller(string $labeller): string
+    {
+        if (! in_array($labeller, ['value', 'both'], true)) {
+            throw new InvalidArgumentException("labeller must be 'value' or 'both'.");
+        }
+
+        return $labeller;
     }
 
     // Labels, theme, size.

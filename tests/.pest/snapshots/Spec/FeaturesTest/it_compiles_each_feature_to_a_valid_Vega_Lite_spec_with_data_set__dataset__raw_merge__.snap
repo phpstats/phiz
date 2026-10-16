@@ -59,12 +59,15 @@
             "type": "nominal"
         }
     },
-    "autosize": {
-        "type": "fit"
-    },
     "config": {
+        "legend": {
+            "labelLimit": 320
+        },
         "view": {
             "stroke": null
         }
+    },
+    "autosize": {
+        "type": "fit"
     }
 }

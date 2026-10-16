@@ -65,7 +65,7 @@ $draws = (function () {
 
 return [
     // Basics.
-    'scatter' => ['Basics', 'Scatterplot', 'Points with a colour mapping.', fn () => Plot::of($mpg)
+    'scatter' => ['Basics', 'Scatterplot', 'Points with a color mapping.', fn () => Plot::of($mpg)
         ->aes(x: 'displ', y: 'hwy', color: 'class')
         ->point()
         ->labs(x: 'Engine displacement (L)', y: 'Highway mpg', color: 'Class')],
@@ -207,12 +207,12 @@ return [
         ->scaleX(type: 'log', breaks: [500, 1000, 2000, 5000, 10000], name: 'Personal consumption ($bn, log)')
         ->labs(y: 'Savings rate (%)')],
 
-    'manual-colors' => ['Scales and themes', 'Manual colours', 'A level => colour map.', fn () => Plot::of($mpg)
+    'manual-colors' => ['Scales and themes', 'Manual colors', 'A level => color map.', fn () => Plot::of($mpg)
         ->aes(x: 'displ', y: 'hwy', color: 'drv')
         ->point()
         ->scaleColor(values: ['4' => '#D95F02', 'f' => '#1B9E77', 'r' => '#7570B3'], name: 'Drive')],
 
-    'gradient' => ['Scales and themes', 'Continuous colour', 'A viridis gradient for a numeric field.', fn () => Plot::of($mpg)
+    'gradient' => ['Scales and themes', 'Continuous color', 'A viridis gradient for a numeric field.', fn () => Plot::of($mpg)
         ->aes(x: 'displ', y: 'hwy', color: 'cty')
         ->point(size: 50)
         ->scaleColor(scheme: 'viridis')],

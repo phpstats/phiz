@@ -76,7 +76,7 @@ final class Scale
         }
         $scale = array_filter(compact('type', 'domain', 'range', 'scheme', 'zero', 'nice', 'reverse', 'clamp', 'base', 'exponent', 'domainMid', 'padding', 'interpolate'), fn ($v) => $v !== null);
         if ($interpolate === null && isset($scale['range']) && count($scale['range']) > 1 && is_string($scale['range'][0]) && str_starts_with($scale['range'][0], '#') && ($type === null || ! in_array($type, ['ordinal', 'band', 'point'], true))) {
-            // Gradients between colours read best interpolated in a perceptual space, as ggplot2 does.
+            // Gradients between colors read best interpolated in a perceptual space, as ggplot2 does.
             $scale['interpolate'] = 'hcl';
         }
         $scale = array_replace($scale, $extra);

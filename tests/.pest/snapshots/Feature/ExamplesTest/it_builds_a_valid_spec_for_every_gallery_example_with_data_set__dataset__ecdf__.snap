@@ -88,5 +88,10 @@
                 "zero": false
             }
         }
+    },
+    "config": {
+        "legend": {
+            "labelLimit": 320
+        }
     }
 }

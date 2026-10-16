@@ -59,5 +59,10 @@
             "title": "count",
             "stack": null
         }
+    },
+    "config": {
+        "legend": {
+            "labelLimit": 320
+        }
     }
 }

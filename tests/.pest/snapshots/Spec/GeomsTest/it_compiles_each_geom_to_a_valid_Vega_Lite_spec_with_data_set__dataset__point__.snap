@@ -64,5 +64,10 @@
             "field": "n",
             "type": "quantitative"
         }
+    },
+    "config": {
+        "legend": {
+            "labelLimit": 320
+        }
     }
 }

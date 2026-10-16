@@ -57,5 +57,10 @@
             "type": "quantitative",
             "title": "count"
         }
+    },
+    "config": {
+        "legend": {
+            "labelLimit": 320
+        }
     }
 }

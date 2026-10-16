@@ -73,7 +73,8 @@
         "legend": {
             "labelFontSize": 8.8,
             "titleFontSize": 11,
-            "titleFontWeight": "normal"
+            "titleFontWeight": "normal",
+            "labelLimit": 320
         },
         "header": {
             "labelFontSize": 8.8,

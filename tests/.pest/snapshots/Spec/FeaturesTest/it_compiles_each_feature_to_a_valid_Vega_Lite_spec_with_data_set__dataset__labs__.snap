@@ -65,5 +65,10 @@
             "type": "nominal",
             "title": "Group"
         }
+    },
+    "config": {
+        "legend": {
+            "labelLimit": 320
+        }
     }
 }

@@ -1,6 +1,6 @@
 {
     "name": "erikwestlund/phiz",
-    "description": "A ggplot2-flavoured grammar of graphics for PHP that emits Vega-Lite",
+    "description": "A ggplot2-flavored grammar of graphics for PHP that emits Vega-Lite",
     "type": "library",
     "license": "MIT",
     "keywords": ["visualization", "vega-lite", "ggplot2", "grammar of graphics", "charts", "statistics"],

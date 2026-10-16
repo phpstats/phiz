@@ -62,7 +62,8 @@
     "config": {
         "font": "Georgia",
         "legend": {
-            "orient": "bottom"
+            "orient": "bottom",
+            "labelLimit": 320
         },
         "background": "#fafafa",
         "axis": {

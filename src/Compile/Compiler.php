@@ -111,11 +111,30 @@ final class Compiler
         } else {
             $spec += $size + $unit;
         }
-        if ($plot->config !== []) {
-            $spec['config'] = $plot->config;
+        $config = $plot->config;
+        if (self::hasLegend($layers) && ! isset($config['legend']['labelLimit'])) {
+            // Vega-Lite truncates legend labels at 160 pixels; long category names are common in data.
+            $config['legend']['labelLimit'] = 320;
+        }
+        if ($config !== []) {
+            $spec['config'] = $config;
         }
 
         return $plot->raw === [] ? $spec : Theme::merge($spec, $plot->raw);
+    }
+
+    private static function hasLegend(array $layers): bool
+    {
+        foreach ($layers as $layer) {
+            foreach (['color', 'fill', 'stroke', 'shape', 'size', 'opacity', 'strokeDash', 'strokeWidth'] as $channel) {
+                $def = $layer['encoding'][$channel] ?? null;
+                if (is_array($def) && (isset($def['field']) || isset($def['aggregate']) || isset($def['condition']['field'])) && ! array_key_exists('legend', $def)) {
+                    return true;
+                }
+            }
+        }
+
+        return false;
     }
 
     /**
@@ -417,6 +436,9 @@ final class Compiler
         $def = function (string $field) use ($data, $header, $plot) {
             $type = $data->type($field);
             $out = ['field' => Field::escape($field), 'type' => $type === 'quantitative' || $type === 'temporal' ? 'ordinal' : 'nominal', 'title' => $plot->labels[$field] ?? null];
+            if (($plot->facet['labeller'] ?? 'value') === 'both' && $field !== '__facet') {
+                $header += ['labelExpr' => json_encode($field, JSON_UNESCAPED_UNICODE)." + ': ' + datum.value"];
+            }
             if ($header !== []) {
                 $out['header'] = $header;
             }

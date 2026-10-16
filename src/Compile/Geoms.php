@@ -19,6 +19,8 @@ final class Geoms
 {
     private const SMOOTH_COLOR = '#3366FF';
 
+    private const INTERVAL_COLOR = '#4C78A8';
+
     private const COMMON = ['opacity' => 'opacity', 'tooltip' => 'tooltip', 'href' => 'href', 'key' => 'key', 'description' => 'description'];
 
     /** @return list<array<string, mixed>> */
@@ -106,7 +108,7 @@ final class Geoms
         }
         $as = "__jitter_{$axis}";
         if ($c->discrete($axis)) {
-            // Offsets span the band, so a domain of ±0.25/w moves points up to w of a band from its centre.
+            // Offsets span the band, so a domain of ±0.25/w moves points up to w of a band from its center.
             $half = 0.25 / ($amount ?? 0.4);
             $c->calculate('random() - 0.5', $as);
             $encoding["{$axis}Offset"] = ['field' => $as, 'type' => 'quantitative', 'scale' => ['domain' => [-$half, $half]]];
@@ -337,7 +339,7 @@ final class Geoms
         }
         $mark = $c->mark('boxplot', 'filled', $defaults);
         if (isset($mark['stroke'])) {
-            // A boxplot's colour is its rule, box outline, and median.
+            // A boxplot's color is its rule, box outline, and median.
             $mark['rule'] = ['stroke' => $mark['stroke']];
             $mark['median'] = ['stroke' => $mark['stroke']];
             $mark['box'] = ['stroke' => $mark['stroke']];
@@ -364,7 +366,7 @@ final class Geoms
     {
         $encoding = self::ranged($c, self::rangeMap($c) + ['color' => 'color', 'group' => 'detail', 'detail' => 'detail'] + self::COMMON);
         $style = $c->layer->style;
-        $mark = ['type' => 'errorbar', 'ticks' => true];
+        $mark = ['type' => 'errorbar', 'ticks' => true] + (self::intervalColor($c) === null ? [] : ['color' => self::INTERVAL_COLOR]);
         foreach (['color' => 'color', 'colour' => 'color', 'alpha' => 'opacity', 'opacity' => 'opacity', 'linewidth' => 'thickness', 'size' => 'thickness', 'width' => 'size'] as $from => $to) {
             if (isset($style[$from])) {
                 $mark[$to] = $style[$from];
@@ -383,7 +385,19 @@ final class Geoms
     {
         $encoding = self::ranged($c, self::rangeMap($c) + ['color' => 'color', 'size' => 'strokeWidth', 'linetype' => 'strokeDash', 'group' => 'detail', 'detail' => 'detail'] + self::COMMON);
 
-        return ['mark' => $c->mark('rule', 'line'), 'encoding' => self::dodge($c, $encoding)];
+        $mark = $c->mark('rule', 'line');
+        $mark['color'] ??= self::intervalColor($c);
+
+        return ['mark' => array_filter($mark, fn ($v) => $v !== null), 'encoding' => self::dodge($c, $encoding)];
+    }
+
+    /**
+     * Vega-Lite draws rules black by default, which vanishes on dark backgrounds. Unmapped intervals take the default
+     * mark color instead, the same as their points.
+     */
+    private static function intervalColor(Context $c): ?string
+    {
+        return $c->has('color') || isset($c->layer->style['color']) || isset($c->layer->style['colour']) ? null : self::INTERVAL_COLOR;
     }
 
     private static function pointrange(Context $c): array
@@ -394,6 +408,7 @@ final class Geoms
         $range = self::ranged($c, $map + ['color' => 'color', 'group' => 'detail', 'detail' => 'detail'] + self::COMMON);
         $style = array_filter(Style::mark($c->layer->style, 'point'), fn ($v) => $v !== null);
         $style['linewidth'] = $c->layer->style['linewidth'] ?? null;
+        $style['color'] ??= self::intervalColor($c);
         $rule = ['type' => 'rule'] + array_filter(['strokeWidth' => $style['linewidth'] ?? 1.5, 'color' => $style['color'] ?? null, 'opacity' => $style['opacity'] ?? null], fn ($v) => $v !== null);
         $point = $c->encode([$horizontal ? 'x' : 'y' => $horizontal ? 'x' : 'y', $horizontal ? 'y' : 'x' => $horizontal ? 'y' : 'x', 'color' => 'color', 'fill' => 'fill', 'shape' => 'shape'] + self::COMMON);
         $dot = ['type' => 'point', 'filled' => true] + array_filter(['size' => $style['size'] ?? 50, 'color' => $style['color'] ?? null, 'fill' => $style['fill'] ?? null, 'opacity' => $style['opacity'] ?? null, 'shape' => $style['shape'] ?? null], fn ($v) => $v !== null);
@@ -419,7 +434,13 @@ final class Geoms
         $c->channels[$axis] = $axis;
         $layers = [];
         foreach (is_array($values) ? $values : [$values] as $value) {
-            $layers[] = ['data' => ['values' => [new \stdClass]], 'mark' => $mark, 'encoding' => [$axis => ['datum' => $value] + ($value instanceof Expr ? ['type' => 'quantitative'] : [])] + $extra];
+            if ($value instanceof Expr) {
+                // A parameter's value becomes a field named like the axis's own field, so the axis title is unchanged.
+                $as = $c->name($axis) ?? $aesthetic;
+                $layers[] = ['data' => ['values' => [new \stdClass]], 'transform' => [['calculate' => $value->expr, 'as' => $as]], 'mark' => $mark, 'encoding' => [$axis => ['field' => Field::escape($as), 'type' => 'quantitative']] + $extra];
+                continue;
+            }
+            $layers[] = ['data' => ['values' => [new \stdClass]], 'mark' => $mark, 'encoding' => [$axis => ['datum' => $value]] + $extra];
         }
 
         return $layers;

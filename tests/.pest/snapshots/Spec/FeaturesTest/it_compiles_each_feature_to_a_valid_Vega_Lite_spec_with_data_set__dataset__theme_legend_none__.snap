@@ -74,7 +74,8 @@
             "labelFontSize": 8.8,
             "titleFontSize": 11,
             "titleFontWeight": "normal",
-            "disable": true
+            "disable": true,
+            "labelLimit": 320
         },
         "header": {
             "labelFontSize": 8.8,

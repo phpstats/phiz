@@ -30,7 +30,8 @@
                 "type": "errorbar",
                 "ticks": {
                     "size": 8
-                }
+                },
+                "color": "#4C78A8"
             },
             "encoding": {
                 "x": {

@@ -40,7 +40,8 @@
     },
     "config": {
         "legend": {
-            "orient": "bottom"
+            "orient": "bottom",
+            "labelLimit": 320
         }
     }
 }

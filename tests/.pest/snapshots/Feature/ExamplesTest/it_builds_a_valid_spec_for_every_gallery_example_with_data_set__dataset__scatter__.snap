@@ -70,5 +70,10 @@
             "type": "nominal",
             "title": "Class"
         }
+    },
+    "config": {
+        "legend": {
+            "labelLimit": 320
+        }
     }
 }

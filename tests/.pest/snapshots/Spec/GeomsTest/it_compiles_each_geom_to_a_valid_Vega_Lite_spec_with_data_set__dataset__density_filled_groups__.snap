@@ -68,5 +68,10 @@
             "title": "density",
             "stack": null
         }
+    },
+    "config": {
+        "legend": {
+            "labelLimit": 320
+        }
     }
 }

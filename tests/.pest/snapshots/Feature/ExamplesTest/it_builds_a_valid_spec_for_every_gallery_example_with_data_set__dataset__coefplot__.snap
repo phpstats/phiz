@@ -81,7 +81,8 @@
         {
             "mark": {
                 "type": "rule",
-                "strokeWidth": 1.5
+                "strokeWidth": 1.5,
+                "color": "#4C78A8"
             },
             "encoding": {
                 "y": {
@@ -137,7 +138,8 @@
             "mark": {
                 "type": "point",
                 "filled": true,
-                "size": 50
+                "size": 50,
+                "color": "#4C78A8"
             },
             "encoding": {
                 "x": {

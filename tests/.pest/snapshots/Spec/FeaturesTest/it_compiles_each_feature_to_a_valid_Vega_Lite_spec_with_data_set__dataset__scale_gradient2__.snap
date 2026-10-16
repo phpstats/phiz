@@ -67,5 +67,10 @@
                 "interpolate": "hcl"
             }
         }
+    },
+    "config": {
+        "legend": {
+            "labelLimit": 320
+        }
     }
 }
