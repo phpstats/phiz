@@ -64,14 +64,15 @@ final class Fit
     }
 
     /**
-     * Polynomial fits of y on x per group, evaluated on n points across each group's x range with a pointwise
-     * confidence band for the mean, as ggplot2's geom_smooth(method = "lm", se = TRUE).
+     * Fits of y on x per group, evaluated on n points across each group's x range with a pointwise confidence band
+     * for the mean, as ggplot2's geom_smooth(se = TRUE): polynomials of the given degree (method = "lm"), or loess
+     * with the given span (a local quadratic, as R's loess() with surface = "direct").
      *
      * @param list<array<string, mixed>> $rows
      * @param list<string> $groups
      * @return list<array<string, mixed>> Rows with x, y, __ymin, __ymax, and the group fields.
      */
-    public static function smooth(array $rows, string $x, string $y, array $groups, int $degree = 1, float $level = 0.95, int $n = 80): array
+    public static function smooth(array $rows, string $x, string $y, array $groups, int $degree = 1, float $level = 0.95, int $n = 80, ?float $span = null): array
     {
         if (! ($level > 0 && $level < 1)) {
             throw new InvalidArgumentException('level must be between 0 and 1.');
@@ -96,6 +97,24 @@ final class Fit
         $out = [];
         foreach ($sets as $set) {
             $count = count($set['x']);
+            if ($span !== null) {
+                [$lo, $hi] = [min($set['x']), max($set['x'])];
+                $grid = array_map(fn ($i) => $lo + ($hi - $lo) * $i / ($n - 1), range(0, $n - 1));
+                try {
+                    $fit = $hi > $lo ? self::loess($set['x'], $set['y'], $grid, $span) : null;
+                } catch (InvalidArgumentException) {
+                    $fit = null; // Too few points for the span; ggplot2 drops such groups with a warning.
+                }
+                if ($fit === null || ! ($fit['df'] > 0) || ! is_finite($fit['sigma'])) {
+                    continue;
+                }
+                $t = self::tQuantile((1 + $level) / 2, $fit['df']);
+                foreach ($grid as $i => $xi) {
+                    [$pred, $se] = [$fit['fit'][$i], $fit['se'][$i]];
+                    $out[] = $set['key'] + [$x => $xi, $y => $pred, '__ymin' => $pred - $t * $se, '__ymax' => $pred + $t * $se];
+                }
+                continue;
+            }
             if ($count <= $degree + 1 || count(array_unique($set['x'])) <= $degree) {
                 continue; // Too few points to fit and estimate error, as ggplot2 drops such groups.
             }
@@ -122,6 +141,155 @@ final class Fit
         }
 
         return $out;
+    }
+
+    /**
+     * Local polynomial regression of y on x, as R's loess(y ~ x, span, degree, surface = "direct"): at each point a
+     * weighted least-squares fit over the nearest span·n observations with tricube weights. Returns the fit and its
+     * standard error at each of $at, and the residual degrees of freedom R's predict(se = TRUE) uses for intervals.
+     * The error statistics are exact (R's statistics = "exact") up to 500 observations; above that the lookup
+     * degrees of freedom use δ₂ ≈ δ₁, which changes the t quantile by well under 1%.
+     *
+     * @param list<float> $x
+     * @param list<float> $y
+     * @param list<float> $at
+     * @return array{fit: list<float>, se: list<float>, df: float, sigma: float, trace: float}
+     */
+    public static function loess(array $x, array $y, array $at, float $span = 0.75, int $degree = 2): array
+    {
+        $n = count($x);
+        if ($n !== count($y) || $n === 0) {
+            throw new InvalidArgumentException('loess needs x and y of the same, non-zero length.');
+        }
+        if (! in_array($degree, [0, 1, 2], true) || ! ($span > 0)) {
+            throw new InvalidArgumentException('loess needs degree 0, 1, or 2 and a positive span.');
+        }
+        array_multisort($x, $y);
+        $q = (int) floor($n * $span);
+        if ($q < $degree + 1) {
+            throw new InvalidArgumentException("loess span {$span} is too small for {$n} points; it needs at least ".($degree + 1).' neighbors.');
+        }
+        $q = min($q, $n);
+
+        // The operator row of each observation, for the residual scale and the error degrees of freedom.
+        $rows = [];
+        $rss = 0.0;
+        $trace = 0.0;
+        $frobenius = 0.0;
+        for ($i = 0; $i < $n; $i++) {
+            $l = self::loessRow($x, $x[$i], $q, $span, $degree);
+            $fit = 0.0;
+            foreach ($l as $j => $w) {
+                $fit += $w * $y[$j];
+                $frobenius += $w * $w;
+            }
+            $trace += $l[$i] ?? 0.0;
+            $rss += ($y[$i] - $fit) ** 2;
+            $rows[] = $l;
+        }
+        $delta1 = $n - 2 * $trace + $frobenius;
+        $delta2 = $n <= 500 ? self::loessDelta2($rows, $n) : $delta1;
+        $sigma = sqrt($rss / $delta1);
+
+        $fits = [];
+        $ses = [];
+        foreach ($at as $x0) {
+            $l = self::loessRow($x, (float) $x0, $q, $span, $degree);
+            $fit = 0.0;
+            $norm = 0.0;
+            foreach ($l as $j => $w) {
+                $fit += $w * $y[$j];
+                $norm += $w * $w;
+            }
+            $fits[] = $fit;
+            $ses[] = $sigma * sqrt($norm);
+        }
+
+        return ['fit' => $fits, 'se' => $ses, 'df' => $delta1 * $delta1 / $delta2, 'sigma' => $sigma, 'trace' => $trace];
+    }
+
+    /**
+     * The weights l with fit(x0) = Σ l_j y_j: the intercept row of the local weighted least-squares solution.
+     *
+     * @param list<float> $x Sorted.
+     * @return array<int, float> Sparse, keyed by observation.
+     */
+    private static function loessRow(array $x, float $x0, int $q, float $span, int $degree): array
+    {
+        $n = count($x);
+        // The q nearest neighbors are a window of the sorted x: grow it from the insertion point.
+        [$lo, $hi] = [0, $n];
+        while ($lo < $hi) {
+            $mid = intdiv($lo + $hi, 2);
+            $x[$mid] < $x0 ? $lo = $mid + 1 : $hi = $mid;
+        }
+        [$left, $right] = [$lo - 1, $lo];
+        for ($k = 0; $k < $q; $k++) {
+            if ($right >= $n || ($left >= 0 && $x0 - $x[$left] <= $x[$right] - $x0)) {
+                $left--;
+            } else {
+                $right++;
+            }
+        }
+        // Above a span of 1, R widens the farthest neighbor's distance by √span (it scales squared distances).
+        $rho = max($x0 - $x[$left + 1], $x[$right - 1] - $x0) * sqrt(max(1.0, $span));
+        if (! ($rho > 0)) {
+            throw new InvalidArgumentException('loess span is too small: the neighborhood of a point has zero width.');
+        }
+        // Points outside the window are at least rho away, so their tricube weight is zero.
+        $p = $degree + 1;
+        $xtwx = array_fill(0, $p, array_fill(0, $p, 0.0));
+        $terms = [];
+        for ($j = $left + 1; $j < $right; $j++) {
+            $d = abs($x[$j] - $x0) / $rho;
+            if ($d >= 1) {
+                continue;
+            }
+            $w = (1 - $d * $d * $d) ** 3;
+            $u = ($x[$j] - $x0) / $rho;
+            $basis = $degree === 0 ? [1.0] : ($degree === 1 ? [1.0, $u] : [1.0, $u, $u * $u]);
+            for ($a = 0; $a < $p; $a++) {
+                for ($b = 0; $b < $p; $b++) {
+                    $xtwx[$a][$b] += $w * $basis[$a] * $basis[$b];
+                }
+            }
+            $terms[$j] = [$w, $basis];
+        }
+        $first = self::invert($xtwx)[0];
+        $l = [];
+        foreach ($terms as $j => [$w, $basis]) {
+            $l[$j] = $w * self::dot($first, $basis);
+        }
+
+        return $l;
+    }
+
+    /** δ₂ = tr(((I − L)ᵀ(I − L))²), from the sparse operator rows. */
+    private static function loessDelta2(array $rows, int $n): float
+    {
+        // A = I − L, column by column (A[k][i] is row k, column i).
+        $columns = array_fill(0, $n, []);
+        foreach ($rows as $k => $l) {
+            foreach ($l as $i => $w) {
+                $columns[$i][$k] = -$w;
+            }
+            $columns[$k][$k] = ($columns[$k][$k] ?? 0.0) + 1.0;
+        }
+        $sum = 0.0;
+        for ($i = 0; $i < $n; $i++) {
+            for ($j = $i; $j < $n; $j++) {
+                $m = 0.0;
+                $ci = $columns[$i];
+                foreach ($columns[$j] as $k => $v) {
+                    if (isset($ci[$k])) {
+                        $m += $ci[$k] * $v;
+                    }
+                }
+                $sum += $i === $j ? $m * $m : 2 * $m * $m;
+            }
+        }
+
+        return $sum;
     }
 
     /** Standard normal quantile (Acklam's approximation with one Halley refinement; about 1e-15 relative error). */

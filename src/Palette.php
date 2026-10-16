@@ -10,22 +10,38 @@ namespace Phiz;
 final class Palette
 {
     /**
-     * ggplot2's default discrete palette, scales::hue_pal(): n hues evenly spaced from 15 degrees, at chroma 100 and
-     * luminance 65 in CIE-LCh(uv), as hex sRGB.
+     * ggplot2's default discrete palette, scales::hue_pal(h, c, l, h.start, direction): n hues evenly spaced from
+     * $from to $to degrees (default 15 to 375, a full turn that drops the endpoint, so the first and last hues
+     * differ), at chroma $chroma and luminance $luminance in CIE-LCh(uv), as hex sRGB.
      *
      * @return list<string>
      */
-    public static function hue(int $n, float $from = 15.0, float $chroma = 100.0, float $luminance = 65.0): array
+    public static function hue(int $n, float $from = 15.0, float $chroma = 100.0, float $luminance = 65.0, ?float $to = null, float $start = 0.0, int $direction = 1): array
     {
         if ($n < 1) {
             return [];
         }
-        // hue_pal spans 360 degrees and drops the endpoint, so the first and last hues differ.
-        $to = $from + 360;
-        $step = ($to - $from) / $n;
+        $to ??= $from + 360;
+        if (fmod(fmod($to - $from, 360) + 360, 360) < 1) {
+            $to -= 360 / $n;
+        }
         $colors = [];
         for ($i = 0; $i < $n; $i++) {
-            $colors[] = self::hcl(fmod($from + $i * $step, 360), $chroma, $luminance);
+            $hue = $n === 1 ? $from : $from + ($to - $from) * $i / ($n - 1);
+            $colors[] = self::hcl(fmod(fmod($hue + $start, 360) + 360, 360), $chroma, $luminance);
+        }
+
+        return $direction === -1 ? array_reverse($colors) : $colors;
+    }
+
+    /** R's grey.colors(n, start, end): grays evenly spaced in gamma-2.2 space, as scales::grey_pal(). */
+    public static function grey(int $n, float $start = 0.2, float $end = 0.8): array
+    {
+        $colors = [];
+        for ($i = 0; $i < $n; $i++) {
+            $level = $n === 1 ? $start ** 2.2 : $start ** 2.2 + ($end ** 2.2 - $start ** 2.2) * $i / ($n - 1);
+            $v = (int) round(255 * $level ** (1 / 2.2));
+            $colors[] = sprintf('#%02X%02X%02X', $v, $v, $v);
         }
 
         return $colors;

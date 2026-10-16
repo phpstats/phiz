@@ -1,0 +1,49 @@
+{
+    "$schema": "https://vega.github.io/schema/vega-lite/v6.json",
+    "width": 300,
+    "data": {
+        "values": [
+            {
+                "year": 1999,
+                "drv": "f",
+                "hwy": 26.0
+            },
+            {
+                "year": 2008,
+                "drv": "f",
+                "hwy": 29.0
+            },
+            {
+                "year": 1999,
+                "drv": 4,
+                "hwy": 17.0
+            },
+            "... 3 more rows"
+        ]
+    },
+    "mark": {
+        "type": "line"
+    },
+    "encoding": {
+        "x": {
+            "field": "year",
+            "type": "ordinal"
+        },
+        "y": {
+            "field": "hwy",
+            "type": "quantitative",
+            "scale": {
+                "zero": false
+            }
+        },
+        "color": {
+            "field": "drv",
+            "type": "nominal"
+        }
+    },
+    "config": {
+        "legend": {
+            "labelLimit": 320
+        }
+    }
+}

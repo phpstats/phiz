@@ -43,6 +43,7 @@ final class Plot extends Chart
         public readonly array $labels = [],
         public readonly ?array $facet = null,
         public readonly bool $flip = false,
+        public readonly ?array $coord = null,
         public readonly array $limits = [],
         public readonly bool|array|null $tooltip = null,
         public readonly int|string|null $width = null,
@@ -274,6 +275,112 @@ final class Plot extends Chart
         return $this->add('smooth', $aes, $data, compact('method', 'se', 'level', 'span', 'order', 'n'), compact('color', 'fill', 'linewidth', 'linetype') + $style, $inheritAes, $filter);
     }
 
+    /**
+     * Contour lines of a 2D kernel density of x and y, as ggplot2's geom_density_2d (MASS::kde2d on an n × n grid).
+     * h sets the bandwidths ([x, y] or one for both; default MASS::bandwidth.nrd), adjust multiplies them, and bins,
+     * binwidth, or breaks set the levels (default pretty(range, 10)). contourVar: density, ndensity (scaled to a
+     * maximum of 1 per group), or count. aes(color: 'level') colors lines by their level.
+     */
+    public function density2d(Aes|array|null $aes = null, mixed $data = null, ?int $bins = null, int|float|null $binwidth = null, ?array $breaks = null, int|float|array|null $h = null, int|float $adjust = 1, int $n = 100, string $contourVar = 'density', ?string $color = null, int|float|null $linewidth = null, int|float|null $alpha = null, bool $inheritAes = true, string|array|null $filter = null, mixed ...$style): self
+    {
+        return $this->add('density_2d', $aes, $data, compact('bins', 'binwidth', 'breaks', 'h', 'adjust', 'n', 'contourVar'), compact('color', 'linewidth', 'alpha') + $style, $inheritAes, $filter);
+    }
+
+    /** Filled bands of a 2D kernel density between consecutive breaks, as ggplot2's geom_density_2d_filled. */
+    public function density2dFilled(Aes|array|null $aes = null, mixed $data = null, ?int $bins = null, int|float|null $binwidth = null, ?array $breaks = null, int|float|array|null $h = null, int|float $adjust = 1, int $n = 100, string $contourVar = 'density', int|float|null $alpha = null, ?string $color = null, bool $inheritAes = true, string|array|null $filter = null, mixed ...$style): self
+    {
+        return $this->add('density_2d_filled', $aes, $data, compact('bins', 'binwidth', 'breaks', 'h', 'adjust', 'n', 'contourVar'), compact('alpha', 'color') + $style, $inheritAes, $filter);
+    }
+
+    /** Contour lines of z over a regular grid of x and y, as ggplot2's geom_contour; bins, binwidth, or breaks. */
+    public function contour(Aes|array|null $aes = null, mixed $data = null, ?int $bins = null, int|float|null $binwidth = null, ?array $breaks = null, ?string $color = null, int|float|null $linewidth = null, int|float|null $alpha = null, bool $inheritAes = true, string|array|null $filter = null, mixed ...$style): self
+    {
+        return $this->add('contour', $aes, $data, compact('bins', 'binwidth', 'breaks'), compact('color', 'linewidth', 'alpha') + $style, $inheritAes, $filter);
+    }
+
+    /** Filled contour bands of z over a regular grid, as ggplot2's geom_contour_filled. */
+    public function contourFilled(Aes|array|null $aes = null, mixed $data = null, ?int $bins = null, int|float|null $binwidth = null, ?array $breaks = null, int|float|null $alpha = null, ?string $color = null, bool $inheritAes = true, string|array|null $filter = null, mixed ...$style): self
+    {
+        return $this->add('contour_filled', $aes, $data, compact('bins', 'binwidth', 'breaks'), compact('alpha', 'color') + $style, $inheritAes, $filter);
+    }
+
+    /**
+     * Filled polygons through the points in data order, one per group (or fill level). Rows with null x and y start
+     * a new ring within a group; a ring drawn in the opposite direction cuts a hole.
+     */
+    public function polygon(Aes|array|null $aes = null, mixed $data = null, ?string $fill = null, ?string $color = null, int|float|null $alpha = null, int|float|null $linewidth = null, bool $inheritAes = true, string|array|null $filter = null, mixed ...$style): self
+    {
+        return $this->add('polygon', $aes, $data, [], compact('fill', 'color', 'alpha', 'linewidth') + $style, $inheritAes, $filter);
+    }
+
+    /**
+     * Summaries of y at each x, drawn with geom (pointrange by default), as ggplot2's stat_summary. funData:
+     * mean_se (the default), mean_cl_normal, mean_sdl, median_hilow, or a callable returning [y, ymin, ymax]. fun,
+     * funMin, and funMax: mean, median, min, max, sum, sd, n, or callables of the group's values. funArgs passes mult
+     * or conf. geom: pointrange, errorbar, linerange, crossbar, point, line, col, area, or ribbon.
+     */
+    public function summary(Aes|array|null $aes = null, mixed $data = null, string|\Closure|null $funData = null, string|\Closure|null $fun = null, string|\Closure|null $funMin = null, string|\Closure|null $funMax = null, array $funArgs = [], ?string $geom = null, ?string $position = null, int|float|null $width = null, ?string $color = null, int|float|null $size = null, int|float|null $linewidth = null, int|float|null $alpha = null, bool $inheritAes = true, string|array|null $filter = null, mixed ...$style): self
+    {
+        return $this->add('summary', $aes, $data, compact('funData', 'fun', 'funMin', 'funMax', 'geom', 'position', 'width') + ['funArgs' => $funArgs ?: null], compact('color', 'size', 'linewidth', 'alpha') + $style, $inheritAes, $filter);
+    }
+
+    /** A box from ymin to ymax with a line at y, as ggplot2's geom_crossbar; width is a share of the band. */
+    public function crossbar(Aes|array|null $aes = null, mixed $data = null, int|float|null $width = null, ?string $position = null, ?string $color = null, ?string $fill = null, int|float|null $linewidth = null, int|float|null $alpha = null, bool $inheritAes = true, string|array|null $filter = null, mixed ...$style): self
+    {
+        return $this->add('crossbar', $aes, $data, compact('width', 'position'), compact('color', 'fill', 'linewidth', 'alpha') + $style, $inheritAes, $filter);
+    }
+
+    /** Points sized by how many rows share each x and y, as ggplot2's geom_count. */
+    public function count(Aes|array|null $aes = null, mixed $data = null, ?string $color = null, int|float|null $alpha = null, bool $inheritAes = true, string|array|null $filter = null, mixed ...$style): self
+    {
+        return $this->add('count', $aes, $data, [], compact('color', 'alpha') + $style, $inheritAes, $filter);
+    }
+
+    /**
+     * A layer of fixed values rather than data, as ggplot2's annotate(): annotate('text', x: 4, y: 40, label: 'Note'),
+     * annotate('rect', xmin: 2, xmax: 3, ymin: -INF ...). Positions are numbers, dates, or levels, or lists of them for
+     * several marks. Annotations ignore the plot's mappings and appear in every facet panel. geom: text, label,
+     * point, segment, rect, pointrange, linerange, errorbar, crossbar, or rule.
+     */
+    public function annotate(string $geom, mixed $x = null, mixed $y = null, mixed $xmin = null, mixed $xmax = null, mixed $ymin = null, mixed $ymax = null, mixed $xend = null, mixed $yend = null, mixed $label = null, mixed ...$style): self
+    {
+        if (! in_array($geom, ['text', 'label', 'point', 'segment', 'rect', 'pointrange', 'linerange', 'errorbar', 'crossbar', 'rule'], true)) {
+            throw new InvalidArgumentException("annotate() cannot draw geom '{$geom}'.");
+        }
+        $values = array_filter(compact('x', 'y', 'xmin', 'xmax', 'ymin', 'ymax', 'xend', 'yend', 'label'), fn ($v) => $v !== null);
+        $n = max(array_map(fn ($v) => is_array($v) ? count($v) : 1, $values) ?: [1]);
+        $aes = [];
+        // Fields named after the plot's own x and y keep the axis titles; the other ends get private names.
+        $names = [];
+        foreach ($values as $aesthetic => $value) {
+            $axis = $aesthetic === 'label' ? null : $aesthetic[0];
+            if (is_float($value) && is_infinite($value) && $axis !== null) {
+                // -INF and INF reach the panel's edges, as in ggplot2: pixel positions rather than data values.
+                $edge = ($axis === 'x') === ($value > 0) ? ($axis === 'x' ? 'width' : 'height') : '0';
+                $aes[$aesthetic] = ['value' => $edge === '0' ? 0 : $edge];
+                unset($values[$aesthetic]);
+                continue;
+            }
+            $primary = in_array($aesthetic, ['x', 'y', 'xmin', 'ymin'], true) && ! ($aesthetic === 'xmin' && isset($values['x'])) && ! ($aesthetic === 'ymin' && isset($values['y']));
+            $plain = $axis === null ? null : $this->aes->field($axis);
+            $names[$aesthetic] = $primary && $plain !== null ? $plain : "__{$aesthetic}";
+            $field = $axis === null ? null : $this->aes->get($axis);
+            $type = $field === null || is_array($field) ? null : Field::of($field)->type;
+            $aes[$aesthetic] = $type === null ? $names[$aesthetic] : new Field($names[$aesthetic], $type);
+        }
+        $rows = [];
+        for ($i = 0; $i < $n; $i++) {
+            $row = [];
+            foreach ($values as $aesthetic => $value) {
+                $v = is_array($value) ? ($value[$i] ?? null) : $value;
+                $row[$names[$aesthetic]] = is_float($v) && is_infinite($v) ? null : $v;
+            }
+            $rows[] = $row;
+        }
+
+        return $this->add($geom, $aes, $rows, ['annotation' => true], $style, inheritAes: false);
+    }
+
     /** A function of x drawn from `from` to `to`, as ggplot2's geom_function. */
     public function curve(callable $fn, int|float $from, int|float $to, int $n = 101, Aes|array|null $aes = null, ?string $color = null, string|array|null $linetype = null, int|float|null $linewidth = null, mixed ...$style): self
     {
@@ -399,6 +506,20 @@ final class Plot extends Chart
         return $this->scale('linetype', ...$options);
     }
 
+    /**
+     * Guides per aesthetic, as ggplot2's guides(): 'none' or false hides one, and an array sets axis or legend
+     * properties (see guide_legend(), guide_colorbar(), and guide_axis()).
+     */
+    public function guides(mixed ...$guides): self
+    {
+        $plot = $this;
+        foreach ($guides as $aesthetic => $guide) {
+            $plot = $plot->scale((string) $aesthetic, guide: $guide === 'none' ? false : $guide);
+        }
+
+        return $plot;
+    }
+
     /** Fixes the x domain. Unlike ggplot2's xlim(), data outside it is clipped rather than dropped. */
     public function xlim(int|float|string $min, int|float|string $max): self
     {
@@ -416,6 +537,34 @@ final class Plot extends Chart
     public function coordFlip(bool $flip = true): self
     {
         return clone($this, ['flip' => $flip]);
+    }
+
+    /**
+     * Polar coordinates for bar() and col() layers, as ggplot2's coord_polar. theta: 'y' turns stacked bars into a
+     * pie (map x to a constant, or leave it out; innerRadius in pixels makes a donut), and 'x' turns bars over a
+     * discrete x into a rose of equal angles with radius y. start rotates the first slice clockwise from twelve
+     * o'clock, in radians; direction -1 runs anticlockwise.
+     */
+    public function coordPolar(string $theta = 'x', float $start = 0.0, int $direction = 1, int|float $innerRadius = 0): self
+    {
+        if (! in_array($theta, ['x', 'y'], true) || ! in_array($direction, [1, -1], true)) {
+            throw new InvalidArgumentException("coordPolar() takes theta 'x' or 'y' and direction 1 or -1.");
+        }
+
+        return clone($this, ['coord' => ['type' => 'polar', 'theta' => $theta, 'start' => $start, 'direction' => $direction, 'innerRadius' => $innerRadius]]);
+    }
+
+    /**
+     * A fixed aspect ratio, as ggplot2's coord_fixed: one unit of y takes ratio times the length of one unit of x.
+     * The panel's height follows from the width (300 pixels unless set) and the data ranges, which are kept exact.
+     */
+    public function coordFixed(int|float $ratio = 1): self
+    {
+        if (! ($ratio > 0)) {
+            throw new InvalidArgumentException('coordFixed() needs a positive ratio.');
+        }
+
+        return clone($this, ['coord' => ['type' => 'fixed', 'ratio' => $ratio]]);
     }
 
     /** Zooms to fixed domains, clipping marks outside them. */
@@ -485,10 +634,11 @@ final class Plot extends Chart
     }
 
     /**
-     * A theme preset (gray, bw, minimal, classic, light, dark, void, vega) and/or individual options; config is raw
-     * Vega-Lite config merged last. Successive calls build on each other.
+     * A theme preset (gray, bw, linedraw, minimal, classic, light, dark, void, vega) and/or individual options; config
+     * is raw Vega-Lite config merged last. Successive calls build on each other. xLabelAngle and yLabelAngle turn axis
+     * labels anticlockwise, as element_text(angle =); legendTitle: false, axisLine, and ticks switch those parts.
      */
-    public function theme(?string $preset = null, int|float|null $baseSize = null, ?string $font = null, ?string $legendPosition = null, ?string $background = null, ?string $panelBackground = null, ?string $panelBorder = null, ?bool $grid = null, ?string $titleAnchor = null, int|float|null $padding = null, array $config = []): self
+    public function theme(?string $preset = null, int|float|null $baseSize = null, ?string $font = null, ?string $legendPosition = null, ?string $background = null, ?string $panelBackground = null, ?string $panelBorder = null, ?bool $grid = null, ?string $titleAnchor = null, int|float|null $padding = null, int|float|null $xLabelAngle = null, int|float|null $yLabelAngle = null, ?string $legendDirection = null, ?bool $legendTitle = null, ?bool $axisLine = null, ?bool $ticks = null, ?string $gridColor = null, ?string $textColor = null, array $config = []): self
     {
         $base = match (true) {
             $preset !== null => Theme::preset($preset, $baseSize ?? 11),
@@ -497,7 +647,7 @@ final class Plot extends Chart
         };
         $current = $preset !== null ? [] : $this->config;
 
-        return clone($this, ['config' => Theme::merge($current, $base, Theme::options($font, $legendPosition, $background, $panelBackground, $panelBorder, $grid, $titleAnchor, $padding), $config)]);
+        return clone($this, ['config' => Theme::merge($current, $base, Theme::options($font, $legendPosition, $background, $panelBackground, $panelBorder, $grid, $titleAnchor, $padding, $xLabelAngle, $yLabelAngle, $legendDirection, $legendTitle, $axisLine, $ticks, $gridColor, $textColor), $config)]);
     }
 
     /** Width and height in pixels (per panel when faceted); 'container' fills the parent element's width. */

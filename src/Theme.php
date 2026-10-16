@@ -9,12 +9,13 @@ use InvalidArgumentException;
 /**
  * Vega-Lite config presets modelled on ggplot2's complete themes, and the options theme() adjusts.
  *
- * Presets: gray (alias grey, ggplot2), bw, minimal, classic, light, dark, void, and vega (Vega-Lite's defaults).
+ * Presets: gray (alias grey, ggplot2), bw, linedraw, minimal, classic, light, dark, void, and vega (Vega-Lite's
+ * defaults).
  * Themes are inlined in the spec as config, so HTML and static exports look the same.
  */
 final class Theme
 {
-    public const PRESETS = ['vega', 'gray', 'grey', 'ggplot2', 'bw', 'minimal', 'classic', 'light', 'dark', 'void'];
+    public const PRESETS = ['vega', 'gray', 'grey', 'ggplot2', 'bw', 'linedraw', 'minimal', 'classic', 'light', 'dark', 'void'];
 
     /** @return array<string, mixed> */
     /** Font sizes scaled from a base size in pixels, with ggplot2's proportions. */
@@ -54,6 +55,11 @@ final class Theme
             'bw' => [
                 'view' => ['fill' => '#FFFFFF', 'stroke' => '#333333'],
                 'axis' => ['grid' => true, 'gridColor' => '#EBEBEB', 'domain' => false, 'tickColor' => '#333333', 'labelColor' => '#4D4D4D'],
+            ],
+            'linedraw' => [
+                'view' => ['fill' => '#FFFFFF', 'stroke' => '#000000'],
+                'axis' => ['grid' => true, 'gridColor' => '#000000', 'gridWidth' => 0.2, 'gridOpacity' => 0.6, 'domain' => false, 'tickColor' => '#000000', 'labelColor' => '#000000'],
+                'header' => ['labelColor' => '#000000'],
             ],
             'minimal' => [
                 'view' => ['stroke' => null],
@@ -101,18 +107,57 @@ final class Theme
         ?bool $grid = null,
         ?string $titleAnchor = null,
         int|float|null $padding = null,
+        int|float|null $xLabelAngle = null,
+        int|float|null $yLabelAngle = null,
+        ?string $legendDirection = null,
+        ?bool $legendTitle = null,
+        ?bool $axisLine = null,
+        ?bool $ticks = null,
+        ?string $gridColor = null,
+        ?string $textColor = null,
     ): array {
         $config = [];
+        foreach (['axisX' => $xLabelAngle, 'axisY' => $yLabelAngle] as $axis => $angle) {
+            if ($angle !== null) {
+                // ggplot2 turns text anticlockwise; Vega-Lite turns labels clockwise.
+                $config[$axis] = ['labelAngle' => -$angle] + ($axis === 'axisX' && $angle != 0 ? ['labelAlign' => $angle > 0 ? 'right' : 'left', 'labelBaseline' => abs($angle) >= 90 ? 'middle' : 'top'] : []);
+            }
+        }
+        if ($legendDirection !== null) {
+            $config['legend']['direction'] = $legendDirection;
+        }
+        if ($legendTitle === false) {
+            $config['legend']['title'] = null;
+        }
+        if ($axisLine !== null) {
+            $config['axis']['domain'] = $axisLine;
+            if ($axisLine) {
+                $config['axis']['domainColor'] = '#000000';
+            }
+        }
+        if ($ticks !== null) {
+            $config['axis']['ticks'] = $ticks;
+        }
+        if ($gridColor !== null) {
+            $config['axis']['gridColor'] = $gridColor;
+        }
+        if ($textColor !== null) {
+            foreach (['axis' => ['labelColor', 'titleColor'], 'legend' => ['labelColor', 'titleColor'], 'header' => ['labelColor', 'titleColor'], 'title' => ['color', 'subtitleColor']] as $part => $keys) {
+                foreach ($keys as $key) {
+                    $config[$part][$key] = $textColor;
+                }
+            }
+        }
         if ($font !== null) {
             $config['font'] = $font;
         }
         if ($legendPosition === 'none') {
-            $config['legend'] = ['disable' => true];
+            $config['legend']['disable'] = true;
         } elseif ($legendPosition !== null) {
             if (! in_array($legendPosition, ['right', 'left', 'top', 'bottom', 'top-left', 'top-right', 'bottom-left', 'bottom-right', 'none'], true)) {
                 throw new InvalidArgumentException("Unknown legend position '{$legendPosition}'.");
             }
-            $config['legend'] = ['orient' => $legendPosition];
+            $config['legend']['orient'] = $legendPosition;
         }
         if ($background !== null) {
             $config['background'] = $background;

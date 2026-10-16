@@ -1,0 +1,100 @@
+{
+    "$schema": "https://vega.github.io/schema/vega-lite/v6.json",
+    "data": {
+        "values": [
+            {
+                "year": 1999,
+                "displ": 1.6,
+                "hwy": 12.0,
+                "level": "(0.0, 0.2]",
+                "__order": 0,
+                "__layer": 0
+            },
+            {
+                "year": 1999,
+                "displ": 1.6,
+                "hwy": 12.0,
+                "level": "(0.0, 0.2]",
+                "__order": 1,
+                "__layer": 0
+            },
+            {
+                "year": 1999,
+                "displ": 1.6545454545454545,
+                "hwy": 12.0,
+                "level": "(0.0, 0.2]",
+                "__order": 2,
+                "__layer": 0
+            },
+            "... 2501 more rows"
+        ]
+    },
+    "facet": {
+        "field": "year",
+        "type": "ordinal",
+        "title": null
+    },
+    "columns": 2,
+    "spec": {
+        "transform": [
+            {
+                "filter": "datum.__layer === 0"
+            }
+        ],
+        "mark": {
+            "type": "line",
+            "strokeWidth": 0
+        },
+        "encoding": {
+            "x": {
+                "field": "displ",
+                "type": "quantitative",
+                "title": "displ",
+                "scale": {
+                    "zero": false
+                }
+            },
+            "y": {
+                "field": "hwy",
+                "type": "quantitative",
+                "title": "hwy",
+                "scale": {
+                    "zero": false
+                }
+            },
+            "order": {
+                "field": "__order",
+                "type": "quantitative"
+            },
+            "fill": {
+                "field": "level",
+                "type": "ordinal",
+                "sort": [
+                    "(0.0, 0.2]",
+                    "(0.2, 0.4]",
+                    "(0.4, 0.6]",
+                    "(0.6, 0.8]",
+                    "(0.8, 1.0]"
+                ],
+                "title": "level",
+                "scale": {
+                    "scheme": "viridis"
+                },
+                "legend": {
+                    "symbolType": "square",
+                    "symbolStrokeWidth": 0
+                }
+            },
+            "detail": [
+                {
+                    "field": "level",
+                    "type": "ordinal"
+                },
+                {
+                    "field": "year",
+                    "type": "nominal"
+                }
+            ]
+        }
+    }
+}

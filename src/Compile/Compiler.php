@@ -41,8 +41,20 @@ final class Compiler
         $units = []; // Each: ['specs' => list<array>, 'channels' => array, 'context' => Context]
         foreach ($plot->layers as $layer) {
             $aes = $layer->inheritAes ? $plot->aes->merge($layer->aes) : $layer->aes;
-            $context = new Context($layer, $aes, $layer->data ?? $data, $facetFields, $plot->flip, $plot->width, $plot->height, $plot->transforms !== []);
+            $polar = ($plot->coord['type'] ?? null) === 'polar' ? $plot->coord : null;
+            $context = new Context($layer, $aes, $layer->data ?? $data, $facetFields, $plot->flip, $plot->width, $plot->height, $plot->transforms !== [], $polar);
             $specs = Geoms::compile($context);
+            if ($layer->param('annotation')) {
+                $context->constant = true; // Annotations draw in every facet panel.
+                foreach ($specs as $i => $spec) {
+                    // Their end positions are private fields, which must not join the axis titles.
+                    foreach (['x2' => 'x', 'y2' => 'y'] as $end => $start) {
+                        if (isset($spec['encoding'][$end]['field'], $spec['encoding'][$start]['field'])) {
+                            $specs[$i]['encoding'][$end]['title'] = $spec['encoding'][$start]['title'] ?? stripslashes((string) $spec['encoding'][$start]['field']);
+                        }
+                    }
+                }
+            }
             foreach ($specs as $i => $spec) {
                 $transforms = [...$context->transforms, ...($spec['transform'] ?? [])];
                 if ($layer->filter !== null) {
@@ -62,7 +74,7 @@ final class Compiler
                     continue;
                 }
                 $spec['encoding'] = self::label($spec['encoding'], $unit['channels'], $plot->labels);
-                $spec['encoding'] = self::scale($spec['encoding'], $unit['channels'], $plot->scales);
+                $spec['encoding'] = self::scale($spec['encoding'], $unit['channels'], $plot->scales, $unit['context']->computed === null ? $unit['context']->data : Data::from($unit['context']->computed));
                 if ($zeroFree) {
                     $spec['encoding'] = self::unzero($spec['encoding']);
                 }
@@ -87,9 +99,11 @@ final class Compiler
 
         [$layers, $topData] = self::data($units, $data, $facetFields !== []);
         $layers = self::interact($layers, $units, $plot);
-        $unit = count($layers) === 1 ? $layers[0] : ['layer' => $layers];
-
         $size = array_filter(['width' => $plot->width ?? self::discreteSize($units, 'x'), 'height' => $plot->height ?? self::discreteSize($units, 'y')], fn ($v) => $v !== null);
+        if (($plot->coord['type'] ?? null) === 'fixed') {
+            [$layers, $size] = self::fixed($layers, $units, $size, (float) $plot->coord['ratio'], $plot->flip);
+        }
+        $unit = count($layers) === 1 ? $layers[0] : ['layer' => $layers];
         $spec = $topLevel ? ['$schema' => Assets::SCHEMA] : [];
         if ($plot->description !== null) {
             $spec['description'] = $plot->description;
@@ -136,6 +150,59 @@ final class Compiler
         }
 
         return $spec;
+    }
+
+    /**
+     * coord_fixed(): sizes the panel so that a unit of y is ratio times as long as a unit of x, over the data ranges
+     * of the position fields, and keeps those ranges exact (no nice rounding) so the ratio holds.
+     *
+     * @return array{0: list<array>, 1: array<string, int>}
+     */
+    private static function fixed(array $layers, array $units, array $size, float $ratio, bool $flip): array
+    {
+        $ranges = ['x' => [INF, -INF], 'y' => [INF, -INF]];
+        foreach ($units as $unit) {
+            $context = $unit['context'];
+            $rows = $context->computed ?? ($context->data->isInline() ? ($context->data->rows ?? []) : []);
+            foreach ($unit['specs'] as $spec) {
+                foreach (['x' => 'x', 'x2' => 'x', 'y' => 'y', 'y2' => 'y'] as $channel => $axis) {
+                    $def = $spec['encoding'][$channel] ?? null;
+                    if (! is_array($def) || ! isset($def['field']) || isset($def['aggregate']) || isset($def['bin']) || in_array($def['type'] ?? 'quantitative', ['nominal', 'ordinal', 'temporal'], true)) {
+                        continue;
+                    }
+                    $field = stripslashes((string) $def['field']);
+                    foreach ($rows as $row) {
+                        $v = $row[$field] ?? null;
+                        if (is_int($v) || (is_float($v) && is_finite($v))) {
+                            $ranges[$axis] = [min($ranges[$axis][0], $v), max($ranges[$axis][1], $v)];
+                        }
+                    }
+                }
+            }
+        }
+        [$dx, $dy] = [$ranges['x'][1] - $ranges['x'][0], $ranges['y'][1] - $ranges['y'][0]];
+        if (! ($dx > 0) || ! ($dy > 0)) {
+            throw new InvalidArgumentException('coordFixed() needs continuous x and y data with a non-zero range.');
+        }
+        foreach ($layers as $i => $layer) {
+            foreach (['x', 'y'] as $channel) {
+                if (isset($layer['encoding'][$channel]['field']) && ! isset($layer['encoding'][$channel]['scale']['domain'])) {
+                    $layers[$i]['encoding'][$channel]['scale'] = ($layer['encoding'][$channel]['scale'] ?? []) + ['domain' => $ranges[$channel], 'nice' => false];
+                }
+            }
+        }
+        // The ranges are of the screen axes (layers are already flipped); coordFlip() puts the data's y along the width.
+        $aspect = $flip ? $dy / ($ratio * $dx) : $ratio * $dy / $dx;
+        $width = is_int($size['width'] ?? null) ? $size['width'] : null;
+        $height = is_int($size['height'] ?? null) ? $size['height'] : null;
+        if ($width === null && $height !== null) {
+            $width = (int) round($height / $aspect);
+        } else {
+            $width ??= 300;
+            $height = (int) round($width * $aspect);
+        }
+
+        return [$layers, ['width' => $width, 'height' => $height]];
     }
 
     /** Raises an E_USER_WARNING when the spec embeds more rows than Config::$warnRows. */
@@ -278,7 +345,7 @@ final class Compiler
     }
 
     /** @param array<string, Scale> $scales */
-    private static function scale(array $encoding, array $channels, array $scales): array
+    private static function scale(array $encoding, array $channels, array $scales, Data $data): array
     {
         foreach ($scales as $aesthetic => $scale) {
             $channel = self::channel($aesthetic, $channels, $encoding);
@@ -292,10 +359,35 @@ final class Compiler
             if (! isset($def['field']) && ! isset($def['aggregate']) && ! isset($def['datum'])) {
                 continue;
             }
-            if ($scale->scale !== []) {
-                $def['scale'] = array_replace($def['scale'] ?? [], $scale->scale);
-            }
             $guide = in_array($channel, self::AXIS_CHANNELS, true) ? 'axis' : 'legend';
+            $properties = $scale->scale;
+            if (isset($properties['__identity'])) {
+                // The values are used as they are, so there is nothing for a legend to explain.
+                $def['scale'] = null;
+                $def[$guide] = null;
+                $encoding[$channel] = $def;
+                continue;
+            }
+            if (isset($properties['__palette'])) {
+                $field = isset($def['field']) && is_string($def['field']) ? stripslashes($def['field']) : null;
+                $n = isset($properties['domain']) ? count($properties['domain']) : ($field !== null && $data->isInline() ? count($data->levels($field)) : 0);
+                $p = $properties['__palette'];
+                $properties['range'] = $p[0] === 'grey'
+                    ? Palette::grey(max(1, $n ?: 8), (float) ($p[1] ?? 0.2), (float) ($p[2] ?? 0.8))
+                    : Palette::hue(max(1, $n ?: 8), (float) ($p[1] ?? 15), (float) ($p[3] ?? 100), (float) ($p[4] ?? 65), (float) ($p[2] ?? 375), (float) ($p[5] ?? 0), (int) ($p[6] ?? 1));
+                unset($properties['__palette']);
+            }
+            if (isset($properties['domain']) && in_array($def['type'] ?? null, ['nominal', 'ordinal'], true) && isset($def['field']) && is_string($def['field']) && $data->isInline()) {
+                // Levels are matched as text, so limits: ['4'] finds a level stored as the number 4.
+                $levels = [];
+                foreach ($data->levels(stripslashes($def['field'])) as $level) {
+                    $levels[(string) $level] = $level;
+                }
+                $properties['domain'] = array_map(fn ($v) => is_scalar($v) ? ($levels[(string) $v] ?? $v) : $v, $properties['domain']);
+            }
+            if ($properties !== []) {
+                $def['scale'] = array_replace($def['scale'] ?? [], $properties);
+            }
             if ($scale->guide === false) {
                 $def[$guide] = null;
             } elseif ($scale->guide !== null) {

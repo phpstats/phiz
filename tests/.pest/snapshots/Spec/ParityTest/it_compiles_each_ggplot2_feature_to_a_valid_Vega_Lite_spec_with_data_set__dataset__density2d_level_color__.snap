@@ -1,0 +1,70 @@
+{
+    "$schema": "https://vega.github.io/schema/vega-lite/v6.json",
+    "data": {
+        "values": [
+            {
+                "eruptions": 1.6,
+                "waiting": 43.358913831439494,
+                "level": 0.0045,
+                "__piece": 1,
+                "__order": 0
+            },
+            {
+                "eruptions": 1.6353535353535353,
+                "waiting": 43.065365175286225,
+                "level": 0.0045,
+                "__piece": 1,
+                "__order": 1
+            },
+            {
+                "eruptions": 1.6443866605403674,
+                "waiting": 43.0,
+                "level": 0.0045,
+                "__piece": 1,
+                "__order": 2
+            },
+            "... 866 more rows"
+        ]
+    },
+    "mark": {
+        "type": "line"
+    },
+    "encoding": {
+        "x": {
+            "field": "eruptions",
+            "type": "quantitative",
+            "title": "eruptions",
+            "scale": {
+                "zero": false
+            }
+        },
+        "y": {
+            "field": "waiting",
+            "type": "quantitative",
+            "title": "waiting",
+            "scale": {
+                "zero": false
+            }
+        },
+        "order": {
+            "field": "__order",
+            "type": "quantitative"
+        },
+        "detail": [
+            {
+                "field": "__piece",
+                "type": "nominal"
+            }
+        ],
+        "color": {
+            "field": "level",
+            "type": "quantitative",
+            "title": "level"
+        }
+    },
+    "config": {
+        "legend": {
+            "labelLimit": 320
+        }
+    }
+}

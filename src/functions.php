@@ -96,6 +96,18 @@ function stat_ecdf(mixed ...$args): Closure { return chain('ecdf', $args); }
 function stat_qq(mixed ...$args): Closure { return chain('qq', $args); }
 function stat_qq_line(mixed ...$args): Closure { return chain('qqLine', $args); }
 function geom_arc(mixed ...$args): Closure { return chain('arc', $args); }
+function geom_polygon(mixed ...$args): Closure { return chain('polygon', $args); }
+function stat_summary(mixed ...$args): Closure { return chain('summary', $args); }
+function geom_crossbar(mixed ...$args): Closure { return chain('crossbar', $args); }
+function geom_count(mixed ...$args): Closure { return chain('count', $args); }
+function annotate(string $geom, mixed ...$args): Closure { return chain('annotate', [$geom, ...$args]); }
+function geom_density_2d(mixed ...$args): Closure { return chain('density2d', $args); }
+function stat_density_2d(mixed ...$args): Closure { return chain('density2d', $args); }
+function geom_density_2d_filled(mixed ...$args): Closure { return chain('density2dFilled', $args); }
+function stat_density_2d_filled(mixed ...$args): Closure { return chain('density2dFilled', $args); }
+function geom_contour(mixed ...$args): Closure { return chain('contour', $args); }
+function stat_contour(mixed ...$args): Closure { return chain('contour', $args); }
+function geom_contour_filled(mixed ...$args): Closure { return chain('contourFilled', $args); }
 
 function scale_x(mixed ...$args): Closure { return chain('scaleX', $args); }
 function scale_y(mixed ...$args): Closure { return chain('scaleY', $args); }
@@ -136,9 +148,101 @@ function scale_fill_gradient(string $low = '#132B43', string $high = '#56B1F7', 
 function scale_color_gradient2(string $low = '#832424', string $mid = '#FFFFFF', string $high = '#3A3A98', int|float $midpoint = 0, mixed ...$args): Closure { return chain('scaleColor', ['range' => [$low, $mid, $high], 'domainMid' => $midpoint] + $args); }
 function scale_fill_gradient2(string $low = '#832424', string $mid = '#FFFFFF', string $high = '#3A3A98', int|float $midpoint = 0, mixed ...$args): Closure { return chain('scaleFill', ['range' => [$low, $mid, $high], 'domainMid' => $midpoint] + $args); }
 
+/** viridisLite palettes by option: A magma, B inferno, C plasma, D viridis, E cividis, H turbo (or the names). */
+function viridis_scheme(string $option = 'D', float $begin = 0.0, float $end = 1.0, int $direction = 1): array
+{
+    $name = match (strtoupper($option)) {
+        'A', 'MAGMA' => 'magma', 'B', 'INFERNO' => 'inferno', 'C', 'PLASMA' => 'plasma', 'D', 'VIRIDIS' => 'viridis',
+        'E', 'CIVIDIS' => 'cividis', 'H', 'TURBO' => 'turbo',
+        default => throw new \InvalidArgumentException("Unknown viridis option '{$option}'; use A to E, H, or a palette name."),
+    };
+
+    return ['name' => $name] + ($begin == 0 && $end == 1 && $direction === 1 ? [] : ['extent' => $direction === -1 ? [$end, $begin] : [$begin, $end]]);
+}
+
+/** A ColorBrewer scheme, reversed when direction is -1. */
+function brewer_scheme(string $palette, int $direction = 1): string|array
+{
+    $name = strtolower(str_replace(['-', ' '], '', $palette));
+
+    return $direction === -1 ? ['name' => $name, 'extent' => [1, 0]] : $name;
+}
+
+/** viridis for discrete (_d), continuous (_c), and binned (_b) scales, as ggplot2's scale_colour_viridis_*. */
+function scale_color_viridis_d(string $option = 'D', float $begin = 0.0, float $end = 1.0, int $direction = 1, mixed ...$args): Closure { return chain('scaleColor', ['scheme' => viridis_scheme($option, $begin, $end, $direction)] + $args); }
+function scale_fill_viridis_d(string $option = 'D', float $begin = 0.0, float $end = 1.0, int $direction = 1, mixed ...$args): Closure { return chain('scaleFill', ['scheme' => viridis_scheme($option, $begin, $end, $direction)] + $args); }
+function scale_color_viridis_c(string $option = 'D', float $begin = 0.0, float $end = 1.0, int $direction = 1, mixed ...$args): Closure { return chain('scaleColor', ['scheme' => viridis_scheme($option, $begin, $end, $direction)] + $args); }
+function scale_fill_viridis_c(string $option = 'D', float $begin = 0.0, float $end = 1.0, int $direction = 1, mixed ...$args): Closure { return chain('scaleFill', ['scheme' => viridis_scheme($option, $begin, $end, $direction)] + $args); }
+function scale_color_viridis_b(string $option = 'D', float $begin = 0.0, float $end = 1.0, int $direction = 1, mixed ...$args): Closure { return chain('scaleColor', ['type' => 'quantize', 'scheme' => viridis_scheme($option, $begin, $end, $direction)] + $args); }
+function scale_fill_viridis_b(string $option = 'D', float $begin = 0.0, float $end = 1.0, int $direction = 1, mixed ...$args): Closure { return chain('scaleFill', ['type' => 'quantize', 'scheme' => viridis_scheme($option, $begin, $end, $direction)] + $args); }
+
+/** ColorBrewer for continuous data, as ggplot2's scale_colour_distiller (reversed by default, as there). */
+function scale_color_distiller(string $palette = 'Blues', int $direction = -1, mixed ...$args): Closure { return chain('scaleColor', ['scheme' => brewer_scheme($palette, $direction)] + $args); }
+function scale_fill_distiller(string $palette = 'Blues', int $direction = -1, mixed ...$args): Closure { return chain('scaleFill', ['scheme' => brewer_scheme($palette, $direction)] + $args); }
+/** ColorBrewer for binned continuous data, as ggplot2's scale_colour_fermenter. */
+function scale_color_fermenter(string $palette = 'Blues', int $direction = -1, mixed ...$args): Closure { return chain('scaleColor', ['type' => 'quantize', 'scheme' => brewer_scheme($palette, $direction)] + $args); }
+function scale_fill_fermenter(string $palette = 'Blues', int $direction = -1, mixed ...$args): Closure { return chain('scaleFill', ['type' => 'quantize', 'scheme' => brewer_scheme($palette, $direction)] + $args); }
+
+/** A gradient through several colors, as ggplot2's scale_colour_gradientn. */
+function scale_color_gradientn(array $colors, mixed ...$args): Closure { return chain('scaleColor', ['range' => array_values($colors)] + $args); }
+function scale_fill_gradientn(array $colors, mixed ...$args): Closure { return chain('scaleFill', ['range' => array_values($colors)] + $args); }
+
+/** Grays for discrete data, as ggplot2's scale_colour_grey (computed for the number of levels). */
+function scale_color_grey(float $start = 0.2, float $end = 0.8, mixed ...$args): Closure { return chain('scaleColor', ['palette' => ['grey', $start, $end]] + $args); }
+function scale_fill_grey(float $start = 0.2, float $end = 0.8, mixed ...$args): Closure { return chain('scaleFill', ['palette' => ['grey', $start, $end]] + $args); }
+
+/** ggplot2's hue palette with its options, as scale_colour_hue (computed for the number of levels). */
+function scale_color_hue(array $h = [15, 375], int|float $c = 100, int|float $l = 65, int|float $hStart = 0, int $direction = 1, mixed ...$args): Closure { return chain('scaleColor', ['palette' => ['hue', $h[0], $h[1], $c, $l, $hStart, $direction]] + $args); }
+function scale_fill_hue(array $h = [15, 375], int|float $c = 100, int|float $l = 65, int|float $hStart = 0, int $direction = 1, mixed ...$args): Closure { return chain('scaleFill', ['palette' => ['hue', $h[0], $h[1], $c, $l, $hStart, $direction]] + $args); }
+
+/** The data values are the colors (or sizes, or shapes) themselves, with no legend, as ggplot2's scale_*_identity. */
+function scale_color_identity(mixed ...$args): Closure { return chain('scaleColor', ['identity' => true] + $args); }
+function scale_fill_identity(mixed ...$args): Closure { return chain('scaleFill', ['identity' => true] + $args); }
+
+/** Discrete position scales: limits orders (and subsets) the levels, labels renames them. */
+function scale_x_discrete(?array $limits = null, mixed ...$args): Closure { return chain('scaleX', ($limits === null ? [] : ['domain' => array_values($limits)]) + $args); }
+function scale_y_discrete(?array $limits = null, mixed ...$args): Closure { return chain('scaleY', ($limits === null ? [] : ['domain' => array_values($limits)]) + $args); }
+
+/** Axis or legend options per aesthetic, as ggplot2's guides(): guides(color: 'none', x: guide_axis(angle: 45)). */
+function guides(mixed ...$guides): Closure { return chain('guides', $guides); }
+/** Legend options: title, columns (ncol), direction (horizontal or vertical), and further Vega-Lite legend properties. */
+function guide_legend(?string $title = null, ?int $ncol = null, ?string $direction = null, mixed ...$properties): array { return array_filter(['title' => $title, 'columns' => $ncol, 'direction' => $direction], fn ($v) => $v !== null) + $properties; }
+/** Color bar options: barwidth and barheight in pixels. */
+function guide_colorbar(?string $title = null, int|float|null $barwidth = null, int|float|null $barheight = null, ?string $direction = null, mixed ...$properties): array { return array_filter(['title' => $title, 'gradientThickness' => $barwidth, 'gradientLength' => $barheight, 'direction' => $direction], fn ($v) => $v !== null) + $properties; }
+function guide_colourbar(mixed ...$args): array { return guide_colorbar(...$args); }
+/** Axis options: angle turns the labels anticlockwise, as ggplot2's guide_axis(angle =); position is top, bottom, left, or right. */
+function guide_axis(?string $title = null, int|float|null $angle = null, ?string $position = null, mixed ...$properties): array
+{
+    $out = array_filter(['title' => $title, 'orient' => $position], fn ($v) => $v !== null);
+    if ($angle !== null) {
+        $out['labelAngle'] = -$angle;
+        $out['labelAlign'] = $angle == 0 ? 'center' : ($angle > 0 ? 'right' : 'left');
+        $out['labelBaseline'] = abs($angle) >= 90 ? 'middle' : 'top';
+    }
+
+    return $out + $properties;
+}
+function guide_none(): bool { return false; }
+
+/** Number labels, as scales::label_number(): accuracy rounds, scale multiplies, prefix and suffix wrap. */
+function label_number(int|float|null $accuracy = null, int|float $scale = 1, string $prefix = '', string $suffix = '', string $bigMark = ','): Label { return Label::number($accuracy, $scale, $prefix, $suffix, $bigMark); }
+/** Thousands separators, as scales::label_comma(). */
+function label_comma(int|float|null $accuracy = null, int|float $scale = 1, string $prefix = '', string $suffix = ''): Label { return Label::number($accuracy, $scale, $prefix, $suffix); }
+/** Percentages of proportions, as scales::label_percent(): 0.25 becomes 25%. */
+function label_percent(int|float|null $accuracy = null, int|float $scale = 100, string $prefix = '', string $suffix = '%'): Label { return Label::number($accuracy, $scale, $prefix, $suffix, ''); }
+/** Currency, as scales::label_dollar(). */
+function label_dollar(int|float|null $accuracy = null, int|float $scale = 1, string $prefix = '$', string $suffix = ''): Label { return Label::number($accuracy, $scale, $prefix, $suffix); }
+/** Scientific notation with digits significant digits, as scales::label_scientific(). */
+function label_scientific(int $digits = 3): Label { return new Label(format: '.'.max(0, $digits - 1).'e'); }
+/** Dates and times with a strftime-style format, as scales::label_date(). */
+function label_date(string $format = '%Y-%m-%d'): Label { return new Label(format: $format, formatType: 'time'); }
+
 function xlim(int|float|string $min, int|float|string $max): Closure { return chain('xlim', [$min, $max]); }
 function ylim(int|float|string $min, int|float|string $max): Closure { return chain('ylim', [$min, $max]); }
 function coord_flip(): Closure { return chain('coordFlip', []); }
+function coord_polar(mixed ...$args): Closure { return chain('coordPolar', $args); }
+function coord_fixed(int|float $ratio = 1): Closure { return chain('coordFixed', [$ratio]); }
+function coord_equal(int|float $ratio = 1): Closure { return chain('coordFixed', [$ratio]); }
 function coord_cartesian(mixed ...$args): Closure { return chain('coordCartesian', $args); }
 function facet_wrap(mixed ...$args): Closure { return chain('facetWrap', $args); }
 function facet_grid(mixed ...$args): Closure { return chain('facetGrid', $args); }
@@ -155,6 +259,7 @@ function theme_classic(int|float $baseSize = 11): Closure { return chain('theme'
 function theme_light(int|float $baseSize = 11): Closure { return chain('theme', ['light', $baseSize]); }
 function theme_dark(int|float $baseSize = 11): Closure { return chain('theme', ['dark', $baseSize]); }
 function theme_void(int|float $baseSize = 11): Closure { return chain('theme', ['void', $baseSize]); }
+function theme_linedraw(int|float $baseSize = 11): Closure { return chain('theme', ['linedraw', $baseSize]); }
 function size(int|string|null $width = null, int|string|null $height = null): Closure { return chain('size', [$width, $height]); }
 function tooltip(bool|array|string $fields = true): Closure { return chain('tooltip', [$fields]); }
 function interactive(mixed ...$args): Closure { return chain('interactive', $args); }

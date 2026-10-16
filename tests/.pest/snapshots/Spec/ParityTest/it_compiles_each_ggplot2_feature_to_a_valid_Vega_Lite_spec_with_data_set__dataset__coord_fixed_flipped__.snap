@@ -1,0 +1,52 @@
+{
+    "$schema": "https://vega.github.io/schema/vega-lite/v6.json",
+    "data": {
+        "values": [
+            {
+                "eruptions": 3.6,
+                "waiting": 79
+            },
+            {
+                "eruptions": 1.8,
+                "waiting": 54
+            },
+            {
+                "eruptions": 3.333,
+                "waiting": 74
+            },
+            "... 269 more rows"
+        ]
+    },
+    "width": 300,
+    "height": 396,
+    "mark": {
+        "type": "point",
+        "filled": true
+    },
+    "encoding": {
+        "y": {
+            "field": "eruptions",
+            "type": "quantitative",
+            "scale": {
+                "zero": false,
+                "domain": [
+                    1.6,
+                    5.1
+                ],
+                "nice": false
+            }
+        },
+        "x": {
+            "field": "waiting",
+            "type": "quantitative",
+            "scale": {
+                "zero": false,
+                "domain": [
+                    43,
+                    96
+                ],
+                "nice": false
+            }
+        }
+    }
+}

@@ -1,0 +1,104 @@
+{
+    "$schema": "https://vega.github.io/schema/vega-lite/v6.json",
+    "data": {
+        "values": [
+            {
+                "eruptions": 3.6,
+                "waiting": 79
+            },
+            {
+                "eruptions": 1.8,
+                "waiting": 54
+            },
+            {
+                "eruptions": 3.333,
+                "waiting": 74
+            },
+            "... 269 more rows"
+        ]
+    },
+    "layer": [
+        {
+            "mark": {
+                "type": "point",
+                "filled": true
+            },
+            "encoding": {
+                "x": {
+                    "field": "eruptions",
+                    "type": "quantitative",
+                    "scale": {
+                        "zero": false
+                    }
+                },
+                "y": {
+                    "field": "waiting",
+                    "type": "quantitative",
+                    "scale": {
+                        "zero": false
+                    }
+                }
+            }
+        },
+        {
+            "data": {
+                "values": [
+                    {
+                        "eruptions": 2.5915091578422924,
+                        "waiting": 43.0,
+                        "level": 0.002,
+                        "__piece": 1,
+                        "__order": 0
+                    },
+                    {
+                        "eruptions": 2.625252525252525,
+                        "waiting": 43.463924706656485,
+                        "level": 0.002,
+                        "__piece": 1,
+                        "__order": 1
+                    },
+                    {
+                        "eruptions": 2.6302097256685584,
+                        "waiting": 43.535353535353536,
+                        "level": 0.002,
+                        "__piece": 1,
+                        "__order": 2
+                    },
+                    "... 2109 more rows"
+                ]
+            },
+            "mark": {
+                "type": "line",
+                "color": "#3366FF"
+            },
+            "encoding": {
+                "x": {
+                    "field": "eruptions",
+                    "type": "quantitative",
+                    "title": "eruptions",
+                    "scale": {
+                        "zero": false
+                    }
+                },
+                "y": {
+                    "field": "waiting",
+                    "type": "quantitative",
+                    "title": "waiting",
+                    "scale": {
+                        "zero": false
+                    }
+                },
+                "order": {
+                    "field": "__order",
+                    "type": "quantitative"
+                },
+                "detail": [
+                    {
+                        "field": "__piece",
+                        "type": "nominal"
+                    }
+                ]
+            }
+        }
+    ]
+}

@@ -5,10 +5,14 @@ declare(strict_types=1);
 namespace Phiz\Compile;
 
 use InvalidArgumentException;
+use Phiz\Aes;
 use Phiz\Bin;
 use Phiz\Config;
+use Phiz\Data;
 use Phiz\Expr;
 use Phiz\Field;
+use Phiz\Layer;
+use Phiz\Stats\Contour;
 use Phiz\Stats\Fit;
 use Phiz\Style;
 
@@ -23,12 +27,21 @@ final class Geoms
 
     private const INTERVAL_COLOR = '#4C78A8';
 
+    /** The most rows for which smooth(method: 'loess') computes its confidence band in PHP by default. */
+    private const LOESS_ROWS = 3000;
+
     private const COMMON = ['opacity' => 'opacity', 'tooltip' => 'tooltip', 'href' => 'href', 'key' => 'key', 'description' => 'description'];
 
     /** @return list<array<string, mixed>> */
     public static function compile(Context $c): array
     {
         $geom = $c->layer->geom;
+        if ($c->polar !== null && ! in_array($geom, ['bar', 'col', 'arc', 'raw'], true) && ! $c->layer->param('annotation')) {
+            throw new InvalidArgumentException("coordPolar() draws bar(), col(), and arc() layers; {$geom}() has no polar form.");
+        }
+        if ($c->polar !== null && in_array($geom, ['bar', 'col'], true)) {
+            return self::polarBar($c);
+        }
 
         return match ($geom) {
             'point' => self::point($c),
@@ -60,6 +73,14 @@ final class Geoms
             'qq' => self::qq($c),
             'qq_line' => self::qqLine($c),
             'arc' => self::arc($c),
+            'polygon' => self::polygon($c),
+            'summary' => self::summary($c),
+            'crossbar' => self::crossbar($c),
+            'count' => self::count($c),
+            'density_2d' => self::contour($c, density: true, filled: false),
+            'density_2d_filled' => self::contour($c, density: true, filled: true),
+            'contour' => self::contour($c, density: false, filled: false),
+            'contour_filled' => self::contour($c, density: false, filled: true),
             'raw' => [$c->param('spec')],
             default => throw new InvalidArgumentException("Unknown geom '{$geom}'."),
         };
@@ -761,8 +782,8 @@ final class Geoms
     }
 
     /**
-     * Fitted curves. With se (the default for lm and poly on inline data) the fit and its confidence band are computed
-     * in PHP; otherwise Vega-Lite's regression or loess transform fits the curve in the browser.
+     * Fitted curves. With se (the default for loess, lm, quad, and poly on inline data) the fit and its confidence band
+     * are computed in PHP; otherwise Vega-Lite's regression or loess transform fits the curve in the browser.
      */
     private static function smooth(Context $c): array
     {
@@ -774,8 +795,9 @@ final class Geoms
         };
         $degree = match ($vlMethod) { 'linear' => 1, 'quad' => 2, 'poly' => $c->param('order', 3), default => null };
         $numeric = fn (string $aesthetic) => $c->fieldOf($aesthetic)?->calculate === null && $c->type($aesthetic) === 'quantitative';
-        $fittable = $degree !== null && $c->data->isInline() && $numeric('x') && $numeric('y');
-        $se = $c->param('se') ?? $fittable;
+        $fittable = ($degree !== null || $vlMethod === 'loess') && $c->data->isInline() && $numeric('x') && $numeric('y');
+        // Loess bands cost O(n²) in PHP; past LOESS_ROWS the default leaves the fit to Vega-Lite, without a band.
+        $se = $c->param('se') ?? ($fittable && ($vlMethod !== 'loess' || $c->data->count() <= self::LOESS_ROWS));
         if ($c->param('n', 80) < 2) {
             throw new InvalidArgumentException('smooth needs n >= 2 points.');
         }
@@ -786,6 +808,12 @@ final class Geoms
             $lineEncoding['x']['type'] = 'quantitative';
         }
         $lineEncoding['y']['type'] = 'quantitative';
+        $span = $vlMethod === 'loess' ? (float) $c->param('span', 0.75) : null;
+        $fit = fn () => Fit::smooth($c->data->rows ?? [], (string) $c->name('x'), (string) $c->name('y'), $c->groupFields(), $degree ?? 2, (float) $c->param('level', 0.95), (int) $c->param('n', 80), $span);
+        if ($se && $span !== null && $c->param('se') === null && ($c->computed = $fit()) === []) {
+            // A default loess band that no group has enough points for leaves the curve to Vega-Lite.
+            [$se, $c->computed] = [false, null];
+        }
 
         if (! $se) {
             $transform = $vlMethod === 'loess'
@@ -800,8 +828,8 @@ final class Geoms
             return [['mark' => $lineMark, 'encoding' => $lineEncoding]];
         }
 
-        if ($degree === null) {
-            throw new InvalidArgumentException("se bands are computed for method lm, quad, and poly; use se: false with method {$method}.");
+        if ($degree === null && $vlMethod !== 'loess') {
+            throw new InvalidArgumentException("se bands are computed for method loess, lm, quad, and poly; use se: false with method {$method}.");
         }
         if (! $c->data->isInline()) {
             throw new InvalidArgumentException('se bands need inline data; use se: false with URL data.');
@@ -809,9 +837,9 @@ final class Geoms
         if (! $fittable) {
             throw new InvalidArgumentException('se bands need numeric x and y columns in the data (not dates or calc() fields); use se: false.');
         }
-        $c->computed = Fit::smooth($c->data->rows ?? [], (string) $c->name('x'), (string) $c->name('y'), $c->groupFields(), $degree, (float) $c->param('level', 0.95), (int) $c->param('n', 80));
+        $c->computed ??= $fit();
         if ($c->computed === []) {
-            throw new InvalidArgumentException("smooth has no group with enough distinct x values to fit a degree {$degree} curve.");
+            throw new InvalidArgumentException($span === null ? "smooth has no group with enough distinct x values to fit a degree {$degree} curve." : "smooth has no group with enough points for a loess fit with span {$span}.");
         }
         $c->transforms = array_values(array_filter($c->transforms, fn ($t) => ! isset($t['calculate'])));
         $band = ['x' => $lineEncoding['x'], 'y' => ['field' => '__ymin', 'type' => 'quantitative', 'title' => $c->name('y')], 'y2' => ['field' => '__ymax']];
@@ -945,6 +973,72 @@ final class Geoms
         return [['mark' => $c->mark('rule', 'line'), 'encoding' => $encoding]];
     }
 
+    /**
+     * Bars in polar coordinates. theta y: a pie, slices stacked by fill with angles from y (or counts). theta x: a
+     * rose, one equal slice per level of x with radius y (or the count).
+     */
+    private static function polarBar(Context $c): array
+    {
+        $polar = $c->polar;
+        $sweep = 2 * M_PI * $polar['direction'];
+        $theta = ['scale' => ['range' => [round($polar['start'], 6), round($polar['start'] + $sweep, 6)]]];
+        $value = $c->has('y') ? $c->def('y', 'theta') : null;
+        $defaults = $polar['innerRadius'] > 0 && $polar['theta'] === 'y' ? ['innerRadius' => $polar['innerRadius']] : [];
+        $common = $c->encode(['color' => 'stroke'] + self::COMMON);
+        if ($polar['theta'] === 'y') {
+            if ($c->has('x') && $c->data->isInline() && count($c->data->levels((string) $c->name('x'))) > 1) {
+                throw new InvalidArgumentException("coordPolar(theta: 'y') draws one ring; map x to a constant or leave it out.");
+            }
+            $encoding = ['theta' => ($value ?? ['aggregate' => 'count', 'type' => 'quantitative', 'title' => 'count']) + ['stack' => true] + $theta];
+            $c->channels['y'] = 'theta';
+            $fill = $c->has('fill') ? 'fill' : ($c->has('color') ? 'color' : null);
+            if ($fill !== null) {
+                $encoding['color'] = $c->def($fill, 'color');
+                $encoding['order'] = ['field' => $c->ref($fill), 'type' => 'ordinal', 'sort' => 'descending'];
+            }
+
+            return [['mark' => $c->mark('arc', 'filled', $defaults), 'encoding' => $encoding + $common]];
+        }
+        $c->require('x');
+        $x = $c->ref('x');
+        $fill = $c->has('fill') ? 'fill' : ($c->has('color') ? 'color' : null);
+        if ($fill !== null && $c->name($fill) !== $c->name('x')) {
+            throw new InvalidArgumentException("coordPolar(theta: 'x') draws one slice per level of x; map fill to x itself.");
+        }
+        // One row per level: its count or summed y, and an equal share of the circle.
+        $c->transforms[] = $value === null
+            ? ['aggregate' => [['op' => 'count', 'as' => '__radius']], 'groupby' => [$x]]
+            : ['aggregate' => [['op' => 'sum', 'field' => $c->ref('y'), 'as' => '__radius']], 'groupby' => [$x]];
+        // Slices in level order, each spanning one unit of a theta scale from 0 to the number of levels.
+        $levels = $c->fieldOf('x')?->sort ?? null;
+        if (is_array($levels)) {
+            $c->transforms[] = ['calculate' => 'indexof('.json_encode(array_values($levels)).', datum['.json_encode((string) $c->name('x')).'])', 'as' => '__level'];
+        }
+        $c->transforms[] = ['window' => [['op' => 'row_number', 'as' => '__slice_end']], 'sort' => [['field' => is_array($levels) ? '__level' : $x]]];
+        $c->transforms[] = ['calculate' => 'datum.__slice_end - 1', 'as' => '__slice_start'];
+        $c->channels += ['x' => 'color', 'y' => 'radius'];
+        $encoding = [
+            // The scale's domain comes from the theta field, so it carries the slice ends: 0 to the number of levels.
+            'theta' => ['field' => '__slice_end', 'type' => 'quantitative', 'scale' => $theta['scale'] + ['zero' => true, 'nice' => false]],
+            'theta2' => ['field' => '__slice_start'],
+            'radius' => ['field' => '__radius', 'type' => 'quantitative', 'title' => $value === null ? 'count' : $c->name('y'), 'scale' => ['type' => 'linear', 'zero' => true, 'range' => [$polar['innerRadius'], self::outerRadius($c)]]],
+            'color' => ['field' => $x, 'type' => 'nominal', 'title' => $c->name('x')] + (is_array($levels) ? ['sort' => $levels] : []),
+        ];
+
+        return [['mark' => $c->mark('arc', 'filled', $defaults + ['stroke' => '#FFFFFF', 'strokeWidth' => 1]), 'encoding' => $encoding + $common]];
+    }
+
+    /**
+     * The outer radius in pixels: half the smaller side. Vega-Lite's default range reads the width and height
+     * signals, which a concatenated view doesn't define, so the radius is fixed here.
+     */
+    private static function outerRadius(Context $c): int|float
+    {
+        [$width, $height] = [is_int($c->width) ? $c->width : 300, is_int($c->height) ? $c->height : 300];
+
+        return min($width, $height) / 2;
+    }
+
     private static function arc(Context $c): array
     {
         $encoding = $c->encode(['theta' => 'theta', 'radius' => 'radius', 'fill' => 'color', 'color' => 'stroke', 'order' => 'order'] + self::COMMON);
@@ -953,11 +1047,332 @@ final class Geoms
             $c->channels['theta'] = 'theta';
         }
         if (isset($encoding['radius'])) {
-            $encoding['radius']['scale'] ??= ['type' => 'sqrt', 'zero' => true];
+            $encoding['radius']['scale'] ??= ['type' => 'sqrt', 'zero' => true, 'range' => [$c->param('innerRadius', 0), self::outerRadius($c)]];
         }
         $defaults = $c->param('innerRadius') !== null ? ['innerRadius' => $c->param('innerRadius')] : [];
 
         return [['mark' => $c->mark('arc', 'filled', $defaults), 'encoding' => $encoding]];
+    }
+
+    /**
+     * Polygons through the points in data order, one per group (or fill level). Each is a filled line mark, so
+     * a group can hold several rings separated by rows with null x and y, and rings drawn the opposite way are holes.
+     */
+    private static function polygon(Context $c): array
+    {
+        $c->require('x', 'y');
+        $encoding = $c->encode(['x' => 'x', 'y' => 'y', 'fill' => 'fill', 'color' => 'stroke', 'group' => 'detail', 'detail' => 'detail', 'order' => 'order'] + self::COMMON);
+        if (! isset($encoding['order'])) {
+            $c->transforms[] = ['window' => [['op' => 'row_number', 'as' => '__order']]];
+            $encoding['order'] = ['field' => '__order', 'type' => 'quantitative'];
+        }
+        if (isset($encoding['fill']['field']) && ! isset($encoding['detail'])) {
+            $encoding['detail'] = ['field' => $encoding['fill']['field'], 'type' => 'nominal'];
+        }
+        $defaults = ['strokeWidth' => $c->has('color') || isset($c->layer->style['color']) || isset($c->layer->style['colour']) ? 1 : 0];
+        if (! $c->has('fill')) {
+            $defaults['fill'] = '#333333';
+        }
+        if (isset($encoding['fill']) && ! array_key_exists('legend', $encoding['fill'])) {
+            $encoding['fill']['legend'] = ['symbolType' => 'square', 'symbolStrokeWidth' => 0];
+        }
+
+        return [['mark' => $c->mark('line', 'filled', $defaults), 'encoding' => $encoding]];
+    }
+
+    /**
+     * Contour lines or filled contour bands, of a 2D kernel density of x and y (density_2d, as ggplot2 with
+     * MASS::kde2d) or of a z field on a regular x-by-y grid (contour). Breaks are shared by every group: bins,
+     * binwidth, explicit breaks, or pretty(range of z, 10). Filled bands are drawn lowest first, each as the region
+     * above its lower break, so higher bands cover the inside of lower ones.
+     */
+    private static function contour(Context $c, bool $density, bool $filled): array
+    {
+        $c->require('x', 'y');
+        if (! $density) {
+            $c->require('z');
+        }
+        if (! $c->data->isInline()) {
+            throw new InvalidArgumentException("{$c->layer->geom} computes contours in PHP and needs inline data.");
+        }
+        foreach ($density ? ['x', 'y'] : ['x', 'y', 'z'] as $aesthetic) {
+            if ($c->fieldOf($aesthetic)?->calculate !== null || $c->fieldOf($aesthetic)?->aggregate !== null || $c->type($aesthetic) !== 'quantitative') {
+                throw new InvalidArgumentException("{$c->layer->geom} needs a plain numeric {$aesthetic} field.");
+            }
+        }
+        [$x, $y] = [(string) $c->name('x'), (string) $c->name('y')];
+        $z = $density ? null : (string) $c->name('z');
+        $levelColor = ! $filled && $c->name('color') === 'level';
+        $groups = array_values(array_diff($c->groupFields(), ['__facet', 'level']));
+
+        $sets = [];
+        [$xlo, $xhi, $ylo, $yhi] = [INF, -INF, INF, -INF];
+        foreach ($c->data->rows ?? [] as $row) {
+            [$xi, $yi] = [$row[$x] ?? null, $row[$y] ?? null];
+            if (! is_numeric($xi) || ! is_numeric($yi) || ! is_finite((float) $xi) || ! is_finite((float) $yi)) {
+                continue;
+            }
+            $key = [];
+            foreach ($groups as $group) {
+                $key[$group] = $row[$group] ?? null;
+            }
+            $sets[json_encode($key)] ??= ['key' => $key, 'rows' => []];
+            $sets[json_encode($key)]['rows'][] = $row;
+            [$xlo, $xhi, $ylo, $yhi] = [min($xlo, (float) $xi), max($xhi, (float) $xi), min($ylo, (float) $yi), max($yhi, (float) $yi)];
+        }
+        if ($sets === []) {
+            throw new InvalidArgumentException("{$c->layer->geom} has no rows with numeric x and y.");
+        }
+
+        $grids = [];
+        foreach ($sets as $id => $set) {
+            if (! $density) {
+                $grids[$id] = Contour::grid($set['rows'], $x, $y, (string) $z);
+                continue;
+            }
+            $xs = array_map(fn ($r) => (float) $r[$x], $set['rows']);
+            $ys = array_map(fn ($r) => (float) $r[$y], $set['rows']);
+            if (count($xs) < 2) {
+                continue; // ggplot2 drops groups too small for a density.
+            }
+            $h = $c->param('h');
+            $h = $h === null ? [Contour::bandwidthNrd($xs), Contour::bandwidthNrd($ys)] : (is_array($h) ? array_values($h) : [$h, $h]);
+            $h = array_map(fn ($v) => $v * $c->param('adjust', 1), $h);
+            if (! ($h[0] > 0) || ! ($h[1] > 0)) {
+                continue;
+            }
+            $grid = Contour::kde2d($xs, $ys, $h, [$xlo, $xhi, $ylo, $yhi], (int) $c->param('n', 100));
+            $scale = match ($c->param('contourVar', 'density')) {
+                'density' => 1.0,
+                'count' => (float) count($xs),
+                'ndensity' => 1 / max(1e-300, max(array_map(max(...), $grid['z']))),
+                default => throw new InvalidArgumentException("contourVar must be 'density', 'ndensity', or 'count'."),
+            };
+            $grid['z'] = array_map(fn ($column) => array_map(fn ($v) => $v * $scale, $column), $grid['z']);
+            $grids[$id] = $grid;
+        }
+        [$zlo, $zhi] = [INF, -INF];
+        foreach ($grids as $grid) {
+            foreach ($grid['z'] as $column) {
+                foreach ($column as $v) {
+                    if ($v !== null) {
+                        [$zlo, $zhi] = [min($zlo, $v), max($zhi, $v)];
+                    }
+                }
+            }
+        }
+        if (! is_finite($zlo)) {
+            throw new InvalidArgumentException("{$c->layer->geom} has no group with enough points to contour.");
+        }
+        $breaks = Contour::breaks($zlo, $zhi, $c->param('bins'), $c->param('binwidth'), $c->param('breaks'));
+
+        $rows = [];
+        $order = 0;
+        $labels = [];
+        if ($filled) {
+            // Band labels as ggplot2's: the lower and upper breaks each formatted as R's format(digits = 3).
+            $low = Contour::format(array_slice($breaks, 0, -1));
+            $high = Contour::format(array_slice($breaks, 1));
+            for ($b = 0; $b < count($breaks) - 1; $b++) {
+                if ($breaks[$b] > $zhi || $breaks[$b + 1] < $zlo) {
+                    continue;
+                }
+                $label = "({$low[$b]}, {$high[$b]}]";
+                $labels[] = $label;
+                foreach ($sets as $id => $set) {
+                    if (! isset($grids[$id])) {
+                        continue;
+                    }
+                    foreach (Contour::region($grids[$id], $breaks[$b]) as $ring) {
+                        foreach ($ring as [$px, $py]) {
+                            $rows[] = $set['key'] + [$x => $px, $y => $py, 'level' => $label, '__order' => $order++];
+                        }
+                        $rows[] = $set['key'] + [$x => null, $y => null, 'level' => $label, '__order' => $order++];
+                    }
+                }
+            }
+        } else {
+            $piece = 0;
+            foreach ($sets as $id => $set) {
+                if (! isset($grids[$id])) {
+                    continue;
+                }
+                foreach ($breaks as $level) {
+                    foreach (Contour::lines($grids[$id], $level) as $line) {
+                        $piece++;
+                        foreach ($line as [$px, $py]) {
+                            $rows[] = $set['key'] + [$x => $px, $y => $py, 'level' => $level, '__piece' => $piece, '__order' => $order++];
+                        }
+                    }
+                }
+            }
+        }
+        $c->computed = $rows;
+        $c->transforms = [];
+        $c->channels += ['x' => 'x', 'y' => 'y'];
+        $encoding = [
+            'x' => ['field' => Field::escape($x), 'type' => 'quantitative', 'title' => $x],
+            'y' => ['field' => Field::escape($y), 'type' => 'quantitative', 'title' => $y],
+            'order' => ['field' => '__order', 'type' => 'quantitative'],
+        ];
+        $grouping = array_map(fn ($g) => ['field' => Field::escape($g), 'type' => 'nominal'], $groups);
+        if ($filled) {
+            $c->channels['fill'] = 'fill';
+            $encoding['fill'] = ['field' => 'level', 'type' => 'ordinal', 'sort' => $labels, 'title' => 'level', 'scale' => ['scheme' => 'viridis'], 'legend' => ['symbolType' => 'square', 'symbolStrokeWidth' => 0]];
+            $encoding['detail'] = [['field' => 'level', 'type' => 'ordinal'], ...$grouping];
+            $encoding += $c->encode(['color' => 'stroke'] + self::COMMON);
+            $stroked = $c->has('color') || isset($c->layer->style['color']) || isset($c->layer->style['colour']);
+
+            return [['mark' => $c->mark('line', 'filled', ['strokeWidth' => $stroked ? 0.5 : 0]), 'encoding' => $encoding]];
+        }
+        $encoding['detail'] = [['field' => '__piece', 'type' => 'nominal'], ...$grouping];
+        if ($levelColor) {
+            $c->channels['color'] = 'color';
+            $encoding['color'] = ['field' => 'level', 'type' => 'quantitative', 'title' => 'level'];
+        }
+        $encoding += $c->encode(['color' => 'color', 'linetype' => 'strokeDash'] + self::COMMON);
+        $mapped = $levelColor || $c->has('color');
+
+        return [['mark' => $c->mark('line', 'line', $mapped ? [] : ['color' => self::SMOOTH_COLOR]), 'encoding' => $encoding]];
+    }
+
+    /**
+     * Summaries of y at each x (per group), computed in PHP and drawn with another geom, as ggplot2's stat_summary.
+     * funData gives the middle and range together (mean_se, mean_cl_normal, mean_sdl, median_hilow, or a callable
+     * returning [y, ymin, ymax]); fun, funMin, and funMax give them separately (mean, median, min, max, sum, sd, or
+     * callables of the values). With a discrete y and a continuous x, x is summarized at each y instead.
+     */
+    private static function summary(Context $c): array
+    {
+        $c->require('x', 'y');
+        if (! $c->data->isInline()) {
+            throw new InvalidArgumentException('summary computes in PHP and needs inline data.');
+        }
+        $horizontal = $c->discrete('y') && ! $c->discrete('x');
+        [$category, $value] = $horizontal ? ['y', 'x'] : ['x', 'y'];
+        foreach ([$category, $value] as $aesthetic) {
+            if ($c->fieldOf($aesthetic)?->calculate !== null || $c->fieldOf($aesthetic)?->aggregate !== null) {
+                throw new InvalidArgumentException("summary needs a plain {$aesthetic} field.");
+            }
+        }
+        [$at, $of] = [(string) $c->name($category), (string) $c->name($value)];
+        $groups = array_values(array_unique([$at, ...array_diff($c->groupFields(), ['__facet'])]));
+        $sets = [];
+        foreach ($c->data->rows ?? [] as $row) {
+            $v = $row[$of] ?? null;
+            if (! is_numeric($v) || ! is_finite((float) $v) || ($row[$at] ?? null) === null) {
+                continue;
+            }
+            $key = [];
+            foreach ($groups as $group) {
+                $key[$group] = $row[$group] ?? null;
+            }
+            $sets[json_encode($key)] ??= ['key' => $key, 'values' => []];
+            $sets[json_encode($key)]['values'][] = (float) $v;
+        }
+        [$fun, $funData, $funMin, $funMax] = [$c->param('fun'), $c->param('funData'), $c->param('funMin'), $c->param('funMax')];
+        if ($fun === null && $funData === null && $funMin === null && $funMax === null) {
+            $funData = 'mean_se';
+        }
+        $args = (array) $c->param('funArgs', []);
+        [$min, $max] = $horizontal ? ['xmin', 'xmax'] : ['ymin', 'ymax'];
+        $rows = [];
+        foreach ($sets as $set) {
+            $values = $set['values'];
+            if ($funData !== null) {
+                $out = self::summarise($funData, $values, $args);
+                [$mid, $lo, $hi] = is_array($out) ? array_values($out) + [null, null, null] : [$out, null, null];
+            } else {
+                $mid = $fun === null ? null : self::summarise($fun, $values, $args);
+                $lo = $funMin === null ? null : self::summarise($funMin, $values, $args);
+                $hi = $funMax === null ? null : self::summarise($funMax, $values, $args);
+            }
+            $finite = fn ($v) => is_int($v) || (is_float($v) && is_finite($v)) ? $v : null;
+            $rows[] = $set['key'] + array_filter([$of => $finite($mid), $min => $finite($lo), $max => $finite($hi)], fn ($v) => $v !== null);
+        }
+        $ranged = $funData !== null || $funMin !== null || $funMax !== null;
+        $geom = $c->param('geom', $ranged ? 'pointrange' : 'point');
+        if (! in_array($geom, ['pointrange', 'errorbar', 'linerange', 'crossbar', 'point', 'line', 'path', 'col', 'bar', 'area', 'ribbon'], true)) {
+            throw new InvalidArgumentException("summary cannot draw with geom '{$geom}'.");
+        }
+        $aes = $c->aes;
+        if ($ranged) {
+            $aes = $aes->with($min, $min)->with($max, $max);
+        }
+        $params = array_diff_key($c->layer->params, array_flip(['fun', 'funData', 'funMin', 'funMax', 'funArgs', 'geom']));
+        $layer = new Layer($geom === 'bar' ? 'col' : $geom, $aes, $params, $c->layer->style, Data::from($rows), raw: $c->layer->raw);
+        $inner = new Context($layer, $aes, Data::from($rows), $c->facetFields, $c->flipped, $c->width, $c->height);
+        $specs = self::compile($inner);
+        $c->computed = $inner->computed ?? $rows;
+        $c->channels = $inner->channels;
+        $c->transforms = $inner->transforms;
+
+        return $specs;
+    }
+
+    /** One summary function applied to values: a name, or a callable. */
+    private static function summarise(string|callable $fn, array $values, array $args): mixed
+    {
+        if (! is_string($fn)) {
+            return $fn($values);
+        }
+        $n = count($values);
+        $mean = array_sum($values) / max(1, $n);
+        $sd = $n > 1 ? sqrt(array_sum(array_map(fn ($v) => ($v - $mean) ** 2, $values)) / ($n - 1)) : NAN;
+        $sorted = $values;
+        sort($sorted);
+        $level = (float) ($args['conf'] ?? $args['level'] ?? 0.95);
+
+        return match ($fn) {
+            'mean' => $mean,
+            'median' => Fit::quantile($sorted, 0.5),
+            'min' => $sorted[0],
+            'max' => $sorted[$n - 1],
+            'sum' => array_sum($values),
+            'sd' => $sd,
+            'length', 'n' => $n,
+            'mean_se' => [$mean, $mean - ($args['mult'] ?? 1) * $sd / sqrt($n), $mean + ($args['mult'] ?? 1) * $sd / sqrt($n)],
+            'mean_cl_normal' => $n < 2 ? [$mean, NAN, NAN] : (function () use ($mean, $sd, $n, $level) {
+                $half = Fit::tQuantile((1 + $level) / 2, $n - 1) * $sd / sqrt($n);
+
+                return [$mean, $mean - $half, $mean + $half];
+            })(),
+            'mean_sdl' => [$mean, $mean - ($args['mult'] ?? 2) * $sd, $mean + ($args['mult'] ?? 2) * $sd],
+            'median_hilow' => [Fit::quantile($sorted, 0.5), Fit::quantile($sorted, (1 - $level) / 2), Fit::quantile($sorted, (1 + $level) / 2)],
+            default => throw new InvalidArgumentException("Unknown summary function '{$fn}'; use mean_se, mean_cl_normal, mean_sdl, median_hilow, mean, median, min, max, sum, sd, n, or a callable."),
+        };
+    }
+
+    /** A box from ymin to ymax (or xmin to xmax) with a line across it at y, as ggplot2's geom_crossbar. */
+    private static function crossbar(Context $c): array
+    {
+        $map = self::rangeMap($c);
+        $horizontal = isset($map['xmin']);
+        $main = $horizontal ? 'x' : 'y';
+        $c->require($main);
+        $band = ['band' => $c->param('width', 0.9)];
+        $size = [$horizontal ? 'height' : 'width' => $band];
+        $box = self::ranged($c, $map + ['fill' => 'fill', 'color' => 'stroke', 'group' => 'detail'] + self::COMMON);
+        $boxMark = $c->mark('bar', 'filled', $size + ['stroke' => '#000000', 'strokeWidth' => 1] + ($c->has('fill') ? [] : ['fill' => 'transparent']));
+        $line = $c->encode([$horizontal ? 'y' : 'x' => $horizontal ? 'y' : 'x', 'color' => 'stroke', 'group' => 'detail'] + self::COMMON);
+        $line[$main] = $c->def($main, $main);
+        $line[$main.'2'] = ['field' => $c->ref($main)];
+        $lineMark = ['type' => 'bar'] + $size + ['fill' => 'transparent', 'stroke' => $boxMark['stroke'], 'strokeWidth' => 2.5 * ($boxMark['strokeWidth'] ?? 1)];
+        $box = self::dodge($c, $box);
+        $line = self::dodge($c, $line);
+
+        return [['mark' => $boxMark, 'encoding' => $box], ['mark' => $lineMark, 'encoding' => $line]];
+    }
+
+    /** Points sized by the number of rows at each x and y, as ggplot2's geom_count. */
+    private static function count(Context $c): array
+    {
+        $c->require('x', 'y');
+        $encoding = $c->encode(['x' => 'x', 'y' => 'y', 'color' => 'color', 'fill' => 'fill', 'shape' => 'shape', 'group' => 'detail', 'detail' => 'detail'] + self::COMMON);
+        $encoding['size'] = ['aggregate' => 'count', 'type' => 'quantitative', 'title' => 'n'];
+        $c->channels['size'] = 'size';
+
+        return [['mark' => $c->mark('point', 'point', ['filled' => true]), 'encoding' => $encoding]];
     }
 
     /** Smallest gap between distinct values, as ggplot2's resolution(). */

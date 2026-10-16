@@ -1,0 +1,70 @@
+{
+    "$schema": "https://vega.github.io/schema/vega-lite/v6.json",
+    "data": {
+        "values": [
+            {
+                "x": 0,
+                "y": 0,
+                "g": "a"
+            },
+            {
+                "x": 2,
+                "y": 0,
+                "g": "a"
+            },
+            {
+                "x": 1,
+                "y": 2,
+                "g": "a"
+            },
+            "... 3 more rows"
+        ]
+    },
+    "transform": [
+        {
+            "window": [
+                {
+                    "op": "row_number",
+                    "as": "__order"
+                }
+            ]
+        }
+    ],
+    "mark": {
+        "type": "line",
+        "strokeWidth": 0,
+        "opacity": 0.6
+    },
+    "encoding": {
+        "x": {
+            "field": "x",
+            "type": "quantitative",
+            "scale": {
+                "zero": false
+            }
+        },
+        "y": {
+            "field": "y",
+            "type": "quantitative",
+            "scale": {
+                "zero": false
+            }
+        },
+        "fill": {
+            "field": "g",
+            "type": "nominal",
+            "legend": {
+                "symbolType": "square",
+                "symbolStrokeWidth": 0
+            }
+        },
+        "order": {
+            "field": "__order",
+            "type": "quantitative"
+        },
+        "detail": {
+            "field": "g",
+            "type": "nominal"
+        }
+    }
+}

@@ -1,0 +1,129 @@
+{
+    "$schema": "https://vega.github.io/schema/vega-lite/v6.json",
+    "width": 300,
+    "layer": [
+        {
+            "data": {
+                "values": [
+                    {
+                        "class": "compact",
+                        "drv": "f",
+                        "hwy": 29.142857142857142,
+                        "ymin": 27.76592543812644,
+                        "ymax": 30.519788847587844
+                    },
+                    {
+                        "class": "compact",
+                        "drv": 4,
+                        "hwy": 25.833333333333332,
+                        "ymin": 25.125124319871052,
+                        "ymax": 26.541542346795612
+                    },
+                    {
+                        "class": "midsize",
+                        "drv": 4,
+                        "hwy": 24.0,
+                        "ymin": 21.51586228824967,
+                        "ymax": 26.48413771175033
+                    },
+                    "... 9 more rows"
+                ]
+            },
+            "mark": {
+                "type": "bar",
+                "width": {
+                    "band": 0.9
+                },
+                "stroke": "#000000",
+                "strokeWidth": 1
+            },
+            "encoding": {
+                "x": {
+                    "field": "class",
+                    "type": "nominal"
+                },
+                "y": {
+                    "field": "ymin",
+                    "type": "quantitative",
+                    "title": "hwy",
+                    "scale": {
+                        "zero": false
+                    }
+                },
+                "y2": {
+                    "field": "ymax"
+                },
+                "fill": {
+                    "field": "drv",
+                    "type": "nominal"
+                },
+                "xOffset": {
+                    "field": "drv",
+                    "type": "nominal"
+                }
+            }
+        },
+        {
+            "data": {
+                "values": [
+                    {
+                        "class": "compact",
+                        "drv": "f",
+                        "hwy": 29.142857142857142,
+                        "ymin": 27.76592543812644,
+                        "ymax": 30.519788847587844
+                    },
+                    {
+                        "class": "compact",
+                        "drv": 4,
+                        "hwy": 25.833333333333332,
+                        "ymin": 25.125124319871052,
+                        "ymax": 26.541542346795612
+                    },
+                    {
+                        "class": "midsize",
+                        "drv": 4,
+                        "hwy": 24.0,
+                        "ymin": 21.51586228824967,
+                        "ymax": 26.48413771175033
+                    },
+                    "... 9 more rows"
+                ]
+            },
+            "mark": {
+                "type": "bar",
+                "width": {
+                    "band": 0.9
+                },
+                "fill": "transparent",
+                "stroke": "#000000",
+                "strokeWidth": 2.5
+            },
+            "encoding": {
+                "x": {
+                    "field": "class",
+                    "type": "nominal"
+                },
+                "y": {
+                    "field": "hwy",
+                    "type": "quantitative",
+                    "scale": {
+                        "zero": false
+                    }
+                },
+                "y2": {
+                    "field": "hwy"
+                },
+                "xOffset": {
+                    "field": "drv",
+                    "type": "nominal"
+                }
+            }
+        }
+    ],
+    "config": {
+        "legend": {
+            "labelLimit": 320
+        }
+    }
+}

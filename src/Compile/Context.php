@@ -18,7 +18,7 @@ use Phiz\Style;
  */
 final class Context
 {
-    private const CONTINUOUS = ['x', 'y', 'xmin', 'xmax', 'ymin', 'ymax', 'xend', 'yend', 'size', 'opacity', 'theta', 'radius', 'weight', 'xintercept', 'yintercept', 'sample'];
+    private const CONTINUOUS = ['x', 'y', 'xmin', 'xmax', 'ymin', 'ymax', 'xend', 'yend', 'size', 'opacity', 'theta', 'radius', 'weight', 'xintercept', 'yintercept', 'sample', 'z'];
 
     /** Channels that share their primary channel's scale and take no type. */
     private const SECONDARY = ['x2', 'y2', 'theta2', 'radius2', 'latitude2', 'longitude2', 'xError', 'yError', 'xError2', 'yError2'];
@@ -49,6 +49,7 @@ final class Context
         public readonly int|string|null $width = null,
         public readonly int|string|null $height = null,
         public readonly bool $transformed = false,
+        public readonly ?array $polar = null,
     ) {}
 
     public function has(string $aesthetic): bool

@@ -1,0 +1,78 @@
+{
+    "$schema": "https://vega.github.io/schema/vega-lite/v6.json",
+    "data": {
+        "values": [
+            {
+                "x": -3.0,
+                "y": -3.0,
+                "level": "(-1.2, -0.8]",
+                "__order": 0
+            },
+            {
+                "x": -3.0,
+                "y": -3.0,
+                "level": "(-1.2, -0.8]",
+                "__order": 1
+            },
+            {
+                "x": -2.7,
+                "y": -3.0,
+                "level": "(-1.2, -0.8]",
+                "__order": 2
+            },
+            "... 569 more rows"
+        ]
+    },
+    "mark": {
+        "type": "line",
+        "strokeWidth": 0
+    },
+    "encoding": {
+        "x": {
+            "field": "x",
+            "type": "quantitative",
+            "title": "x",
+            "scale": {
+                "zero": false
+            }
+        },
+        "y": {
+            "field": "y",
+            "type": "quantitative",
+            "title": "y",
+            "scale": {
+                "zero": false
+            }
+        },
+        "order": {
+            "field": "__order",
+            "type": "quantitative"
+        },
+        "fill": {
+            "field": "level",
+            "type": "ordinal",
+            "sort": [
+                "(-1.2, -0.8]",
+                "(-0.8, -0.4]",
+                "(-0.4, 0.0]",
+                "(0.0, 0.4]",
+                "(0.4, 0.8]",
+                "(0.8, 1.2]"
+            ],
+            "title": "level",
+            "scale": {
+                "scheme": "viridis"
+            },
+            "legend": {
+                "symbolType": "square",
+                "symbolStrokeWidth": 0
+            }
+        },
+        "detail": [
+            {
+                "field": "level",
+                "type": "ordinal"
+            }
+        ]
+    }
+}

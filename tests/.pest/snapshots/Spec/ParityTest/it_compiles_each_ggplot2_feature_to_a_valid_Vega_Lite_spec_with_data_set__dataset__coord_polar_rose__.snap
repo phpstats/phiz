@@ -1,0 +1,135 @@
+{
+    "$schema": "https://vega.github.io/schema/vega-lite/v6.json",
+    "data": {
+        "values": [
+            {
+                "manufacturer": "audi",
+                "model": "a4",
+                "displ": 1.8,
+                "year": 1999,
+                "cyl": 4,
+                "trans": "auto(l5)",
+                "drv": "f",
+                "cty": 18,
+                "hwy": 29,
+                "fl": "p",
+                "class": "compact"
+            },
+            {
+                "manufacturer": "audi",
+                "model": "a4",
+                "displ": 1.8,
+                "year": 1999,
+                "cyl": 4,
+                "trans": "manual(m5)",
+                "drv": "f",
+                "cty": 21,
+                "hwy": 29,
+                "fl": "p",
+                "class": "compact"
+            },
+            {
+                "manufacturer": "audi",
+                "model": "a4",
+                "displ": 2,
+                "year": 2008,
+                "cyl": 4,
+                "trans": "manual(m6)",
+                "drv": "f",
+                "cty": 20,
+                "hwy": 31,
+                "fl": "p",
+                "class": "compact"
+            },
+            "... 231 more rows"
+        ]
+    },
+    "transform": [
+        {
+            "aggregate": [
+                {
+                    "op": "count",
+                    "as": "__radius"
+                }
+            ],
+            "groupby": [
+                "class"
+            ]
+        },
+        {
+            "calculate": "indexof([\"suv\",\"compact\",\"midsize\",\"subcompact\",\"pickup\",\"minivan\",\"2seater\"], datum[\"class\"])",
+            "as": "__level"
+        },
+        {
+            "window": [
+                {
+                    "op": "row_number",
+                    "as": "__slice_end"
+                }
+            ],
+            "sort": [
+                {
+                    "field": "__level"
+                }
+            ]
+        },
+        {
+            "calculate": "datum.__slice_end - 1",
+            "as": "__slice_start"
+        }
+    ],
+    "mark": {
+        "type": "arc",
+        "stroke": "#FFFFFF",
+        "strokeWidth": 1
+    },
+    "encoding": {
+        "theta": {
+            "field": "__slice_end",
+            "type": "quantitative",
+            "scale": {
+                "range": [
+                    0.0,
+                    6.283185
+                ],
+                "zero": true,
+                "nice": false
+            }
+        },
+        "theta2": {
+            "field": "__slice_start"
+        },
+        "radius": {
+            "field": "__radius",
+            "type": "quantitative",
+            "title": "count",
+            "scale": {
+                "type": "linear",
+                "zero": true,
+                "range": [
+                    0,
+                    150
+                ]
+            }
+        },
+        "color": {
+            "field": "class",
+            "type": "nominal",
+            "title": "class",
+            "sort": [
+                "suv",
+                "compact",
+                "midsize",
+                "subcompact",
+                "pickup",
+                "minivan",
+                "2seater"
+            ]
+        }
+    },
+    "config": {
+        "legend": {
+            "labelLimit": 320
+        }
+    }
+}

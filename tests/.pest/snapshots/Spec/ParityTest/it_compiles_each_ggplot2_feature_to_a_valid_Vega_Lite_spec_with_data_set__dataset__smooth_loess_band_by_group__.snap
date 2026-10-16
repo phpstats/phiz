@@ -1,0 +1,119 @@
+{
+    "$schema": "https://vega.github.io/schema/vega-lite/v6.json",
+    "layer": [
+        {
+            "data": {
+                "values": [
+                    {
+                        "drv": "f",
+                        "displ": 1.6,
+                        "hwy": 33.36739975572246,
+                        "__ymin": 31.41461212782109,
+                        "__ymax": 35.320187383623825
+                    },
+                    {
+                        "drv": "f",
+                        "displ": 1.6468354430379748,
+                        "hwy": 33.00272697783748,
+                        "__ymin": 31.37393607593333,
+                        "__ymax": 34.63151787974164
+                    },
+                    {
+                        "drv": "f",
+                        "displ": 1.6936708860759495,
+                        "hwy": 32.64065063518467,
+                        "__ymin": 31.284069723470804,
+                        "__ymax": 33.99723154689854
+                    },
+                    "... 237 more rows"
+                ]
+            },
+            "mark": {
+                "type": "area",
+                "color": "#999999",
+                "opacity": 0.4
+            },
+            "encoding": {
+                "x": {
+                    "field": "displ",
+                    "type": "quantitative",
+                    "scale": {
+                        "zero": false
+                    }
+                },
+                "y": {
+                    "field": "__ymin",
+                    "type": "quantitative",
+                    "title": "hwy",
+                    "scale": {
+                        "zero": false
+                    }
+                },
+                "y2": {
+                    "field": "__ymax"
+                },
+                "detail": {
+                    "field": "drv",
+                    "type": "nominal"
+                }
+            }
+        },
+        {
+            "data": {
+                "values": [
+                    {
+                        "drv": "f",
+                        "displ": 1.6,
+                        "hwy": 33.36739975572246,
+                        "__ymin": 31.41461212782109,
+                        "__ymax": 35.320187383623825
+                    },
+                    {
+                        "drv": "f",
+                        "displ": 1.6468354430379748,
+                        "hwy": 33.00272697783748,
+                        "__ymin": 31.37393607593333,
+                        "__ymax": 34.63151787974164
+                    },
+                    {
+                        "drv": "f",
+                        "displ": 1.6936708860759495,
+                        "hwy": 32.64065063518467,
+                        "__ymin": 31.284069723470804,
+                        "__ymax": 33.99723154689854
+                    },
+                    "... 237 more rows"
+                ]
+            },
+            "mark": {
+                "type": "line",
+                "strokeWidth": 2
+            },
+            "encoding": {
+                "x": {
+                    "field": "displ",
+                    "type": "quantitative",
+                    "scale": {
+                        "zero": false
+                    }
+                },
+                "y": {
+                    "field": "hwy",
+                    "type": "quantitative",
+                    "scale": {
+                        "zero": false
+                    }
+                },
+                "color": {
+                    "field": "drv",
+                    "type": "nominal"
+                }
+            }
+        }
+    ],
+    "config": {
+        "legend": {
+            "labelLimit": 320
+        }
+    }
+}

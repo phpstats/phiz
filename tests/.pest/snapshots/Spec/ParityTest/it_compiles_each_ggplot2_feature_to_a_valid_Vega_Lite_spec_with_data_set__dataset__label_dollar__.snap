@@ -1,0 +1,51 @@
+{
+    "$schema": "https://vega.github.io/schema/vega-lite/v6.json",
+    "data": {
+        "values": [
+            {
+                "date": "1967-07-01",
+                "pce": 506.7,
+                "pop": 198712,
+                "psavert": 12.6,
+                "uempmed": 4.5,
+                "unemploy": 2944
+            },
+            {
+                "date": "1967-08-01",
+                "pce": 509.8,
+                "pop": 198911,
+                "psavert": 12.6,
+                "uempmed": 4.7,
+                "unemploy": 2945
+            },
+            {
+                "date": "1967-09-01",
+                "pce": 515.6,
+                "pop": 199113,
+                "psavert": 11.9,
+                "uempmed": 4.6,
+                "unemploy": 2958
+            },
+            "... 571 more rows"
+        ]
+    },
+    "mark": {
+        "type": "line"
+    },
+    "encoding": {
+        "x": {
+            "field": "date",
+            "type": "temporal"
+        },
+        "y": {
+            "field": "pce",
+            "type": "quantitative",
+            "axis": {
+                "labelExpr": "\"$\" + format(datum.value * 0.001, ',~f') + \"k\""
+            },
+            "scale": {
+                "zero": false
+            }
+        }
+    }
+}

@@ -1,0 +1,85 @@
+{
+    "$schema": "https://vega.github.io/schema/vega-lite/v6.json",
+    "data": {
+        "values": [
+            {
+                "eruptions": 1.6,
+                "waiting": 43.0,
+                "level": "(0.000, 0.002]",
+                "__order": 0
+            },
+            {
+                "eruptions": 1.6,
+                "waiting": 43.0,
+                "level": "(0.000, 0.002]",
+                "__order": 1
+            },
+            {
+                "eruptions": 1.6353535353535353,
+                "waiting": 43.0,
+                "level": "(0.000, 0.002]",
+                "__order": 2
+            },
+            "... 2895 more rows"
+        ]
+    },
+    "mark": {
+        "type": "line",
+        "strokeWidth": 0
+    },
+    "encoding": {
+        "x": {
+            "field": "eruptions",
+            "type": "quantitative",
+            "title": "eruptions",
+            "scale": {
+                "zero": false
+            }
+        },
+        "y": {
+            "field": "waiting",
+            "type": "quantitative",
+            "title": "waiting",
+            "scale": {
+                "zero": false
+            }
+        },
+        "order": {
+            "field": "__order",
+            "type": "quantitative"
+        },
+        "fill": {
+            "field": "level",
+            "type": "ordinal",
+            "sort": [
+                "(0.000, 0.002]",
+                "(0.002, 0.004]",
+                "(0.004, 0.006]",
+                "(0.006, 0.008]",
+                "(0.008, 0.010]",
+                "(0.010, 0.012]",
+                "(0.012, 0.014]",
+                "(0.014, 0.016]",
+                "(0.016, 0.018]",
+                "(0.018, 0.020]",
+                "(0.020, 0.022]",
+                "(0.022, 0.024]",
+                "(0.024, 0.026]"
+            ],
+            "title": "level",
+            "scale": {
+                "scheme": "viridis"
+            },
+            "legend": {
+                "symbolType": "square",
+                "symbolStrokeWidth": 0
+            }
+        },
+        "detail": [
+            {
+                "field": "level",
+                "type": "ordinal"
+            }
+        ]
+    }
+}

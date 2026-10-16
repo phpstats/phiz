@@ -17,7 +17,7 @@ final class Aes
     public const AESTHETICS = [
         'x', 'y', 'xmin', 'xmax', 'ymin', 'ymax', 'xend', 'yend', 'color', 'fill', 'size', 'shape', 'opacity',
         'linetype', 'group', 'detail', 'tooltip', 'label', 'order', 'href', 'theta', 'radius', 'weight',
-        'xintercept', 'yintercept', 'sample', 'key', 'description',
+        'xintercept', 'yintercept', 'sample', 'z', 'key', 'description',
     ];
 
     private const ALIASES = ['colour' => 'color', 'alpha' => 'opacity', 'text' => 'label', 'stroke_dash' => 'linetype', 'url' => 'href'];

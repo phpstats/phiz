@@ -6,3 +6,4 @@
 .DS_Store
 /docs/_site/
 /docs/.quarto/
+/tests/Visual/output/
