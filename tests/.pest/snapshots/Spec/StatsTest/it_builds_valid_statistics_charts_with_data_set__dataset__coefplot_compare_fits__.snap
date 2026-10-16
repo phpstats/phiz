@@ -1,0 +1,222 @@
+{
+    "$schema": "https://vega.github.io/schema/vega-lite/v6.json",
+    "data": {
+        "values": [
+            {
+                "term": "wt",
+                "estimate": -3.181404046679624,
+                "std_error": 0.7196010021343892,
+                "lower": -4.657903342548762,
+                "upper": -1.7049047508104855,
+                "p_value": 0.0001441755761059808,
+                "model": "Full"
+            },
+            {
+                "term": "hp",
+                "estimate": -0.023119809154454732,
+                "std_error": 0.011952196008800814,
+                "lower": -0.04764368966426617,
+                "upper": 0.0014040713553567091,
+                "p_value": 0.06361268640187336,
+                "model": "Full"
+            },
+            {
+                "term": "factor(cyl)6",
+                "estimate": -3.359024895935915,
+                "std_error": 1.401669719292862,
+                "lower": -6.235013600007372,
+                "upper": -0.48303619186445834,
+                "p_value": 0.023747180276687957,
+                "model": "Full"
+            },
+            "... 3 more rows"
+        ]
+    },
+    "layer": [
+        {
+            "data": {
+                "values": [
+                    []
+                ]
+            },
+            "mark": {
+                "type": "rule",
+                "color": "#888888",
+                "strokeDash": [
+                    4,
+                    4
+                ]
+            },
+            "encoding": {
+                "x": {
+                    "datum": 0,
+                    "title": "Estimate (95% CI)"
+                },
+                "tooltip": [
+                    {
+                        "field": "term",
+                        "type": "nominal"
+                    },
+                    {
+                        "field": "model",
+                        "type": "nominal"
+                    },
+                    {
+                        "field": "estimate",
+                        "type": "quantitative"
+                    },
+                    {
+                        "field": "lower",
+                        "type": "quantitative"
+                    },
+                    {
+                        "field": "upper",
+                        "type": "quantitative"
+                    },
+                    {
+                        "field": "std_error",
+                        "type": "quantitative"
+                    },
+                    {
+                        "field": "p_value",
+                        "type": "quantitative"
+                    }
+                ]
+            }
+        },
+        {
+            "mark": {
+                "type": "rule",
+                "strokeWidth": 1.5
+            },
+            "encoding": {
+                "y": {
+                    "field": "term",
+                    "type": "nominal",
+                    "sort": [
+                        "hp",
+                        "factor(cyl)8",
+                        "factor(cyl)6",
+                        "wt"
+                    ],
+                    "title": null
+                },
+                "x": {
+                    "field": "lower",
+                    "type": "quantitative",
+                    "title": "Estimate (95% CI)",
+                    "scale": {
+                        "zero": false
+                    }
+                },
+                "x2": {
+                    "field": "upper"
+                },
+                "color": {
+                    "field": "model",
+                    "type": "nominal"
+                },
+                "yOffset": {
+                    "field": "model",
+                    "type": "nominal"
+                },
+                "tooltip": [
+                    {
+                        "field": "term",
+                        "type": "nominal"
+                    },
+                    {
+                        "field": "model",
+                        "type": "nominal"
+                    },
+                    {
+                        "field": "estimate",
+                        "type": "quantitative"
+                    },
+                    {
+                        "field": "lower",
+                        "type": "quantitative"
+                    },
+                    {
+                        "field": "upper",
+                        "type": "quantitative"
+                    },
+                    {
+                        "field": "std_error",
+                        "type": "quantitative"
+                    },
+                    {
+                        "field": "p_value",
+                        "type": "quantitative"
+                    }
+                ]
+            }
+        },
+        {
+            "mark": {
+                "type": "point",
+                "filled": true,
+                "size": 50
+            },
+            "encoding": {
+                "x": {
+                    "field": "estimate",
+                    "type": "quantitative",
+                    "scale": {
+                        "zero": false
+                    },
+                    "title": "Estimate (95% CI)"
+                },
+                "y": {
+                    "field": "term",
+                    "type": "nominal",
+                    "sort": [
+                        "hp",
+                        "factor(cyl)8",
+                        "factor(cyl)6",
+                        "wt"
+                    ],
+                    "title": null
+                },
+                "color": {
+                    "field": "model",
+                    "type": "nominal"
+                },
+                "yOffset": {
+                    "field": "model",
+                    "type": "nominal"
+                },
+                "tooltip": [
+                    {
+                        "field": "term",
+                        "type": "nominal"
+                    },
+                    {
+                        "field": "model",
+                        "type": "nominal"
+                    },
+                    {
+                        "field": "estimate",
+                        "type": "quantitative"
+                    },
+                    {
+                        "field": "lower",
+                        "type": "quantitative"
+                    },
+                    {
+                        "field": "upper",
+                        "type": "quantitative"
+                    },
+                    {
+                        "field": "std_error",
+                        "type": "quantitative"
+                    },
+                    {
+                        "field": "p_value",
+                        "type": "quantitative"
+                    }
+                ]
+            }
+        }
+    ]
+}

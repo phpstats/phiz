@@ -1,0 +1,193 @@
+{
+    "$schema": "https://vega.github.io/schema/vega-lite/v6.json",
+    "data": {
+        "values": [
+            {
+                "term": "(Intercept)",
+                "estimate": 35.84599531518775,
+                "std_error": 2.041019071410333,
+                "lower": 32.369551113356025,
+                "upper": 39.322439517019475,
+                "p_value": 2.6703201406813336e-16
+            },
+            {
+                "term": "wt",
+                "estimate": -3.181404046679624,
+                "std_error": 0.7196010021343892,
+                "lower": -4.407092119145194,
+                "upper": -1.9557159742140544,
+                "p_value": 0.0001441755761059808
+            },
+            {
+                "term": "hp",
+                "estimate": -0.023119809154454732,
+                "std_error": 0.011952196008800814,
+                "lower": -0.04347784651725129,
+                "upper": -0.0027617717916581727,
+                "p_value": 0.06361268640187336
+            },
+            "... 2 more rows"
+        ]
+    },
+    "layer": [
+        {
+            "data": {
+                "values": [
+                    []
+                ]
+            },
+            "mark": {
+                "type": "rule",
+                "color": "#888888",
+                "strokeDash": [
+                    4,
+                    4
+                ]
+            },
+            "encoding": {
+                "x": {
+                    "datum": 0,
+                    "title": "Estimate (90% CI)"
+                },
+                "tooltip": [
+                    {
+                        "field": "term",
+                        "type": "nominal"
+                    },
+                    {
+                        "field": "estimate",
+                        "type": "quantitative"
+                    },
+                    {
+                        "field": "lower",
+                        "type": "quantitative"
+                    },
+                    {
+                        "field": "upper",
+                        "type": "quantitative"
+                    },
+                    {
+                        "field": "std_error",
+                        "type": "quantitative"
+                    },
+                    {
+                        "field": "p_value",
+                        "type": "quantitative"
+                    }
+                ]
+            }
+        },
+        {
+            "mark": {
+                "type": "rule",
+                "strokeWidth": 1.5
+            },
+            "encoding": {
+                "y": {
+                    "field": "term",
+                    "type": "nominal",
+                    "sort": [
+                        "(Intercept)",
+                        "wt",
+                        "hp",
+                        "factor(cyl)6",
+                        "factor(cyl)8"
+                    ],
+                    "title": null
+                },
+                "x": {
+                    "field": "lower",
+                    "type": "quantitative",
+                    "title": "Estimate (90% CI)",
+                    "scale": {
+                        "zero": false
+                    }
+                },
+                "x2": {
+                    "field": "upper"
+                },
+                "tooltip": [
+                    {
+                        "field": "term",
+                        "type": "nominal"
+                    },
+                    {
+                        "field": "estimate",
+                        "type": "quantitative"
+                    },
+                    {
+                        "field": "lower",
+                        "type": "quantitative"
+                    },
+                    {
+                        "field": "upper",
+                        "type": "quantitative"
+                    },
+                    {
+                        "field": "std_error",
+                        "type": "quantitative"
+                    },
+                    {
+                        "field": "p_value",
+                        "type": "quantitative"
+                    }
+                ]
+            }
+        },
+        {
+            "mark": {
+                "type": "point",
+                "filled": true,
+                "size": 50
+            },
+            "encoding": {
+                "x": {
+                    "field": "estimate",
+                    "type": "quantitative",
+                    "scale": {
+                        "zero": false
+                    },
+                    "title": "Estimate (90% CI)"
+                },
+                "y": {
+                    "field": "term",
+                    "type": "nominal",
+                    "sort": [
+                        "(Intercept)",
+                        "wt",
+                        "hp",
+                        "factor(cyl)6",
+                        "factor(cyl)8"
+                    ],
+                    "title": null
+                },
+                "tooltip": [
+                    {
+                        "field": "term",
+                        "type": "nominal"
+                    },
+                    {
+                        "field": "estimate",
+                        "type": "quantitative"
+                    },
+                    {
+                        "field": "lower",
+                        "type": "quantitative"
+                    },
+                    {
+                        "field": "upper",
+                        "type": "quantitative"
+                    },
+                    {
+                        "field": "std_error",
+                        "type": "quantitative"
+                    },
+                    {
+                        "field": "p_value",
+                        "type": "quantitative"
+                    }
+                ]
+            }
+        }
+    ]
+}

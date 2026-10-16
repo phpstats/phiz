@@ -1,0 +1,154 @@
+{
+    "$schema": "https://vega.github.io/schema/vega-lite/v6.json",
+    "title": {
+        "text": "",
+        "subtitle": "90% intervals, median"
+    },
+    "data": {
+        "values": [
+            {
+                "variable": "alpha",
+                "ll": 0.2,
+                "m": 1.01,
+                "hh": 1.8
+            },
+            {
+                "variable": "beta[1]",
+                "ll": -0.6,
+                "m": -0.29,
+                "hh": 0.0
+            }
+        ]
+    },
+    "layer": [
+        {
+            "data": {
+                "values": [
+                    []
+                ]
+            },
+            "mark": {
+                "type": "rule",
+                "color": "#CCCCCC"
+            },
+            "encoding": {
+                "x": {
+                    "datum": 0,
+                    "title": "value"
+                },
+                "tooltip": [
+                    {
+                        "field": "variable",
+                        "type": "nominal"
+                    },
+                    {
+                        "field": "m",
+                        "type": "quantitative"
+                    },
+                    {
+                        "field": "ll",
+                        "type": "quantitative"
+                    },
+                    {
+                        "field": "hh",
+                        "type": "quantitative"
+                    }
+                ]
+            }
+        },
+        {
+            "mark": {
+                "type": "rule",
+                "color": "#6497B1",
+                "strokeWidth": 1.5
+            },
+            "encoding": {
+                "x": {
+                    "field": "ll",
+                    "type": "quantitative",
+                    "scale": {
+                        "zero": false
+                    },
+                    "title": "value"
+                },
+                "y": {
+                    "field": "variable",
+                    "type": "nominal",
+                    "sort": [
+                        "alpha",
+                        "beta[1]"
+                    ],
+                    "title": null
+                },
+                "x2": {
+                    "field": "hh"
+                },
+                "tooltip": [
+                    {
+                        "field": "variable",
+                        "type": "nominal"
+                    },
+                    {
+                        "field": "m",
+                        "type": "quantitative"
+                    },
+                    {
+                        "field": "ll",
+                        "type": "quantitative"
+                    },
+                    {
+                        "field": "hh",
+                        "type": "quantitative"
+                    }
+                ]
+            }
+        },
+        {
+            "mark": {
+                "type": "point",
+                "filled": true,
+                "size": 70,
+                "fill": "#FFFFFF",
+                "stroke": "#03396C",
+                "strokeWidth": 1.5
+            },
+            "encoding": {
+                "x": {
+                    "field": "m",
+                    "type": "quantitative",
+                    "scale": {
+                        "zero": false
+                    },
+                    "title": "value"
+                },
+                "y": {
+                    "field": "variable",
+                    "type": "nominal",
+                    "sort": [
+                        "alpha",
+                        "beta[1]"
+                    ],
+                    "title": null
+                },
+                "tooltip": [
+                    {
+                        "field": "variable",
+                        "type": "nominal"
+                    },
+                    {
+                        "field": "m",
+                        "type": "quantitative"
+                    },
+                    {
+                        "field": "ll",
+                        "type": "quantitative"
+                    },
+                    {
+                        "field": "hh",
+                        "type": "quantitative"
+                    }
+                ]
+            }
+        }
+    ]
+}

@@ -1,0 +1,93 @@
+{
+    "$schema": "https://vega.github.io/schema/vega-lite/v6.json",
+    "title": "Scale-location",
+    "data": {
+        "values": [
+            {
+                "row": 0,
+                "fitted": 21.6085128099612,
+                "residual": -0.6085128099612014,
+                "observed": 21.0,
+                "root_abs": 0.4993664895700597
+            },
+            {
+                "row": 1,
+                "fitted": 20.797254778057898,
+                "residual": 0.2027452219421022,
+                "observed": 21.0,
+                "root_abs": 0.28824371516389463
+            },
+            {
+                "row": 2,
+                "fitted": 26.314995675526735,
+                "residual": -3.514995675526734,
+                "observed": 22.8,
+                "root_abs": 1.2001815058758263
+            },
+            "... 29 more rows"
+        ]
+    },
+    "layer": [
+        {
+            "mark": {
+                "type": "point",
+                "filled": true,
+                "opacity": 0.6
+            },
+            "encoding": {
+                "x": {
+                    "field": "fitted",
+                    "type": "quantitative",
+                    "scale": {
+                        "zero": false
+                    },
+                    "title": "Fitted values"
+                },
+                "y": {
+                    "field": "root_abs",
+                    "type": "quantitative",
+                    "scale": {
+                        "zero": false
+                    },
+                    "title": "√|standardized residual|"
+                }
+            }
+        },
+        {
+            "transform": [
+                {
+                    "loess": "root_abs",
+                    "on": "fitted",
+                    "bandwidth": 0.75,
+                    "as": [
+                        "fitted",
+                        "root_abs"
+                    ]
+                }
+            ],
+            "mark": {
+                "type": "line",
+                "strokeWidth": 1.5,
+                "color": "#D62728"
+            },
+            "encoding": {
+                "x": {
+                    "field": "fitted",
+                    "type": "quantitative",
+                    "scale": {
+                        "zero": false
+                    },
+                    "title": "Fitted values"
+                },
+                "y": {
+                    "field": "root_abs",
+                    "type": "quantitative",
+                    "scale": {
+                        "zero": false
+                    },
+                    "title": "√|standardized residual|"
+                }
+            }
+        }
+    ]
+}

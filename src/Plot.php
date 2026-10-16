@@ -81,9 +81,9 @@ final class Plot extends Chart
     // Geoms.
 
     /** Scatterplot points. jitter: true (or a width, or [width, height]) displaces them randomly. */
-    public function point(Aes|array|null $aes = null, mixed $data = null, int|float|null $alpha = null, int|float|null $size = null, ?string $color = null, ?string $fill = null, string|int|null $shape = null, bool|int|float|array|null $jitter = null, bool $inheritAes = true, string|array|null $filter = null, mixed ...$style): self
+    public function point(Aes|array|null $aes = null, mixed $data = null, int|float|null $alpha = null, int|float|null $size = null, ?string $color = null, ?string $fill = null, string|int|null $shape = null, bool|int|float|array|null $jitter = null, ?string $position = null, bool $inheritAes = true, string|array|null $filter = null, mixed ...$style): self
     {
-        return $this->add('point', $aes, $data, ['jitter' => $jitter], compact('alpha', 'size', 'color', 'fill', 'shape') + $style, $inheritAes, $filter);
+        return $this->add('point', $aes, $data, ['jitter' => $jitter, 'position' => $position], compact('alpha', 'size', 'color', 'fill', 'shape') + $style, $inheritAes, $filter);
     }
 
     /** Points jittered by up to width/height (fraction of a band on discrete axes, data units otherwise). */
@@ -162,21 +162,21 @@ final class Plot extends Chart
     }
 
     /** Error bars from ymin to ymax (or xmin to xmax) with end ticks; width is the tick length in pixels. */
-    public function errorbar(Aes|array|null $aes = null, mixed $data = null, int|float|null $width = null, ?string $color = null, int|float|null $linewidth = null, bool $inheritAes = true, string|array|null $filter = null, mixed ...$style): self
+    public function errorbar(Aes|array|null $aes = null, mixed $data = null, int|float|null $width = null, ?string $position = null, ?string $color = null, int|float|null $linewidth = null, bool $inheritAes = true, string|array|null $filter = null, mixed ...$style): self
     {
-        return $this->add('errorbar', $aes, $data, compact('width'), compact('color', 'linewidth') + $style, $inheritAes, $filter);
+        return $this->add('errorbar', $aes, $data, compact('width', 'position'), compact('color', 'linewidth') + $style, $inheritAes, $filter);
     }
 
     /** Vertical (or horizontal) lines from ymin to ymax. */
-    public function linerange(Aes|array|null $aes = null, mixed $data = null, ?string $color = null, int|float|null $linewidth = null, bool $inheritAes = true, string|array|null $filter = null, mixed ...$style): self
+    public function linerange(Aes|array|null $aes = null, mixed $data = null, ?string $position = null, ?string $color = null, int|float|null $linewidth = null, bool $inheritAes = true, string|array|null $filter = null, mixed ...$style): self
     {
-        return $this->add('linerange', $aes, $data, [], compact('color', 'linewidth') + $style, $inheritAes, $filter);
+        return $this->add('linerange', $aes, $data, compact('position'), compact('color', 'linewidth') + $style, $inheritAes, $filter);
     }
 
-    /** A point at y on a line from ymin to ymax: the coefficient-plot geom. */
-    public function pointrange(Aes|array|null $aes = null, mixed $data = null, ?string $color = null, int|float|null $size = null, int|float|null $linewidth = null, string|int|null $shape = null, bool $inheritAes = true, string|array|null $filter = null, mixed ...$style): self
+    /** A point at y on a line from ymin to ymax: the coefficient-plot geom. position: 'dodge' sets groups side by side. */
+    public function pointrange(Aes|array|null $aes = null, mixed $data = null, ?string $position = null, ?string $color = null, int|float|null $size = null, int|float|null $linewidth = null, string|int|null $shape = null, bool $inheritAes = true, string|array|null $filter = null, mixed ...$style): self
     {
-        return $this->add('pointrange', $aes, $data, [], compact('color', 'size', 'linewidth', 'shape') + $style, $inheritAes, $filter);
+        return $this->add('pointrange', $aes, $data, compact('position'), compact('color', 'size', 'linewidth', 'shape') + $style, $inheritAes, $filter);
     }
 
     /** Horizontal reference lines at fixed values, or at a mapped yintercept field when yintercept is null. */

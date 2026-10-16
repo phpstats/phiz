@@ -1,0 +1,111 @@
+{
+    "$schema": "https://vega.github.io/schema/vega-lite/v6.json",
+    "title": "Residuals vs fitted",
+    "data": {
+        "values": [
+            {
+                "row": 0,
+                "fitted": 21.6085128099612,
+                "residual": -0.6085128099612014,
+                "observed": 21.0
+            },
+            {
+                "row": 1,
+                "fitted": 20.797254778057898,
+                "residual": 0.2027452219421022,
+                "observed": 21.0
+            },
+            {
+                "row": 2,
+                "fitted": 26.314995675526735,
+                "residual": -3.514995675526734,
+                "observed": 22.8
+            },
+            "... 29 more rows"
+        ]
+    },
+    "layer": [
+        {
+            "data": {
+                "values": [
+                    []
+                ]
+            },
+            "mark": {
+                "type": "rule",
+                "color": "#888888",
+                "strokeDash": [
+                    4,
+                    4
+                ]
+            },
+            "encoding": {
+                "y": {
+                    "datum": 0,
+                    "title": "Residuals"
+                }
+            }
+        },
+        {
+            "mark": {
+                "type": "point",
+                "filled": true,
+                "opacity": 0.6
+            },
+            "encoding": {
+                "x": {
+                    "field": "fitted",
+                    "type": "quantitative",
+                    "scale": {
+                        "zero": false
+                    },
+                    "title": "Fitted values"
+                },
+                "y": {
+                    "field": "residual",
+                    "type": "quantitative",
+                    "scale": {
+                        "zero": false
+                    },
+                    "title": "Residuals"
+                }
+            }
+        },
+        {
+            "transform": [
+                {
+                    "loess": "residual",
+                    "on": "fitted",
+                    "bandwidth": 0.75,
+                    "as": [
+                        "fitted",
+                        "residual"
+                    ]
+                }
+            ],
+            "mark": {
+                "type": "line",
+                "strokeWidth": 1.5,
+                "color": "#D62728"
+            },
+            "encoding": {
+                "x": {
+                    "field": "fitted",
+                    "type": "quantitative",
+                    "scale": {
+                        "zero": false
+                    },
+                    "title": "Fitted values"
+                },
+                "y": {
+                    "field": "residual",
+                    "type": "quantitative",
+                    "scale": {
+                        "zero": false
+                    },
+                    "title": "Residuals"
+                }
+            }
+        }
+    ]
+}

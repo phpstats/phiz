@@ -1,0 +1,183 @@
+{
+    "$schema": "https://vega.github.io/schema/vega-lite/v6.json",
+    "data": {
+        "values": [
+            {
+                "term": "wt",
+                "estimate": 0.00030859673984046836,
+                "std_error": 3.0686752753905973,
+                "lower": 7.539285743089519e-7,
+                "upper": 0.12631428372038422,
+                "p_value": 0.008433816060936085
+            },
+            {
+                "term": "hp",
+                "estimate": 1.036920845528809,
+                "std_error": 0.017734154331947034,
+                "lower": 1.001498413797103,
+                "upper": 1.0735961486105854,
+                "p_value": 0.040914654208566034
+            }
+        ]
+    },
+    "layer": [
+        {
+            "data": {
+                "values": [
+                    []
+                ]
+            },
+            "mark": {
+                "type": "rule",
+                "color": "#888888",
+                "strokeDash": [
+                    4,
+                    4
+                ]
+            },
+            "encoding": {
+                "x": {
+                    "datum": 1,
+                    "title": "exp(estimate) (95% CI)",
+                    "scale": {
+                        "type": "log"
+                    }
+                },
+                "tooltip": [
+                    {
+                        "field": "term",
+                        "type": "nominal"
+                    },
+                    {
+                        "field": "estimate",
+                        "type": "quantitative"
+                    },
+                    {
+                        "field": "lower",
+                        "type": "quantitative"
+                    },
+                    {
+                        "field": "upper",
+                        "type": "quantitative"
+                    },
+                    {
+                        "field": "std_error",
+                        "type": "quantitative"
+                    },
+                    {
+                        "field": "p_value",
+                        "type": "quantitative"
+                    }
+                ]
+            }
+        },
+        {
+            "mark": {
+                "type": "rule",
+                "strokeWidth": 1.5
+            },
+            "encoding": {
+                "y": {
+                    "field": "term",
+                    "type": "nominal",
+                    "sort": [
+                        "wt",
+                        "hp"
+                    ],
+                    "title": null
+                },
+                "x": {
+                    "field": "lower",
+                    "type": "quantitative",
+                    "title": "exp(estimate) (95% CI)",
+                    "scale": {
+                        "zero": false,
+                        "type": "log"
+                    }
+                },
+                "x2": {
+                    "field": "upper"
+                },
+                "tooltip": [
+                    {
+                        "field": "term",
+                        "type": "nominal"
+                    },
+                    {
+                        "field": "estimate",
+                        "type": "quantitative"
+                    },
+                    {
+                        "field": "lower",
+                        "type": "quantitative"
+                    },
+                    {
+                        "field": "upper",
+                        "type": "quantitative"
+                    },
+                    {
+                        "field": "std_error",
+                        "type": "quantitative"
+                    },
+                    {
+                        "field": "p_value",
+                        "type": "quantitative"
+                    }
+                ]
+            }
+        },
+        {
+            "mark": {
+                "type": "point",
+                "filled": true,
+                "size": 50
+            },
+            "encoding": {
+                "x": {
+                    "field": "estimate",
+                    "type": "quantitative",
+                    "scale": {
+                        "zero": false,
+                        "type": "log"
+                    },
+                    "title": "exp(estimate) (95% CI)"
+                },
+                "y": {
+                    "field": "term",
+                    "type": "nominal",
+                    "sort": [
+                        "wt",
+                        "hp"
+                    ],
+                    "title": null
+                },
+                "tooltip": [
+                    {
+                        "field": "term",
+                        "type": "nominal"
+                    },
+                    {
+                        "field": "estimate",
+                        "type": "quantitative"
+                    },
+                    {
+                        "field": "lower",
+                        "type": "quantitative"
+                    },
+                    {
+                        "field": "upper",
+                        "type": "quantitative"
+                    },
+                    {
+                        "field": "std_error",
+                        "type": "quantitative"
+                    },
+                    {
+                        "field": "p_value",
+                        "type": "quantitative"
+                    }
+                ]
+            }
+        }
+    ]
+}

@@ -136,11 +136,24 @@ final class Compiler
         return $encoding;
     }
 
+    /**
+     * The channel an aesthetic landed on. Position aesthetics own their axis whatever mapped to it (ymin, yend,
+     * yintercept, a count), as ggplot2's labs(y:) and scale_y_*() do.
+     */
+    private static function channel(string $aesthetic, array $channels, array $encoding): ?string
+    {
+        if (in_array($aesthetic, self::AXIS_CHANNELS, true)) {
+            return isset($encoding[$aesthetic]) ? $aesthetic : null;
+        }
+
+        return $channels[$aesthetic] ?? null;
+    }
+
     /** Sets labs() titles on the channels the aesthetics were encoded on. */
     private static function label(array $encoding, array $channels, array $labels): array
     {
         foreach ($labels as $aesthetic => $title) {
-            $channel = $channels[$aesthetic] ?? null;
+            $channel = self::channel($aesthetic, $channels, $encoding);
             if ($channel === null || ! isset($encoding[$channel]) || array_is_list($encoding[$channel])) {
                 continue;
             }
@@ -156,7 +169,7 @@ final class Compiler
     private static function scale(array $encoding, array $channels, array $scales): array
     {
         foreach ($scales as $aesthetic => $scale) {
-            $channel = $channels[$aesthetic] ?? null;
+            $channel = self::channel($aesthetic, $channels, $encoding);
             if ($channel === null && $aesthetic === 'fill') {
                 $channel = $channels['color'] ?? null;
             }

@@ -69,7 +69,33 @@ final class Geoms
             $encoding = self::jitter($c, $encoding, 'y', $height);
         }
 
+        $encoding = self::dodge($c, $encoding);
+
         return [['mark' => $c->mark('point', 'point', ['filled' => true]), 'encoding' => $encoding]];
+    }
+
+    /**
+     * position: 'dodge' for points and intervals: side by side within each band of the discrete axis, split by the
+     * color (or fill, or group) field.
+     */
+    private static function dodge(Context $c, array $encoding): array
+    {
+        if ($c->param('position') !== 'dodge') {
+            return $encoding;
+        }
+        $axis = match (true) {
+            isset($encoding['y']['type']) && in_array($encoding['y']['type'], ['nominal', 'ordinal'], true) => 'y',
+            isset($encoding['x']['type']) && in_array($encoding['x']['type'], ['nominal', 'ordinal'], true) => 'x',
+            default => throw new InvalidArgumentException('position dodge needs a discrete x or y axis.'),
+        };
+        foreach (['color', 'fill', 'group'] as $aesthetic) {
+            if ($c->has($aesthetic)) {
+                $encoding["{$axis}Offset"] = ['field' => $c->ref($aesthetic), 'type' => 'nominal'];
+                break;
+            }
+        }
+
+        return $encoding;
     }
 
     /** Random displacement: within the band for a discrete axis, in data units (default 40% of resolution) for a continuous one. */
@@ -146,6 +172,18 @@ final class Geoms
 
     private static function bar(Context $c): array
     {
+        if ($c->has('xmin') && $c->has('xmax')) {
+            // Precomputed bins: bars spanning [xmin, xmax] with height y, on a continuous x axis.
+            $c->require('y');
+            $encoding = $c->encode(['xmin' => 'x', 'xmax' => 'x2', 'y' => 'y', 'fill' => 'color', 'color' => 'stroke', 'group' => 'detail'] + self::COMMON);
+            $encoding['x']['bin'] = ['binned' => true];
+            $encoding['x']['type'] = 'quantitative';
+            if (! isset($encoding['x']['title']) && $c->has('x')) {
+                $encoding['x']['title'] = $c->name('x');
+            }
+
+            return [['mark' => $c->mark('bar', 'filled'), 'encoding' => self::position($c, $encoding, 'y', 'x')]];
+        }
         $count = ['aggregate' => 'count', 'type' => 'quantitative', 'title' => 'count'];
         $encoding = $c->encode(['x' => 'x', 'y' => 'y', 'fill' => 'color', 'color' => 'stroke', 'group' => 'detail', 'detail' => 'detail', 'order' => 'order'] + self::COMMON);
         [$value, $category] = ['y', 'x'];
@@ -334,6 +372,7 @@ final class Geoms
         if ($c->param('width') !== null) {
             $mark['ticks'] = ['size' => $c->param('width')];
         }
+        $encoding = self::dodge($c, $encoding);
 
         return [['mark' => $mark + $style, 'encoding' => $encoding]];
     }
@@ -342,7 +381,7 @@ final class Geoms
     {
         $encoding = self::ranged($c, self::rangeMap($c) + ['color' => 'color', 'size' => 'strokeWidth', 'linetype' => 'strokeDash', 'group' => 'detail', 'detail' => 'detail'] + self::COMMON);
 
-        return ['mark' => $c->mark('rule', 'line'), 'encoding' => $encoding];
+        return ['mark' => $c->mark('rule', 'line'), 'encoding' => self::dodge($c, $encoding)];
     }
 
     private static function pointrange(Context $c): array
@@ -357,7 +396,7 @@ final class Geoms
         $point = $c->encode([$horizontal ? 'x' : 'y' => $horizontal ? 'x' : 'y', $horizontal ? 'y' : 'x' => $horizontal ? 'y' : 'x', 'color' => 'color', 'fill' => 'fill', 'shape' => 'shape'] + self::COMMON);
         $dot = ['type' => 'point', 'filled' => true] + array_filter(['size' => $style['size'] ?? 50, 'color' => $style['color'] ?? null, 'fill' => $style['fill'] ?? null, 'opacity' => $style['opacity'] ?? null, 'shape' => $style['shape'] ?? null], fn ($v) => $v !== null);
 
-        return [['mark' => $rule, 'encoding' => $range], ['mark' => $dot, 'encoding' => $point]];
+        return [['mark' => $rule, 'encoding' => self::dodge($c, $range)], ['mark' => $dot, 'encoding' => self::dodge($c, $point)]];
     }
 
     /** hline and vline: rules at fixed positions (one layer each) or at a mapped xintercept/yintercept field. */

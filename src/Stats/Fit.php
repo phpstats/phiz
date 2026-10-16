@@ -189,6 +189,11 @@ final class Fit
         return $t;
     }
 
+    public static function normalCdf(float $x): float
+    {
+        return 0.5 * self::erfc(-$x / M_SQRT2);
+    }
+
     public static function tCdf(float $t, float $df): float
     {
         $x = $df / ($df + $t * $t);

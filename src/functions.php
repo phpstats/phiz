@@ -158,3 +158,18 @@ function tooltip(bool|array|string $fields = true): Closure { return chain('tool
 function interactive(mixed ...$args): Closure { return chain('interactive', $args); }
 function brush(mixed ...$args): Closure { return chain('brush', $args); }
 function highlight(mixed ...$args): Closure { return chain('highlight', $args); }
+
+// Statistics helpers: plain functions returning ordinary plots (see Phiz\Stats\Charts).
+
+/** Coefficient plot of one fit, or of several keyed by label (dodged side by side). */
+function coefplot(array $fits, mixed ...$options): Plot { return Stats\Charts::coefficients($fits, ...$options); }
+function residual_plot(array $fit): Plot { return Stats\Charts::residuals($fit); }
+function qq_plot(array $fitOrValues, bool $standardize = false): Plot { return Stats\Charts::qq($fitOrValues, $standardize); }
+function fitted_plot(array $fit, ?array $observed = null): Plot { return Stats\Charts::fitted($fit, $observed); }
+function scale_location_plot(array $fit): Plot { return Stats\Charts::scaleLocation($fit); }
+function diagnostic_plots(array $fit, mixed ...$options): Compose { return Stats\Charts::diagnostics($fit, ...$options); }
+/** Predicted values with confidence bands as x varies (by levels of $by), other variables held at typical values. */
+function effect_plot(array $fit, mixed $data, string $x, mixed ...$options): Plot { return Stats\Charts::effects($fit, $data, $x, ...$options); }
+function predictions(array $fit, array $grid, mixed ...$options): array { return Stats\Charts::predictions($fit, $grid, ...$options); }
+/** Posterior intervals from draws columns or a summary, as bayesplot's mcmc_intervals. */
+function interval_plot(array $draws, mixed ...$options): Plot { return Stats\Charts::intervals($draws, ...$options); }

@@ -1,0 +1,115 @@
+{
+    "$schema": "https://vega.github.io/schema/vega-lite/v6.json",
+    "data": {
+        "values": [
+            {
+                "model": "Mazda RX4",
+                "mpg": 20.090624999999996,
+                "cyl": 6.1875,
+                "disp": 230.72187500000004,
+                "hp": 146.6875,
+                "drat": 3.5965625000000006,
+                "qsec": 17.848750000000003,
+                "vs": 0,
+                "am": 0,
+                "gear": 3.6875,
+                "carb": 2.8125,
+                "wt": 1.513,
+                "estimate": 26.699418042743062,
+                "lower": 24.402837468821772,
+                "upper": 28.99599861666435,
+                "std_error": 1.1717463137263868
+            },
+            {
+                "model": "Mazda RX4",
+                "mpg": 20.090624999999996,
+                "cyl": 6.1875,
+                "disp": 230.72187500000004,
+                "hp": 146.6875,
+                "drat": 3.5965625000000006,
+                "qsec": 17.848750000000003,
+                "vs": 0,
+                "am": 0,
+                "gear": 3.6875,
+                "carb": 2.8125,
+                "wt": 2.8166666666666664,
+                "estimate": 21.64401936489493,
+                "lower": 20.617282536219182,
+                "upper": 22.67075619357068,
+                "std_error": 0.5238549467105096
+            },
+            {
+                "model": "Mazda RX4",
+                "mpg": 20.090624999999996,
+                "cyl": 6.1875,
+                "disp": 230.72187500000004,
+                "hp": 146.6875,
+                "drat": 3.5965625000000006,
+                "qsec": 17.848750000000003,
+                "vs": 0,
+                "am": 0,
+                "gear": 3.6875,
+                "carb": 2.8125,
+                "wt": 4.120333333333333,
+                "estimate": 16.58862068704679,
+                "lower": 15.152766288411279,
+                "upper": 18.024475085682305,
+                "std_error": 0.7325922363682951
+            },
+            "... 1 more rows"
+        ]
+    },
+    "layer": [
+        {
+            "mark": {
+                "type": "area",
+                "opacity": 0.2,
+                "fill": "#3366FF"
+            },
+            "encoding": {
+                "x": {
+                    "field": "wt",
+                    "type": "quantitative",
+                    "scale": {
+                        "zero": false
+                    }
+                },
+                "y": {
+                    "field": "lower",
+                    "type": "quantitative",
+                    "title": "y",
+                    "scale": {
+                        "zero": false
+                    }
+                },
+                "y2": {
+                    "field": "upper"
+                }
+            }
+        },
+        {
+            "mark": {
+                "type": "line",
+                "strokeWidth": 2,
+                "color": "#3366FF"
+            },
+            "encoding": {
+                "x": {
+                    "field": "wt",
+                    "type": "quantitative",
+                    "scale": {
+                        "zero": false
+                    }
+                },
+                "y": {
+                    "field": "estimate",
+                    "type": "quantitative",
+                    "scale": {
+                        "zero": false
+                    },
+                    "title": "y"
+                }
+            }
+        }
+    ]
+}
