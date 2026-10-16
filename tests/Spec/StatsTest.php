@@ -190,3 +190,14 @@ it('notes singular mixed-model fits', function () {
         ->and(array_unique(array_column($plot->data->rows, 'std_error')))->toBe([0.0])
         ->and($plot)->toBeValidVegaLite();
 });
+
+it('uses the conditional variances php-stats reports, without the data', function () {
+    // stats_lmer('hwy ~ displ + (1 + displ | manufacturer)', mpg) with effects_cond_var (php-stats 7120e02).
+    $fit = json_decode((string) file_get_contents(__DIR__.'/../fixtures/lmer-condvar.json'), true);
+    $reported = random_effects_plot($fit)->data->rows;
+    $rebuilt = random_effects_plot(['random' => [array_diff_key($fit['random'][0], ['effects_cond_var' => true])]] + $fit, Datasets::mpg())->data->rows;
+
+    expect(array_column($reported, 'std_error'))->toEqualWithDelta(array_column($rebuilt, 'std_error'), 1e-10)
+        ->and(fn () => random_effects_plot(['random' => [array_diff_key($fit['random'][0], ['effects_cond_var' => true])]] + $fit))
+        ->toThrow(InvalidArgumentException::class, 'pass the data');
+});

@@ -295,9 +295,8 @@ final class Charts
      * The conditional covariance is (Z_j'W_j Z_j / sigma^2 + G^-1)^-1 for group j, treating the fixed effects and
      * variance components as known, as lme4's ranef(condVar = TRUE) does; W holds GLMM working weights.
      */
-    public static function randomEffects(array $fit, mixed $data, ?string $group = null, float $level = 0.95): Plot
+    public static function randomEffects(array $fit, mixed $data = null, ?string $group = null, float $level = 0.95): Plot
     {
-        $rows = Data::from($data)->rows ?? [];
         $terms = $fit['random'] ?? throw new InvalidArgumentException('random_effects_plot needs a mixed-model fit (stats_lmer or stats_glmer).');
         $term = null;
         foreach ($terms as $candidate) {
@@ -313,6 +312,51 @@ final class Charts
         $labels = $term['group_labels'] ?? $fit['group_labels'] ?? throw new InvalidArgumentException('The random term has no group labels.');
         $effects = $term['effects'] ?? array_map(fn ($e) => [$e], $fit['random_effects'] ?? []);
         $G = $term['covariance'] ?? (isset($fit['random_intercept_variance']) ? [[(float) $fit['random_intercept_variance']]] : throw new InvalidArgumentException('The random term has no covariance.'));
+        $singular = (bool) ($fit['singular'] ?? $fit['diagnostics']['singular'] ?? false);
+        // php-stats reports conditional variances (lme4's condVar): a k x k matrix per group on each term, or one
+        // variance per group for single-term GLMMs. Older fits fall back to rebuilding them from the data.
+        $reported = $term['effects_cond_var'] ?? (count($columns) === 1 && isset($fit['random_effects_cond_var']) ? array_map(fn ($v) => [[(float) $v]], $fit['random_effects_cond_var']) : null);
+        $out = $reported !== null
+            ? self::effectRows($labels, $columns, $effects, $reported, $level)
+            : self::rebuiltEffects($fit, $term, $data, $labels, $columns, $effects, $G, $level);
+        $first = array_values(array_filter($out, fn ($r) => $r['effect'] === $columns[0]));
+        usort($first, fn ($a, $b) => $a['estimate'] <=> $b['estimate']);
+        $order = array_column($first, 'group');
+        $percent = rtrim(rtrim(sprintf('%.1f', 100 * $level), '0'), '.');
+
+        $plot = Plot::of($out)
+            ->aes(x: 'estimate', y: \Phiz\field('group', 'nominal', sort: array_reverse($order)), xmin: 'lower', xmax: 'upper')
+            ->vline(0, linetype: 'dashed', color: '#888888')
+            ->pointrange(size: 30)
+            ->labs(x: "Conditional mode ({$percent}% interval)", y: $term['group'], subtitle: $singular ? self::singularNote($G) : null)
+            ->tooltip(['group', 'effect', 'estimate', 'lower', 'upper']);
+
+        return count($columns) > 1 ? $plot->facetWrap('effect', ncol: count($columns), scales: 'free_x')->size(220, max(120, 16 * count($labels))) : $plot->height(max(120, 16 * count($labels)));
+    }
+
+    /** Rows of conditional modes with intervals from per-group conditional covariance matrices. */
+    private static function effectRows(array $labels, array $columns, array $effects, array $covariances, float $level): array
+    {
+        $z = Fit::normalQuantile((1 + $level) / 2);
+        $out = [];
+        foreach ($labels as $g => $label) {
+            foreach ($columns as $a => $column) {
+                $estimate = (float) ($effects[$g][$a] ?? 0.0);
+                $se = sqrt(max(0.0, (float) ($covariances[$g][$a][$a] ?? 0.0)));
+                $out[] = ['group' => (string) $label, 'effect' => $column, 'estimate' => $estimate, 'std_error' => $se, 'lower' => $estimate - $z * $se, 'upper' => $estimate + $z * $se];
+            }
+        }
+
+        return $out;
+    }
+
+    /** Conditional covariances rebuilt from the fitting data, for fits that do not report them. */
+    private static function rebuiltEffects(array $fit, array $term, mixed $data, array $labels, array $columns, array $effects, array $G, float $level): array
+    {
+        $rows = Data::from($data)->rows ?? [];
+        if ($rows === []) {
+            throw new InvalidArgumentException('This fit does not report conditional variances; pass the data the model was fitted on.');
+        }
         $sigma2 = (float) ($fit['residual_variance'] ?? 1.0);
         $retained = array_map(fn ($i) => $rows[$i] ?? throw new InvalidArgumentException('The data does not match the fit\'s retained rows; pass the data the model was fitted on.'), $fit['retained_rows'] ?? array_keys($rows));
         $Z = self::randomDesign($term, $retained);
@@ -322,10 +366,8 @@ final class Charts
         foreach ($retained as $i => $row) {
             $byGroup[(string) $row[$term['group']]][] = $i;
         }
-        $singular = (bool) ($fit['singular'] ?? $fit['diagnostics']['singular'] ?? false);
-        $z = Fit::normalQuantile((1 + $level) / 2);
         $k = count($columns);
-        $out = [];
+        $covariances = [];
         foreach ($labels as $g => $label) {
             // (Z'WZ / sigma^2 + G^-1)^-1 = (I + G Z'WZ / sigma^2)^-1 G, which needs no inverse of G, so it holds for
             // singular fits (a zero variance or a correlation of +-1) too.
@@ -348,29 +390,19 @@ final class Charts
                 }
             }
             $Minv = self::invert($M);
-            foreach ($columns as $a => $column) {
-                $variance = 0.0;
-                for ($c = 0; $c < $k; $c++) {
-                    $variance += $Minv[$a][$c] * $G[$c][$a];
+            $C = [];
+            for ($a = 0; $a < $k; $a++) {
+                for ($b = 0; $b < $k; $b++) {
+                    $C[$a][$b] = 0.0;
+                    for ($c = 0; $c < $k; $c++) {
+                        $C[$a][$b] += $Minv[$a][$c] * $G[$c][$b];
+                    }
                 }
-                $estimate = (float) ($effects[$g][$a] ?? 0.0);
-                $se = sqrt(max(0.0, $variance));
-                $out[] = ['group' => (string) $label, 'effect' => $column, 'estimate' => $estimate, 'std_error' => $se, 'lower' => $estimate - $z * $se, 'upper' => $estimate + $z * $se];
             }
+            $covariances[$g] = $C;
         }
-        $first = array_values(array_filter($out, fn ($r) => $r['effect'] === $columns[0]));
-        usort($first, fn ($a, $b) => $a['estimate'] <=> $b['estimate']);
-        $order = array_column($first, 'group');
-        $percent = rtrim(rtrim(sprintf('%.1f', 100 * $level), '0'), '.');
 
-        $plot = Plot::of($out)
-            ->aes(x: 'estimate', y: \Phiz\field('group', 'nominal', sort: array_reverse($order)), xmin: 'lower', xmax: 'upper')
-            ->vline(0, linetype: 'dashed', color: '#888888')
-            ->pointrange(size: 30)
-            ->labs(x: "Conditional mode ({$percent}% interval)", y: $term['group'], subtitle: $singular ? self::singularNote($G) : null)
-            ->tooltip(['group', 'effect', 'estimate', 'lower', 'upper']);
-
-        return count($columns) > 1 ? $plot->facetWrap('effect', ncol: count($columns), scales: 'free_x')->size(220, max(120, 16 * count($labels))) : $plot->height(max(120, 16 * count($labels)));
+        return self::effectRows($labels, $columns, $effects, $covariances, $level);
     }
 
     /** Why a mixed-model fit is singular: a variance at zero, or random effects perfectly correlated. */
