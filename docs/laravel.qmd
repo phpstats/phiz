@@ -2,21 +2,21 @@
 title: "Laravel and Livewire"
 ---
 
-phiz's Laravel service provider is discovered automatically. It registers the `<x-phiz>` Blade component and the `@phizScripts` directive. Without Laravel, the same classes are never loaded.
+phit's Laravel service provider is discovered automatically. It registers the `<x-phit>` Blade component and the `@phitScripts` directive. Without Laravel, the same classes are never loaded.
 
 ## Blade
 
 ```blade
-<x-phiz :plot="$plot" class="h-80" />
+<x-phit :plot="$plot" class="h-80" />
 ```
 
-The component accepts a `Plot`, a `Compose`, a specification array, or specification JSON. `:options` passes vega-embed options, merged over `config('phiz.embed_options')`. Other attributes go to the container element.
+The component accepts a `Plot`, a `Compose`, a specification array, or specification JSON. `:options` passes vega-embed options, merged over `config('phit.embed_options')`. Other attributes go to the container element.
 
-The first `<x-phiz>` on a page adds the script tags. To place them yourself, put `@phizScripts` in the layout.
+The first `<x-phit>` on a page adds the script tags. To place them yourself, put `@phitScripts` in the layout.
 
 ## Livewire
 
-The component re-renders inside Livewire without extra code. The specification is an attribute of the container, which Livewire's morphing updates on each render. The drawn chart sits in a child element marked `wire:ignore`, and the phiz loader embeds the new specification when the attribute changes. When a component renders several charts, give each a `wire:key`.
+The component re-renders inside Livewire without extra code. The specification is an attribute of the container, which Livewire's morphing updates on each render. The drawn chart sits in a child element marked `wire:ignore`, and the phit loader embeds the new specification when the attribute changes. When a component renders several charts, give each a `wire:key`.
 
 ```php
 class RentChart extends Component
@@ -38,7 +38,7 @@ class RentChart extends Component
 ```blade
 <div>
     <select wire:model.live="bedrooms">...</select>
-    <x-phiz :plot="$plot" wire:key="rents" :options="['theme' => 'auto']" />
+    <x-phit :plot="$plot" wire:key="rents" :options="['theme' => 'auto']" />
 </div>
 ```
 
@@ -46,12 +46,12 @@ class RentChart extends Component
 
 ## Configuration
 
-Publish the configuration with `php artisan vendor:publish --tag=phiz-config`.
+Publish the configuration with `php artisan vendor:publish --tag=phit-config`.
 
 | Key | Default | Meaning |
 | --- | --- | --- |
 | `assets` | `cdn` | `cdn`, a URL prefix serving the three library files, or `none` |
-| `inject_scripts` | `true` | whether `<x-phiz>` adds the script tags once per page |
+| `inject_scripts` | `true` | whether `<x-phit>` adds the script tags once per page |
 | `embed_options` | `['actions' => false]` | default vega-embed options |
 
-If your Vite bundle already imports vega-embed, set `assets` to `none` and assign it to `window.vegaEmbed` in your bundle. The phiz loader uses it.
+If your Vite bundle already imports vega-embed, set `assets` to `none` and assign it to `window.vegaEmbed` in your bundle. The phit loader uses it.

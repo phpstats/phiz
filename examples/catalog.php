@@ -3,28 +3,28 @@
 declare(strict_types=1);
 
 /*
- * The phiz example catalog: id => [section, title, description, build]. Each build returns a Plot or Compose built
+ * The phit example catalog: id => [section, title, description, build]. Each build returns a Plot or Compose built
  * from the bundled datasets. examples/gallery.php renders them to one HTML page; the tests validate every spec and,
  * when vl-convert is available, render each to SVG. Example code shown in the gallery is the build function's body.
  */
 
-use Phiz\Compose;
-use Phiz\Datasets;
-use Phiz\Plot;
-use Phiz\Stats\Fit;
+use Phit\Compose;
+use Phit\Datasets;
+use Phit\Plot;
+use Phit\Stats\Fit;
 
-use function Phiz\aes;
-use function Phiz\coefplot;
-use function Phiz\diagnostic_plots;
-use function Phiz\effect_plot;
-use function Phiz\expr;
-use function Phiz\factor;
-use function Phiz\geom_point;
-use function Phiz\geom_smooth;
-use function Phiz\ggplot;
-use function Phiz\interval_plot;
-use function Phiz\labs;
-use function Phiz\theme_minimal;
+use function Phit\aes;
+use function Phit\coefplot;
+use function Phit\diagnostic_plots;
+use function Phit\effect_plot;
+use function Phit\expr;
+use function Phit\factor;
+use function Phit\geom_point;
+use function Phit\geom_smooth;
+use function Phit\ggplot;
+use function Phit\interval_plot;
+use function Phit\labs;
+use function Phit\theme_minimal;
 
 $mpg = Datasets::mpg();
 $mtcars = Datasets::mtcars();

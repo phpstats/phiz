@@ -2,6 +2,6 @@
 
 declare(strict_types=1);
 
-namespace Phiz\Exceptions;
+namespace Phit\Exceptions;
 
-final class ExportFailed extends \RuntimeException implements PhizException {}
+final class ExportFailed extends \RuntimeException implements PhitException {}

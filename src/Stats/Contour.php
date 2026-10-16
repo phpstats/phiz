@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Phiz\Stats;
+namespace Phit\Stats;
 
 use InvalidArgumentException;
 

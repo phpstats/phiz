@@ -2,16 +2,16 @@
 
 declare(strict_types=1);
 
-namespace Phiz;
+namespace Phit;
 
-use Phiz\Exceptions\ExportFailed;
-use Phiz\Exceptions\VlConvertNotFound;
+use Phit\Exceptions\ExportFailed;
+use Phit\Exceptions\VlConvertNotFound;
 
 /**
  * Static rendering through the vl-convert binary (https://github.com/vega/vl-convert): SVG, PNG, JPEG and PDF
  * without a browser, for reports, email and print.
  *
- * The binary is found through the PHIZ_VL_CONVERT or VL_CONVERT environment variables, then PATH, or given to the
+ * The binary is found through the PHIT_VL_CONVERT or VL_CONVERT environment variables, then PATH, or given to the
  * constructor. vl-convert bundles its own Vega-Lite, pinned here to Assets::VL_CONVERT_VEGA_LITE.
  */
 final class Export
@@ -25,7 +25,7 @@ final class Export
     /** The vl-convert binary path, or null when none is found. */
     public static function find(): ?string
     {
-        foreach (['PHIZ_VL_CONVERT', 'VL_CONVERT'] as $variable) {
+        foreach (['PHIT_VL_CONVERT', 'VL_CONVERT'] as $variable) {
             $value = getenv($variable);
             if (is_string($value) && $value !== '' && is_executable($value)) {
                 return $value;
@@ -108,7 +108,7 @@ final class Export
     private function run(string $command, string $extension, Chart|array $chart, array $extra = []): string
     {
         $binary = $this->binary ?? self::find() ?? throw new VlConvertNotFound();
-        $base = sys_get_temp_dir().DIRECTORY_SEPARATOR.'phiz-'.bin2hex(random_bytes(8));
+        $base = sys_get_temp_dir().DIRECTORY_SEPARATOR.'phit-'.bin2hex(random_bytes(8));
         $input = "{$base}.vl.json";
         $output = "{$base}.{$extension}";
         try {

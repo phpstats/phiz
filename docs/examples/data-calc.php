@@ -1,9 +1,9 @@
 <?php
 
-use Phiz\Datasets;
-use Phiz\Plot;
+use Phit\Datasets;
+use Phit\Plot;
 
-use function Phiz\calc;
+use function Phit\calc;
 
 return Plot::of(Datasets::mpg())
     ->aes(x: 'cty', y: calc('datum.hwy - datum.cty', as: 'gap'))

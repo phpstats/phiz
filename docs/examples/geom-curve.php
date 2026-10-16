@@ -1,7 +1,7 @@
 <?php
 
-use Phiz\Datasets;
-use Phiz\Plot;
+use Phit\Datasets;
+use Phit\Plot;
 
 $eruptions = array_column(Datasets::faithful(), 'eruptions');
 $mean = array_sum($eruptions) / count($eruptions);

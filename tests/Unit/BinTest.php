@@ -3,10 +3,10 @@
 declare(strict_types=1);
 
 use Phibble\Frame;
-use Phiz\Bin;
-use Phiz\Config;
-use Phiz\Data;
-use Phiz\Plot;
+use Phit\Bin;
+use Phit\Config;
+use Phit\Data;
+use Phit\Plot;
 
 function cloud(int $n = 400): array
 {

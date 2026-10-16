@@ -1,8 +1,8 @@
 <?php
 
-use Phiz\Datasets;
+use Phit\Datasets;
 
-use function Phiz\marginal_means;
+use function Phit\marginal_means;
 
 // stats_glm('am ~ factor(cyl) + wt', $mtcars, 'binomial'): means on the probability scale.
 $glm = json_decode(file_get_contents(__DIR__.'/fits/mtcars-glm-factor.json'), true);

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Phiz;
+namespace Phit;
 
 /**
  * Small classic datasets for examples, tests, and documentation, as rows (numbers parsed as int or float).

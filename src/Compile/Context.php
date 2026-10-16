@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-namespace Phiz\Compile;
+namespace Phit\Compile;
 
-use Phiz\Aes;
-use Phiz\Data;
-use Phiz\Field;
-use Phiz\Layer;
-use Phiz\Style;
+use Phit\Aes;
+use Phit\Data;
+use Phit\Field;
+use Phit\Layer;
+use Phit\Style;
 
 /**
  * The state of one layer while it compiles: its effective mappings and data, the Vega-Lite channel each aesthetic

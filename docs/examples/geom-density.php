@@ -1,7 +1,7 @@
 <?php
 
-use Phiz\Datasets;
-use Phiz\Plot;
+use Phit\Datasets;
+use Phit\Plot;
 
 return Plot::of(Datasets::mpg())
     ->aes(x: 'hwy', fill: 'drv')

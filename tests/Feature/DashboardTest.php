@@ -3,7 +3,7 @@
 declare(strict_types=1);
 
 use Phibble\Frame;
-use Phiz\Datasets;
+use Phit\Datasets;
 
 require_once __DIR__.'/../../examples/dashboard.php';
 

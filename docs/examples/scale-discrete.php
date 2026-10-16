@@ -1,10 +1,10 @@
 <?php
 
-use Phiz\Datasets;
-use Phiz\Plot;
+use Phit\Datasets;
+use Phit\Plot;
 
-use function Phiz\scale_color_grey;
-use function Phiz\scale_x_discrete;
+use function Phit\scale_color_grey;
+use function Phit\scale_x_discrete;
 
 return Plot::of(Datasets::mpg())
     ->aes(x: 'drv', y: 'hwy', color: 'drv')

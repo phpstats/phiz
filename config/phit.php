@@ -6,10 +6,10 @@ return [
      * 'cdn' (pinned jsDelivr copies with subresource integrity), a URL prefix serving vega.min.js,
      * vega-lite.min.js and vega-embed.min.js, or 'none' when your bundle already sets window.vegaEmbed.
      */
-    'assets' => env('PHIZ_ASSETS', 'cdn'),
+    'assets' => env('PHIT_ASSETS', 'cdn'),
 
     /*
-     * Whether <x-phiz> adds the script tags itself, once per page. Turn this off and put @phizScripts in
+     * Whether <x-phit> adds the script tags itself, once per page. Turn this off and put @phitScripts in
      * your layout to control where they go.
      */
     'inject_scripts' => true,

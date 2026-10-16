@@ -2,14 +2,14 @@
 
 declare(strict_types=1);
 
-use Phiz\Chart;
-use Phiz\Datasets;
-use Phiz\Export;
-use Phiz\Plot;
+use Phit\Chart;
+use Phit\Datasets;
+use Phit\Export;
+use Phit\Plot;
 
-use function Phiz\factor;
-use function Phiz\guide_axis;
-use function Phiz\label_percent;
+use function Phit\factor;
+use function Phit\guide_axis;
+use function Phit\label_percent;
 
 /*
  * Visual regression tests: each plot is rendered to PNG with vl-convert and compared with its baseline in
@@ -17,7 +17,7 @@ use function Phiz\label_percent;
  * platform. Plots must be deterministic, so none uses jitter. A failure writes the new rendering and a difference
  * image to tests/Visual/output.
  *
- * Create or update baselines with PHIZ_UPDATE_VISUAL=1 vendor/bin/pest tests/Visual, then look at the images.
+ * Create or update baselines with PHIT_UPDATE_VISUAL=1 vendor/bin/pest tests/Visual, then look at the images.
  */
 
 const VISUAL_BASELINES = __DIR__.'/baselines';
@@ -113,9 +113,9 @@ it('renders as its baseline', function (Closure $build) {
     $png = $plot->png(scale: 1);
     $baseline = VISUAL_BASELINES."/{$name}.png";
 
-    if (getenv('PHIZ_UPDATE_VISUAL') === '1' || ! is_file($baseline)) {
-        if (getenv('PHIZ_UPDATE_VISUAL') !== '1') {
-            $this->fail("No baseline for '{$name}'. Run PHIZ_UPDATE_VISUAL=1 vendor/bin/pest tests/Visual and check the new image.");
+    if (getenv('PHIT_UPDATE_VISUAL') === '1' || ! is_file($baseline)) {
+        if (getenv('PHIT_UPDATE_VISUAL') !== '1') {
+            $this->fail("No baseline for '{$name}'. Run PHIT_UPDATE_VISUAL=1 vendor/bin/pest tests/Visual and check the new image.");
         }
         file_put_contents($baseline, $png);
         expect(is_file($baseline))->toBeTrue();

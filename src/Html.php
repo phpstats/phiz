@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Phiz;
+namespace Phit;
 
 /**
- * HTML rendering through vega-embed. The spec travels in a data-phiz attribute that the phiz loader script renders,
+ * HTML rendering through vega-embed. The spec travels in a data-phit attribute that the phit loader script renders,
  * so the same markup works in static pages, Blade views, and Livewire components that re-render it.
  */
 final class Html
@@ -19,13 +19,13 @@ final class Html
     public static function container(Chart|array $chart, array $options = [], array $attributes = []): string
     {
         $spec = $chart instanceof Chart ? $chart->toArray() : $chart;
-        $attrs = ['data-phiz' => json_encode($spec, Chart::JSON_FLAGS)];
+        $attrs = ['data-phit' => json_encode($spec, Chart::JSON_FLAGS)];
         if ($options !== []) {
-            $attrs['data-phiz-options'] = json_encode($options, Chart::JSON_FLAGS);
+            $attrs['data-phit-options'] = json_encode($options, Chart::JSON_FLAGS);
         }
         $attrs += $attributes;
 
-        return '<div'.self::attributes($attrs).'><div data-phiz-view wire:ignore></div></div>';
+        return '<div'.self::attributes($attrs).'><div data-phit-view wire:ignore></div></div>';
     }
 
     /** A self-contained fragment: the container plus script tags (null assets means the pinned CDN copies). */

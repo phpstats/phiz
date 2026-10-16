@@ -2,7 +2,7 @@
 title: "Interaction"
 ---
 
-Interaction in phiz is expressed as Vega-Lite parameters, so it works in any page that renders the specification. Static exports draw the initial state.
+Interaction in phit is expressed as Vega-Lite parameters, so it works in any page that renders the specification. Static exports draw the initial state.
 
 ## Tooltips, pan, and zoom
 

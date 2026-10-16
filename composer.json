@@ -1,5 +1,5 @@
 {
-    "name": "erikwestlund/phiz",
+    "name": "erikwestlund/phit",
     "description": "A ggplot2-flavored grammar of graphics for PHP that emits Vega-Lite",
     "type": "library",
     "license": "MIT",
@@ -28,12 +28,12 @@
         "pestphp/pest": "^4.0"
     },
     "suggest": {
-        "erikwestlund/phibble": "Data frames that phiz plots directly",
-        "illuminate/view": "For the <x-phiz> Blade component (auto-discovered in Laravel)"
+        "erikwestlund/phibble": "Data frames that phit plots directly",
+        "illuminate/view": "For the <x-phit> Blade component (auto-discovered in Laravel)"
     },
     "autoload": {
         "psr-4": {
-            "Phiz\\": "src/"
+            "Phit\\": "src/"
         },
         "files": [
             "src/functions.php"
@@ -41,13 +41,13 @@
     },
     "autoload-dev": {
         "psr-4": {
-            "Phiz\\Tests\\": "tests/"
+            "Phit\\Tests\\": "tests/"
         }
     },
     "extra": {
         "laravel": {
             "providers": [
-                "Phiz\\Laravel\\PhizServiceProvider"
+                "Phit\\Laravel\\PhitServiceProvider"
             ]
         }
     },

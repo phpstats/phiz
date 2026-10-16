@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>Rendering – phiz</title>
+<title>Rendering – phit</title>
 <style>
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
@@ -108,26 +108,26 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     "search-label": "Search"
   }
 }</script>
-<style>.phiz-figure{margin:0.5rem 0 1.5rem;overflow-x:auto}</style>
+<style>.phit-figure{margin:0.5rem 0 1.5rem;overflow-x:auto}</style>
 <script src="https://cdn.jsdelivr.net/npm/vega@6.4.0/build/vega.min.js" integrity="sha384-VKdcJr3ZaBIJMbVcopTAI/JEuUkSY6qnwVu9iLuw0DnQ9gQ1JjsfZJhXFQAgNi43" crossorigin="anonymous"></script>
 <script src="https://cdn.jsdelivr.net/npm/vega-lite@6.4.3/build/vega-lite.min.js" integrity="sha384-9/70gNCfOu6G7xXvkdreMfuqAEsoaGJVXV2BN/JLRXkSmcGvnMqtsRx8HZtUWAvI" crossorigin="anonymous"></script>
 <script src="https://cdn.jsdelivr.net/npm/vega-embed@7.3.0/build/vega-embed.min.js" integrity="sha384-Muy1QRxYFeNrA1zShc1KtN4OfipkR/61gt+HWqN57c1Zxu3Oe16TsilsruVVjfKL" crossorigin="anonymous"></script>
-<script>/* phiz: renders [data-phiz] elements with vega-embed, and re-renders when their spec changes (Livewire morphs). */
+<script>/* phit: renders [data-phit] elements with vega-embed, and re-renders when their spec changes (Livewire morphs). */
 (function () {
-  if (window.Phiz) return;
+  if (window.Phit) return;
   var views = new WeakMap();
   var dark = window.matchMedia ? window.matchMedia('(prefers-color-scheme: dark)') : null;
 
   function parse(json, fallback) {
     if (!json) return fallback;
-    try { return JSON.parse(json); } catch (e) { console.error('phiz: invalid JSON', e); return fallback; }
+    try { return JSON.parse(json); } catch (e) { console.error('phit: invalid JSON', e); return fallback; }
   }
 
   function target(el) {
-    var view = el.querySelector(':scope > [data-phiz-view]');
+    var view = el.querySelector(':scope > [data-phit-view]');
     if (!view) {
       view = document.createElement('div');
-      view.setAttribute('data-phiz-view', '');
+      view.setAttribute('data-phit-view', '');
       view.setAttribute('wire:ignore', '');
       el.appendChild(view);
     }
@@ -135,10 +135,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   }
 
   function render(el) {
-    var embed = Phiz.embed || window.vegaEmbed;
+    var embed = Phit.embed || window.vegaEmbed;
     if (!embed) { pending = true; return; }
-    var json = el.getAttribute('data-phiz');
-    var optionsJson = el.getAttribute('data-phiz-options') || '';
+    var json = el.getAttribute('data-phit');
+    var optionsJson = el.getAttribute('data-phit-options') || '';
     var key = json + '\u0000' + optionsJson + '\u0000' + (dark && dark.matches ? 'dark' : 'light');
     var state = views.get(el);
     if (state && state.key === key) return;
@@ -159,25 +159,25 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       if (!current || current.token !== token) { result.view.finalize(); holder.remove(); return; }
       Array.prototype.slice.call(holder.parentNode.children).forEach(function (child) { if (child !== holder) child.remove(); });
       current.view = result.view;
-      el.dispatchEvent(new CustomEvent('phiz:rendered', { detail: { view: result.view }, bubbles: true }));
+      el.dispatchEvent(new CustomEvent('phit:rendered', { detail: { view: result.view }, bubbles: true }));
     }).catch(function (error) {
       var current = views.get(el);
       if (!current || current.token !== token) { holder.remove(); return; }
-      console.error('phiz:', error);
+      console.error('phit:', error);
       holder.textContent = 'Chart error: ' + error.message;
     });
   }
 
   function scan(root) {
     if (root.nodeType !== 1) return;
-    if (root.hasAttribute('data-phiz')) render(root);
-    root.querySelectorAll('[data-phiz]').forEach(render);
+    if (root.hasAttribute('data-phit')) render(root);
+    root.querySelectorAll('[data-phit]').forEach(render);
   }
 
   function release(root) {
     if (root.nodeType !== 1) return;
-    var nodes = root.hasAttribute('data-phiz') ? [root] : [];
-    root.querySelectorAll('[data-phiz]').forEach(function (n) { nodes.push(n); });
+    var nodes = root.hasAttribute('data-phit') ? [root] : [];
+    root.querySelectorAll('[data-phit]').forEach(function (n) { nodes.push(n); });
     nodes.forEach(function (n) {
       if (n.isConnected) return;
       var state = views.get(n);
@@ -187,7 +187,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   }
 
   var pending = false;
-  var Phiz = window.Phiz = {
+  var Phit = window.Phit = {
     embed: null,
     render: render,
     scan: function () { scan(document.documentElement); },
@@ -200,11 +200,11 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       m.addedNodes.forEach(scan);
       m.removedNodes.forEach(release);
     });
-  }).observe(document.documentElement, { subtree: true, childList: true, attributes: true, attributeFilter: ['data-phiz', 'data-phiz-options'] });
+  }).observe(document.documentElement, { subtree: true, childList: true, attributes: true, attributeFilter: ['data-phit', 'data-phit-options'] });
 
-  if (dark && dark.addEventListener) dark.addEventListener('change', function () { Phiz.scan(); });
+  if (dark && dark.addEventListener) dark.addEventListener('change', function () { Phit.scan(); });
 
-  function start() { pending = false; Phiz.scan(); }
+  function start() { pending = false; Phit.scan(); }
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', start); else start();
   window.addEventListener('load', function () { if (pending) start(); });
 })();</script>
@@ -236,7 +236,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation docked overflow-auto">
     <div class="pt-lg-2 mt-2 text-left sidebar-header">
     <div class="sidebar-title mb-0 py-0">
-      <a href="./">phiz</a> 
+      <a href="./">phit</a> 
     </div>
       </div>
         <div class="mt-2 flex-shrink-0 align-items-center">
@@ -249,7 +249,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./index.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">phiz</span></a>
+ <span class="menu-text">phit</span></a>
   </div>
 </li>
         <li class="sidebar-item">
@@ -382,7 +382,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./cmdstanphp.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Plan: CmdStanPHP figures on phiz</span></a>
+ <span class="menu-text">Plan: CmdStanPHP figures on phit</span></a>
   </div>
 </li>
           <li class="sidebar-item">
@@ -407,7 +407,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <li><a href="#html" id="toc-html" class="nav-link" data-scroll-target="#html">HTML</a></li>
   <li><a href="#static-export" id="toc-static-export" class="nav-link" data-scroll-target="#static-export">Static export</a></li>
   </ul>
-<div class="toc-actions"><ul><li><a href="https://github.com/erikwestlund/phiz/blob/main/rendering.qmd" class="toc-action"><i class="bi bi-github"></i>View source</a></li><li><a href="https://github.com/erikwestlund/phiz/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></nav>
+<div class="toc-actions"><ul><li><a href="https://github.com/erikwestlund/phit/blob/main/rendering.qmd" class="toc-action"><i class="bi bi-github"></i>View source</a></li><li><a href="https://github.com/erikwestlund/phit/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></nav>
     </div>
 <!-- main -->
 <main class="content" id="quarto-document-content">
@@ -434,7 +434,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="specifications" class="level2">
 <h2 class="anchored" data-anchor-id="specifications">Specifications</h2>
 <p><code>toArray()</code> returns the Vega-Lite specification and <code>toJson()</code> encodes it. Plots also implement <code>JsonSerializable</code>. The specification declares the Vega-Lite 6 schema.</p>
-<p>Four escape hatches reach the parts of Vega-Lite that phiz does not wrap:</p>
+<p>Four escape hatches reach the parts of Vega-Lite that phit does not wrap:</p>
 <ul>
 <li><code>raw([...])</code> deep-merges arbitrary Vega-Lite into the top level. Nested objects merge, and lists and scalars replace.</li>
 <li><code>transform(...)</code> adds Vega-Lite transforms that run before every layer.</li>
@@ -445,7 +445,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="html" class="level2">
 <h2 class="anchored" data-anchor-id="html">HTML</h2>
 <p><code>embed()</code> returns a container element followed by the script tags, and <code>html()</code> returns a standalone page. Both pass vega-embed options, such as <code>['actions' =&gt; false]</code> or <code>['renderer' =&gt; 'svg']</code>.</p>
-<p>The container carries the specification in a <code>data-phiz</code> attribute. A small loader script, about 100 lines, renders every such element with vega-embed. It renders them again when the attribute changes. The same markup therefore works in static pages, Blade views, and Livewire components.</p>
+<p>The container carries the specification in a <code>data-phit</code> attribute. A small loader script, about 100 lines, renders every such element with vega-embed. It renders them again when the attribute changes. The same markup therefore works in static pages, Blade views, and Livewire components.</p>
 <p>The browser libraries are pinned:</p>
 <table class="caption-top table">
 <thead>
@@ -470,7 +470,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tbody>
 </table>
 <p><code>Assets</code> chooses where they come from:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode php code-with-copy"><code class="sourceCode php"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="kw">use</span> Phiz\Assets<span class="ot">;</span></span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode php code-with-copy"><code class="sourceCode php"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="kw">use</span> Phit\Assets<span class="ot">;</span></span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="va">$plot</span>-&gt;embed(assets<span class="ot">:</span> Assets::cdn())<span class="ot">;</span>                 <span class="co">// jsDelivr, with subresource integrity (the default)</span></span>
 <span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="va">$plot</span>-&gt;embed(assets<span class="ot">:</span> Assets::local(<span class="st">'/js/vega'</span>))<span class="ot">;</span>     <span class="co">// copies you serve: vega.min.js, vega-lite.min.js, vega-embed.min.js</span></span>
@@ -480,11 +480,11 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="static-export" class="level2">
 <h2 class="anchored" data-anchor-id="static-export">Static export</h2>
-<p><code>svg()</code>, <code>png()</code>, <code>pdf()</code>, and <code>save()</code> run the <a href="https://github.com/vega/vl-convert">vl-convert</a> command-line tool. It renders without a browser, which suits reports, email, and print. vl-convert bundles its own Vega-Lite, and phiz runs it with Vega-Lite 6.1. The test suite validates every specification against the Vega-Lite 6.1 schema, so the same specification renders in both places.</p>
+<p><code>svg()</code>, <code>png()</code>, <code>pdf()</code>, and <code>save()</code> run the <a href="https://github.com/vega/vl-convert">vl-convert</a> command-line tool. It renders without a browser, which suits reports, email, and print. vl-convert bundles its own Vega-Lite, and phit runs it with Vega-Lite 6.1. The test suite validates every specification against the Vega-Lite 6.1 schema, so the same specification renders in both places.</p>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode php code-with-copy"><code class="sourceCode php"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="va">$plot</span>-&gt;save(<span class="st">'figure.svg'</span>)<span class="ot">;</span></span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="va">$plot</span>-&gt;save(<span class="st">'figure.png'</span><span class="ot">,</span> scale<span class="ot">:</span> <span class="dv">3</span>)<span class="ot">;</span></span>
 <span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="fu">file_put_contents</span>(<span class="st">'figure.pdf'</span><span class="ot">,</span> <span class="va">$plot</span>-&gt;pdf())<span class="ot">;</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>phiz finds the binary through the <code>PHIZ_VL_CONVERT</code> or <code>VL_CONVERT</code> environment variable, then <code>PATH</code>. Download it from the <a href="https://github.com/vega/vl-convert/releases">vl-convert releases</a>. Version 1.9.0 is tested. If the binary is missing, phiz throws <code>Phiz\Exceptions\VlConvertNotFound</code> with these instructions. <code>new Export(binary: ..., timeout: ..., fontDir: ...)</code> sets the binary path, the timeout, and an extra font directory explicitly.</p>
+<p>phit finds the binary through the <code>PHIT_VL_CONVERT</code> or <code>VL_CONVERT</code> environment variable, then <code>PATH</code>. Download it from the <a href="https://github.com/vega/vl-convert/releases">vl-convert releases</a>. Version 1.9.0 is tested. If the binary is missing, phit throws <code>Phit\Exceptions\VlConvertNotFound</code> with these instructions. <code>new Export(binary: ..., timeout: ..., fontDir: ...)</code> sets the binary path, the timeout, and an extra font directory explicitly.</p>
 
 
 </section>
@@ -563,7 +563,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     }
       var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
       var mailtoRegex = new RegExp(/^mailto:/);
-        var filterRegex = new RegExp("https:\/\/erikwestlund\.github\.io\/phiz\/");
+        var filterRegex = new RegExp("https:\/\/erikwestlund\.github\.io\/phit\/");
       var isInternal = (href) => {
           return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
       }
@@ -895,4 +895,4 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 
 
-<footer class="footer"><div class="nav-footer"><div class="nav-footer-center"><div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.com/erikwestlund/phiz/blob/main/rendering.qmd" class="toc-action"><i class="bi bi-github"></i>View source</a></li><li><a href="https://github.com/erikwestlund/phiz/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></div></div></footer></body></html>
+<footer class="footer"><div class="nav-footer"><div class="nav-footer-center"><div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.com/erikwestlund/phit/blob/main/rendering.qmd" class="toc-action"><i class="bi bi-github"></i>View source</a></li><li><a href="https://github.com/erikwestlund/phit/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></div></div></footer></body></html>

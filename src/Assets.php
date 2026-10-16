@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Phiz;
+namespace Phit;
 
 /**
  * The browser libraries a rendered plot needs: vega, vega-lite and vega-embed, pinned to tested versions.
@@ -86,7 +86,7 @@ final class Assets
         return new self([]);
     }
 
-    /** Script tags for the libraries, followed by the phiz loader. */
+    /** Script tags for the libraries, followed by the phit loader. */
     public function scripts(bool $loader = true): string
     {
         $tags = '';
@@ -105,11 +105,11 @@ final class Assets
         return $loader ? $tags.'<script>'.self::loader()."</script>\n" : $tags;
     }
 
-    /** The phiz loader script: renders every [data-phiz] element and re-renders when its spec attribute changes. */
+    /** The phit loader script: renders every [data-phit] element and re-renders when its spec attribute changes. */
     public static function loader(): string
     {
         static $script = null;
 
-        return $script ??= trim((string) file_get_contents(dirname(__DIR__).'/resources/js/phiz.js'));
+        return $script ??= trim((string) file_get_contents(dirname(__DIR__).'/resources/js/phit.js'));
     }
 }

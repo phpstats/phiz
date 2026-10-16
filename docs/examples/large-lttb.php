@@ -1,6 +1,6 @@
 <?php
 
-use Phiz\Plot;
+use Phit\Plot;
 
 // A 100,000-point random walk, drawn from 800 points chosen by Largest-Triangle-Three-Buckets.
 $rng = new Random\Randomizer(new Random\Engine\Mt19937(7));

@@ -28,7 +28,7 @@ Guide options are passed to the axis or legend:
 
 Continuous position scales fit the data as in ggplot2: points and lines do not force the axis to include zero. Plots with bars, areas, histograms, or densities keep zero, since their lengths are measured from it. `zero: true` restores Vega-Lite's default for a single scale.
 
-The functions in `Phiz\` include ggplot2's shortcuts. Each returns a closure for the pipe operator or `apply()`:
+The functions in `Phit\` include ggplot2's shortcuts. Each returns a closure for the pipe operator or `apply()`:
 
 | Function | Scale |
 | --- | --- |
@@ -73,13 +73,13 @@ The label functions follow the scales package. Pass one as `labels:`.
 
 {{< include _generated/scale-flip.md >}}
 
-`coordCartesian(xlim:, ylim:)`, `xlim()`, and `ylim()` fix the domains and clip marks outside them. ggplot2's `xlim()` removes the data outside the limits, which changes statistics such as smoothers. phiz keeps the data and only zooms.
+`coordCartesian(xlim:, ylim:)`, `xlim()`, and `ylim()` fix the domains and clip marks outside them. ggplot2's `xlim()` removes the data outside the limits, which changes statistics such as smoothers. phit keeps the data and only zooms.
 
 `coordFixed(ratio)` fixes the aspect ratio, as `coord_fixed()` does: one unit of y takes `ratio` times the length of one unit of x. The panel's height follows from its width (300 pixels unless set) and the data ranges, and the scales keep those ranges exactly. `coord_equal()` is the same with a ratio of 1.
 
 {{< include _generated/coord-fixed.md >}}
 
-`coordPolar()` draws `bar()` and `col()` layers in polar coordinates. `theta: 'y'` stacks the bars into a pie (leave x unmapped, or map it to a constant), and `innerRadius:` in pixels makes a donut. `theta: 'x'` makes a rose: one equal slice per level of x, with radius y. `start:` rotates the first slice clockwise from twelve o'clock, in radians, and `direction: -1` runs anticlockwise. Other geoms have no polar form in Vega-Lite, and phiz rejects them.
+`coordPolar()` draws `bar()` and `col()` layers in polar coordinates. `theta: 'y'` stacks the bars into a pie (leave x unmapped, or map it to a constant), and `innerRadius:` in pixels makes a donut. `theta: 'x'` makes a rose: one equal slice per level of x, with radius y. `start:` rotates the first slice clockwise from twelve o'clock, in radians, and `direction: -1` runs anticlockwise. Other geoms have no polar form in Vega-Lite, and phit rejects them.
 
 {{< include _generated/coord-polar.md >}}
 

@@ -1,8 +1,8 @@
 <?php
 
-use Phiz\Compose;
-use Phiz\Datasets;
-use Phiz\Plot;
+use Phit\Compose;
+use Phit\Datasets;
+use Phit\Plot;
 
 $cars = Plot::of(Datasets::mpg());
 

@@ -1,8 +1,8 @@
 <?php
 
-use Phiz\Datasets;
+use Phit\Datasets;
 
-use function Phiz\effect_plot;
+use function Phit\effect_plot;
 
 // The same logistic fit, on the log-odds scale, where the model is linear.
 $glm = json_decode(file_get_contents(__DIR__.'/fits/mtcars-glm.json'), true);

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Phiz;
+namespace Phit;
 
 /**
  * Axis and legend label formatting, as the scales package's label_*() functions: a d3 format, a time format, or a

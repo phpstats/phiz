@@ -2,7 +2,7 @@
 title: "Dashboards with Livewire"
 ---
 
-This page builds a small dashboard of linked charts. A Livewire component holds the filters, phplyr summarizes a phibble table on the server, and phiz renders three charts that all follow the same state. Changing a filter re-renders the component, and each chart re-embeds in place.
+This page builds a small dashboard of linked charts. A Livewire component holds the filters, phplyr summarizes a phibble table on the server, and phit renders three charts that all follow the same state. Changing a filter re-renders the component, and each chart re-embeds in place.
 
 ## The charts
 
@@ -20,7 +20,7 @@ With the drive filter on front-wheel drive, the year on 2008, and the compact cl
 
 ## The Livewire component
 
-The component keeps the filters as public properties. `render()` passes them to `fuel_dashboard()`. Livewire calls `render()` after every update, so a new selection produces new specifications, and the phiz loader re-embeds each chart whose specification changed.
+The component keeps the filters as public properties. `render()` passes them to `fuel_dashboard()`. Livewire calls `render()` after every update, so a new selection produces new specifications, and the phit loader re-embeds each chart whose specification changed.
 
 ```php
 namespace App\Livewire;
@@ -28,7 +28,7 @@ namespace App\Livewire;
 use Livewire\Attributes\Url;
 use Livewire\Component;
 use Phibble\Frame;
-use Phiz\Datasets;
+use Phit\Datasets;
 
 class FuelDashboard extends Component
 {
@@ -55,7 +55,7 @@ class FuelDashboard extends Component
 }
 ```
 
-The view puts the filters and the three charts side by side. Each `<x-phiz>` has a `wire:key`, so Livewire matches each chart to its element across renders.
+The view puts the filters and the three charts side by side. Each `<x-phit>` has a `wire:key`, so Livewire matches each chart to its element across renders.
 
 ```blade
 <div class="space-y-4">
@@ -74,9 +74,9 @@ The view puts the filters and the three charts side by side. Each `<x-phiz>` has
     </div>
 
     <div class="grid grid-cols-3 gap-4">
-        <x-phiz :plot="$bars" wire:key="bars" />
-        <x-phiz :plot="$scatter" wire:key="scatter" />
-        <x-phiz :plot="$trend" wire:key="trend" />
+        <x-phit :plot="$bars" wire:key="bars" />
+        <x-phit :plot="$scatter" wire:key="scatter" />
+        <x-phit :plot="$trend" wire:key="trend" />
     </div>
 
     <ul class="flex gap-2 text-sm">
@@ -87,11 +87,11 @@ The view puts the filters and the three charts side by side. Each `<x-phiz>` has
 </div>
 ```
 
-A click on a chart can also drive the component. The loader dispatches a `phiz:rendered` event with the Vega view, and a small Alpine handler can forward selections with `$wire`:
+A click on a chart can also drive the component. The loader dispatches a `phit:rendered` event with the Vega view, and a small Alpine handler can forward selections with `$wire`:
 
 ```blade
-<div x-on:phiz:rendered="$event.detail.view.addEventListener('click', (e, item) => item?.datum?.class && $wire.select(item.datum.class))">
-    <x-phiz :plot="$bars" wire:key="bars" />
+<div x-on:phit:rendered="$event.detail.view.addEventListener('click', (e, item) => item?.datum?.class && $wire.select(item.datum.class))">
+    <x-phit :plot="$bars" wire:key="bars" />
 </div>
 ```
 

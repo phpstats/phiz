@@ -21,7 +21,7 @@ jobs:
         run: |
           curl -sSfL -o vl-convert.zip https://github.com/vega/vl-convert/releases/download/v1.9.0/vl-convert_linux-64.zip
           unzip -q vl-convert.zip -d "$HOME/vl-convert"
-          echo "PHIZ_VL_CONVERT=$(find "$HOME/vl-convert" -type f -name vl-convert | head -1)" >> "$GITHUB_ENV"
+          echo "PHIT_VL_CONVERT=$(find "$HOME/vl-convert" -type f -name vl-convert | head -1)" >> "$GITHUB_ENV"
 
       - run: composer install --no-interaction --no-progress
 

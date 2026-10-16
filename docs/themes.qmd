@@ -33,7 +33,7 @@ The individual options are:
 
 {{< include _generated/theme-options.md >}}
 
-A page can also choose a theme at render time. The vega-embed option `theme` accepts the vega-themes names, and phiz adds `'auto'`, which follows the reader's light or dark mode preference:
+A page can also choose a theme at render time. The vega-embed option `theme` accepts the vega-themes names, and phit adds `'auto'`, which follows the reader's light or dark mode preference:
 
 ```php
 $plot->embed(['theme' => 'auto']);

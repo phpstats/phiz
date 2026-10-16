@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>API reference – phiz</title>
+<title>API reference – phit</title>
 <style>
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
@@ -73,26 +73,26 @@ ul.task-list li input[type="checkbox"] {
     "search-label": "Search"
   }
 }</script>
-<style>.phiz-figure{margin:0.5rem 0 1.5rem;overflow-x:auto}</style>
+<style>.phit-figure{margin:0.5rem 0 1.5rem;overflow-x:auto}</style>
 <script src="https://cdn.jsdelivr.net/npm/vega@6.4.0/build/vega.min.js" integrity="sha384-VKdcJr3ZaBIJMbVcopTAI/JEuUkSY6qnwVu9iLuw0DnQ9gQ1JjsfZJhXFQAgNi43" crossorigin="anonymous"></script>
 <script src="https://cdn.jsdelivr.net/npm/vega-lite@6.4.3/build/vega-lite.min.js" integrity="sha384-9/70gNCfOu6G7xXvkdreMfuqAEsoaGJVXV2BN/JLRXkSmcGvnMqtsRx8HZtUWAvI" crossorigin="anonymous"></script>
 <script src="https://cdn.jsdelivr.net/npm/vega-embed@7.3.0/build/vega-embed.min.js" integrity="sha384-Muy1QRxYFeNrA1zShc1KtN4OfipkR/61gt+HWqN57c1Zxu3Oe16TsilsruVVjfKL" crossorigin="anonymous"></script>
-<script>/* phiz: renders [data-phiz] elements with vega-embed, and re-renders when their spec changes (Livewire morphs). */
+<script>/* phit: renders [data-phit] elements with vega-embed, and re-renders when their spec changes (Livewire morphs). */
 (function () {
-  if (window.Phiz) return;
+  if (window.Phit) return;
   var views = new WeakMap();
   var dark = window.matchMedia ? window.matchMedia('(prefers-color-scheme: dark)') : null;
 
   function parse(json, fallback) {
     if (!json) return fallback;
-    try { return JSON.parse(json); } catch (e) { console.error('phiz: invalid JSON', e); return fallback; }
+    try { return JSON.parse(json); } catch (e) { console.error('phit: invalid JSON', e); return fallback; }
   }
 
   function target(el) {
-    var view = el.querySelector(':scope > [data-phiz-view]');
+    var view = el.querySelector(':scope > [data-phit-view]');
     if (!view) {
       view = document.createElement('div');
-      view.setAttribute('data-phiz-view', '');
+      view.setAttribute('data-phit-view', '');
       view.setAttribute('wire:ignore', '');
       el.appendChild(view);
     }
@@ -100,10 +100,10 @@ ul.task-list li input[type="checkbox"] {
   }
 
   function render(el) {
-    var embed = Phiz.embed || window.vegaEmbed;
+    var embed = Phit.embed || window.vegaEmbed;
     if (!embed) { pending = true; return; }
-    var json = el.getAttribute('data-phiz');
-    var optionsJson = el.getAttribute('data-phiz-options') || '';
+    var json = el.getAttribute('data-phit');
+    var optionsJson = el.getAttribute('data-phit-options') || '';
     var key = json + '\u0000' + optionsJson + '\u0000' + (dark && dark.matches ? 'dark' : 'light');
     var state = views.get(el);
     if (state && state.key === key) return;
@@ -124,25 +124,25 @@ ul.task-list li input[type="checkbox"] {
       if (!current || current.token !== token) { result.view.finalize(); holder.remove(); return; }
       Array.prototype.slice.call(holder.parentNode.children).forEach(function (child) { if (child !== holder) child.remove(); });
       current.view = result.view;
-      el.dispatchEvent(new CustomEvent('phiz:rendered', { detail: { view: result.view }, bubbles: true }));
+      el.dispatchEvent(new CustomEvent('phit:rendered', { detail: { view: result.view }, bubbles: true }));
     }).catch(function (error) {
       var current = views.get(el);
       if (!current || current.token !== token) { holder.remove(); return; }
-      console.error('phiz:', error);
+      console.error('phit:', error);
       holder.textContent = 'Chart error: ' + error.message;
     });
   }
 
   function scan(root) {
     if (root.nodeType !== 1) return;
-    if (root.hasAttribute('data-phiz')) render(root);
-    root.querySelectorAll('[data-phiz]').forEach(render);
+    if (root.hasAttribute('data-phit')) render(root);
+    root.querySelectorAll('[data-phit]').forEach(render);
   }
 
   function release(root) {
     if (root.nodeType !== 1) return;
-    var nodes = root.hasAttribute('data-phiz') ? [root] : [];
-    root.querySelectorAll('[data-phiz]').forEach(function (n) { nodes.push(n); });
+    var nodes = root.hasAttribute('data-phit') ? [root] : [];
+    root.querySelectorAll('[data-phit]').forEach(function (n) { nodes.push(n); });
     nodes.forEach(function (n) {
       if (n.isConnected) return;
       var state = views.get(n);
@@ -152,7 +152,7 @@ ul.task-list li input[type="checkbox"] {
   }
 
   var pending = false;
-  var Phiz = window.Phiz = {
+  var Phit = window.Phit = {
     embed: null,
     render: render,
     scan: function () { scan(document.documentElement); },
@@ -165,11 +165,11 @@ ul.task-list li input[type="checkbox"] {
       m.addedNodes.forEach(scan);
       m.removedNodes.forEach(release);
     });
-  }).observe(document.documentElement, { subtree: true, childList: true, attributes: true, attributeFilter: ['data-phiz', 'data-phiz-options'] });
+  }).observe(document.documentElement, { subtree: true, childList: true, attributes: true, attributeFilter: ['data-phit', 'data-phit-options'] });
 
-  if (dark && dark.addEventListener) dark.addEventListener('change', function () { Phiz.scan(); });
+  if (dark && dark.addEventListener) dark.addEventListener('change', function () { Phit.scan(); });
 
-  function start() { pending = false; Phiz.scan(); }
+  function start() { pending = false; Phit.scan(); }
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', start); else start();
   window.addEventListener('load', function () { if (pending) start(); });
 })();</script>
@@ -201,7 +201,7 @@ ul.task-list li input[type="checkbox"] {
   <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation docked overflow-auto">
     <div class="pt-lg-2 mt-2 text-left sidebar-header">
     <div class="sidebar-title mb-0 py-0">
-      <a href="./">phiz</a> 
+      <a href="./">phit</a> 
     </div>
       </div>
         <div class="mt-2 flex-shrink-0 align-items-center">
@@ -214,7 +214,7 @@ ul.task-list li input[type="checkbox"] {
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./index.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">phiz</span></a>
+ <span class="menu-text">phit</span></a>
   </div>
 </li>
         <li class="sidebar-item">
@@ -347,7 +347,7 @@ ul.task-list li input[type="checkbox"] {
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./cmdstanphp.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Plan: CmdStanPHP figures on phiz</span></a>
+ <span class="menu-text">Plan: CmdStanPHP figures on phit</span></a>
   </div>
 </li>
           <li class="sidebar-item">
@@ -373,7 +373,7 @@ ul.task-list li input[type="checkbox"] {
   <li><a href="#functions" id="toc-functions" class="nav-link" data-scroll-target="#functions">Functions</a></li>
   <li><a href="#other-classes" id="toc-other-classes" class="nav-link" data-scroll-target="#other-classes">Other classes</a></li>
   </ul>
-<div class="toc-actions"><ul><li><a href="https://github.com/erikwestlund/phiz/blob/main/reference.qmd" class="toc-action"><i class="bi bi-github"></i>View source</a></li><li><a href="https://github.com/erikwestlund/phiz/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></nav>
+<div class="toc-actions"><ul><li><a href="https://github.com/erikwestlund/phit/blob/main/reference.qmd" class="toc-action"><i class="bi bi-github"></i>View source</a></li><li><a href="https://github.com/erikwestlund/phit/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></nav>
     </div>
 <!-- main -->
 <main class="content" id="quarto-document-content">
@@ -452,7 +452,7 @@ ul.task-list li input[type="checkbox"] {
 </section>
 <section id="functions" class="level2">
 <h2 class="anchored" data-anchor-id="functions">Functions</h2>
-<p>The <code>Phiz\</code> namespace provides:</p>
+<p>The <code>Phit\</code> namespace provides:</p>
 <ul>
 <li>Construction: <code>aes</code>, <code>ggplot</code>, <code>field</code>, <code>factor</code>, <code>calc</code>, and <code>expr</code>.</li>
 <li>Every geom as <code>geom_*</code>, plus <code>stat_ecdf</code>, <code>stat_qq</code>, and <code>stat_qq_line</code>.</li>
@@ -605,7 +605,7 @@ ul.task-list li input[type="checkbox"] {
     }
       var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
       var mailtoRegex = new RegExp(/^mailto:/);
-        var filterRegex = new RegExp("https:\/\/erikwestlund\.github\.io\/phiz\/");
+        var filterRegex = new RegExp("https:\/\/erikwestlund\.github\.io\/phit\/");
       var isInternal = (href) => {
           return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
       }
@@ -937,4 +937,4 @@ ul.task-list li input[type="checkbox"] {
 
 
 
-<footer class="footer"><div class="nav-footer"><div class="nav-footer-center"><div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.com/erikwestlund/phiz/blob/main/reference.qmd" class="toc-action"><i class="bi bi-github"></i>View source</a></li><li><a href="https://github.com/erikwestlund/phiz/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></div></div></footer></body></html>
+<footer class="footer"><div class="nav-footer"><div class="nav-footer-center"><div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.com/erikwestlund/phit/blob/main/reference.qmd" class="toc-action"><i class="bi bi-github"></i>View source</a></li><li><a href="https://github.com/erikwestlund/phit/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></div></div></footer></body></html>

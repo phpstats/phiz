@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Phiz\Laravel;
+namespace Phit\Laravel;
 
-/** @internal Whether this request's page already has the phiz script tags. */
+/** @internal Whether this request's page already has the phit script tags. */
 final class ScriptState
 {
     public bool $included = false;

@@ -1,11 +1,11 @@
 <?php
 
-use Phiz\Datasets;
-use Phiz\Plot;
+use Phit\Datasets;
+use Phit\Plot;
 
-use function Phiz\guide_axis;
-use function Phiz\label_percent;
-use function Phiz\scale_fill_viridis_d;
+use function Phit\guide_axis;
+use function Phit\label_percent;
+use function Phit\scale_fill_viridis_d;
 
 return Plot::of(Datasets::mpg())
     ->aes(x: 'class', fill: 'drv')

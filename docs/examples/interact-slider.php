@@ -1,9 +1,9 @@
 <?php
 
-use Phiz\Datasets;
-use Phiz\Plot;
+use Phit\Datasets;
+use Phit\Plot;
 
-use function Phiz\expr;
+use function Phit\expr;
 
 return Plot::of(Datasets::mpg())
     ->aes(x: 'displ', y: 'hwy')

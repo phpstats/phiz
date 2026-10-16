@@ -1,6 +1,6 @@
 <?php
 
-use Phiz\Plot;
+use Phit\Plot;
 
 // z on a regular grid of x and y.
 $grid = [];

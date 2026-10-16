@@ -14,7 +14,7 @@ declare(strict_types=1);
  * Each closure forwards its arguments to the Plot method of the same name.
  */
 
-namespace Phiz;
+namespace Phit;
 
 use Closure;
 
@@ -267,7 +267,7 @@ function interactive(mixed ...$args): Closure { return chain('interactive', $arg
 function brush(mixed ...$args): Closure { return chain('brush', $args); }
 function highlight(mixed ...$args): Closure { return chain('highlight', $args); }
 
-// Statistics helpers: plain functions returning ordinary plots (see Phiz\Stats\Charts).
+// Statistics helpers: plain functions returning ordinary plots (see Phit\Stats\Charts).
 
 /** Coefficient plot of one fit, or of several keyed by label (dodged side by side). */
 function coefplot(array $fits, mixed ...$options): Plot { return Stats\Charts::coefficients($fits, ...$options); }

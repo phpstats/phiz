@@ -1,7 +1,7 @@
 <?php
 
-use Phiz\Datasets;
-use Phiz\Plot;
+use Phit\Datasets;
+use Phit\Plot;
 
 $fast = array_values(array_filter(Datasets::mtcars(), fn ($car) => $car['hp'] > 180));
 

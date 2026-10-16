@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-use Phiz\Plot;
+use Phit\Plot;
 
-use function Phiz\aes;
-use function Phiz\expr;
+use function Phit\aes;
+use function Phit\expr;
 
 $geoms = [
     'point' => fn () => Plot::of(sample())->aes(x: 'x', y: 'y', color: 'g', size: 'n')->point(alpha: 0.7, shape: 17),

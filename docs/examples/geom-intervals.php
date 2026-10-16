@@ -1,6 +1,6 @@
 <?php
 
-use Phiz\Plot;
+use Phit\Plot;
 
 $estimates = [
     ['site' => 'North', 'mean' => 4.1, 'lower' => 3.2, 'upper' => 5.0],

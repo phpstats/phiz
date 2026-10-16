@@ -2,8 +2,8 @@
 
 declare(strict_types=1);
 
-use Phiz\Datasets;
-use Phiz\Stats\Fit;
+use Phit\Datasets;
+use Phit\Stats\Fit;
 
 // Reference values from R 4.x.
 
@@ -85,7 +85,7 @@ it('rejects singular designs', function () {
 })->throws(InvalidArgumentException::class, 'singular');
 
 it('matches ggplot2 hue palettes and R hcl()', function () {
-    expect(Phiz\Palette::hue(3))->toBe(['#F8766D', '#00BA38', '#619CFF'])
-        ->and(Phiz\Palette::hue(5))->toBe(['#F8766D', '#A3A500', '#00BF7D', '#00B0F6', '#E76BF3'])
-        ->and(Phiz\Palette::hue(8))->toBe(['#F8766D', '#CD9600', '#7CAE00', '#00BE67', '#00BFC4', '#00A9FF', '#C77CFF', '#FF61CC']);
+    expect(Phit\Palette::hue(3))->toBe(['#F8766D', '#00BA38', '#619CFF'])
+        ->and(Phit\Palette::hue(5))->toBe(['#F8766D', '#A3A500', '#00BF7D', '#00B0F6', '#E76BF3'])
+        ->and(Phit\Palette::hue(8))->toBe(['#F8766D', '#CD9600', '#7CAE00', '#00BE67', '#00BFC4', '#00A9FF', '#C77CFF', '#FF61CC']);
 });

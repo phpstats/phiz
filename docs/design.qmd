@@ -4,9 +4,9 @@ title: "Design"
 
 ## Vega-Lite does the drawing
 
-phiz does not draw graphics. It translates a ggplot2-style description into a Vega-Lite specification. Vega-Lite then resolves scales, lays out facets and legends, runs transforms, handles interaction, and renders to canvas or SVG. The PHP side stays small, and plots behave the same in the browser and in static export.
+phit does not draw graphics. It translates a ggplot2-style description into a Vega-Lite specification. Vega-Lite then resolves scales, lays out facets and legends, runs transforms, handles interaction, and renders to canvas or SVG. The PHP side stays small, and plots behave the same in the browser and in static export.
 
-Most statistics run where Vega-Lite runs them: bins, densities, loess fits, aggregates, quantiles, and window functions are Vega-Lite transforms. phiz computes a statistic in PHP only when Vega-Lite cannot:
+Most statistics run where Vega-Lite runs them: bins, densities, loess fits, aggregates, quantiles, and window functions are Vega-Lite transforms. phit computes a statistic in PHP only when Vega-Lite cannot:
 
 - the confidence bands of `smooth()` with `lm`, `quad`, or `poly`
 - `curve()` evaluations of PHP functions
@@ -15,7 +15,7 @@ Most statistics run where Vega-Lite runs them: bins, densities, loess fits, aggr
 
 ## Mapping ggplot2 to Vega-Lite
 
-| ggplot2 | phiz | Vega-Lite |
+| ggplot2 | phit | Vega-Lite |
 | --- | --- | --- |
 | `ggplot(data, aes(...))` | `Plot::of($data)->aes(...)` | `data` and `encoding` |
 | `geom_*()` | `->point()`, `->line()`, ... | a layer with a `mark` |
@@ -33,4 +33,4 @@ Most statistics run where Vega-Lite runs them: bins, densities, loess fits, aggr
 
 ## Versions
 
-phiz emits Vega-Lite 6 specifications. The pinned browser libraries are vega 6.4.0, vega-lite 6.4.3, and vega-embed 7.3.0. Static export uses vl-convert with Vega-Lite 6.1, and the tests validate every specification against the Vega-Lite 6.1.0 JSON schema, the version both renderers support.
+phit emits Vega-Lite 6 specifications. The pinned browser libraries are vega 6.4.0, vega-lite 6.4.3, and vega-embed 7.3.0. Static export uses vl-convert with Vega-Lite 6.1, and the tests validate every specification against the Vega-Lite 6.1.0 JSON schema, the version both renderers support.

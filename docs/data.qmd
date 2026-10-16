@@ -20,7 +20,7 @@ Inline data is embedded in the specification. Values are made safe for JSON: `Da
 
 ## Field types
 
-Vega-Lite needs a measurement type for every mapped field. phiz infers it from inline data:
+Vega-Lite needs a measurement type for every mapped field. phit infers it from inline data:
 
 - quantitative, when every non-null value is an integer or a float
 - temporal, when every value is an ISO date or date-time string
@@ -30,7 +30,7 @@ A numeric code such as a cylinder count is quantitative by this rule. It gets a 
 
 {{< include _generated/data-types.md >}}
 
-URL data cannot be inspected in PHP, so phiz assumes quantitative positions and nominal groupings. Use shorthand types for anything else.
+URL data cannot be inspected in PHP, so phit assumes quantitative positions and nominal groupings. Use shorthand types for anything else.
 
 ## Aggregates and time units
 

@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace Phiz\Stats;
+namespace Phit\Stats;
 
 use InvalidArgumentException;
 
 /**
- * The small amount of numerics phiz needs to draw statistics Vega-Lite can't: least-squares fits with confidence
+ * The small amount of numerics phit needs to draw statistics Vega-Lite can't: least-squares fits with confidence
  * bands (smooth with se), quantiles of the normal and t distributions, and R's bw.nrd0 bandwidth.
  */
 final class Fit

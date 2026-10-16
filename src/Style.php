@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Phiz;
+namespace Phit;
 
 /**
  * Translates fixed visual properties from ggplot2 names to Vega-Lite mark properties.

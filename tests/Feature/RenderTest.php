@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-use Phiz\Assets;
-use Phiz\Exceptions\VlConvertNotFound;
-use Phiz\Export;
-use Phiz\Html;
-use Phiz\Plot;
+use Phit\Assets;
+use Phit\Exceptions\VlConvertNotFound;
+use Phit\Export;
+use Phit\Html;
+use Phit\Plot;
 
 function tiny(): Plot
 {
@@ -15,11 +15,11 @@ function tiny(): Plot
 
 it('embeds the spec in an attribute the loader reads', function () {
     $html = tiny()->embed(['actions' => false], attributes: ['id' => 'chart', 'class' => 'w-full']);
-    preg_match('/data-phiz="([^"]*)"/', $html, $m);
+    preg_match('/data-phit="([^"]*)"/', $html, $m);
 
     expect(json_decode(html_entity_decode($m[1], ENT_QUOTES | ENT_HTML5), true))->toBe(tiny()->toArray())
         ->and($html)->toContain('id="chart"')->toContain('class="w-full"')
-        ->toContain('integrity="sha384-')->toContain('window.Phiz')
+        ->toContain('integrity="sha384-')->toContain('window.Phit')
         ->not->toContain('</script><b>');
 });
 
@@ -34,11 +34,11 @@ it('writes a standalone page titled by the plot', function () {
         ->toContain('<title>&lt;/script&gt;&lt;b&gt;</title>')
         ->toContain('vega@'.Assets::VEGA.'/build/vega.min.js')
         ->toContain('vega-lite@'.Assets::VEGA_LITE)
-        ->toContain('data-phiz=');
+        ->toContain('data-phit=');
 });
 
 it('supports local, explicit, inline, and no assets', function () {
-    $dir = sys_get_temp_dir().'/phiz-assets-'.bin2hex(random_bytes(4));
+    $dir = sys_get_temp_dir().'/phit-assets-'.bin2hex(random_bytes(4));
     mkdir($dir);
     foreach (['vega', 'vega-lite', 'vega-embed'] as $lib) {
         file_put_contents("{$dir}/{$lib}.min.js", "/* {$lib} */ var x = '</script>';");
@@ -55,22 +55,22 @@ it('supports local, explicit, inline, and no assets', function () {
 
 it('explains how to install vl-convert when it is missing', function () {
     $path = getenv('PATH');
-    $env = [getenv('PHIZ_VL_CONVERT'), getenv('VL_CONVERT')];
+    $env = [getenv('PHIT_VL_CONVERT'), getenv('VL_CONVERT')];
     putenv('PATH=/nonexistent');
-    putenv('PHIZ_VL_CONVERT');
+    putenv('PHIT_VL_CONVERT');
     putenv('VL_CONVERT');
     try {
         expect(Export::available())->toBeFalse();
         expect(fn () => tiny()->svg())->toThrow(VlConvertNotFound::class, 'github.com/vega/vl-convert/releases');
     } finally {
         putenv("PATH={$path}");
-        $env[0] === false ?: putenv("PHIZ_VL_CONVERT={$env[0]}");
+        $env[0] === false ?: putenv("PHIT_VL_CONVERT={$env[0]}");
         $env[1] === false ?: putenv("VL_CONVERT={$env[1]}");
     }
 });
 
 it('saves JSON and HTML without vl-convert', function () {
-    $base = sys_get_temp_dir().'/phiz-save-'.bin2hex(random_bytes(4));
+    $base = sys_get_temp_dir().'/phit-save-'.bin2hex(random_bytes(4));
     tiny()->save("{$base}.json");
     tiny()->save("{$base}.html");
 
@@ -96,10 +96,10 @@ describe('with vl-convert', function () {
 
     it('reports conversion errors', function () {
         (new Export)->svg(['mark' => 'point', 'encoding' => ['x' => ['field' => 'a', 'type' => 'wrong']]]);
-    })->throws(Phiz\Exceptions\ExportFailed::class, 'vl-convert failed');
+    })->throws(Phit\Exceptions\ExportFailed::class, 'vl-convert failed');
 })->skip(! Export::available(), 'vl-convert is not installed');
 
 it('validates the HTML container markup', function () {
     expect(Html::container(['mark' => 'point'], [], ['hidden' => true, 'skip' => null]))
-        ->toBe('<div data-phiz="{&quot;mark&quot;:&quot;point&quot;}" hidden><div data-phiz-view wire:ignore></div></div>');
+        ->toBe('<div data-phit="{&quot;mark&quot;:&quot;point&quot;}" hidden><div data-phit-view wire:ignore></div></div>');
 });

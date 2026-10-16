@@ -1,6 +1,6 @@
 <?php
 
-use function Phiz\coefplot;
+use function Phit\coefplot;
 
 $full = json_decode(file_get_contents(__DIR__.'/fits/mtcars-lm.json'), true);
 $reduced = json_decode(file_get_contents(__DIR__.'/fits/mtcars-lm-reduced.json'), true);

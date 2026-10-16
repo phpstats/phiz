@@ -2,20 +2,20 @@
 
 declare(strict_types=1);
 
-use Phiz\Datasets;
-use Phiz\Stats\Charts;
-use Phiz\Stats\Fit;
+use Phit\Datasets;
+use Phit\Stats\Charts;
+use Phit\Stats\Fit;
 
-use function Phiz\coefplot;
-use function Phiz\diagnostic_plots;
-use function Phiz\effect_plot;
-use function Phiz\fitted_plot;
-use function Phiz\interval_plot;
-use function Phiz\marginal_means;
-use function Phiz\random_effects_plot;
-use function Phiz\qq_plot;
-use function Phiz\residual_plot;
-use function Phiz\scale_location_plot;
+use function Phit\coefplot;
+use function Phit\diagnostic_plots;
+use function Phit\effect_plot;
+use function Phit\fitted_plot;
+use function Phit\interval_plot;
+use function Phit\marginal_means;
+use function Phit\random_effects_plot;
+use function Phit\qq_plot;
+use function Phit\residual_plot;
+use function Phit\scale_location_plot;
 
 /** stats_lm, stats_glm results saved from php-stats (tests/fixtures/fits.json). */
 function fits(): array
@@ -69,7 +69,7 @@ $charts = [
     'marginal means with design' => fn () => marginal_means(fits()['lm_factors'], Datasets::mtcars(), 'cyl', design: carsDesign(...), variables: ['cyl' => 'categorical', 'am' => 'categorical', 'wt' => 'numeric']),
     'marginal means by group' => fn () => marginal_means(fits()['lm_factors'], Datasets::mtcars(), 'cyl', by: 'am', design: carsDesign(...), variables: ['cyl' => 'categorical', 'am' => 'categorical', 'wt' => 'numeric']),
     'random effects intercepts' => fn () => random_effects_plot(fits()['lmer_intercept'], Datasets::mpg()),
-    'glm effects on the link scale' => fn () => \Phiz\effect_plot(fits()['glm'], Datasets::mtcars(), 'wt', n: 3, design: fn ($r) => [1, $r['wt'], $r['hp']], scale: 'link'),
+    'glm effects on the link scale' => fn () => \Phit\effect_plot(fits()['glm'], Datasets::mtcars(), 'wt', n: 3, design: fn ($r) => [1, $r['wt'], $r['hp']], scale: 'link'),
     'interval plot from draws' => fn () => interval_plot(drawColumns()),
     'interval plot of beta' => fn () => interval_plot(drawColumns(), variables: ['beta'], prob: 0.8, probOuter: 0.95, pointEst: 'mean'),
     'interval plot from summary' => fn () => interval_plot(['variable' => ['alpha', 'beta[1]'], 'mean' => [1.0, -0.3], 'median' => [1.01, -0.29], 'q5' => [0.2, -0.6], 'q95' => [1.8, 0.0]]),

@@ -1,11 +1,11 @@
-# phiz
+# phit
 
 A ggplot2-flavored grammar of graphics for PHP that emits [Vega-Lite](https://vega.github.io/vega-lite/).
 
-phiz builds the spec in PHP. Vega-Lite handles the grammar, layout, scales, interaction and rendering, so you don't write any JavaScript. For static output (PDF reports, email), the [vl-convert](https://github.com/vega/vl-convert) binary turns the same spec into SVG, PNG or PDF.
+phit builds the spec in PHP. Vega-Lite handles the grammar, layout, scales, interaction and rendering, so you don't write any JavaScript. For static output (PDF reports, email), the [vl-convert](https://github.com/vega/vl-convert) binary turns the same spec into SVG, PNG or PDF.
 
 ```php
-use Phiz\Plot;
+use Phit\Plot;
 
 $plot = Plot::of($rentals)
     ->aes(x: 'area_m2', y: 'rent', color: 'neighborhood')
@@ -23,7 +23,7 @@ $plot->svg();           // static SVG through vl-convert
 The same plot also works with PHP 8.5's pipe operator:
 
 ```php
-use function Phiz\{ggplot, aes, geom_point, geom_smooth, labs};
+use function Phit\{ggplot, aes, geom_point, geom_smooth, labs};
 
 ggplot($mpg, aes(x: 'displ', y: 'hwy'))
     |> geom_point(alpha: 0.6)
@@ -34,10 +34,10 @@ ggplot($mpg, aes(x: 'displ', y: 'hwy'))
 ## Installation
 
 ```bash
-composer require erikwestlund/phiz
+composer require erikwestlund/phit
 ```
 
-phiz needs PHP 8.5 and has no other dependencies. Static export needs the `vl-convert` binary on `PATH`, or its path in `PHIZ_VL_CONVERT`. Laravel support is optional and auto-discovered.
+phit needs PHP 8.5 and has no other dependencies. Static export needs the `vl-convert` binary on `PATH`, or its path in `PHIT_VL_CONVERT`. Laravel support is optional and auto-discovered.
 
 ## Data
 
@@ -71,7 +71,7 @@ Field types are inferred from the data: numbers are quantitative, ISO date strin
 | other | `rug()`, `arc()`/`pie()` | |
 | raw | `layer([...])` | any Vega-Lite layer |
 
-For `smooth(method: 'lm')` (and `quad` and `poly`) with inline data, phiz fits the model in PHP and draws the confidence band (`se`, `level`), as ggplot2 does. Otherwise Vega-Lite's regression or loess transform fits the curve in the browser.
+For `smooth(method: 'lm')` (and `quad` and `poly`) with inline data, phit fits the model in PHP and draws the confidence band (`se`, `level`), as ggplot2 does. Otherwise Vega-Lite's regression or loess transform fits the curve in the browser.
 
 Each geom accepts:
 
@@ -111,7 +111,7 @@ $plot->slider('cutoff', 0, 10)->hline(expr('cutoff'));
 To link two plots, compose them and filter one plot by the other's selection:
 
 ```php
-use Phiz\Compose;
+use Phit\Compose;
 
 Compose::stack(
     Plot::of($cars)->aes(x: 'hp', y: 'mpg')->point()->brush(),
@@ -126,7 +126,7 @@ Compose::stack(
 The statistics helpers build ordinary plots from php-stats results (`stats_lm`, `stats_glm`, `stats_lmer`, `stats_glmer`, `stats_ols`, `stats_logistic`) and CmdStanPHP draws:
 
 ```php
-use function Phiz\{coefplot, diagnostic_plots, effect_plot, interval_plot};
+use function Phit\{coefplot, diagnostic_plots, effect_plot, interval_plot};
 
 $fit = stats_lm('mpg ~ wt + hp + factor(cyl)', $mtcars);
 
@@ -151,25 +151,25 @@ The predictions match R's `predict(fit, interval = "confidence")`.
 ## Rendering
 
 - **HTML:** `$plot->embed()` returns a container plus script tags, and `$plot->html()` returns a full page. Both use vega 6.4.0, vega-lite 6.4.3 and vega-embed 7.3.0, pinned and loaded from jsDelivr with subresource integrity. For other sources, pass `Assets::local('/js')` or `Assets::inline($dir)` for self-hosted copies, or `Assets::none()` when your bundle already provides `window.vegaEmbed`.
-- **Static:** `$plot->svg()`, `->png(scale: 2)`, `->pdf()` and `->save('plot.pdf')` run vl-convert, which renders with Vega-Lite 6.1. If the binary is missing, phiz throws `VlConvertNotFound` with install instructions.
+- **Static:** `$plot->svg()`, `->png(scale: 2)`, `->pdf()` and `->save('plot.pdf')` run vl-convert, which renders with Vega-Lite 6.1. If the binary is missing, phit throws `VlConvertNotFound` with install instructions.
 
 ## Laravel and Livewire
 
 ```blade
-<x-phiz :plot="$plot" class="h-80" :options="['theme' => 'auto']" />
+<x-phit :plot="$plot" class="h-80" :options="['theme' => 'auto']" />
 ```
 
-The component adds the script tags once per page. To place them yourself, use `@phizScripts`. Inside a Livewire component, the chart re-renders whenever the component does:
+The component adds the script tags once per page. To place them yourself, use `@phitScripts`. Inside a Livewire component, the chart re-renders whenever the component does:
 
 - The spec is stored in an attribute that Livewire morphs.
 - The drawn chart sits in a `wire:ignore` child.
-- phiz's small loader script re-embeds the chart when the spec changes.
+- phit's small loader script re-embeds the chart when the spec changes.
 
-If a component renders several charts, give each one a `wire:key`. To change the asset source and the default embed options, publish the config with `php artisan vendor:publish --tag=phiz-config`.
+If a component renders several charts, give each one a `wire:key`. To change the asset source and the default embed options, publish the config with `php artisan vendor:publish --tag=phit-config`.
 
 ## Documentation and gallery
 
-The documentation at <https://erikwestlund.github.io/phiz/> is a Quarto site built from `docs/`. Its examples are executed by `scripts/docs-examples.php`. `php examples/gallery.php` writes an HTML page of the 40 examples in `examples/catalog.php`.
+The documentation at <https://erikwestlund.github.io/phit/> is a Quarto site built from `docs/`. Its examples are executed by `scripts/docs-examples.php`. `php examples/gallery.php` writes an HTML page of the 40 examples in `examples/catalog.php`.
 
 ## Testing
 

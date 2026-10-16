@@ -1,8 +1,8 @@
 <?php
 
-use Phiz\Datasets;
+use Phit\Datasets;
 
-use function Phiz\effect_plot;
+use function Phit\effect_plot;
 
 // stats_glm('am ~ wt + hp', $mtcars, 'binomial'): predictions on the probability scale.
 $glm = json_decode(file_get_contents(__DIR__.'/fits/mtcars-glm.json'), true);

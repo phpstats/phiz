@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-use Phiz\Aes;
-use Phiz\Data;
-use Phiz\Field;
-use Phiz\Style;
+use Phit\Aes;
+use Phit\Data;
+use Phit\Field;
+use Phit\Style;
 
 enum Suit: string
 {
