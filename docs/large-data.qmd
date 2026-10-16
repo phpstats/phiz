@@ -1,0 +1,74 @@
+---
+title: "Large data"
+---
+
+phiz embeds inline data in the specification, and the browser keeps every row in memory to draw it. A few thousand rows render immediately. Hundreds of thousands of rows make the page heavy and slow, so large data should be summarized before it is sent. phiz does that summarizing in PHP.
+
+## Sizes to expect
+
+| Rows embedded | Effect |
+| --- | --- |
+| up to about 5,000 | renders immediately, and interaction stays smooth |
+| 5,000 to 20,000 | renders, but brushing and tooltips slow down |
+| above 20,000 | phiz raises a warning; the page grows by several megabytes |
+| millions | summarize in PHP or in the database |
+
+`Config::$warnRows` sets the warning threshold (20,000 by default, or `null` to turn it off). In Laravel it is `config('phiz.warn_rows')`. The warning is an `E_USER_WARNING` that names the alternatives below.
+
+## Binning in PHP
+
+`hex()`, `bin2d()`, and `histogram()` count in PHP and embed only the counts. `hex()` always bins in PHP. `bin2d()` and `histogram()` take `compute:`, which is `'server'`, `'browser'`, or `'auto'`. The default `'auto'` bins in PHP above `Config::$serverRows` rows (10,000 by default, or `config('phiz.server_rows')`). The examples on this page use 200,000 points.
+
+{{< include _generated/large-hex.md >}}
+
+The hexagons are sized from the panel width, so neighbors tile at any plot size. A faceted plot bins each panel separately, and the specification still holds only the cells.
+
+{{< include _generated/large-bin2d.md >}}
+
+Histograms computed in PHP use exactly `bins` equal-width bins, or `binwidth` and `boundary`, and stack or overlap by group as usual.
+
+{{< include _generated/large-histogram.md >}}
+
+## Tables stay columnar
+
+A phibble table or an array of columns is kept as given. The binning geoms read it column by column, and rows are built only if the specification embeds them. On a laptop, a million-row phibble Frame plots as follows:
+
+| Plot | Time | Spec size |
+| --- | --- | --- |
+| `hex(bins: 40)` | 0.9 s | 49 KB |
+| `bin2d(bins: 50)` | 0.6 s | 132 KB |
+| `histogram(bins: 60)` | 0.4 s | 6 KB |
+
+Peak memory was about 100 MB, of which the table took 51 MB.
+
+## Downsampling lines
+
+`line(downsample: n)` keeps about `n` points per group with Largest-Triangle-Three-Buckets (LTTB). LTTB picks the points that preserve the line's visible shape, including its peaks.
+
+{{< include _generated/large-lttb.md >}}
+
+## The Bin helpers
+
+The `Bin` class exposes the same computations for data you summarize yourself. Each helper returns a short list of rows. The helpers read phibble tables, column arrays, row lists, or any iterable of rows. A generator streams in one pass when the limits are given.
+
+```php
+use Phiz\Bin;
+
+Bin::histogram($source, 'price', bins: 50);          // price_start, price_end, count, density
+Bin::grid($source, 'x', 'y', bins: [40, 30]);         // x_start, x_end, y_start, y_end, count
+Bin::hex($source, 'x', 'y', bins: 30, aspect: 0.75);  // hexagon centers and count
+Bin::lttb($rows, 'time', 'value', threshold: 1000);   // the rows LTTB keeps
+Bin::sample($source, 5000, seed: 1);                  // a reproducible uniform sample
+
+// One pass over a database cursor, with known limits:
+$bins = Bin::grid(Car::query()->cursor(), 'weight', 'mpg', bins: 40, xlim: [1500, 5500], ylim: [5, 50]);
+
+Plot::of($bins)
+    ->rect(aes(xmin: 'weight_start', xmax: 'weight_end', ymin: 'mpg_start', ymax: 'mpg_end', fill: 'count'));
+```
+
+## Other approaches
+
+- **Summarize first.** A phplyr `group_by() |> summarise()` or a SQL `GROUP BY` usually answers the question with far fewer rows. [Dashboards with Livewire](dashboard.qmd) shows charts built from summaries.
+- **Load from a URL.** `Data::url('/data/points.csv')` lets the browser fetch the file, so the page itself stays small. The browser still holds every row, so this helps page size, not drawing speed.
+- **Sample.** `Bin::sample()` keeps a uniform random subset when a scatterplot of individual points matters more than exact counts.

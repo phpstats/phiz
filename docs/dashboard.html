@@ -344,6 +344,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
  <span class="menu-text">Dashboards with Livewire</span></a>
   </div>
 </li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./large-data.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Large data</span></a>
+  </div>
+</li>
       </ul>
   </li>
         <li class="sidebar-item">
@@ -595,7 +601,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p>The two approaches suit different data:</p>
 <ul>
 <li><strong>Server-side summaries</strong> send only the summarized rows to the page. They suit large tables, database queries, and statistics that need PHP, such as model fits. Each interaction costs a Livewire round trip.</li>
-<li><strong>Browser-side linking</strong> sends the raw rows once and responds to every interaction immediately. It suits up to a few thousand rows.</li>
+<li><strong>Browser-side linking</strong> sends the raw rows once and responds to every interaction immediately. It suits up to a few thousand rows. <a href="./large-data.html">Large data</a> covers what to do beyond that.</li>
 </ul>
 <p>Both approaches can share a page. For example, a Livewire filter can choose the rows, and a brush can explore them in the browser.</p>
 

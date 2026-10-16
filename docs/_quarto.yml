@@ -34,6 +34,7 @@ website:
           - rendering.qmd
           - laravel.qmd
           - dashboard.qmd
+          - large-data.qmd
       - href: gallery.html
         text: Gallery
       - section: "Project"

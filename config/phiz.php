@@ -21,4 +21,11 @@ return [
     'embed_options' => [
         'actions' => false,
     ],
+
+    /*
+     * Large data. Above server_rows inline rows, bin2d(), histogram(), and hex() bin in PHP and embed only the
+     * bins. A spec that embeds more than warn_rows rows raises a warning (null turns it off).
+     */
+    'server_rows' => 10_000,
+    'warn_rows' => 20_000,
 ];

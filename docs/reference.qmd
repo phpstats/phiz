@@ -7,7 +7,7 @@ title: "API reference"
 | Group | Methods |
 | --- | --- |
 | Start | `Plot::of($data, $aes)`, `aes(...)`, `data($data)` |
-| Geoms | `point`, `jitter`, `line`, `path`, `step`, `area`, `ribbon`, `bar`, `col`, `histogram`, `freqpoly`, `density`, `boxplot`, `violin`, `errorbar`, `linerange`, `pointrange`, `hline`, `vline`, `abline`, `rule`, `segment`, `text`, `label`, `tile`, `raster`, `rect`, `bin2d`, `smooth`, `curve`, `rug`, `ecdf`, `qq`, `qqLine`, `arc`, `pie`, `layer`, `geom` |
+| Geoms | `point`, `jitter`, `line`, `path`, `step`, `area`, `ribbon`, `bar`, `col`, `histogram`, `freqpoly`, `density`, `boxplot`, `violin`, `errorbar`, `linerange`, `pointrange`, `hline`, `vline`, `abline`, `rule`, `segment`, `text`, `label`, `tile`, `raster`, `rect`, `bin2d`, `hex`, `smooth`, `curve`, `rug`, `ecdf`, `qq`, `qqLine`, `arc`, `pie`, `layer`, `geom` |
 | Scales | `scale`, `scaleX`, `scaleY`, `scaleColor`, `scaleFill`, `scaleSize`, `scaleShape`, `scaleOpacity`, `scaleLinetype`, `xlim`, `ylim` |
 | Coordinates and facets | `coordFlip`, `coordCartesian`, `facetWrap`, `facetGrid` |
 | Labels, theme, size | `labs`, `title`, `theme`, `size`, `width`, `height`, `description` |
@@ -43,5 +43,7 @@ The `Phiz\` namespace provides:
 | `Html`, `Assets` | HTML output and the pinned browser libraries |
 | `Export` | vl-convert export |
 | `Datasets` | `mpg`, `mtcars`, `economics`, and `faithful` |
+| `Bin` | histograms, 2D and hexagonal bins, LTTB downsampling, and sampling in PHP |
+| `Config` | large-data thresholds: `$serverRows` and `$warnRows` |
 | `Stats\Charts` | the statistics helpers |
 | `Stats\Fit` | least squares, smoothing bands, and normal and t quantiles |

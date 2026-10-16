@@ -88,6 +88,7 @@ function geom_tile(mixed ...$args): Closure { return chain('tile', $args); }
 function geom_raster(mixed ...$args): Closure { return chain('raster', $args); }
 function geom_rect(mixed ...$args): Closure { return chain('rect', $args); }
 function geom_bin2d(mixed ...$args): Closure { return chain('bin2d', $args); }
+function geom_hex(mixed ...$args): Closure { return chain('hex', $args); }
 function geom_smooth(mixed ...$args): Closure { return chain('smooth', $args); }
 function geom_function(mixed ...$args): Closure { return chain('curve', $args); }
 function geom_rug(mixed ...$args): Closure { return chain('rug', $args); }

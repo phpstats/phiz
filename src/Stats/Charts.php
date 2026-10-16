@@ -318,10 +318,22 @@ final class Charts
         foreach ($retained as $i => $row) {
             $byGroup[(string) $row[$term['group']]][] = $i;
         }
-        $Ginv = self::invert($G);
+        $singular = (bool) ($fit['singular'] ?? $fit['diagnostics']['singular'] ?? false);
+        try {
+            $Ginv = self::invert($G);
+        } catch (InvalidArgumentException) {
+            $Ginv = null; // A variance estimated at zero: the conditional modes are zero with no spread.
+        }
         $z = Fit::normalQuantile((1 + $level) / 2);
         $out = [];
         foreach ($labels as $g => $label) {
+            if ($Ginv === null) {
+                foreach ($columns as $a => $column) {
+                    $estimate = (float) ($effects[$g][$a] ?? 0.0);
+                    $out[] = ['group' => (string) $label, 'effect' => $column, 'estimate' => $estimate, 'std_error' => 0.0, 'lower' => $estimate, 'upper' => $estimate];
+                }
+                continue;
+            }
             $precision = $Ginv;
             foreach ($byGroup[(string) $label] ?? [] as $i) {
                 foreach ($columns as $a => $_) {
@@ -346,7 +358,7 @@ final class Charts
             ->aes(x: 'estimate', y: \Phiz\field('group', 'nominal', sort: array_reverse($order)), xmin: 'lower', xmax: 'upper')
             ->vline(0, linetype: 'dashed', color: '#888888')
             ->pointrange(size: 30)
-            ->labs(x: "Conditional mode ({$percent}% interval)", y: $term['group'])
+            ->labs(x: "Conditional mode ({$percent}% interval)", y: $term['group'], subtitle: $singular ? 'Singular fit: random-effect variance estimated at zero' : null)
             ->tooltip(['group', 'effect', 'estimate', 'lower', 'upper']);
 
         return count($columns) > 1 ? $plot->facetWrap('effect', ncol: count($columns), scales: 'free_x')->size(220, max(120, 16 * count($labels))) : $plot->height(max(120, 16 * count($labels)));

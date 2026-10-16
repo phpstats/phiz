@@ -54,11 +54,11 @@ The model's variables come from its formula: names inside `factor()` and non-num
 
 {{< include _generated/stats-marginal-means-glm.md >}}
 
-The linear-model means match a direct computation in R to 10 digits.
+The linear-model means match a direct computation in R to 10 digits. GLM means match too. Their intervals differ from R's by about 1e-5, because R's `vcov()` for a GLM uses the weights of the iteration before convergence, while php-stats evaluates the information matrix at the final estimates.
 
 ## Random effects
 
-`random_effects_plot()` draws a caterpillar plot of a mixed model's random effects. It works with fits from `stats_lmer` and `stats_glmer`, and needs the data the model was fitted on. Each group's conditional mode is shown with an interval from its conditional variance. Groups are sorted by their first effect, and random slopes get their own panels. The conditional covariance for group *j* is (Z<sub>j</sub>'W<sub>j</sub>Z<sub>j</sub> / σ² + G<sup>−1</sup>)<sup>−1</sup>, treating the fixed effects and variance components as known, as lme4's `ranef(fit, condVar = TRUE)` does. W holds the working weights of binomial and Poisson GLMMs. For intercepts, the standard deviations match lme4 to 1e-8. `group:` selects a term when the model has several.
+`random_effects_plot()` draws a caterpillar plot of a mixed model's random effects. It works with fits from `stats_lmer` and `stats_glmer`, and needs the data the model was fitted on. Each group's conditional mode is shown with an interval from its conditional variance. Groups are sorted by their first effect, and random slopes get their own panels. The conditional covariance for group *j* is (Z<sub>j</sub>'W<sub>j</sub>Z<sub>j</sub> / σ² + G<sup>−1</sup>)<sup>−1</sup>, treating the fixed effects and variance components as known, as lme4's `ranef(fit, condVar = TRUE)` does. W holds the working weights of binomial and Poisson GLMMs. For intercepts, the standard deviations match lme4 to 1e-8. `group:` selects a term when the model has several. When the fit is singular (a random-effect variance estimated at zero), the plot says so in its subtitle and draws the modes without intervals.
 
 {{< include _generated/stats-random-effects.md >}}
 

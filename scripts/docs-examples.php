@@ -33,7 +33,7 @@ file_put_contents("{$docs}/_phiz-scripts.html", "<style>.phiz-figure{margin:0.5r
 $count = 0;
 foreach (glob("{$docs}/examples/*.php") as $file) {
     $name = basename($file, '.php');
-    if ($only !== [] && ! in_array($name, $only, true)) {
+    if (str_starts_with($name, '_') || ($only !== [] && ! in_array($name, $only, true))) {
         continue;
     }
     $chart = (static fn () => require $file)();

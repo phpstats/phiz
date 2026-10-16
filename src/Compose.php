@@ -89,7 +89,10 @@ final class Compose extends Chart
             $spec['config'] = $config;
         }
 
-        return $this->raw === [] ? $spec : Theme::merge($spec, $this->raw);
+        $spec = $this->raw === [] ? $spec : Theme::merge($spec, $this->raw);
+        Compile\Compiler::warnSize($spec);
+
+        return $spec;
     }
 
     public function toSpec(): array

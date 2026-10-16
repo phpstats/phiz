@@ -106,6 +106,6 @@ When the data is small enough to send to the page, a composition links charts wi
 The two approaches suit different data:
 
 - **Server-side summaries** send only the summarized rows to the page. They suit large tables, database queries, and statistics that need PHP, such as model fits. Each interaction costs a Livewire round trip.
-- **Browser-side linking** sends the raw rows once and responds to every interaction immediately. It suits up to a few thousand rows.
+- **Browser-side linking** sends the raw rows once and responds to every interaction immediately. It suits up to a few thousand rows. [Large data](large-data.qmd) covers what to do beyond that.
 
 Both approaches can share a page. For example, a Livewire filter can choose the rows, and a brush can explore them in the browser.

@@ -180,3 +180,13 @@ it('predicts on the link scale', function () {
 
     expect($row['estimate'])->toEqualWithDelta($fit['coefficients'][0] + 3.0 * $fit['coefficients'][1] + 120 * $fit['coefficients'][2], 1e-12);
 });
+
+it('notes singular mixed-model fits', function () {
+    // stats_glmer('am ~ wt + (1 | cyl)', mtcars): lme4 also finds the random-intercept variance at zero.
+    $fit = json_decode((string) file_get_contents(__DIR__.'/../fixtures/glmer-singular.json'), true);
+    $plot = random_effects_plot($fit, Datasets::mtcars());
+
+    expect($plot->labels['subtitle'])->toBe('Singular fit: random-effect variance estimated at zero')
+        ->and(array_unique(array_column($plot->data->rows, 'std_error')))->toBe([0.0])
+        ->and($plot)->toBeValidVegaLite();
+});

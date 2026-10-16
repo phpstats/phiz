@@ -92,10 +92,10 @@ final class Plot extends Chart
         return $this->add('point', $aes, $data, ['jitter' => [$width, $height]], compact('alpha', 'size', 'color') + $style, $inheritAes, $filter);
     }
 
-    /** Lines connecting points in order of x. */
-    public function line(Aes|array|null $aes = null, mixed $data = null, int|float|null $alpha = null, int|float|null $linewidth = null, ?string $color = null, string|array|null $linetype = null, bool $inheritAes = true, string|array|null $filter = null, mixed ...$style): self
+    /** Lines connecting points in order of x. downsample: n keeps about n points per group (LTTB), in PHP. */
+    public function line(Aes|array|null $aes = null, mixed $data = null, int|float|null $alpha = null, int|float|null $linewidth = null, ?string $color = null, string|array|null $linetype = null, ?int $downsample = null, bool $inheritAes = true, string|array|null $filter = null, mixed ...$style): self
     {
-        return $this->add('line', $aes, $data, [], compact('alpha', 'linewidth', 'color', 'linetype') + $style, $inheritAes, $filter);
+        return $this->add('line', $aes, $data, compact('downsample'), compact('alpha', 'linewidth', 'color', 'linetype') + $style, $inheritAes, $filter);
     }
 
     /** Lines connecting points in data order. */
@@ -134,10 +134,14 @@ final class Plot extends Chart
         return $this->add('col', $aes, $data, ['position' => $position, 'width' => $width], compact('alpha', 'fill', 'color') + $style, $inheritAes, $filter);
     }
 
-    /** Binned counts of x: bins (a maximum; Vega-Lite picks nice boundaries) or binwidth. density: true scales to unit area. */
-    public function histogram(Aes|array|null $aes = null, mixed $data = null, ?int $bins = null, int|float|null $binwidth = null, int|float|null $boundary = null, string $position = 'stack', bool $density = false, int|float|null $alpha = null, ?string $fill = null, ?string $color = null, bool $inheritAes = true, string|array|null $filter = null, mixed ...$style): self
+    /**
+     * Binned counts of x: bins (a maximum; Vega-Lite picks nice boundaries) or binwidth. density: true scales to unit
+     * area. compute: 'server' bins in PHP (exactly bins equal-width bins), 'browser' in Vega-Lite, and 'auto' (the
+     * default) in PHP above Config::$serverRows rows.
+     */
+    public function histogram(Aes|array|null $aes = null, mixed $data = null, ?int $bins = null, int|float|null $binwidth = null, int|float|null $boundary = null, string $position = 'stack', bool $density = false, string $compute = 'auto', int|float|null $alpha = null, ?string $fill = null, ?string $color = null, bool $inheritAes = true, string|array|null $filter = null, mixed ...$style): self
     {
-        return $this->add('histogram', $aes, $data, compact('bins', 'binwidth', 'boundary', 'position', 'density'), compact('alpha', 'fill', 'color') + $style, $inheritAes, $filter);
+        return $this->add('histogram', $aes, $data, compact('bins', 'binwidth', 'boundary', 'position', 'density', 'compute'), compact('alpha', 'fill', 'color') + $style, $inheritAes, $filter);
     }
 
     /** Frequency polygons: binned counts drawn as lines. */
@@ -248,10 +252,16 @@ final class Plot extends Chart
         return $this->add('rect', $aes, $data, [], compact('fill', 'color', 'alpha') + $style, $inheritAes, $filter);
     }
 
-    /** A 2D histogram: counts in x-by-y bins. */
-    public function bin2d(Aes|array|null $aes = null, mixed $data = null, int|array $bins = 30, bool $inheritAes = true, string|array|null $filter = null, mixed ...$style): self
+    /** A 2D histogram: counts in x-by-y bins; compute works as in histogram(). */
+    public function bin2d(Aes|array|null $aes = null, mixed $data = null, int|array $bins = 30, string $compute = 'auto', bool $inheritAes = true, string|array|null $filter = null, mixed ...$style): self
     {
-        return $this->add('bin2d', $aes, $data, compact('bins'), $style, $inheritAes, $filter);
+        return $this->add('bin2d', $aes, $data, compact('bins', 'compute'), $style, $inheritAes, $filter);
+    }
+
+    /** Hexagonal bins counted in PHP, as ggplot2's geom_hex: bins hexagons across the x range. */
+    public function hex(Aes|array|null $aes = null, mixed $data = null, int $bins = 30, bool $inheritAes = true, string|array|null $filter = null, mixed ...$style): self
+    {
+        return $this->add('hex', $aes, $data, compact('bins'), $style, $inheritAes, $filter);
     }
 
     /**

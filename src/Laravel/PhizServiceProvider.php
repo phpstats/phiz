@@ -23,6 +23,9 @@ final class PhizServiceProvider extends ServiceProvider
     {
         $this->publishes([dirname(__DIR__, 2).'/config/phiz.php' => $this->app->configPath('phiz.php')], 'phiz-config');
         Blade::component('phiz', PhizComponent::class);
+        \Phiz\Config::$serverRows = (int) config('phiz.server_rows', \Phiz\Config::$serverRows);
+        $warn = config('phiz.warn_rows', \Phiz\Config::$warnRows);
+        \Phiz\Config::$warnRows = $warn === null ? null : (int) $warn;
         Blade::directive('phizScripts', fn () => '<?php echo \\'.self::class.'::scripts(); ?>');
     }
 

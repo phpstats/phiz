@@ -20,18 +20,40 @@ use BackedEnum;
  */
 final class Data
 {
-    /** @var array<string, string> Cached inferred Vega-Lite types by field. */
+    /** @var array<string, string|null> Cached inferred Vega-Lite types by field. */
     private array $types = [];
 
+    /** @var list<array<string, mixed>>|null Rows built on first use from a table or columns. */
+    private ?array $built = null;
+
     /**
-     * @param list<array<string, mixed>>|null $rows
+     * Inline rows. A phibble table or an array of columns is kept as given and turned into rows only when the spec
+     * embeds it, so binning geoms (bin2d, hex, histogram) can read large tables column by column.
+     *
+     * @var list<array<string, mixed>>|null
+     */
+    public ?array $rows {
+        get {
+            if ($this->eager !== null || $this->url !== null || $this->name !== null) {
+                return $this->eager;
+            }
+
+            return $this->built ??= $this->table !== null ? self::rows($this->table) : self::transpose($this->columns ?? []);
+        }
+    }
+
+    /**
+     * @param list<array<string, mixed>>|null $eager
+     * @param array<string, list<mixed>>|null $columns
      * @param array<string, mixed>|null $format Vega-Lite data format for URL data.
      */
     private function __construct(
-        public readonly ?array $rows,
+        private readonly ?array $eager,
         public readonly ?string $url = null,
         public readonly ?array $format = null,
         public readonly ?string $name = null,
+        private readonly ?object $table = null,
+        private readonly ?array $columns = null,
     ) {}
 
     public static function from(mixed $data): self
@@ -39,6 +61,8 @@ final class Data
         return match (true) {
             $data instanceof self => $data,
             $data === null => new self([]),
+            is_object($data) && method_exists($data, 'column') && method_exists($data, 'nrow') => new self(null, table: $data),
+            is_array($data) && $data !== [] && ! array_is_list($data) && self::isColumns($data) => new self(null, columns: array_map(array_values(...), $data)),
             default => new self(self::rows($data)),
         };
     }
@@ -59,12 +83,33 @@ final class Data
 
     public function isInline(): bool
     {
-        return $this->rows !== null;
+        return $this->url === null && $this->name === null;
     }
 
     public function isEmpty(): bool
     {
-        return $this->rows === [];
+        return $this->count() === 0;
+    }
+
+    /** The number of inline rows, without building them. */
+    public function count(): int
+    {
+        return match (true) {
+            ! $this->isInline() => 0,
+            $this->table !== null => $this->table->nrow(),
+            $this->columns !== null => $this->columns === [] ? 0 : count($this->columns[array_key_first($this->columns)]),
+            default => count($this->eager ?? []),
+        };
+    }
+
+    /**
+     * What the binning helpers read: the table, the columns, or the rows.
+     *
+     * @internal
+     */
+    public function source(): mixed
+    {
+        return $this->table ?? $this->columns ?? $this->eager;
     }
 
     /** @return array<string, mixed> The Vega-Lite data definition. */
@@ -83,27 +128,49 @@ final class Data
     /** @return list<string> */
     public function fields(): array
     {
-        return array_keys($this->rows[0] ?? []);
+        return match (true) {
+            $this->table !== null => array_values(array_map('strval', method_exists($this->table, 'names') ? $this->table->names() : array_keys($this->table->columns()))),
+            $this->columns !== null => array_keys($this->columns),
+            default => array_keys($this->eager[0] ?? []),
+        };
     }
 
     public function has(string $field): bool
     {
-        if (! $this->isInline()) {
+        if (! $this->isInline() || $this->count() === 0) {
             return true;
         }
-        foreach ($this->rows as $row) {
+        if ($this->table !== null || $this->columns !== null) {
+            return in_array($field, $this->fields(), true);
+        }
+        foreach ($this->eager as $row) {
             if (array_key_exists($field, $row)) {
                 return true;
             }
         }
 
-        return $this->rows === [];
+        return false;
     }
 
-    /** @return list<mixed> */
+    /**
+     * A field's values, JSON-safe, read from the table or columns without building rows.
+     *
+     * @return list<mixed>
+     */
     public function column(string $field): array
     {
-        return array_map(fn (array $row) => $row[$field] ?? null, $this->rows ?? []);
+        if ($this->table !== null) {
+            try {
+                return array_map(self::value(...), array_values($this->table->column($field)));
+            } catch (\Throwable) {
+                return array_fill(0, $this->count(), null);
+            }
+        }
+        if ($this->columns !== null) {
+            return array_map(self::value(...), $this->columns[$field] ?? array_fill(0, $this->count(), null));
+        }
+
+        return array_map(fn (array $row) => $row[$field] ?? null, $this->eager ?? []);
     }
 
     /**
@@ -120,8 +187,7 @@ final class Data
         }
 
         $type = null;
-        foreach ($this->rows as $row) {
-            $value = $row[$field] ?? null;
+        foreach ($this->column($field) as $value) {
             if ($value === null) {
                 continue;
             }
@@ -145,14 +211,13 @@ final class Data
     public function levels(string $field): array
     {
         $seen = [];
-        foreach ($this->rows ?? [] as $row) {
-            $value = $row[$field] ?? null;
-            if ($value !== null && ! in_array($value, $seen, true)) {
-                $seen[] = $value;
+        foreach ($this->column($field) as $value) {
+            if ($value !== null && ! isset($seen[is_scalar($value) ? get_debug_type($value).':'.$value : serialize($value)])) {
+                $seen[is_scalar($value) ? get_debug_type($value).':'.$value : serialize($value)] = $value;
             }
         }
 
-        return $seen;
+        return array_values($seen);
     }
 
     /** @param list<array<string, mixed>> $rows */
@@ -189,7 +254,7 @@ final class Data
             return [];
         }
         if (! array_is_list($data) && self::isColumns($data)) {
-            $data = self::transpose($data);
+            return self::transpose($data);
         }
         if (! array_is_list($data)) {
             throw new InvalidArgumentException('Plot data must be a list of rows or an array of equal-length columns.');
@@ -232,12 +297,13 @@ final class Data
     private static function transpose(array $columns): array
     {
         $names = array_keys($columns);
-        $n = count(reset($columns));
+        $n = $columns === [] ? 0 : count(reset($columns));
+        $columns = array_map(array_values(...), $columns);
         $rows = [];
         for ($i = 0; $i < $n; $i++) {
             $row = [];
             foreach ($names as $name) {
-                $row[$name] = $columns[$name][$i];
+                $row[(string) $name] = self::value($columns[$name][$i]);
             }
             $rows[] = $row;
         }

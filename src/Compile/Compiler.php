@@ -7,6 +7,7 @@ namespace Phiz\Compile;
 use InvalidArgumentException;
 use Phiz\Aes;
 use Phiz\Assets;
+use Phiz\Config;
 use Phiz\Data;
 use Phiz\Field;
 use Phiz\Palette;
@@ -129,7 +130,44 @@ final class Compiler
             $spec['config'] = $config;
         }
 
-        return $plot->raw === [] ? $spec : Theme::merge($spec, $plot->raw);
+        $spec = $plot->raw === [] ? $spec : Theme::merge($spec, $plot->raw);
+        if ($topLevel) {
+            self::warnSize($spec);
+        }
+
+        return $spec;
+    }
+
+    /** Raises an E_USER_WARNING when the spec embeds more rows than Config::$warnRows. */
+    public static function warnSize(array $spec): void
+    {
+        if (Config::$warnRows === null) {
+            return;
+        }
+        $rows = self::countRows($spec);
+        if ($rows > Config::$warnRows) {
+            trigger_error(sprintf(
+                'phiz: this plot embeds %s data rows in its spec, more than Config::$warnRows (%s). Browsers slow down with large inline data. '
+                .'Summarize first (bin2d(), hex(), histogram(compute: \'server\'), line(downsample:), Bin::sample(), or phplyr), '
+                .'or load the data from a URL with Data::url(). See https://erikwestlund.github.io/phiz/large-data.html.',
+                number_format($rows),
+                number_format(Config::$warnRows),
+            ), E_USER_WARNING);
+        }
+    }
+
+    private static function countRows(array $node): int
+    {
+        $count = 0;
+        foreach ($node as $key => $value) {
+            if ($key === 'values' && is_array($value) && array_is_list($value)) {
+                $count += count($value);
+            } elseif (is_array($value)) {
+                $count += self::countRows($value);
+            }
+        }
+
+        return $count;
     }
 
     /** The most levels of any nominal color or fill field, for sizing a computed palette. */
@@ -358,7 +396,12 @@ final class Compiler
             if (! $data->isInline()) {
                 throw new InvalidArgumentException('Faceting a layer with its own data needs inline plot data.');
             }
-            $rows = $data->rows ?? [];
+            // The raw rows go in only when some layer draws them: binned layers send just their bins.
+            $drawsRaw = false;
+            foreach ($units as $u => $unit) {
+                $drawsRaw = $drawsRaw || (! isset($tagged[$u]) && ! $unit['context']->constant && $unit['context']->layer->data === null);
+            }
+            $rows = $drawsRaw ? ($data->rows ?? []) : [];
             foreach ($tagged as $u => $extra) {
                 foreach ($extra as $row) {
                     $rows[] = $row + ['__layer' => $u];

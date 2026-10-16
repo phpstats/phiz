@@ -10,55 +10,59 @@
   </url>
   <url>
     <loc>https://erikwestlund.github.io/phiz/reference.html</loc>
-    <lastmod>2026-10-16T08:22:06.268Z</lastmod>
+    <lastmod>2026-10-16T09:56:50.183Z</lastmod>
   </url>
   <url>
-    <loc>https://erikwestlund.github.io/phiz/interaction.html</loc>
-    <lastmod>2026-10-16T07:53:12.797Z</lastmod>
-  </url>
-  <url>
-    <loc>https://erikwestlund.github.io/phiz/ggplot2.html</loc>
-    <lastmod>2026-10-16T08:17:52.180Z</lastmod>
-  </url>
-  <url>
-    <loc>https://erikwestlund.github.io/phiz/geoms.html</loc>
-    <lastmod>2026-10-16T08:17:52.180Z</lastmod>
-  </url>
-  <url>
-    <loc>https://erikwestlund.github.io/phiz/development.html</loc>
-    <lastmod>2026-10-16T08:22:06.268Z</lastmod>
-  </url>
-  <url>
-    <loc>https://erikwestlund.github.io/phiz/data.html</loc>
-    <lastmod>2026-10-16T07:52:42.122Z</lastmod>
-  </url>
-  <url>
-    <loc>https://erikwestlund.github.io/phiz/cmdstanphp.html</loc>
-    <lastmod>2026-10-16T08:07:15.559Z</lastmod>
-  </url>
-  <url>
-    <loc>https://erikwestlund.github.io/phiz/dashboard.html</loc>
-    <lastmod>2026-10-16T08:24:43.422Z</lastmod>
-  </url>
-  <url>
-    <loc>https://erikwestlund.github.io/phiz/design.html</loc>
-    <lastmod>2026-10-16T08:17:52.180Z</lastmod>
-  </url>
-  <url>
-    <loc>https://erikwestlund.github.io/phiz/facets.html</loc>
-    <lastmod>2026-10-16T08:17:52.180Z</lastmod>
-  </url>
-  <url>
-    <loc>https://erikwestlund.github.io/phiz/get-started.html</loc>
-    <lastmod>2026-10-16T07:52:03.724Z</lastmod>
+    <loc>https://erikwestlund.github.io/phiz/laravel.html</loc>
+    <lastmod>2026-10-16T08:24:43.437Z</lastmod>
   </url>
   <url>
     <loc>https://erikwestlund.github.io/phiz/index.html</loc>
     <lastmod>2026-10-16T07:52:03.722Z</lastmod>
   </url>
   <url>
-    <loc>https://erikwestlund.github.io/phiz/laravel.html</loc>
-    <lastmod>2026-10-16T08:24:43.437Z</lastmod>
+    <loc>https://erikwestlund.github.io/phiz/get-started.html</loc>
+    <lastmod>2026-10-16T07:52:03.724Z</lastmod>
+  </url>
+  <url>
+    <loc>https://erikwestlund.github.io/phiz/facets.html</loc>
+    <lastmod>2026-10-16T08:17:52.180Z</lastmod>
+  </url>
+  <url>
+    <loc>https://erikwestlund.github.io/phiz/design.html</loc>
+    <lastmod>2026-10-16T08:17:52.180Z</lastmod>
+  </url>
+  <url>
+    <loc>https://erikwestlund.github.io/phiz/dashboard.html</loc>
+    <lastmod>2026-10-16T09:56:50.183Z</lastmod>
+  </url>
+  <url>
+    <loc>https://erikwestlund.github.io/phiz/cmdstanphp.html</loc>
+    <lastmod>2026-10-16T08:07:15.559Z</lastmod>
+  </url>
+  <url>
+    <loc>https://erikwestlund.github.io/phiz/data.html</loc>
+    <lastmod>2026-10-16T07:52:42.122Z</lastmod>
+  </url>
+  <url>
+    <loc>https://erikwestlund.github.io/phiz/development.html</loc>
+    <lastmod>2026-10-16T08:22:06.268Z</lastmod>
+  </url>
+  <url>
+    <loc>https://erikwestlund.github.io/phiz/geoms.html</loc>
+    <lastmod>2026-10-16T08:17:52.180Z</lastmod>
+  </url>
+  <url>
+    <loc>https://erikwestlund.github.io/phiz/ggplot2.html</loc>
+    <lastmod>2026-10-16T08:17:52.180Z</lastmod>
+  </url>
+  <url>
+    <loc>https://erikwestlund.github.io/phiz/interaction.html</loc>
+    <lastmod>2026-10-16T07:53:12.797Z</lastmod>
+  </url>
+  <url>
+    <loc>https://erikwestlund.github.io/phiz/large-data.html</loc>
+    <lastmod>2026-10-16T09:56:50.167Z</lastmod>
   </url>
   <url>
     <loc>https://erikwestlund.github.io/phiz/rendering.html</loc>
@@ -66,6 +70,6 @@
   </url>
   <url>
     <loc>https://erikwestlund.github.io/phiz/statistics.html</loc>
-    <lastmod>2026-10-16T08:22:06.268Z</lastmod>
+    <lastmod>2026-10-16T08:29:03.110Z</lastmod>
   </url>
 </urlset>

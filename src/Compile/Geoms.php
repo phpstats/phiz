@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace Phiz\Compile;
 
 use InvalidArgumentException;
+use Phiz\Bin;
+use Phiz\Config;
 use Phiz\Expr;
 use Phiz\Field;
 use Phiz\Stats\Fit;
@@ -50,6 +52,7 @@ final class Geoms
             'tile', 'raster' => self::tile($c),
             'rect' => self::rect($c),
             'bin2d' => self::bin2d($c),
+            'hex' => self::hex($c),
             'smooth' => self::smooth($c),
             'curve' => self::curve($c),
             'rug' => self::rug($c),
@@ -125,6 +128,10 @@ final class Geoms
 
     private static function line(Context $c): array
     {
+        $downsample = $c->param('downsample');
+        if ($downsample !== null && $c->data->isInline() && $c->data->count() > $downsample) {
+            $c->computed = Bin::lttb($c->data->rows, (string) $c->name('x'), (string) $c->name('y'), (int) $downsample, $c->groupFields());
+        }
         $encoding = $c->encode(['x' => 'x', 'y' => 'y', 'color' => 'color', 'size' => 'strokeWidth', 'linetype' => 'strokeDash', 'group' => 'detail', 'detail' => 'detail', 'order' => 'order'] + self::COMMON);
         $defaults = [];
         if ($c->layer->geom === 'path' && ! isset($encoding['order'])) {
@@ -263,6 +270,19 @@ final class Geoms
         $axis = $c->has('x') ? 'x' : 'y';
         $other = $axis === 'x' ? 'y' : 'x';
         $c->require($axis);
+        if (self::server($c)) {
+            $field = (string) $c->name($axis);
+            $c->computed = Bin::histogram($c->data->source(), $field, (int) $c->param('bins', 30), $c->param('binwidth'), $c->param('boundary'), groups: $c->groupFields());
+            $c->transforms = [];
+            $encoding = $c->encode(['fill' => 'color', 'color' => 'stroke', 'group' => 'detail']);
+            $encoding[$axis] = ['field' => Field::escape($field.'_start'), 'type' => 'quantitative', 'bin' => ['binned' => true], 'title' => $field];
+            $encoding["{$axis}2"] = ['field' => Field::escape($field.'_end')];
+            $density = (bool) $c->param('density');
+            $encoding[$other] = ['field' => $density ? 'density' : 'count', 'type' => 'quantitative', 'title' => $density ? 'density' : 'count'];
+            $c->channels += [$axis => $axis, $other => $other];
+
+            return [['mark' => $c->mark('bar', 'filled'), 'encoding' => self::position($c, $encoding, $other, $axis)]];
+        }
         $encoding = $c->encode([$axis => $axis, 'fill' => 'color', 'color' => 'stroke', 'group' => 'detail'] + self::COMMON);
         $c->channels[$other] = $other;
 
@@ -594,6 +614,18 @@ final class Geoms
     private static function bin2d(Context $c): array
     {
         $c->require('x', 'y');
+        if (self::server($c)) {
+            [$x, $y] = [(string) $c->name('x'), (string) $c->name('y')];
+            $c->computed = Bin::grid($c->data->source(), $x, $y, $c->param('bins', 30), groups: $c->groupFields());
+            $c->transforms = [];
+            $c->channels += ['x' => 'x', 'y' => 'y', 'fill' => 'color'];
+
+            return [['mark' => $c->mark('rect', 'filled'), 'encoding' => [
+                'x' => ['field' => Field::escape($x.'_start'), 'type' => 'quantitative', 'title' => $x], 'x2' => ['field' => Field::escape($x.'_end')],
+                'y' => ['field' => Field::escape($y.'_start'), 'type' => 'quantitative', 'title' => $y], 'y2' => ['field' => Field::escape($y.'_end')],
+                'color' => ['field' => 'count', 'type' => 'quantitative', 'title' => 'count'],
+            ]]];
+        }
         $encoding = $c->encode(['x' => 'x', 'y' => 'y'] + self::COMMON);
         $bins = $c->param('bins', 30);
         [$bx, $by] = is_array($bins) ? $bins : [$bins, $bins];
@@ -605,6 +637,58 @@ final class Geoms
         $c->channels['fill'] = 'color';
 
         return [['mark' => $c->mark('rect', 'filled'), 'encoding' => $encoding]];
+    }
+
+    /** Whether a binning geom computes in PHP: compute 'server', or 'auto' above Config::$serverRows inline rows. */
+    private static function server(Context $c): bool
+    {
+        $compute = $c->param('compute', 'auto');
+        if (! in_array($compute, ['auto', 'server', 'browser'], true)) {
+            throw new InvalidArgumentException("compute must be 'auto', 'server', or 'browser'.");
+        }
+        if ($compute === 'browser' || ! $c->data->isInline()) {
+            if ($compute === 'server') {
+                throw new InvalidArgumentException("compute: 'server' needs inline data.");
+            }
+
+            return false;
+        }
+
+        return $compute === 'server' || $c->data->count() > Config::$serverRows;
+    }
+
+    /**
+     * Hexagonal bins, counted in PHP (as ggplot2's geom_hex): each hexagon is a point with a hexagon shape, sized
+     * from the panel width so neighbors tile. The scales are fixed to the data range so hexagons meet exactly.
+     */
+    private static function hex(Context $c): array
+    {
+        $c->require('x', 'y');
+        if (! $c->data->isInline()) {
+            throw new InvalidArgumentException('hex bins in PHP and needs inline data; with URL data use bin2d().');
+        }
+        [$x, $y] = [(string) $c->name('x'), (string) $c->name('y')];
+        $bins = (int) $c->param('bins', 30);
+        $rows = $c->data->source();
+        $xlim = Bin::range($rows, $x);
+        $ylim = Bin::range($rows, $y);
+        [$width, $height] = [is_int($c->width) ? $c->width : 300, is_int($c->height) ? $c->height : 300];
+        if ($c->flipped) {
+            [$width, $height] = [$height, $width];
+        }
+        $c->computed = Bin::hex($rows, $x, $y, $bins, $xlim, $ylim, $height / $width, $c->groupFields());
+        $c->transforms = [];
+        $c->channels += ['x' => 'x', 'y' => 'y', 'fill' => 'color'];
+        $diameter = 2 * ($width / $bins) / sqrt(3);
+        // Pointy-top hexagon in Vega's unit square; size is the bounding box area in square pixels.
+        $shape = 'M0,-1L0.866,-0.5L0.866,0.5L0,1L-0.866,0.5L-0.866,-0.5Z';
+        $exact = ['nice' => false, 'zero' => false, 'padding' => 0];
+
+        return [['mark' => $c->mark('point', 'point', ['shape' => $shape, 'filled' => true, 'opacity' => 1, 'size' => round($diameter * $diameter, 2), 'strokeWidth' => 0]), 'encoding' => [
+            'x' => ['field' => Field::escape($x), 'type' => 'quantitative', 'scale' => ['domain' => $xlim] + $exact],
+            'y' => ['field' => Field::escape($y), 'type' => 'quantitative', 'scale' => ['domain' => $ylim] + $exact],
+            'color' => ['field' => 'count', 'type' => 'quantitative', 'title' => 'count'],
+        ] + $c->encode(self::COMMON)]];
     }
 
     /**
