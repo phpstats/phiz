@@ -1,0 +1,51 @@
+{
+    "$schema": "https://vega.github.io/schema/vega-lite/v6.json",
+    "data": {
+        "values": [
+            {
+                "a": 1,
+                "b": 2,
+                "c": 1,
+                "d": 3,
+                "k": "u"
+            },
+            {
+                "a": 3,
+                "b": 4,
+                "c": 2,
+                "d": 5,
+                "k": "v"
+            }
+        ]
+    },
+    "mark": {
+        "type": "rect",
+        "opacity": 0.5
+    },
+    "encoding": {
+        "x": {
+            "field": "a",
+            "type": "quantitative",
+            "scale": {
+                "zero": false
+            }
+        },
+        "x2": {
+            "field": "b"
+        },
+        "y": {
+            "field": "c",
+            "type": "quantitative",
+            "scale": {
+                "zero": false
+            }
+        },
+        "y2": {
+            "field": "d"
+        },
+        "color": {
+            "field": "k",
+            "type": "nominal"
+        }
+    }
+}

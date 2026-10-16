@@ -1,0 +1,6 @@
+/vendor/
+/.phpunit.cache/
+/composer.lock
+/examples/gallery.html
+/examples/output/
+.DS_Store

@@ -1,0 +1,81 @@
+{
+    "$schema": "https://vega.github.io/schema/vega-lite/v6.json",
+    "data": {
+        "values": [
+            {
+                "x": 1,
+                "y": 2.5,
+                "g": "a",
+                "h": "p",
+                "n": 3,
+                "date": "2024-01-01",
+                "lo": 2.0,
+                "hi": 3.0
+            },
+            {
+                "x": 2,
+                "y": 3.1,
+                "g": "b",
+                "h": "q",
+                "n": 5,
+                "date": "2024-02-01",
+                "lo": 2.6,
+                "hi": 3.7
+            },
+            {
+                "x": 3,
+                "y": 2.2,
+                "g": "a",
+                "h": "q",
+                "n": 2,
+                "date": "2024-03-01",
+                "lo": 1.5,
+                "hi": 2.9
+            },
+            "... 3 more rows"
+        ]
+    },
+    "transform": [
+        {
+            "window": [
+                {
+                    "op": "cume_dist",
+                    "as": "ecdf"
+                }
+            ],
+            "sort": [
+                {
+                    "field": "y"
+                }
+            ],
+            "groupby": [
+                "h"
+            ]
+        }
+    ],
+    "mark": {
+        "type": "line",
+        "interpolate": "step-after"
+    },
+    "encoding": {
+        "x": {
+            "field": "y",
+            "type": "quantitative",
+            "scale": {
+                "zero": false
+            }
+        },
+        "color": {
+            "field": "h",
+            "type": "nominal"
+        },
+        "y": {
+            "field": "ecdf",
+            "type": "quantitative",
+            "title": "ecdf",
+            "scale": {
+                "zero": false
+            }
+        }
+    }
+}

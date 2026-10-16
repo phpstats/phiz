@@ -1,0 +1,158 @@
+{
+    "$schema": "https://vega.github.io/schema/vega-lite/v6.json",
+    "data": {
+        "values": [
+            {
+                "x": 1,
+                "y": 2.5,
+                "g": "a",
+                "h": "p",
+                "n": 3,
+                "date": "2024-01-01",
+                "lo": 2.0,
+                "hi": 3.0
+            },
+            {
+                "x": 2,
+                "y": 3.1,
+                "g": "b",
+                "h": "q",
+                "n": 5,
+                "date": "2024-02-01",
+                "lo": 2.6,
+                "hi": 3.7
+            },
+            {
+                "x": 3,
+                "y": 2.2,
+                "g": "a",
+                "h": "q",
+                "n": 2,
+                "date": "2024-03-01",
+                "lo": 1.5,
+                "hi": 2.9
+            },
+            "... 3 more rows"
+        ]
+    },
+    "layer": [
+        {
+            "mark": {
+                "type": "point",
+                "filled": true
+            },
+            "encoding": {
+                "x": {
+                    "field": "x",
+                    "type": "quantitative",
+                    "scale": {
+                        "zero": false
+                    }
+                },
+                "y": {
+                    "field": "y",
+                    "type": "quantitative",
+                    "scale": {
+                        "zero": false
+                    }
+                }
+            }
+        },
+        {
+            "data": {
+                "values": [
+                    {
+                        "x": 1.0,
+                        "y": 2.033333333333333,
+                        "__ymin": 0.41909433378539207,
+                        "__ymax": 3.6475723328812744
+                    },
+                    {
+                        "x": 1.0632911392405062,
+                        "y": 2.0827004219409284,
+                        "__ymin": 0.49621096504046247,
+                        "__ymax": 3.6691898788413946
+                    },
+                    {
+                        "x": 1.1265822784810127,
+                        "y": 2.132067510548523,
+                        "__ymin": 0.5730910995923044,
+                        "__ymax": 3.691043921504742
+                    },
+                    "... 77 more rows"
+                ]
+            },
+            "mark": {
+                "type": "area",
+                "color": "#999999",
+                "opacity": 0.4
+            },
+            "encoding": {
+                "x": {
+                    "field": "x",
+                    "type": "quantitative",
+                    "scale": {
+                        "zero": false
+                    }
+                },
+                "y": {
+                    "field": "__ymin",
+                    "type": "quantitative",
+                    "title": "y",
+                    "scale": {
+                        "zero": false
+                    }
+                },
+                "y2": {
+                    "field": "__ymax"
+                }
+            }
+        },
+        {
+            "data": {
+                "values": [
+                    {
+                        "x": 1.0,
+                        "y": 2.033333333333333,
+                        "__ymin": 0.41909433378539207,
+                        "__ymax": 3.6475723328812744
+                    },
+                    {
+                        "x": 1.0632911392405062,
+                        "y": 2.0827004219409284,
+                        "__ymin": 0.49621096504046247,
+                        "__ymax": 3.6691898788413946
+                    },
+                    {
+                        "x": 1.1265822784810127,
+                        "y": 2.132067510548523,
+                        "__ymin": 0.5730910995923044,
+                        "__ymax": 3.691043921504742
+                    },
+                    "... 77 more rows"
+                ]
+            },
+            "mark": {
+                "type": "line",
+                "strokeWidth": 2,
+                "color": "#3366FF"
+            },
+            "encoding": {
+                "x": {
+                    "field": "x",
+                    "type": "quantitative",
+                    "scale": {
+                        "zero": false
+                    }
+                },
+                "y": {
+                    "field": "y",
+                    "type": "quantitative",
+                    "scale": {
+                        "zero": false
+                    }
+                }
+            }
+        }
+    ]
+}

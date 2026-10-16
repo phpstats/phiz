@@ -1,0 +1,41 @@
+{
+    "name": "erikwestlund/phiz",
+    "description": "A ggplot2-flavoured grammar of graphics for PHP that emits Vega-Lite",
+    "type": "library",
+    "license": "MIT",
+    "keywords": ["visualization", "vega-lite", "ggplot2", "grammar of graphics", "charts", "statistics"],
+    "authors": [{"name": "Erik Westlund"}],
+    "require": {
+        "php": "^8.5",
+        "ext-json": "*"
+    },
+    "require-dev": {
+        "pestphp/pest": "^4.0",
+        "opis/json-schema": "^2.4",
+        "orchestra/testbench": "^10.0"
+    },
+    "suggest": {
+        "erikwestlund/phibble": "Data frames that phiz plots directly",
+        "illuminate/view": "For the <x-phiz> Blade component (auto-discovered in Laravel)"
+    },
+    "autoload": {
+        "psr-4": {"Phiz\\": "src/"},
+        "files": ["src/functions.php"]
+    },
+    "autoload-dev": {
+        "psr-4": {"Phiz\\Tests\\": "tests/"}
+    },
+    "extra": {
+        "laravel": {"providers": ["Phiz\\Laravel\\PhizServiceProvider"]}
+    },
+    "scripts": {
+        "test": "pest",
+        "gallery": "php examples/gallery.php"
+    },
+    "config": {
+        "sort-packages": true,
+        "allow-plugins": {"pestphp/pest-plugin": true}
+    },
+    "minimum-stability": "stable",
+    "prefer-stable": true
+}

@@ -1,0 +1,219 @@
+{
+    "$schema": "https://vega.github.io/schema/vega-lite/v6.json",
+    "concat": [
+        {
+            "data": {
+                "values": [
+                    {
+                        "x": 1,
+                        "y": 2.5,
+                        "g": "a",
+                        "h": "p",
+                        "n": 3,
+                        "date": "2024-01-01",
+                        "lo": 2.0,
+                        "hi": 3.0
+                    },
+                    {
+                        "x": 2,
+                        "y": 3.1,
+                        "g": "b",
+                        "h": "q",
+                        "n": 5,
+                        "date": "2024-02-01",
+                        "lo": 2.6,
+                        "hi": 3.7
+                    },
+                    {
+                        "x": 3,
+                        "y": 2.2,
+                        "g": "a",
+                        "h": "q",
+                        "n": 2,
+                        "date": "2024-03-01",
+                        "lo": 1.5,
+                        "hi": 2.9
+                    },
+                    "... 3 more rows"
+                ]
+            },
+            "mark": {
+                "type": "point",
+                "filled": true
+            },
+            "encoding": {
+                "x": {
+                    "field": "x",
+                    "type": "quantitative",
+                    "scale": {
+                        "zero": false
+                    }
+                },
+                "y": {
+                    "field": "y",
+                    "type": "quantitative",
+                    "scale": {
+                        "zero": false
+                    }
+                },
+                "color": {
+                    "field": "g",
+                    "type": "nominal"
+                }
+            }
+        },
+        {
+            "data": {
+                "values": [
+                    {
+                        "x": 1,
+                        "y": 2.5,
+                        "g": "a",
+                        "h": "p",
+                        "n": 3,
+                        "date": "2024-01-01",
+                        "lo": 2.0,
+                        "hi": 3.0
+                    },
+                    {
+                        "x": 2,
+                        "y": 3.1,
+                        "g": "b",
+                        "h": "q",
+                        "n": 5,
+                        "date": "2024-02-01",
+                        "lo": 2.6,
+                        "hi": 3.7
+                    },
+                    {
+                        "x": 3,
+                        "y": 2.2,
+                        "g": "a",
+                        "h": "q",
+                        "n": 2,
+                        "date": "2024-03-01",
+                        "lo": 1.5,
+                        "hi": 2.9
+                    },
+                    "... 3 more rows"
+                ]
+            },
+            "mark": {
+                "type": "point",
+                "filled": true
+            },
+            "encoding": {
+                "x": {
+                    "field": "x",
+                    "type": "quantitative",
+                    "scale": {
+                        "zero": false
+                    }
+                },
+                "y": {
+                    "field": "y",
+                    "type": "quantitative",
+                    "scale": {
+                        "zero": false
+                    }
+                },
+                "color": {
+                    "field": "g",
+                    "type": "nominal"
+                }
+            }
+        },
+        {
+            "data": {
+                "values": [
+                    {
+                        "x": 1,
+                        "y": 2.5,
+                        "g": "a",
+                        "h": "p",
+                        "n": 3,
+                        "date": "2024-01-01",
+                        "lo": 2.0,
+                        "hi": 3.0
+                    },
+                    {
+                        "x": 2,
+                        "y": 3.1,
+                        "g": "b",
+                        "h": "q",
+                        "n": 5,
+                        "date": "2024-02-01",
+                        "lo": 2.6,
+                        "hi": 3.7
+                    },
+                    {
+                        "x": 3,
+                        "y": 2.2,
+                        "g": "a",
+                        "h": "q",
+                        "n": 2,
+                        "date": "2024-03-01",
+                        "lo": 1.5,
+                        "hi": 2.9
+                    },
+                    "... 3 more rows"
+                ]
+            },
+            "mark": {
+                "type": "point",
+                "filled": true
+            },
+            "encoding": {
+                "x": {
+                    "field": "x",
+                    "type": "quantitative",
+                    "scale": {
+                        "zero": false
+                    }
+                },
+                "y": {
+                    "field": "y",
+                    "type": "quantitative",
+                    "scale": {
+                        "zero": false
+                    }
+                },
+                "color": {
+                    "field": "g",
+                    "type": "nominal"
+                }
+            }
+        }
+    ],
+    "columns": 2,
+    "config": {
+        "axis": {
+            "labelFontSize": 8.8,
+            "titleFontSize": 11,
+            "titleFontWeight": "normal",
+            "grid": true,
+            "gridColor": "#EBEBEB",
+            "domain": false,
+            "ticks": false,
+            "labelColor": "#4D4D4D"
+        },
+        "legend": {
+            "labelFontSize": 8.8,
+            "titleFontSize": 11,
+            "titleFontWeight": "normal"
+        },
+        "header": {
+            "labelFontSize": 8.8,
+            "titleFontSize": 11
+        },
+        "title": {
+            "fontSize": 13.2,
+            "subtitleFontSize": 11,
+            "anchor": "start",
+            "fontWeight": "normal"
+        },
+        "view": {
+            "stroke": null
+        }
+    }
+}

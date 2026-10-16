@@ -1,0 +1,39 @@
+{
+    "$schema": "https://vega.github.io/schema/vega-lite/v6.json",
+    "data": {
+        "values": [
+            {
+                "x": -3.0,
+                "y": 0.0044318484119380075
+            },
+            {
+                "x": -2.0,
+                "y": 0.05399096651318806
+            },
+            {
+                "x": -1.0,
+                "y": 0.24197072451914337
+            },
+            "... 4 more rows"
+        ]
+    },
+    "mark": {
+        "type": "line"
+    },
+    "encoding": {
+        "x": {
+            "field": "x",
+            "type": "quantitative",
+            "scale": {
+                "zero": false
+            }
+        },
+        "y": {
+            "field": "y",
+            "type": "quantitative",
+            "scale": {
+                "zero": false
+            }
+        }
+    }
+}

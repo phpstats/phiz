@@ -1,0 +1,73 @@
+{
+    "$schema": "https://vega.github.io/schema/vega-lite/v6.json",
+    "data": {
+        "values": [
+            {
+                "Sepal.Length": 5.1,
+                "a[b]": 1
+            },
+            {
+                "Sepal.Length": 4.9,
+                "a[b]": 2
+            }
+        ]
+    },
+    "layer": [
+        {
+            "mark": {
+                "type": "point",
+                "filled": true
+            },
+            "encoding": {
+                "x": {
+                    "field": "Sepal\\.Length",
+                    "type": "quantitative",
+                    "scale": {
+                        "zero": false
+                    }
+                },
+                "y": {
+                    "field": "a\\[b\\]",
+                    "type": "quantitative",
+                    "scale": {
+                        "zero": false
+                    }
+                }
+            }
+        },
+        {
+            "transform": [
+                {
+                    "regression": "a\\[b\\]",
+                    "on": "Sepal\\.Length",
+                    "method": "linear",
+                    "as": [
+                        "Sepal.Length",
+                        "a[b]"
+                    ]
+                }
+            ],
+            "mark": {
+                "type": "line",
+                "strokeWidth": 2,
+                "color": "#3366FF"
+            },
+            "encoding": {
+                "x": {
+                    "field": "Sepal\\.Length",
+                    "type": "quantitative",
+                    "scale": {
+                        "zero": false
+                    }
+                },
+                "y": {
+                    "field": "a\\[b\\]",
+                    "type": "quantitative",
+                    "scale": {
+                        "zero": false
+                    }
+                }
+            }
+        }
+    ]
+}

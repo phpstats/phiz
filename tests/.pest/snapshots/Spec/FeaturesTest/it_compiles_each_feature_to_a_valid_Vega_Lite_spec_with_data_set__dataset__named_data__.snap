@@ -1,0 +1,25 @@
+{
+    "$schema": "https://vega.github.io/schema/vega-lite/v6.json",
+    "data": {
+        "name": "live"
+    },
+    "mark": {
+        "type": "line"
+    },
+    "encoding": {
+        "x": {
+            "field": "x",
+            "type": "quantitative",
+            "scale": {
+                "zero": false
+            }
+        },
+        "y": {
+            "field": "y",
+            "type": "quantitative",
+            "scale": {
+                "zero": false
+            }
+        }
+    }
+}

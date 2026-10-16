@@ -1,0 +1,115 @@
+{
+    "$schema": "https://vega.github.io/schema/vega-lite/v6.json",
+    "data": {
+        "values": [
+            {
+                "x": 1,
+                "y": 2.5,
+                "g": "a",
+                "h": "p",
+                "n": 3,
+                "date": "2024-01-01",
+                "lo": 2.0,
+                "hi": 3.0
+            },
+            {
+                "x": 2,
+                "y": 3.1,
+                "g": "b",
+                "h": "q",
+                "n": 5,
+                "date": "2024-02-01",
+                "lo": 2.6,
+                "hi": 3.7
+            },
+            {
+                "x": 3,
+                "y": 2.2,
+                "g": "a",
+                "h": "q",
+                "n": 2,
+                "date": "2024-03-01",
+                "lo": 1.5,
+                "hi": 2.9
+            },
+            "... 3 more rows"
+        ]
+    },
+    "layer": [
+        {
+            "mark": {
+                "type": "point",
+                "filled": true
+            },
+            "encoding": {
+                "x": {
+                    "field": "x",
+                    "type": "quantitative",
+                    "scale": {
+                        "zero": false
+                    }
+                },
+                "y": {
+                    "field": "y",
+                    "type": "quantitative",
+                    "scale": {
+                        "zero": false
+                    }
+                }
+            }
+        },
+        {
+            "transform": [
+                {
+                    "aggregate": [
+                        {
+                            "op": "min",
+                            "field": "x",
+                            "as": "__x1"
+                        },
+                        {
+                            "op": "max",
+                            "field": "x",
+                            "as": "__x2"
+                        }
+                    ]
+                },
+                {
+                    "calculate": "1 + 0.8 * datum.__x1",
+                    "as": "__y1"
+                },
+                {
+                    "calculate": "1 + 0.8 * datum.__x2",
+                    "as": "__y2"
+                }
+            ],
+            "mark": {
+                "type": "rule"
+            },
+            "encoding": {
+                "x": {
+                    "field": "__x1",
+                    "type": "quantitative",
+                    "title": "x",
+                    "scale": {
+                        "zero": false
+                    }
+                },
+                "x2": {
+                    "field": "__x2"
+                },
+                "y": {
+                    "field": "__y1",
+                    "type": "quantitative",
+                    "title": "y",
+                    "scale": {
+                        "zero": false
+                    }
+                },
+                "y2": {
+                    "field": "__y2"
+                }
+            }
+        }
+    ]
+}

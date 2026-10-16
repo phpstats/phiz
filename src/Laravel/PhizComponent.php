@@ -1,0 +1,60 @@
+<?php
+
+declare(strict_types=1);
+
+namespace Phiz\Laravel;
+
+use Illuminate\Contracts\Support\Htmlable;
+use Illuminate\View\Component;
+use Phiz\Chart;
+use Phiz\Html;
+
+/**
+ * <x-phiz :plot="$plot" class="h-80" :options="['theme' => 'auto']" />
+ *
+ * Renders a Plot (or any Chart, spec array, or spec JSON). Inside Livewire components it re-renders whenever the
+ * component does: the spec rides on an attribute Livewire morphs, and the phiz loader re-embeds on change while
+ * the drawn chart sits in a wire:ignore child. Give each chart a wire:key when a component renders several.
+ */
+final class PhizComponent extends Component
+{
+    /**
+     * @param Chart|array<string, mixed>|string $plot
+     * @param array<string, mixed> $options vega-embed options, merged over config('phiz.embed_options').
+     */
+    public function __construct(
+        public Chart|array|string $plot,
+        public array $options = [],
+    ) {}
+
+    /** Lazy, because Blade sets the attributes after render() and before the HTML is taken. */
+    public function render(): Htmlable
+    {
+        return new class(fn () => $this->html()) implements Htmlable
+        {
+            public function __construct(private readonly \Closure $html) {}
+
+            public function toHtml(): string
+            {
+                return ($this->html)();
+            }
+        };
+    }
+
+    private function html(): string
+    {
+        $spec = match (true) {
+            is_string($this->plot) => json_decode($this->plot, true, 512, JSON_THROW_ON_ERROR),
+            default => $this->plot,
+        };
+        $options = array_replace((array) config('phiz.embed_options', []), $this->options);
+        $html = Html::container($spec, $options, $this->attributes->getAttributes());
+
+        $state = app(ScriptState::class);
+        if (config('phiz.inject_scripts', true) && ! $state->included && ! request()->hasHeader('X-Livewire')) {
+            $html .= "\n".PhizServiceProvider::scripts();
+        }
+
+        return $html;
+    }
+}

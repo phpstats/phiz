@@ -1,0 +1,83 @@
+{
+    "$schema": "https://vega.github.io/schema/vega-lite/v6.json",
+    "data": {
+        "values": [
+            {
+                "x": 1,
+                "y": 2.5,
+                "g": "a",
+                "h": "p",
+                "n": 3,
+                "date": "2024-01-01",
+                "lo": 2.0,
+                "hi": 3.0
+            },
+            {
+                "x": 2,
+                "y": 3.1,
+                "g": "b",
+                "h": "q",
+                "n": 5,
+                "date": "2024-02-01",
+                "lo": 2.6,
+                "hi": 3.7
+            },
+            {
+                "x": 3,
+                "y": 2.2,
+                "g": "a",
+                "h": "q",
+                "n": 2,
+                "date": "2024-03-01",
+                "lo": 1.5,
+                "hi": 2.9
+            },
+            "... 3 more rows"
+        ]
+    },
+    "layer": [
+        {
+            "mark": {
+                "type": "rule",
+                "strokeWidth": 1.5
+            },
+            "encoding": {
+                "y": {
+                    "field": "g",
+                    "type": "nominal"
+                },
+                "x": {
+                    "field": "lo",
+                    "type": "quantitative",
+                    "title": "y",
+                    "scale": {
+                        "zero": false
+                    }
+                },
+                "x2": {
+                    "field": "hi"
+                }
+            }
+        },
+        {
+            "mark": {
+                "type": "point",
+                "filled": true,
+                "size": 80
+            },
+            "encoding": {
+                "x": {
+                    "field": "y",
+                    "type": "quantitative",
+                    "scale": {
+                        "zero": false
+                    }
+                },
+                "y": {
+                    "field": "g",
+                    "type": "nominal"
+                }
+            }
+        }
+    ]
+}
