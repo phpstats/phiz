@@ -7,7 +7,7 @@ title: "Themes"
 | Preset | Look |
 | --- | --- |
 | `vega` | Vega-Lite's defaults |
-| `gray` (also `grey`, `ggplot2`) | gray panel with white grid lines |
+| `gray` (also `grey`, `ggplot2`) | gray panel with white grid lines, and ggplot2's hue palette |
 | `bw` | white panel with a dark border and light grid |
 | `minimal` | light grid, no border, and no axis lines |
 | `classic` | axis lines and no grid |

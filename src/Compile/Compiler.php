@@ -9,6 +9,7 @@ use Phiz\Aes;
 use Phiz\Assets;
 use Phiz\Data;
 use Phiz\Field;
+use Phiz\Palette;
 use Phiz\Plot;
 use Phiz\Scale;
 use Phiz\Theme;
@@ -39,7 +40,7 @@ final class Compiler
         $units = []; // Each: ['specs' => list<array>, 'channels' => array, 'context' => Context]
         foreach ($plot->layers as $layer) {
             $aes = $layer->inheritAes ? $plot->aes->merge($layer->aes) : $layer->aes;
-            $context = new Context($layer, $aes, $layer->data ?? $data, $facetFields, $plot->flip);
+            $context = new Context($layer, $aes, $layer->data ?? $data, $facetFields, $plot->flip, $plot->width, $plot->height);
             $specs = Geoms::compile($context);
             foreach ($specs as $i => $spec) {
                 $transforms = [...$context->transforms, ...($spec['transform'] ?? [])];
@@ -117,6 +118,9 @@ final class Compiler
             $spec += $size + $unit;
         }
         $config = $plot->config;
+        if (($config['range']['category'] ?? null) === 'hue') {
+            $config['range']['category'] = Palette::hue(self::categoryLevels($units) ?: 8);
+        }
         if (self::hasLegend($layers) && ! isset($config['legend']['labelLimit'])) {
             // Vega-Lite truncates legend labels at 160 pixels; long category names are common in data.
             $config['legend']['labelLimit'] = 320;
@@ -126,6 +130,26 @@ final class Compiler
         }
 
         return $plot->raw === [] ? $spec : Theme::merge($spec, $plot->raw);
+    }
+
+    /** The most levels of any nominal color or fill field, for sizing a computed palette. */
+    private static function categoryLevels(array $units): int
+    {
+        $levels = 0;
+        foreach ($units as $unit) {
+            $data = $unit['context']->data;
+            foreach ($unit['specs'] as $layer) {
+                foreach (['color', 'fill', 'stroke'] as $channel) {
+                    $def = $layer['encoding'][$channel] ?? null;
+                    $def = is_array($def) && isset($def['condition']['field']) ? $def['condition'] : $def;
+                    if (is_array($def) && isset($def['field']) && is_string($def['field']) && ($def['type'] ?? null) === 'nominal' && $data->isInline()) {
+                        $levels = max($levels, count($data->levels(stripslashes($def['field']))));
+                    }
+                }
+            }
+        }
+
+        return $levels;
     }
 
     private static function hasLegend(array $layers): bool
@@ -460,8 +484,18 @@ final class Compiler
         $def = function (string $field) use ($data, $header, $plot) {
             $type = $data->type($field);
             $out = ['field' => Field::escape($field), 'type' => $type === 'quantitative' || $type === 'temporal' ? 'ordinal' : 'nominal', 'title' => $plot->labels[$field] ?? null];
-            if (($plot->facet['labeller'] ?? 'value') === 'both' && $field !== '__facet') {
+            $labeller = $plot->facet['labeller'] ?? 'value';
+            if ($labeller === 'both' && $field !== '__facet') {
                 $header += ['labelExpr' => json_encode($field, JSON_UNESCAPED_UNICODE)." + ': ' + datum.value"];
+            } elseif (is_array($labeller)) {
+                $map = isset($labeller[$field]) && is_array($labeller[$field]) ? $labeller[$field] : (array_filter($labeller, is_array(...)) === [] ? $labeller : []);
+                if ($map !== []) {
+                    $expr = 'datum.value';
+                    foreach (array_reverse($map, true) as $value => $label) {
+                        $expr = 'datum.value == '.json_encode((string) $value, JSON_UNESCAPED_UNICODE).' ? '.json_encode((string) $label, JSON_UNESCAPED_UNICODE).' : '.$expr;
+                    }
+                    $header += ['labelExpr' => $expr];
+                }
             }
             if ($header !== []) {
                 $out['header'] = $header;

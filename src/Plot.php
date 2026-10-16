@@ -161,6 +161,15 @@ final class Plot extends Chart
         return $this->add('boxplot', $aes, $data, compact('coef', 'outliers', 'width'), compact('alpha', 'fill', 'color') + $style, $inheritAes, $filter);
     }
 
+    /**
+     * Violins: the kernel density of y per level of a discrete x. bw sets the bandwidth, adjust multiplies R's
+     * bw.nrd0, and width is the widest violin's share of its band. They layer with boxplot() and jitter().
+     */
+    public function violin(Aes|array|null $aes = null, mixed $data = null, int|float|null $bw = null, int|float|null $adjust = null, float $width = 0.9, ?int $n = null, ?string $position = null, int|float|null $alpha = null, ?string $fill = null, bool $inheritAes = true, string|array|null $filter = null, mixed ...$style): self
+    {
+        return $this->add('violin', $aes, $data, compact('bw', 'adjust', 'width', 'n', 'position'), compact('alpha', 'fill') + $style, $inheritAes, $filter);
+    }
+
     /** Error bars from ymin to ymax (or xmin to xmax) with end ticks; width is the tick length in pixels. */
     public function errorbar(Aes|array|null $aes = null, mixed $data = null, int|float|null $width = null, ?string $position = null, ?string $color = null, int|float|null $linewidth = null, bool $inheritAes = true, string|array|null $filter = null, mixed ...$style): self
     {
@@ -411,7 +420,7 @@ final class Plot extends Chart
      *
      * @param array<string, mixed> $header Vega-Lite header properties for the panel labels.
      */
-    public function facetWrap(string|array $facets, ?int $ncol = null, ?int $nrow = null, string $scales = 'fixed', string $labeller = 'value', array $header = []): self
+    public function facetWrap(string|array $facets, ?int $ncol = null, ?int $nrow = null, string $scales = 'fixed', string|array $labeller = 'value', array $header = []): self
     {
         $facets = (array) $facets;
         if ($facets === []) {
@@ -422,7 +431,7 @@ final class Plot extends Chart
     }
 
     /** A grid of panels by rows and/or cols fields. */
-    public function facetGrid(?string $rows = null, ?string $cols = null, string $scales = 'fixed', string $labeller = 'value', array $header = []): self
+    public function facetGrid(?string $rows = null, ?string $cols = null, string $scales = 'fixed', string|array $labeller = 'value', array $header = []): self
     {
         if ($rows === null && $cols === null) {
             throw new InvalidArgumentException('facetGrid needs rows, cols, or both.');
@@ -431,11 +440,14 @@ final class Plot extends Chart
         return clone($this, ['facet' => ['type' => 'grid', 'rows' => $rows, 'cols' => $cols, 'scales' => $scales, 'labeller' => self::labeller($labeller), 'header' => $header]]);
     }
 
-    /** Panel labels: 'value' (ggplot2's label_value) or 'both' (label_both, "field: value"). */
-    private static function labeller(string $labeller): string
+    /**
+     * Panel labels: 'value' (ggplot2's label_value), 'both' (label_both, "field: value"), or a map from values to
+     * labels (as_labeller), optionally keyed by field for grids: ['drv' => ['f' => 'Front'], 'year' => [...]].
+     */
+    private static function labeller(string|array $labeller): string|array
     {
-        if (! in_array($labeller, ['value', 'both'], true)) {
-            throw new InvalidArgumentException("labeller must be 'value' or 'both'.");
+        if (is_string($labeller) && ! in_array($labeller, ['value', 'both'], true)) {
+            throw new InvalidArgumentException("labeller must be 'value', 'both', or a map of values to labels.");
         }
 
         return $labeller;

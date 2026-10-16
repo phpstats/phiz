@@ -1,0 +1,210 @@
+{
+    "$schema": "https://vega.github.io/schema/vega-lite/v6.json",
+    "data": {
+        "values": [
+            {
+                "manufacturer": "audi",
+                "model": "a4",
+                "displ": 1.8,
+                "year": 1999,
+                "cyl": 4,
+                "trans": "auto(l5)",
+                "drv": "f",
+                "cty": 18,
+                "hwy": 29,
+                "fl": "p",
+                "class": "compact"
+            },
+            {
+                "manufacturer": "audi",
+                "model": "a4",
+                "displ": 1.8,
+                "year": 1999,
+                "cyl": 4,
+                "trans": "manual(m5)",
+                "drv": "f",
+                "cty": 21,
+                "hwy": 29,
+                "fl": "p",
+                "class": "compact"
+            },
+            {
+                "manufacturer": "audi",
+                "model": "a4",
+                "displ": 2,
+                "year": 2008,
+                "cyl": 4,
+                "trans": "manual(m6)",
+                "drv": "f",
+                "cty": 20,
+                "hwy": 31,
+                "fl": "p",
+                "class": "compact"
+            },
+            "... 231 more rows"
+        ]
+    },
+    "width": 300,
+    "layer": [
+        {
+            "transform": [
+                {
+                    "density": "hwy",
+                    "groupby": [
+                        "class"
+                    ],
+                    "as": [
+                        "hwy",
+                        "__density"
+                    ]
+                },
+                {
+                    "joinaggregate": [
+                        {
+                            "op": "max",
+                            "field": "__density",
+                            "as": "__peak"
+                        }
+                    ],
+                    "groupby": [
+                        "class"
+                    ]
+                },
+                {
+                    "calculate": "datum.__density / datum.__peak",
+                    "as": "__width"
+                }
+            ],
+            "mark": {
+                "type": "trail",
+                "opacity": 0.6
+            },
+            "encoding": {
+                "x": {
+                    "field": "class",
+                    "type": "nominal",
+                    "title": null
+                },
+                "color": {
+                    "field": "class",
+                    "type": "nominal",
+                    "legend": null
+                },
+                "y": {
+                    "field": "hwy",
+                    "type": "quantitative",
+                    "title": "Highway mpg",
+                    "scale": {
+                        "zero": false
+                    }
+                },
+                "size": {
+                    "field": "__width",
+                    "type": "quantitative",
+                    "scale": {
+                        "domain": [
+                            0,
+                            1
+                        ],
+                        "range": [
+                            0,
+                            38.6
+                        ]
+                    },
+                    "legend": null
+                },
+                "order": {
+                    "field": "hwy",
+                    "type": "quantitative"
+                },
+                "detail": [
+                    {
+                        "field": "class",
+                        "type": "nominal"
+                    }
+                ]
+            }
+        },
+        {
+            "mark": {
+                "type": "boxplot",
+                "extent": 1.5,
+                "outliers": false,
+                "size": 8
+            },
+            "encoding": {
+                "x": {
+                    "field": "class",
+                    "type": "nominal",
+                    "title": null
+                },
+                "y": {
+                    "field": "hwy",
+                    "type": "quantitative",
+                    "title": "Highway mpg",
+                    "scale": {
+                        "zero": false
+                    }
+                },
+                "color": {
+                    "field": "class",
+                    "type": "nominal",
+                    "legend": null
+                }
+            }
+        }
+    ],
+    "config": {
+        "axis": {
+            "labelFontSize": 8.8,
+            "titleFontSize": 11,
+            "titleFontWeight": "normal",
+            "grid": true,
+            "gridColor": "#FFFFFF",
+            "domain": false,
+            "tickColor": "#333333",
+            "labelColor": "#4D4D4D",
+            "titleColor": "#000000"
+        },
+        "legend": {
+            "labelFontSize": 8.8,
+            "titleFontSize": 11,
+            "titleFontWeight": "normal"
+        },
+        "header": {
+            "labelFontSize": 8.8,
+            "titleFontSize": 11,
+            "labelColor": "#1A1A1A"
+        },
+        "title": {
+            "fontSize": 13.2,
+            "subtitleFontSize": 11,
+            "anchor": "start",
+            "fontWeight": "normal"
+        },
+        "view": {
+            "fill": "#EBEBEB",
+            "stroke": null
+        },
+        "range": {
+            "category": [
+                "#F8766D",
+                "#C49A00",
+                "#53B400",
+                "#00C094",
+                "#00B6EB",
+                "#A58AFF",
+                "#FB61D7"
+            ]
+        },
+        "mark": {
+            "color": "#595959"
+        },
+        "point": {
+            "color": "#000000"
+        },
+        "line": {
+            "color": "#000000"
+        }
+    }
+}

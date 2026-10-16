@@ -30,6 +30,8 @@ $geoms = [
     'density' => fn () => Plot::of(sample())->aes(x: 'y')->density(bw: 0.5),
     'density filled groups' => fn () => Plot::of(sample())->aes(x: 'y', fill: 'h')->density(alpha: 0.4, adjust: 1.5),
     'boxplot' => fn () => Plot::of(sample())->aes(x: 'h', y: 'y', fill: 'h')->boxplot(coef: 2, color: 'black'),
+    'violin' => fn () => Plot::of(sample())->aes(x: 'h', y: 'y', fill: 'h')->violin(alpha: 0.5)->boxplot(width: 8),
+    'violin dodged with adjust' => fn () => Plot::of(sample())->aes(x: 'h', y: 'y', fill: 'g')->violin(position: 'dodge', adjust: 1.5, width: 0.4),
     'errorbar' => fn () => Plot::of(sample())->aes(x: 'g', y: 'y', ymin: 'lo', ymax: 'hi')->errorbar(width: 6)->point(),
     'errorbar horizontal' => fn () => Plot::of(sample())->aes(y: 'g', xmin: 'lo', xmax: 'hi')->errorbar(),
     'linerange' => fn () => Plot::of(sample())->aes(x: 'x', ymin: 'lo', ymax: 'hi')->linerange(linewidth: 3),

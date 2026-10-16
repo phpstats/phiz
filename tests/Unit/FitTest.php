@@ -59,3 +59,9 @@ it('matches R type 7 quantiles and bw.nrd0', function () {
 it('rejects singular designs', function () {
     Fit::ols([[1, 2], [1, 2], [1, 2]], [1, 2, 3]);
 })->throws(InvalidArgumentException::class, 'singular');
+
+it('matches ggplot2 hue palettes and R hcl()', function () {
+    expect(Phiz\Palette::hue(3))->toBe(['#F8766D', '#00BA38', '#619CFF'])
+        ->and(Phiz\Palette::hue(5))->toBe(['#F8766D', '#A3A500', '#00BF7D', '#00B0F6', '#E76BF3'])
+        ->and(Phiz\Palette::hue(8))->toBe(['#F8766D', '#CD9600', '#7CAE00', '#00BE67', '#00BFC4', '#00A9FF', '#C77CFF', '#FF61CC']);
+});

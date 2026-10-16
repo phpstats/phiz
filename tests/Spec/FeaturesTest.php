@@ -30,6 +30,8 @@ $features = [
     'facet wrap two fields' => fn () => $base()->facetWrap(['g', 'h']),
     'facet grid' => fn () => $base()->facetGrid(rows: 'h', cols: 'g'),
     'facet labeller both' => fn () => $base()->facetGrid(rows: 'h', labeller: 'both'),
+    'facet labeller map' => fn () => $base()->facetGrid(rows: 'h', cols: 'g', labeller: ['h' => ['p' => 'Panel P', 'q' => 'Panel Q']]),
+    'facet wrap labeller map' => fn () => $base()->facetWrap('h', labeller: ['p' => 'P "quoted"']),
     'facet grid columns only' => fn () => $base()->facetGrid(cols: 'h', scales: 'free'),
     'facet with smooth band' => fn () => Plot::of(sample())->aes(x: 'x', y: 'y')->point()->smooth(method: 'lm')->facetWrap('h'),
     'facet with reference line' => fn () => $base()->hline(3)->facetWrap('h'),

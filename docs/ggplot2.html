@@ -492,50 +492,54 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <td><code>boxplot()</code></td>
 </tr>
 <tr class="even">
+<td><code>geom_violin()</code></td>
+<td><code>violin()</code></td>
+</tr>
+<tr class="odd">
 <td><code>geom_errorbar()</code>, <code>geom_linerange()</code>, <code>geom_pointrange()</code></td>
 <td><code>errorbar()</code>, <code>linerange()</code>, <code>pointrange()</code></td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td><code>geom_hline()</code>, <code>geom_vline()</code>, <code>geom_abline()</code></td>
 <td><code>hline()</code>, <code>vline()</code>, <code>abline()</code></td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td><code>geom_segment()</code></td>
 <td><code>segment()</code></td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td><code>geom_text()</code>, <code>geom_label()</code></td>
 <td><code>text()</code>, <code>label()</code></td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td><code>geom_tile()</code>, <code>geom_raster()</code>, <code>geom_rect()</code></td>
 <td><code>tile()</code>, <code>raster()</code>, <code>rect()</code></td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td><code>geom_bin2d()</code></td>
 <td><code>bin2d()</code></td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td><code>geom_smooth()</code></td>
 <td><code>smooth()</code></td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td><code>geom_function()</code>, <code>stat_function()</code></td>
 <td><code>curve()</code></td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td><code>geom_rug()</code></td>
 <td><code>rug()</code></td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td><code>stat_ecdf()</code></td>
 <td><code>ecdf()</code></td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td><code>stat_qq()</code>, <code>stat_qq_line()</code></td>
 <td><code>qq()</code>, <code>qqLine()</code></td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td><code>coord_polar()</code> with bars</td>
 <td><code>arc()</code>, <code>pie()</code></td>
 </tr>
@@ -606,26 +610,30 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <td><code>facetGrid(rows: 'r', cols: 'c', labeller: 'both')</code></td>
 </tr>
 <tr class="odd">
+<td><code>labeller = as_labeller(c(f = "Front"))</code></td>
+<td><code>labeller: ['f' =&gt; 'Front']</code></td>
+</tr>
+<tr class="even">
 <td><code>labs()</code>, <code>ggtitle()</code>, <code>xlab()</code>, <code>ylab()</code></td>
 <td><code>labs()</code>, <code>title()</code>, and the functions of the same names</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td><code>theme_gray()</code>, <code>theme_bw()</code>, <code>theme_minimal()</code>, <code>theme_classic()</code>, <code>theme_light()</code>, <code>theme_dark()</code>, <code>theme_void()</code></td>
 <td><code>theme('gray')</code>, and so on</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td><code>theme(legend.position = "bottom")</code></td>
 <td><code>theme(legendPosition: 'bottom')</code></td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td>patchwork <code>p1 + p2</code>, <code>p1 / p2</code></td>
 <td><code>Compose::beside($p1, $p2)</code>, <code>Compose::stack($p1, $p2)</code></td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td><code>factor(cyl)</code></td>
 <td><code>factor('cyl')</code> or <code>'cyl:N'</code></td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td><code>after_stat(density)</code> in a histogram</td>
 <td><code>histogram(density: true)</code></td>
 </tr>
@@ -641,9 +649,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <li><strong>Limits.</strong> <code>xlim()</code> and <code>ylim()</code> zoom without removing data. ggplot2 removes the data outside the limits, which changes statistics computed from it.</li>
 <li><strong>Densities.</strong> The default bandwidth is Vega-Lite’s. <code>adjust:</code> multiplies R’s <code>bw.nrd0</code>, so <code>adjust: 1</code> reproduces ggplot2’s default.</li>
 <li><strong>Smoothers.</strong> <code>lm</code>, <code>quad</code>, and <code>poly</code> fits and their confidence bands are computed in PHP and match R. Loess fits use Vega-Lite’s loess transform and have no confidence band. There is no <code>gam</code> method.</li>
-<li><strong>Colors.</strong> Categorical colors come from Vega-Lite’s palette, also under <code>theme('gray')</code>. <code>scaleColor(values:)</code> or <code>scheme:</code> sets them.</li>
+<li><strong>Colors.</strong> Categorical colors come from Vega-Lite’s palette by default. <code>theme('gray')</code> switches to ggplot2’s <code>hue_pal()</code> colors, computed for the number of levels. <code>scaleColor(values:)</code> or <code>scheme:</code> sets them explicitly.</li>
 <li><strong>Panels.</strong> A discrete axis is 300 pixels by default, the same as a continuous axis, and grows by 20 pixels per level beyond 15 levels.</li>
-<li><strong>Not available.</strong> There is no violin geom, no <code>geom_contour()</code> or <code>geom_density_2d()</code>, no <code>geom_hex()</code>, no <code>coord_polar()</code> for arbitrary geoms, no <code>coord_fixed()</code>, and no <code>sec_axis()</code>. Use <code>raw()</code> or <code>layer()</code> for any Vega-Lite feature phiz does not wrap.</li>
+<li><strong>Violins.</strong> <code>violin()</code> draws each violin as a Vega-Lite trail, whose ends are rounded. There is no <code>draw_quantiles</code> option; layer a <code>boxplot()</code> instead.</li>
+<li><strong>Not available.</strong> There is no <code>geom_contour()</code> or <code>geom_density_2d()</code>, no <code>geom_hex()</code>, no <code>coord_polar()</code> for arbitrary geoms, no <code>coord_fixed()</code>, and no <code>sec_axis()</code>. Use <code>raw()</code> or <code>layer()</code> for any Vega-Lite feature phiz does not wrap.</li>
 </ul>
 </section>
 <section id="additions" class="level2">

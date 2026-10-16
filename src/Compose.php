@@ -79,8 +79,11 @@ final class Compose extends Chart
         $config = $this->config;
         foreach ($this->charts as $chart) {
             if ($config === [] && ($chart instanceof Plot || $chart instanceof self) && $chart->config !== []) {
-                $config = $chart->config; // A composition takes its theme from the first themed plot.
+                $config = $chart->toArray()['config'] ?? []; // A composition takes its theme from the first themed plot.
             }
+        }
+        if (($config['range']['category'] ?? null) === 'hue') {
+            $config['range']['category'] = Palette::hue(8);
         }
         if ($config !== []) {
             $spec['config'] = $config;

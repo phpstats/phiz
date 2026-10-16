@@ -125,6 +125,14 @@ return [
         ->scaleFill(guide: false)
         ->labs(x: null, y: 'Highway mpg')],
 
+    'violin' => ['Distributions', 'Violins with boxplots', 'Densities per level, layered with boxplots, in ggplot2\'s gray theme and hue palette.', fn () => Plot::of($mpg)
+        ->aes(x: 'class', y: 'hwy', fill: 'class')
+        ->violin(alpha: 0.6)
+        ->boxplot(width: 8, outliers: false)
+        ->scaleFill(guide: false)
+        ->theme('gray')
+        ->labs(x: null, y: 'Highway mpg')],
+
     'jitter' => ['Distributions', 'Jittered strip plot', 'Points spread within each band.', fn () => Plot::of($mpg)
         ->aes(x: factor('cyl'), y: 'hwy', color: factor('cyl'))
         ->jitter(width: 0.3, alpha: 0.6)

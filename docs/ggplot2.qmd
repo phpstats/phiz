@@ -52,6 +52,7 @@ Aesthetics are named arguments, so `aes(displ, hwy)` becomes `aes(x: 'displ', y:
 | `geom_histogram()`, `geom_freqpoly()` | `histogram()`, `freqpoly()` |
 | `geom_density()` | `density()` |
 | `geom_boxplot()` | `boxplot()` |
+| `geom_violin()` | `violin()` |
 | `geom_errorbar()`, `geom_linerange()`, `geom_pointrange()` | `errorbar()`, `linerange()`, `pointrange()` |
 | `geom_hline()`, `geom_vline()`, `geom_abline()` | `hline()`, `vline()`, `abline()` |
 | `geom_segment()` | `segment()` |
@@ -83,6 +84,7 @@ Geom arguments keep ggplot2's names where they exist: `bins`, `binwidth`, `bound
 | `coord_cartesian(xlim, ylim)` | `coordCartesian(xlim:, ylim:)` |
 | `facet_wrap(~f, ncol, scales)` | `facetWrap('f', ncol:, scales:)` |
 | `facet_grid(r ~ c, labeller = label_both)` | `facetGrid(rows: 'r', cols: 'c', labeller: 'both')` |
+| `labeller = as_labeller(c(f = "Front"))` | `labeller: ['f' => 'Front']` |
 | `labs()`, `ggtitle()`, `xlab()`, `ylab()` | `labs()`, `title()`, and the functions of the same names |
 | `theme_gray()`, `theme_bw()`, `theme_minimal()`, `theme_classic()`, `theme_light()`, `theme_dark()`, `theme_void()` | `theme('gray')`, and so on |
 | `theme(legend.position = "bottom")` | `theme(legendPosition: 'bottom')` |
@@ -99,9 +101,10 @@ These differences follow from Vega-Lite rendering the plot.
 - **Limits.** `xlim()` and `ylim()` zoom without removing data. ggplot2 removes the data outside the limits, which changes statistics computed from it.
 - **Densities.** The default bandwidth is Vega-Lite's. `adjust:` multiplies R's `bw.nrd0`, so `adjust: 1` reproduces ggplot2's default.
 - **Smoothers.** `lm`, `quad`, and `poly` fits and their confidence bands are computed in PHP and match R. Loess fits use Vega-Lite's loess transform and have no confidence band. There is no `gam` method.
-- **Colors.** Categorical colors come from Vega-Lite's palette, also under `theme('gray')`. `scaleColor(values:)` or `scheme:` sets them.
+- **Colors.** Categorical colors come from Vega-Lite's palette by default. `theme('gray')` switches to ggplot2's `hue_pal()` colors, computed for the number of levels. `scaleColor(values:)` or `scheme:` sets them explicitly.
 - **Panels.** A discrete axis is 300 pixels by default, the same as a continuous axis, and grows by 20 pixels per level beyond 15 levels.
-- **Not available.** There is no violin geom, no `geom_contour()` or `geom_density_2d()`, no `geom_hex()`, no `coord_polar()` for arbitrary geoms, no `coord_fixed()`, and no `sec_axis()`. Use `raw()` or `layer()` for any Vega-Lite feature phiz does not wrap.
+- **Violins.** `violin()` draws each violin as a Vega-Lite trail, whose ends are rounded. There is no `draw_quantiles` option; layer a `boxplot()` instead.
+- **Not available.** There is no `geom_contour()` or `geom_density_2d()`, no `geom_hex()`, no `coord_polar()` for arbitrary geoms, no `coord_fixed()`, and no `sec_axis()`. Use `raw()` or `layer()` for any Vega-Lite feature phiz does not wrap.
 
 ## Additions
 

@@ -92,6 +92,13 @@
             "fill": "#EBEBEB",
             "stroke": null
         },
+        "range": {
+            "category": [
+                "#F8766D",
+                "#00BA38",
+                "#619CFF"
+            ]
+        },
         "mark": {
             "color": "#595959"
         },

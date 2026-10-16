@@ -73,6 +73,7 @@ function geom_histogram(mixed ...$args): Closure { return chain('histogram', $ar
 function geom_freqpoly(mixed ...$args): Closure { return chain('freqpoly', $args); }
 function geom_density(mixed ...$args): Closure { return chain('density', $args); }
 function geom_boxplot(mixed ...$args): Closure { return chain('boxplot', $args); }
+function geom_violin(mixed ...$args): Closure { return chain('violin', $args); }
 function geom_errorbar(mixed ...$args): Closure { return chain('errorbar', $args); }
 function geom_linerange(mixed ...$args): Closure { return chain('linerange', $args); }
 function geom_pointrange(mixed ...$args): Closure { return chain('pointrange', $args); }

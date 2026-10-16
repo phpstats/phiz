@@ -45,6 +45,8 @@ final class Theme
                 'view' => ['fill' => '#EBEBEB', 'stroke' => null],
                 'axis' => ['grid' => true, 'gridColor' => '#FFFFFF', 'domain' => false, 'tickColor' => '#333333', 'labelColor' => '#4D4D4D', 'titleColor' => '#000000'],
                 'header' => ['labelColor' => '#1A1A1A'],
+                // 'hue' is expanded at compile time to ggplot2's hue_pal() for the plot's number of levels.
+                'range' => ['category' => 'hue'],
                 'mark' => ['color' => '#595959'],
                 'point' => ['color' => '#000000'],
                 'line' => ['color' => '#000000'],

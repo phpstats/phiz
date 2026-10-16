@@ -38,6 +38,7 @@ final class Geoms
             'freqpoly' => self::freqpoly($c),
             'density' => self::density($c),
             'boxplot' => self::boxplot($c),
+            'violin' => self::violin($c),
             'errorbar' => self::errorbar($c),
             'linerange' => [self::linerange($c)],
             'pointrange' => self::pointrange($c),
@@ -351,6 +352,56 @@ final class Geoms
         }
 
         return [['mark' => $mark, 'encoding' => $encoding]];
+    }
+
+    /**
+     * Violins: a kernel density of y per level of x, drawn as a trail whose width is the density, centered on the
+     * level's band. Every violin has the same maximum width (ggplot2's scale = "width"). They layer with boxplots and
+     * points on the same discrete axis.
+     */
+    private static function violin(Context $c): array
+    {
+        $c->require('x', 'y');
+        if (! $c->discrete('x')) {
+            throw new InvalidArgumentException('violin needs a discrete x; use factor() or the :N shorthand for numeric codes.');
+        }
+        $y = (string) $c->name('y');
+        $groupby = array_values(array_unique([$c->ref('x'), ...$c->groupby()]));
+        $transform = ['density' => $c->ref('y'), 'groupby' => $groupby, 'as' => [$y, '__density']];
+        $bandwidth = $c->param('bw');
+        if ($c->param('adjust') !== null) {
+            $values = array_values(array_filter($c->data->column($y), is_numeric(...)));
+            if ($bandwidth === null && count($values) < 2) {
+                throw new InvalidArgumentException('violin(adjust:) computes the bandwidth from inline data; with URL data set bw: instead.');
+            }
+            $bandwidth = ($bandwidth ?? \Phiz\Stats\Fit::bandwidth($values)) * $c->param('adjust');
+        }
+        foreach (['bandwidth' => $bandwidth, 'steps' => $c->param('n')] as $key => $value) {
+            if ($value !== null) {
+                $transform[$key] = $value;
+            }
+        }
+        $c->transforms[] = $transform;
+        // Scale each violin to its own maximum density, so every violin spans the same width.
+        $c->transforms[] = ['joinaggregate' => [['op' => 'max', 'field' => '__density', 'as' => '__peak']], 'groupby' => $groupby];
+        $c->transforms[] = ['calculate' => 'datum.__density / datum.__peak', 'as' => '__width'];
+
+        // The widest violin fills most of its band: the panel size along x divided by the number of levels.
+        $levels = $c->data->isInline() ? max(1, count($c->data->levels((string) $c->name('x')))) : 4;
+        $panel = $c->flipped ? $c->height : $c->width;
+        $panel = is_int($panel) ? $panel : max(300, 20 * $levels);
+        $maxWidth = round($c->param('width', 0.9) * $panel / $levels, 1);
+
+        $encoding = $c->encode(['x' => 'x', 'fill' => 'color', 'color' => 'color', 'group' => 'detail'] + ['opacity' => 'opacity', 'tooltip' => 'tooltip']);
+        $encoding['y'] = ['field' => Field::escape($y), 'type' => 'quantitative', 'title' => $y];
+        $c->channels['y'] = 'y';
+        $encoding['size'] = ['field' => '__width', 'type' => 'quantitative', 'scale' => ['domain' => [0, 1], 'range' => [0, $maxWidth]], 'legend' => null];
+        $encoding['order'] = ['field' => Field::escape($y), 'type' => 'quantitative'];
+        // A trail is one mark per group, so every level of x (and of any grouping) draws its own violin.
+        $encoding['detail'] = array_values(array_filter([['field' => $c->ref('x'), 'type' => 'nominal'], $encoding['detail'] ?? null]));
+        $encoding = self::dodge($c, $encoding);
+
+        return [['mark' => $c->mark('trail', 'point', ['opacity' => 0.7]), 'encoding' => $encoding]];
     }
 
     /** Horizontal when xmin/xmax are mapped instead of ymin/ymax. */

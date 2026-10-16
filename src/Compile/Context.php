@@ -46,6 +46,8 @@ final class Context
         public readonly Data $data,
         public readonly array $facetFields = [],
         public readonly bool $flipped = false,
+        public readonly int|string|null $width = null,
+        public readonly int|string|null $height = null,
     ) {}
 
     public function has(string $aesthetic): bool

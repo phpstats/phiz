@@ -8,7 +8,7 @@ title: "Facets and composition"
 
 {{< include _generated/facet-wrap.md >}}
 
-`labeller: 'both'` labels panels as "field: value", as ggplot2's `label_both` does, and `header:` passes Vega-Lite header properties such as `labelFontWeight`.
+`labeller: 'both'` labels panels as "field: value", as ggplot2's `label_both` does. A map such as `labeller: ['f' => 'Front', 'r' => 'Rear']` renames values, and a grid takes one map per field: `labeller: ['drv' => [...], 'year' => [...]]`. `header:` passes Vega-Lite header properties such as `labelFontWeight`.
 
 `facetGrid()` lays panels out by a `rows:` field and a `cols:` field.
 

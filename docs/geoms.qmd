@@ -26,6 +26,10 @@ As in ggplot2, `color` is the outline of bars, areas, and tiles, and `fill` is t
 
 {{< include _generated/geom-boxplot.md >}}
 
+`violin()` draws a kernel density of y for each level of a discrete x. Every violin has the same maximum width, set by `width:` as a share of the band, and violins layer with boxplots and points on the same axis. `bw:` and `adjust:` work as in `density()`, and `position: 'dodge'` places groups side by side.
+
+{{< include _generated/geom-violin.md >}}
+
 `ecdf()`, `freqpoly()`, `qq()`, `qqLine()`, and `rug()` complete the set.
 
 ## Amounts
