@@ -79,6 +79,7 @@ $visual = [
         ->count(alpha: 0.6)
         ->annotate('text', x: 30, y: 15, label: 'Efficient', fontSize: 14)
         ->annotate('segment', x: 28, y: 17, xend: 32, yend: 40, color: 'red'),
+    'ellipse' => fn () => $faithful()->point(alpha: 0.5)->ellipse()->ellipse(type: 'norm', linetype: 'dashed'),
     'pie' => fn () => $mpg()->aes(fill: 'class')->bar()->coordPolar(theta: 'y'),
     'rose' => fn () => $mpg()->aes(x: factor('class', ['suv', 'compact', 'midsize', 'subcompact', 'pickup', 'minivan', '2seater']), fill: 'class')->bar()->coordPolar(),
     'coord-fixed' => fn () => $faithful()->point()->coordFixed(0.05),

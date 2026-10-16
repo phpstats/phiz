@@ -68,13 +68,62 @@ As in ggplot2, `color` is the outline of bars, areas, and tiles, and `fill` is t
 
 ## Fitted curves
 
-`smooth()` fits a curve per group. With `method: 'lm'`, `'quad'`, or `'poly'` and inline data, phiz fits the model in PHP by least squares and draws a pointwise confidence band for the mean at `level:`, as ggplot2's `geom_smooth()` does. These bands match R's `predict(fit, interval = "confidence")`. `se: false` and the other methods (`loess`, `log`, `exp`, `pow`) use Vega-Lite's regression and loess transforms in the browser, without a band. `span:` sets the loess bandwidth.
+`smooth()` fits a curve per group and, for inline data, draws a pointwise confidence band for the mean at `level:`, as ggplot2's `geom_smooth()` does. The default method is loess: a local quadratic fit over the nearest `span:` share of the points (0.75 by default). phiz fits it in PHP, and the fit, its standard errors, and the t interval match R's `loess(y ~ x, span = 0.75, degree = 2)` with `surface = "direct"` to within 1e-9. ggplot2's own default interpolates the loess surface, so its curve can differ from R's direct fit in the third decimal place.
+
+{{< include _generated/geom-smooth-loess.md >}}
+
+`method: 'lm'`, `'quad'`, and `'poly'` (with `order:`) fit polynomials by least squares, and their bands match R's `predict(fit, interval = "confidence")`. `se: false` and the other methods (`log`, `exp`, `pow`) use Vega-Lite's regression and loess transforms in the browser, without a band. Above 3,000 rows a loess smooth also defaults to the browser, because the band costs O(n²) in PHP. Pass `se: true` to compute it anyway.
 
 {{< include _generated/geom-smooth.md >}}
 
 `curve()` draws a PHP function over a range, as ggplot2's `geom_function()` does.
 
 {{< include _generated/geom-curve.md >}}
+
+## Summaries
+
+`summary()` summarizes y at each value of x and draws the result with another geom, as ggplot2's `stat_summary()` does. `funData:` returns the middle and the range together:
+
+- `mean_se` (the default): the mean, plus or minus one standard error (`funArgs: ['mult' => 2]` for two)
+- `mean_cl_normal`: the mean with a t confidence interval (`funArgs: ['conf' => 0.9]`)
+- `mean_sdl`: the mean, plus or minus two standard deviations
+- `median_hilow`: the median with the outer quantiles at `conf` (0.95 by default)
+
+A callable can take the place of any of them, returning `[y, ymin, ymax]`. `fun:`, `funMin:`, and `funMax:` set the parts separately, by name (`mean`, `median`, `min`, `max`, `sum`, `sd`, `n`) or as callables of the group's values. `geom:` chooses how to draw the summaries: `pointrange` (the default), `errorbar`, `linerange`, `crossbar`, `point`, `line`, `col`, `area`, or `ribbon`. With a discrete y and a continuous x, x is summarized at each y instead.
+
+{{< include _generated/geom-summary.md >}}
+
+`crossbar()` draws a box from `ymin` to `ymax` with a line at `y`, and it works with `summary()` and `position: 'dodge'`.
+
+{{< include _generated/geom-crossbar.md >}}
+
+`count()` draws a point at each distinct x and y, sized by the number of rows there, as `geom_count()` does.
+
+`ellipse()` draws a confidence ellipse per group, as `stat_ellipse()` does. `type: 't'` (the default) fits a multivariate t distribution with MASS's `cov.trob()`, `'norm'` uses the sample covariance, and `'euclid'` draws a circle of radius `level`. The ellipses match ggplot2's to within 1e-9. `geom: 'polygon'` fills them.
+
+{{< include _generated/geom-ellipse.md >}}
+
+## Two-dimensional densities and contours
+
+`density2d()` estimates a bivariate kernel density on a 100 × 100 grid and draws its contour lines, as `geom_density_2d()` does. The density is MASS's `kde2d()` with `bandwidth.nrd()` bandwidths, computed in PHP, and the contour levels are R's `pretty()` over the range of the density. `h:` sets the bandwidths, `adjust:` multiplies them, and `bins:`, `binwidth:`, or `breaks:` set the levels. Mapping `color: 'level'` colors each line by its level. Mapping `color` to a field estimates one density per group.
+
+{{< include _generated/geom-density2d.md >}}
+
+`density2dFilled()` fills the bands between consecutive levels and labels them as ggplot2 does, with the viridis palette. `contourVar: 'ndensity'` scales each group's density to a maximum of 1, and `'count'` multiplies it by the group's size.
+
+{{< include _generated/geom-density2d-filled.md >}}
+
+`contour()` and `contourFilled()` draw the same lines and bands for a `z` field on a regular grid of `x` and `y`, as `geom_contour()` and `geom_contour_filled()` do. phiz traces the contours in PHP with marching squares. The lines match ggplot2's: the same levels and the same pieces.
+
+{{< include _generated/geom-contour.md >}}
+
+`polygon()` fills the shape through each group's points in data order. Rows with null `x` and `y` start a new ring in the same group, and a ring drawn in the opposite direction cuts a hole.
+
+## Annotations
+
+`annotate()` adds a layer from fixed values rather than data, as ggplot2's `annotate()` does. It draws `text`, `label`, `point`, `segment`, `rect`, `rule`, `pointrange`, `linerange`, `errorbar`, or `crossbar`. Positions can be single values or lists, and `-INF` and `INF` reach the edges of the panel. Annotations ignore the plot's mappings, keep its axis titles, and appear in every facet panel.
+
+{{< include _generated/geom-annotate.md >}}
 
 ## Raw layers
 

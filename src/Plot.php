@@ -330,6 +330,15 @@ final class Plot extends Chart
         return $this->add('crossbar', $aes, $data, compact('width', 'position'), compact('color', 'fill', 'linewidth', 'alpha') + $style, $inheritAes, $filter);
     }
 
+    /**
+     * Confidence ellipses per group, as ggplot2's stat_ellipse: type 't' (a robust multivariate t fit), 'norm', or
+     * 'euclid' (a circle of radius level), at level. geom: 'polygon' fills them.
+     */
+    public function ellipse(Aes|array|null $aes = null, mixed $data = null, string $type = 't', float $level = 0.95, int $segments = 51, string $geom = 'path', ?string $color = null, ?string $fill = null, int|float|null $linewidth = null, string|array|null $linetype = null, int|float|null $alpha = null, bool $inheritAes = true, string|array|null $filter = null, mixed ...$style): self
+    {
+        return $this->add('ellipse', $aes, $data, compact('type', 'level', 'segments', 'geom'), compact('color', 'fill', 'linewidth', 'linetype', 'alpha') + $style, $inheritAes, $filter);
+    }
+
     /** Points sized by how many rows share each x and y, as ggplot2's geom_count. */
     public function count(Aes|array|null $aes = null, mixed $data = null, ?string $color = null, int|float|null $alpha = null, bool $inheritAes = true, string|array|null $filter = null, mixed ...$style): self
     {

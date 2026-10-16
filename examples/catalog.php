@@ -149,6 +149,18 @@ return [
         ->qq(alpha: 0.6)
         ->qqLine(color: '#D62728')],
 
+    'density2d' => ['Distributions', '2D density', 'Filled density bands from MASS::kde2d, computed in PHP, with the points on top.', fn () => Plot::of($faithful)
+        ->aes(x: 'eruptions', y: 'waiting')
+        ->density2dFilled()
+        ->point(size: 6, color: 'white', alpha: 0.5)
+        ->labs(x: 'Eruption (minutes)', y: 'Waiting (minutes)', fill: 'density')],
+
+    'ellipse' => ['Distributions', 'Confidence ellipses', 'stat_ellipse: robust t ellipses per group.', fn () => Plot::of($mpg)
+        ->aes(x: 'displ', y: 'hwy', color: 'drv')
+        ->point(alpha: 0.5)
+        ->ellipse()
+        ->labs(x: 'Displacement (L)', y: 'Highway mpg', color: 'Drive')],
+
     // Counts and amounts.
     'bar' => ['Counts', 'Bar chart of counts', 'bar() counts rows when y is unmapped.', fn () => Plot::of($mpg)
         ->aes(x: 'class')
@@ -187,6 +199,19 @@ return [
         ->aes(fill: 'drv')
         ->pie(innerRadius: 50)
         ->labs(fill: 'Drive')],
+
+    'rose' => ['Counts', 'Polar bars', 'coordPolar() turns bars into a rose.', fn () => Plot::of($mpg)
+        ->aes(x: 'class', fill: 'class')
+        ->bar()
+        ->coordPolar()
+        ->labs(fill: null)],
+
+    'annotate' => ['Counts', 'Annotations', 'annotate() adds shaded ranges, segments, and text.', fn () => Plot::of($mpg)
+        ->aes(x: 'cty', y: 'hwy')
+        ->annotate('rect', xmin: 15, xmax: 20, ymin: -INF, ymax: INF, fill: 'orange', alpha: 0.2)
+        ->count(alpha: 0.6)
+        ->annotate('text', x: 30, y: 23, label: 'Most efficient', color: '#D62728')
+        ->labs(x: 'City mpg', y: 'Highway mpg')],
 
     // Facets and layout.
     'facet-wrap' => ['Facets', 'Small multiples', 'facetWrap with a fitted line in every panel.', fn () => Plot::of($mpg)
@@ -289,6 +314,12 @@ return [
         ->errorbar(width: 8)
         ->point(size: 50)
         ->labs(x: null, y: 'Mean highway mpg (95% CI)')],
+
+    'summary' => ['Statistics', 'Summaries', 'stat_summary: means with t intervals over the raw data.', fn () => Plot::of($mpg)
+        ->aes(x: 'class', y: 'hwy')
+        ->point(alpha: 0.2)
+        ->summary(funData: 'mean_cl_normal', color: '#D62728')
+        ->labs(x: null, y: 'Highway mpg')],
 
     'curve' => ['Statistics', 'Functions', 'curve() draws a PHP function, here the normal density over a histogram.', fn () => Plot::of(array_map(fn ($i) => ['z' => Fit::normalQuantile(($i + 0.5) / 500)], range(0, 499)))
         ->aes(x: 'z')

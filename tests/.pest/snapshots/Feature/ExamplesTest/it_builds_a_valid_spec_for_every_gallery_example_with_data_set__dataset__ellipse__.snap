@@ -1,0 +1,146 @@
+{
+    "$schema": "https://vega.github.io/schema/vega-lite/v6.json",
+    "data": {
+        "values": [
+            {
+                "manufacturer": "audi",
+                "model": "a4",
+                "displ": 1.8,
+                "year": 1999,
+                "cyl": 4,
+                "trans": "auto(l5)",
+                "drv": "f",
+                "cty": 18,
+                "hwy": 29,
+                "fl": "p",
+                "class": "compact"
+            },
+            {
+                "manufacturer": "audi",
+                "model": "a4",
+                "displ": 1.8,
+                "year": 1999,
+                "cyl": 4,
+                "trans": "manual(m5)",
+                "drv": "f",
+                "cty": 21,
+                "hwy": 29,
+                "fl": "p",
+                "class": "compact"
+            },
+            {
+                "manufacturer": "audi",
+                "model": "a4",
+                "displ": 2,
+                "year": 2008,
+                "cyl": 4,
+                "trans": "manual(m6)",
+                "drv": "f",
+                "cty": 20,
+                "hwy": 31,
+                "fl": "p",
+                "class": "compact"
+            },
+            "... 231 more rows"
+        ]
+    },
+    "layer": [
+        {
+            "mark": {
+                "type": "point",
+                "filled": true,
+                "opacity": 0.5
+            },
+            "encoding": {
+                "x": {
+                    "field": "displ",
+                    "type": "quantitative",
+                    "title": "Displacement (L)",
+                    "scale": {
+                        "zero": false
+                    }
+                },
+                "y": {
+                    "field": "hwy",
+                    "type": "quantitative",
+                    "title": "Highway mpg",
+                    "scale": {
+                        "zero": false
+                    }
+                },
+                "color": {
+                    "field": "drv",
+                    "type": "nominal",
+                    "title": "Drive"
+                }
+            }
+        },
+        {
+            "data": {
+                "values": [
+                    {
+                        "drv": "f",
+                        "displ": 3.9982168183931934,
+                        "hwy": 22.823264571388634,
+                        "__ellipse": 1,
+                        "__order": 0
+                    },
+                    {
+                        "drv": "f",
+                        "displ": 3.986937308135178,
+                        "hwy": 23.598959877912975,
+                        "__ellipse": 1,
+                        "__order": 1
+                    },
+                    {
+                        "drv": "f",
+                        "displ": 3.9532697632389437,
+                        "hwy": 24.438876818539384,
+                        "__ellipse": 1,
+                        "__order": 2
+                    },
+                    "... 153 more rows"
+                ]
+            },
+            "mark": {
+                "type": "line"
+            },
+            "encoding": {
+                "x": {
+                    "field": "displ",
+                    "type": "quantitative",
+                    "title": "Displacement (L)",
+                    "scale": {
+                        "zero": false
+                    }
+                },
+                "y": {
+                    "field": "hwy",
+                    "type": "quantitative",
+                    "title": "Highway mpg",
+                    "scale": {
+                        "zero": false
+                    }
+                },
+                "color": {
+                    "field": "drv",
+                    "type": "nominal",
+                    "title": "Drive"
+                },
+                "order": {
+                    "field": "__order",
+                    "type": "quantitative"
+                },
+                "detail": {
+                    "field": "__ellipse",
+                    "type": "nominal"
+                }
+            }
+        }
+    ],
+    "config": {
+        "legend": {
+            "labelLimit": 320
+        }
+    }
+}

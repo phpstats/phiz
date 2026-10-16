@@ -65,6 +65,7 @@ $parity = [
     'summary horizontal col' => fn () => $cars()->aes(x: 'hwy', y: 'class')->summary(fun: 'mean', geom: 'col'),
     'crossbar' => fn () => Plot::of(sample())->aes(x: 'g', y: 'y', ymin: 'lo', ymax: 'hi')->crossbar(width: 0.5),
     'count' => fn () => $cars()->aes(x: 'cty', y: 'hwy')->count(),
+    'ellipse' => fn () => $cars()->aes(x: 'displ', y: 'hwy', color: 'drv')->point()->ellipse()->ellipse(type: 'norm', geom: 'polygon', aes: ['fill' => 'drv']),
     'annotate' => fn () => $cars()->aes(x: 'displ', y: 'hwy')->point()
         ->annotate('rect', xmin: 2, xmax: 3, ymin: -INF, ymax: INF, fill: 'orange', alpha: 0.2)
         ->annotate('text', x: 6, y: 40, label: 'Note')
@@ -211,4 +212,16 @@ it('computes grey and hue palettes as the scales package', function () {
         ->and(Palette::hue(3, 15, 100, 45))->toHaveCount(3)
         ->and(Plot::of(Datasets::mpg())->aes(x: 'displ', y: 'hwy', color: 'drv')->point()->apply(scale_color_grey())->toArray()['encoding']['color']['scale']['range'])
         ->toBe(Palette::grey(3));
+});
+
+it('draws ellipses as ggplot2\'s stat_ellipse', function () {
+    $f = Datasets::faithful();
+    [$x, $y] = [array_column($f, 'eruptions'), array_column($f, 'waiting')];
+
+    // layer_data(ggplot(faithful, aes(eruptions, waiting)) + stat_ellipse(type = ...)), points 1 and 14.
+    foreach (['t' => [6.2714584089, 100.6544930083, 3.5017382477, 83.9699989987], 'norm' => [6.2970840838, 101.0398510774, 3.4012704996, 84.4914161762]] as $type => $expected) {
+        $e = Contour::ellipse($x, $y, $type);
+        expect([$e[0][0], $e[0][1], $e[13][0], $e[13][1]])->toEqualWithDelta($expected, 1e-9);
+    }
+    expect(Contour::ellipse([1.0, 2.0, 3.0], [1.0, 3.0, 2.0]))->toBe([]);
 });

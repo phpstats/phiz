@@ -77,6 +77,7 @@ final class Geoms
             'summary' => self::summary($c),
             'crossbar' => self::crossbar($c),
             'count' => self::count($c),
+            'ellipse' => self::ellipse($c),
             'density_2d' => self::contour($c, density: true, filled: false),
             'density_2d_filled' => self::contour($c, density: true, filled: true),
             'contour' => self::contour($c, density: false, filled: false),
@@ -1362,6 +1363,55 @@ final class Geoms
         $line = self::dodge($c, $line);
 
         return [['mark' => $boxMark, 'encoding' => $box], ['mark' => $lineMark, 'encoding' => $line]];
+    }
+
+    /**
+     * Confidence ellipses per group, as ggplot2's stat_ellipse: type t (MASS::cov.trob), norm, or euclid, at level,
+     * drawn as closed paths (or filled, with geom: 'polygon').
+     */
+    private static function ellipse(Context $c): array
+    {
+        $c->require('x', 'y');
+        if (! $c->data->isInline()) {
+            throw new InvalidArgumentException('ellipse computes in PHP and needs inline data.');
+        }
+        [$x, $y] = [(string) $c->name('x'), (string) $c->name('y')];
+        $groups = array_values(array_diff($c->groupFields(), ['__facet']));
+        $sets = [];
+        foreach ($c->data->rows ?? [] as $row) {
+            [$xi, $yi] = [$row[$x] ?? null, $row[$y] ?? null];
+            if (! is_numeric($xi) || ! is_numeric($yi) || ! is_finite((float) $xi) || ! is_finite((float) $yi)) {
+                continue;
+            }
+            $key = [];
+            foreach ($groups as $group) {
+                $key[$group] = $row[$group] ?? null;
+            }
+            $sets[json_encode($key)] ??= ['key' => $key, 'x' => [], 'y' => []];
+            $sets[json_encode($key)]['x'][] = (float) $xi;
+            $sets[json_encode($key)]['y'][] = (float) $yi;
+        }
+        $rows = [];
+        $order = 0;
+        $id = 0;
+        foreach ($sets as $set) {
+            $id++;
+            foreach (Contour::ellipse($set['x'], $set['y'], (string) $c->param('type', 't'), (float) $c->param('level', 0.95), (int) $c->param('segments', 51)) as [$px, $py]) {
+                $rows[] = $set['key'] + [$x => $px, $y => $py, '__ellipse' => $id, '__order' => $order++];
+            }
+        }
+        $c->computed = $rows;
+        $c->transforms = [];
+        $filled = $c->param('geom', 'path') === 'polygon';
+        $encoding = $c->encode(['x' => 'x', 'y' => 'y'] + ($filled ? ['fill' => 'fill', 'color' => 'stroke'] : ['color' => 'color', 'linetype' => 'strokeDash']) + self::COMMON);
+        $encoding['x']['type'] = $encoding['y']['type'] = 'quantitative';
+        $encoding['order'] = ['field' => '__order', 'type' => 'quantitative'];
+        $encoding['detail'] = ['field' => '__ellipse', 'type' => 'nominal'];
+        if ($filled) {
+            return [['mark' => $c->mark('line', 'filled', ['strokeWidth' => 0, 'opacity' => 0.3] + ($c->has('fill') ? [] : ['fill' => '#333333'])), 'encoding' => $encoding]];
+        }
+
+        return [['mark' => $c->mark('line', 'line'), 'encoding' => $encoding]];
     }
 
     /** Points sized by the number of rows at each x and y, as ggplot2's geom_count. */

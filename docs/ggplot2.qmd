@@ -58,15 +58,23 @@ Aesthetics are named arguments, so `aes(displ, hwy)` becomes `aes(x: 'displ', y:
 | `geom_segment()` | `segment()` |
 | `geom_text()`, `geom_label()` | `text()`, `label()` |
 | `geom_tile()`, `geom_raster()`, `geom_rect()` | `tile()`, `raster()`, `rect()` |
-| `geom_bin2d()` | `bin2d()` |
-| `geom_smooth()` | `smooth()` |
+| `geom_bin2d()`, `geom_hex()` | `bin2d()`, `hex()` |
+| `geom_smooth()` (loess, lm, poly) | `smooth()` |
+| `geom_density_2d()`, `geom_density_2d_filled()` | `density2d()`, `density2dFilled()` |
+| `geom_contour()`, `geom_contour_filled()` | `contour()`, `contourFilled()` |
+| `geom_polygon()` | `polygon()` |
+| `stat_summary()` | `summary()` |
+| `geom_crossbar()` | `crossbar()` |
+| `geom_count()` | `count()` |
+| `stat_ellipse()` | `ellipse()` |
+| `annotate()` | `annotate()` |
 | `geom_function()`, `stat_function()` | `curve()` |
 | `geom_rug()` | `rug()` |
 | `stat_ecdf()` | `ecdf()` |
 | `stat_qq()`, `stat_qq_line()` | `qq()`, `qqLine()` |
-| `coord_polar()` with bars | `arc()`, `pie()` |
+| `coord_polar()` with bars | `coordPolar()`, or `arc()` and `pie()` |
 
-Geom arguments keep ggplot2's names where they exist: `bins`, `binwidth`, `boundary`, `position`, `method`, `se`, `level`, `span`, `adjust`, `coef`, `outliers`, `width`, `hjust`, `vjust`, `angle`, `nudge_x` (as `nudgeX`), and `inherit.aes` (as `inheritAes`). `position` takes the strings `'stack'`, `'dodge'`, `'fill'`, and `'identity'`.
+Geom arguments keep ggplot2's names where they exist: `bins`, `binwidth`, `boundary`, `breaks`, `position`, `method`, `se`, `level`, `span`, `adjust`, `h`, `n`, `coef`, `outliers`, `width`, `hjust`, `vjust`, `angle`, `nudge_x` (as `nudgeX`), `fun.data` (as `funData`), `contour_var` (as `contourVar`), and `inherit.aes` (as `inheritAes`). `position` takes the strings `'stack'`, `'dodge'`, `'fill'`, and `'identity'`.
 
 ## Scales, coordinates, facets, and themes
 
@@ -77,17 +85,26 @@ Geom arguments keep ggplot2's names where they exist: `bins`, `binwidth`, `bound
 | `scale_x_date(date_labels = "%Y")` | `scaleX(type: 'time', format: '%Y')` |
 | `scale_colour_manual(values = c(a = "red"))` | `scaleColor(values: ['a' => 'red'])` |
 | `scale_colour_brewer(palette = "Set2")` | `scaleColor(scheme: 'set2')` |
-| `scale_colour_viridis_c()` | `scaleColor(scheme: 'viridis')` |
-| `scale_colour_gradient2(midpoint = 0)` | `scale_color_gradient2(midpoint: 0)` |
-| `guides(colour = "none")` | `scaleColor(guide: false)` |
+| `scale_colour_distiller()`, `scale_colour_fermenter()` | the functions of the same names |
+| `scale_colour_viridis_c(option = "A")` | `scale_color_viridis_c(option: 'A')` |
+| `scale_colour_gradient2(midpoint = 0)`, `scale_colour_gradientn()` | the functions of the same names |
+| `scale_colour_grey()`, `scale_colour_hue(l = 45)`, `scale_colour_identity()` | the functions of the same names |
+| `scale_x_discrete(limits, labels)` | `scale_x_discrete(limits:, labels:)` |
+| `scale_y_continuous(labels = scales::label_percent())` | `scaleY(labels: label_percent())` |
+| `label_comma()`, `label_dollar()`, `label_number()`, `label_scientific()`, `label_date()` | the functions of the same names |
+| `guides(colour = "none", x = guide_axis(angle = 45))` | `guides(color: 'none', x: guide_axis(angle: 45))` |
 | `coord_flip()` | `coordFlip()` |
 | `coord_cartesian(xlim, ylim)` | `coordCartesian(xlim:, ylim:)` |
+| `coord_fixed(ratio)`, `coord_equal()` | `coordFixed(ratio)` |
+| `coord_polar(theta = "y")` | `coordPolar(theta: 'y')` |
 | `facet_wrap(~f, ncol, scales)` | `facetWrap('f', ncol:, scales:)` |
 | `facet_grid(r ~ c, labeller = label_both)` | `facetGrid(rows: 'r', cols: 'c', labeller: 'both')` |
 | `labeller = as_labeller(c(f = "Front"))` | `labeller: ['f' => 'Front']` |
 | `labs()`, `ggtitle()`, `xlab()`, `ylab()` | `labs()`, `title()`, and the functions of the same names |
-| `theme_gray()`, `theme_bw()`, `theme_minimal()`, `theme_classic()`, `theme_light()`, `theme_dark()`, `theme_void()` | `theme('gray')`, and so on |
+| `theme_gray()`, `theme_bw()`, `theme_linedraw()`, `theme_minimal()`, `theme_classic()`, `theme_light()`, `theme_dark()`, `theme_void()` | `theme('gray')`, and so on |
 | `theme(legend.position = "bottom")` | `theme(legendPosition: 'bottom')` |
+| `theme(axis.text.x = element_text(angle = 45))` | `theme(xLabelAngle: 45)` |
+| `theme(legend.title = element_blank())` | `theme(legendTitle: false)` |
 | patchwork `p1 + p2`, `p1 / p2` | `Compose::beside($p1, $p2)`, `Compose::stack($p1, $p2)` |
 | `factor(cyl)` | `factor('cyl')` or `'cyl:N'` |
 | `after_stat(density)` in a histogram | `histogram(density: true)` |
@@ -100,11 +117,12 @@ These differences follow from Vega-Lite rendering the plot.
 - **Bins.** `bins:` is a maximum, and Vega-Lite rounds the boundaries. Use `binwidth:` and `boundary:` for exact bins.
 - **Limits.** `xlim()` and `ylim()` zoom without removing data. ggplot2 removes the data outside the limits, which changes statistics computed from it.
 - **Densities.** The default bandwidth is Vega-Lite's. `adjust:` multiplies R's `bw.nrd0`, so `adjust: 1` reproduces ggplot2's default.
-- **Smoothers.** `lm`, `quad`, and `poly` fits and their confidence bands are computed in PHP and match R. Loess fits use Vega-Lite's loess transform and have no confidence band. There is no `gam` method.
+- **Smoothers.** Loess, `lm`, `quad`, and `poly` fits and their confidence bands are computed in PHP and match R. Loess matches `loess(surface = "direct")`; ggplot2 interpolates the loess surface, which moves the curve slightly. Above 3,000 rows, loess falls back to Vega-Lite's transform without a band, where ggplot2 switches to a GAM. There is no `gam` method.
 - **Colors.** Categorical colors come from Vega-Lite's palette by default. `theme('gray')` switches to ggplot2's `hue_pal()` colors, computed for the number of levels. `scaleColor(values:)` or `scheme:` sets them explicitly.
 - **Panels.** A discrete axis is 300 pixels by default, the same as a continuous axis, and grows by 20 pixels per level beyond 15 levels.
 - **Violins.** `violin()` draws each violin as a Vega-Lite trail, whose ends are rounded. There is no `draw_quantiles` option; layer a `boxplot()` instead.
-- **Not available.** There is no `geom_contour()` or `geom_density_2d()`, no `geom_hex()`, no `coord_polar()` for arbitrary geoms, no `coord_fixed()`, and no `sec_axis()`. Use `raw()` or `layer()` for any Vega-Lite feature phiz does not wrap.
+- **Polar coordinates.** `coordPolar()` draws bars, columns, and arcs. Vega-Lite has no polar form for lines, points, or areas, so radar charts are not available.
+- **Not available.** There is no `sec_axis()`, no `geom_dotplot()`, and no `geom_quantile()`. Use `raw()` or `layer()` for any Vega-Lite feature phiz does not wrap.
 
 ## Additions
 

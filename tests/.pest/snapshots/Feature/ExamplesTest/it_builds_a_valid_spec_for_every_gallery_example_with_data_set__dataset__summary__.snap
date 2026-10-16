@@ -1,0 +1,166 @@
+{
+    "$schema": "https://vega.github.io/schema/vega-lite/v6.json",
+    "data": {
+        "values": [
+            {
+                "manufacturer": "audi",
+                "model": "a4",
+                "displ": 1.8,
+                "year": 1999,
+                "cyl": 4,
+                "trans": "auto(l5)",
+                "drv": "f",
+                "cty": 18,
+                "hwy": 29,
+                "fl": "p",
+                "class": "compact"
+            },
+            {
+                "manufacturer": "audi",
+                "model": "a4",
+                "displ": 1.8,
+                "year": 1999,
+                "cyl": 4,
+                "trans": "manual(m5)",
+                "drv": "f",
+                "cty": 21,
+                "hwy": 29,
+                "fl": "p",
+                "class": "compact"
+            },
+            {
+                "manufacturer": "audi",
+                "model": "a4",
+                "displ": 2,
+                "year": 2008,
+                "cyl": 4,
+                "trans": "manual(m6)",
+                "drv": "f",
+                "cty": 20,
+                "hwy": 31,
+                "fl": "p",
+                "class": "compact"
+            },
+            "... 231 more rows"
+        ]
+    },
+    "width": 300,
+    "layer": [
+        {
+            "mark": {
+                "type": "point",
+                "filled": true,
+                "opacity": 0.2
+            },
+            "encoding": {
+                "x": {
+                    "field": "class",
+                    "type": "nominal",
+                    "title": null
+                },
+                "y": {
+                    "field": "hwy",
+                    "type": "quantitative",
+                    "title": "Highway mpg",
+                    "scale": {
+                        "zero": false
+                    }
+                }
+            }
+        },
+        {
+            "data": {
+                "values": [
+                    {
+                        "class": "compact",
+                        "hwy": 28.29787234042553,
+                        "ymin": 27.187547201138983,
+                        "ymax": 29.40819747971208
+                    },
+                    {
+                        "class": "midsize",
+                        "hwy": 27.29268292682927,
+                        "ymin": 26.61850036743804,
+                        "ymax": 27.9668654862205
+                    },
+                    {
+                        "class": "suv",
+                        "hwy": 18.129032258064516,
+                        "ymin": 17.372768701754826,
+                        "ymax": 18.885295814374206
+                    },
+                    "... 4 more rows"
+                ]
+            },
+            "mark": {
+                "type": "rule",
+                "strokeWidth": 1.5,
+                "color": "#D62728"
+            },
+            "encoding": {
+                "x": {
+                    "field": "class",
+                    "type": "nominal",
+                    "title": null
+                },
+                "y": {
+                    "field": "ymin",
+                    "type": "quantitative",
+                    "title": "Highway mpg",
+                    "scale": {
+                        "zero": false
+                    }
+                },
+                "y2": {
+                    "field": "ymax"
+                }
+            }
+        },
+        {
+            "data": {
+                "values": [
+                    {
+                        "class": "compact",
+                        "hwy": 28.29787234042553,
+                        "ymin": 27.187547201138983,
+                        "ymax": 29.40819747971208
+                    },
+                    {
+                        "class": "midsize",
+                        "hwy": 27.29268292682927,
+                        "ymin": 26.61850036743804,
+                        "ymax": 27.9668654862205
+                    },
+                    {
+                        "class": "suv",
+                        "hwy": 18.129032258064516,
+                        "ymin": 17.372768701754826,
+                        "ymax": 18.885295814374206
+                    },
+                    "... 4 more rows"
+                ]
+            },
+            "mark": {
+                "type": "point",
+                "filled": true,
+                "size": 50,
+                "color": "#D62728"
+            },
+            "encoding": {
+                "y": {
+                    "field": "hwy",
+                    "type": "quantitative",
+                    "title": "Highway mpg",
+                    "scale": {
+                        "zero": false
+                    }
+                },
+                "x": {
+                    "field": "class",
+                    "type": "nominal",
+                    "title": null
+                }
+            }
+        }
+    ]
+}

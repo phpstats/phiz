@@ -338,6 +338,10 @@ final class Compiler
             }
             if (isset($encoding[$channel]['field']) || isset($encoding[$channel]['aggregate']) || isset($encoding[$channel]['datum'])) {
                 $encoding[$channel]['title'] = $title;
+                // An end channel with its own title (an annotation's) follows, so the axis has one title.
+                if (isset($encoding["{$channel}2"]) && array_key_exists('title', $encoding["{$channel}2"])) {
+                    $encoding["{$channel}2"]['title'] = $title;
+                }
             }
         }
 

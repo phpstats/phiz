@@ -9,6 +9,7 @@ title: "Themes"
 | `vega` | Vega-Lite's defaults |
 | `gray` (also `grey`, `ggplot2`) | gray panel with white grid lines, and ggplot2's hue palette |
 | `bw` | white panel with a dark border and light grid |
+| `linedraw` | white panel with a black border and thin black grid lines |
 | `minimal` | light grid, no border, and no axis lines |
 | `classic` | axis lines and no grid |
 | `light` | light gray border and grid |
@@ -19,7 +20,16 @@ title: "Themes"
 
 {{< include _generated/theme-gray.md >}}
 
-The individual options are `font`, `legendPosition` (`right`, `left`, `top`, `bottom`, or `none`), `background`, `panelBackground`, `panelBorder`, `grid`, `titleAnchor`, and `padding`. `config:` accepts raw Vega-Lite config, merged last. Calls without a preset build on the current theme.
+The individual options are:
+
+- `font`, `textColor`, and `baseSize`
+- `legendPosition` (`right`, `left`, `top`, `bottom`, or `none`), `legendDirection` (`horizontal` or `vertical`), and `legendTitle: false`
+- `background`, `panelBackground`, and `panelBorder`
+- `grid`, `gridColor`, `axisLine`, and `ticks`
+- `xLabelAngle` and `yLabelAngle`, which turn axis labels anticlockwise as `element_text(angle =)` does
+- `titleAnchor` and `padding`
+
+`config:` accepts raw Vega-Lite config, merged last. Calls without a preset build on the current theme.
 
 {{< include _generated/theme-options.md >}}
 

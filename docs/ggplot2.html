@@ -528,12 +528,44 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <td><code>tile()</code>, <code>raster()</code>, <code>rect()</code></td>
 </tr>
 <tr class="even">
-<td><code>geom_bin2d()</code></td>
-<td><code>bin2d()</code></td>
+<td><code>geom_bin2d()</code>, <code>geom_hex()</code></td>
+<td><code>bin2d()</code>, <code>hex()</code></td>
 </tr>
 <tr class="odd">
-<td><code>geom_smooth()</code></td>
+<td><code>geom_smooth()</code> (loess, lm, poly)</td>
 <td><code>smooth()</code></td>
+</tr>
+<tr class="even">
+<td><code>geom_density_2d()</code>, <code>geom_density_2d_filled()</code></td>
+<td><code>density2d()</code>, <code>density2dFilled()</code></td>
+</tr>
+<tr class="odd">
+<td><code>geom_contour()</code>, <code>geom_contour_filled()</code></td>
+<td><code>contour()</code>, <code>contourFilled()</code></td>
+</tr>
+<tr class="even">
+<td><code>geom_polygon()</code></td>
+<td><code>polygon()</code></td>
+</tr>
+<tr class="odd">
+<td><code>stat_summary()</code></td>
+<td><code>summary()</code></td>
+</tr>
+<tr class="even">
+<td><code>geom_crossbar()</code></td>
+<td><code>crossbar()</code></td>
+</tr>
+<tr class="odd">
+<td><code>geom_count()</code></td>
+<td><code>count()</code></td>
+</tr>
+<tr class="even">
+<td><code>stat_ellipse()</code></td>
+<td><code>ellipse()</code></td>
+</tr>
+<tr class="odd">
+<td><code>annotate()</code></td>
+<td><code>annotate()</code></td>
 </tr>
 <tr class="even">
 <td><code>geom_function()</code>, <code>stat_function()</code></td>
@@ -553,11 +585,11 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 <tr class="even">
 <td><code>coord_polar()</code> with bars</td>
-<td><code>arc()</code>, <code>pie()</code></td>
+<td><code>coordPolar()</code>, or <code>arc()</code> and <code>pie()</code></td>
 </tr>
 </tbody>
 </table>
-<p>Geom arguments keep ggplot2’s names where they exist: <code>bins</code>, <code>binwidth</code>, <code>boundary</code>, <code>position</code>, <code>method</code>, <code>se</code>, <code>level</code>, <code>span</code>, <code>adjust</code>, <code>coef</code>, <code>outliers</code>, <code>width</code>, <code>hjust</code>, <code>vjust</code>, <code>angle</code>, <code>nudge_x</code> (as <code>nudgeX</code>), and <code>inherit.aes</code> (as <code>inheritAes</code>). <code>position</code> takes the strings <code>'stack'</code>, <code>'dodge'</code>, <code>'fill'</code>, and <code>'identity'</code>.</p>
+<p>Geom arguments keep ggplot2’s names where they exist: <code>bins</code>, <code>binwidth</code>, <code>boundary</code>, <code>breaks</code>, <code>position</code>, <code>method</code>, <code>se</code>, <code>level</code>, <code>span</code>, <code>adjust</code>, <code>h</code>, <code>n</code>, <code>coef</code>, <code>outliers</code>, <code>width</code>, <code>hjust</code>, <code>vjust</code>, <code>angle</code>, <code>nudge_x</code> (as <code>nudgeX</code>), <code>fun.data</code> (as <code>funData</code>), <code>contour_var</code> (as <code>contourVar</code>), and <code>inherit.aes</code> (as <code>inheritAes</code>). <code>position</code> takes the strings <code>'stack'</code>, <code>'dodge'</code>, <code>'fill'</code>, and <code>'identity'</code>.</p>
 </section>
 <section id="scales-coordinates-facets-and-themes" class="level2">
 <h2 class="anchored" data-anchor-id="scales-coordinates-facets-and-themes">Scales, coordinates, facets, and themes</h2>
@@ -594,58 +626,94 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <td><code>scaleColor(scheme: 'set2')</code></td>
 </tr>
 <tr class="even">
-<td><code>scale_colour_viridis_c()</code></td>
-<td><code>scaleColor(scheme: 'viridis')</code></td>
+<td><code>scale_colour_distiller()</code>, <code>scale_colour_fermenter()</code></td>
+<td>the functions of the same names</td>
 </tr>
 <tr class="odd">
-<td><code>scale_colour_gradient2(midpoint = 0)</code></td>
-<td><code>scale_color_gradient2(midpoint: 0)</code></td>
+<td><code>scale_colour_viridis_c(option = "A")</code></td>
+<td><code>scale_color_viridis_c(option: 'A')</code></td>
 </tr>
 <tr class="even">
-<td><code>guides(colour = "none")</code></td>
-<td><code>scaleColor(guide: false)</code></td>
+<td><code>scale_colour_gradient2(midpoint = 0)</code>, <code>scale_colour_gradientn()</code></td>
+<td>the functions of the same names</td>
 </tr>
 <tr class="odd">
+<td><code>scale_colour_grey()</code>, <code>scale_colour_hue(l = 45)</code>, <code>scale_colour_identity()</code></td>
+<td>the functions of the same names</td>
+</tr>
+<tr class="even">
+<td><code>scale_x_discrete(limits, labels)</code></td>
+<td><code>scale_x_discrete(limits:, labels:)</code></td>
+</tr>
+<tr class="odd">
+<td><code>scale_y_continuous(labels = scales::label_percent())</code></td>
+<td><code>scaleY(labels: label_percent())</code></td>
+</tr>
+<tr class="even">
+<td><code>label_comma()</code>, <code>label_dollar()</code>, <code>label_number()</code>, <code>label_scientific()</code>, <code>label_date()</code></td>
+<td>the functions of the same names</td>
+</tr>
+<tr class="odd">
+<td><code>guides(colour = "none", x = guide_axis(angle = 45))</code></td>
+<td><code>guides(color: 'none', x: guide_axis(angle: 45))</code></td>
+</tr>
+<tr class="even">
 <td><code>coord_flip()</code></td>
 <td><code>coordFlip()</code></td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td><code>coord_cartesian(xlim, ylim)</code></td>
 <td><code>coordCartesian(xlim:, ylim:)</code></td>
 </tr>
+<tr class="even">
+<td><code>coord_fixed(ratio)</code>, <code>coord_equal()</code></td>
+<td><code>coordFixed(ratio)</code></td>
+</tr>
 <tr class="odd">
+<td><code>coord_polar(theta = "y")</code></td>
+<td><code>coordPolar(theta: 'y')</code></td>
+</tr>
+<tr class="even">
 <td><code>facet_wrap(~f, ncol, scales)</code></td>
 <td><code>facetWrap('f', ncol:, scales:)</code></td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td><code>facet_grid(r ~ c, labeller = label_both)</code></td>
 <td><code>facetGrid(rows: 'r', cols: 'c', labeller: 'both')</code></td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td><code>labeller = as_labeller(c(f = "Front"))</code></td>
 <td><code>labeller: ['f' =&gt; 'Front']</code></td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td><code>labs()</code>, <code>ggtitle()</code>, <code>xlab()</code>, <code>ylab()</code></td>
 <td><code>labs()</code>, <code>title()</code>, and the functions of the same names</td>
 </tr>
-<tr class="odd">
-<td><code>theme_gray()</code>, <code>theme_bw()</code>, <code>theme_minimal()</code>, <code>theme_classic()</code>, <code>theme_light()</code>, <code>theme_dark()</code>, <code>theme_void()</code></td>
+<tr class="even">
+<td><code>theme_gray()</code>, <code>theme_bw()</code>, <code>theme_linedraw()</code>, <code>theme_minimal()</code>, <code>theme_classic()</code>, <code>theme_light()</code>, <code>theme_dark()</code>, <code>theme_void()</code></td>
 <td><code>theme('gray')</code>, and so on</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td><code>theme(legend.position = "bottom")</code></td>
 <td><code>theme(legendPosition: 'bottom')</code></td>
 </tr>
+<tr class="even">
+<td><code>theme(axis.text.x = element_text(angle = 45))</code></td>
+<td><code>theme(xLabelAngle: 45)</code></td>
+</tr>
 <tr class="odd">
+<td><code>theme(legend.title = element_blank())</code></td>
+<td><code>theme(legendTitle: false)</code></td>
+</tr>
+<tr class="even">
 <td>patchwork <code>p1 + p2</code>, <code>p1 / p2</code></td>
 <td><code>Compose::beside($p1, $p2)</code>, <code>Compose::stack($p1, $p2)</code></td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td><code>factor(cyl)</code></td>
 <td><code>factor('cyl')</code> or <code>'cyl:N'</code></td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td><code>after_stat(density)</code> in a histogram</td>
 <td><code>histogram(density: true)</code></td>
 </tr>
@@ -660,11 +728,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <li><strong>Bins.</strong> <code>bins:</code> is a maximum, and Vega-Lite rounds the boundaries. Use <code>binwidth:</code> and <code>boundary:</code> for exact bins.</li>
 <li><strong>Limits.</strong> <code>xlim()</code> and <code>ylim()</code> zoom without removing data. ggplot2 removes the data outside the limits, which changes statistics computed from it.</li>
 <li><strong>Densities.</strong> The default bandwidth is Vega-Lite’s. <code>adjust:</code> multiplies R’s <code>bw.nrd0</code>, so <code>adjust: 1</code> reproduces ggplot2’s default.</li>
-<li><strong>Smoothers.</strong> <code>lm</code>, <code>quad</code>, and <code>poly</code> fits and their confidence bands are computed in PHP and match R. Loess fits use Vega-Lite’s loess transform and have no confidence band. There is no <code>gam</code> method.</li>
+<li><strong>Smoothers.</strong> Loess, <code>lm</code>, <code>quad</code>, and <code>poly</code> fits and their confidence bands are computed in PHP and match R. Loess matches <code>loess(surface = "direct")</code>; ggplot2 interpolates the loess surface, which moves the curve slightly. Above 3,000 rows, loess falls back to Vega-Lite’s transform without a band, where ggplot2 switches to a GAM. There is no <code>gam</code> method.</li>
 <li><strong>Colors.</strong> Categorical colors come from Vega-Lite’s palette by default. <code>theme('gray')</code> switches to ggplot2’s <code>hue_pal()</code> colors, computed for the number of levels. <code>scaleColor(values:)</code> or <code>scheme:</code> sets them explicitly.</li>
 <li><strong>Panels.</strong> A discrete axis is 300 pixels by default, the same as a continuous axis, and grows by 20 pixels per level beyond 15 levels.</li>
 <li><strong>Violins.</strong> <code>violin()</code> draws each violin as a Vega-Lite trail, whose ends are rounded. There is no <code>draw_quantiles</code> option; layer a <code>boxplot()</code> instead.</li>
-<li><strong>Not available.</strong> There is no <code>geom_contour()</code> or <code>geom_density_2d()</code>, no <code>geom_hex()</code>, no <code>coord_polar()</code> for arbitrary geoms, no <code>coord_fixed()</code>, and no <code>sec_axis()</code>. Use <code>raw()</code> or <code>layer()</code> for any Vega-Lite feature phiz does not wrap.</li>
+<li><strong>Polar coordinates.</strong> <code>coordPolar()</code> draws bars, columns, and arcs. Vega-Lite has no polar form for lines, points, or areas, so radar charts are not available.</li>
+<li><strong>Not available.</strong> There is no <code>sec_axis()</code>, no <code>geom_dotplot()</code>, and no <code>geom_quantile()</code>. Use <code>raw()</code> or <code>layer()</code> for any Vega-Lite feature phiz does not wrap.</li>
 </ul>
 </section>
 <section id="additions" class="level2">

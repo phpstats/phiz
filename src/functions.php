@@ -100,6 +100,7 @@ function geom_polygon(mixed ...$args): Closure { return chain('polygon', $args);
 function stat_summary(mixed ...$args): Closure { return chain('summary', $args); }
 function geom_crossbar(mixed ...$args): Closure { return chain('crossbar', $args); }
 function geom_count(mixed ...$args): Closure { return chain('count', $args); }
+function stat_ellipse(mixed ...$args): Closure { return chain('ellipse', $args); }
 function annotate(string $geom, mixed ...$args): Closure { return chain('annotate', [$geom, ...$args]); }
 function geom_density_2d(mixed ...$args): Closure { return chain('density2d', $args); }
 function stat_density_2d(mixed ...$args): Closure { return chain('density2d', $args); }

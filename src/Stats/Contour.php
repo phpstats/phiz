@@ -383,6 +383,114 @@ final class Contour
         return $lines;
     }
 
+    /**
+     * A confidence ellipse for bivariate data, as ggplot2's stat_ellipse(): type t (a multivariate t fit, MASS's
+     * cov.trob), norm (the sample covariance), or euclid (a circle of radius level). The radius for t and norm is
+     * √(2 F(level; 2, n − 1)). Returns segments + 1 points, closed; empty for fewer than 4 points.
+     *
+     * @param list<float> $x
+     * @param list<float> $y
+     * @return list<array{0: float, 1: float}>
+     */
+    public static function ellipse(array $x, array $y, string $type = 't', float $level = 0.95, int $segments = 51): array
+    {
+        $n = count($x);
+        if (! in_array($type, ['t', 'norm', 'euclid'], true)) {
+            throw new InvalidArgumentException("ellipse type must be 't', 'norm', or 'euclid'.");
+        }
+        if ($n - 1 < 3) {
+            return [];
+        }
+        [$center, $shape] = $type === 't' ? self::covTrob($x, $y) : self::covariance($x, $y);
+        if ($type === 'euclid') {
+            $shape = [[min($shape[0][0], $shape[1][1]), 0.0], [0.0, min($shape[0][0], $shape[1][1])]];
+        }
+        // Upper Cholesky factor R, with RᵀR = shape.
+        $r11 = sqrt($shape[0][0]);
+        $r12 = $shape[0][1] / $r11;
+        $r22 = sqrt(max(0.0, $shape[1][1] - $r12 * $r12));
+        if (! is_finite($r11) || ! is_finite($r22) || $r11 <= 0) {
+            return [];
+        }
+        $d = $n - 1;
+        // The F(2, d) quantile has a closed form: d/2 · ((1 − p)^(−2/d) − 1).
+        $radius = $type === 'euclid' ? $level / max($r11, $r12, $r22) : sqrt(2 * $d / 2 * ((1 - $level) ** (-2 / $d) - 1));
+        $out = [];
+        for ($i = 0; $i <= $segments; $i++) {
+            $angle = $i * 2 * M_PI / $segments;
+            [$c, $s] = [cos($angle), sin($angle)];
+            $out[] = [$center[0] + $radius * $c * $r11, $center[1] + $radius * ($c * $r12 + $s * $r22)];
+        }
+
+        return $out;
+    }
+
+    /** The mean and the sample covariance (n − 1), as stats::cov.wt. */
+    private static function covariance(array $x, array $y): array
+    {
+        $n = count($x);
+        [$mx, $my] = [array_sum($x) / $n, array_sum($y) / $n];
+        [$sxx, $sxy, $syy] = [0.0, 0.0, 0.0];
+        foreach ($x as $i => $xi) {
+            [$dx, $dy] = [$xi - $mx, $y[$i] - $my];
+            [$sxx, $sxy, $syy] = [$sxx + $dx * $dx, $sxy + $dx * $dy, $syy + $dy * $dy];
+        }
+
+        return [[$mx, $my], [[$sxx / ($n - 1), $sxy / ($n - 1)], [$sxy / ($n - 1), $syy / ($n - 1)]]];
+    }
+
+    /** MASS::cov.trob(cbind(x, y)): a multivariate t (nu = 5) location and scatter by iterative reweighting. */
+    private static function covTrob(array $x, array $y, float $nu = 5, int $maxit = 25, float $tol = 0.01): array
+    {
+        $n = count($x);
+        $p = 2;
+        $loc = [array_sum($x) / $n, array_sum($y) / $n];
+        $w = array_fill(0, $n, 1.0);
+        $centered = [];
+        for ($iter = 0; $iter < $maxit; $iter++) {
+            $w0 = $w;
+            $centered = array_map(fn ($xi, $yi) => [$xi - $loc[0], $yi - $loc[1]], $x, $y);
+            // Mahalanobis distances under the weighted scatter Σ (w / Σw) X Xᵀ.
+            $total = array_sum($w);
+            [$a, $b, $c] = [0.0, 0.0, 0.0];
+            foreach ($centered as $i => [$dx, $dy]) {
+                $f = $w[$i] / $total;
+                [$a, $b, $c] = [$a + $f * $dx * $dx, $b + $f * $dx * $dy, $c + $f * $dy * $dy];
+            }
+            $det = $a * $c - $b * $b;
+            if (! ($det > 0)) {
+                throw new InvalidArgumentException('stat_ellipse needs points that are not all on a line.');
+            }
+            foreach ($centered as $i => [$dx, $dy]) {
+                $q = ($c * $dx * $dx - 2 * $b * $dx * $dy + $a * $dy * $dy) / $det;
+                $w[$i] = ($nu + $p) / ($nu + $q);
+            }
+            $sum = array_sum($w);
+            $loc = [0.0, 0.0];
+            foreach ($w as $i => $wi) {
+                $loc[0] += $wi * $x[$i] / $sum;
+                $loc[1] += $wi * $y[$i] / $sum;
+            }
+            $converged = true;
+            foreach ($w as $i => $wi) {
+                if (abs($wi - $w0[$i]) >= $tol) {
+                    $converged = false;
+                    break;
+                }
+            }
+            if ($converged) {
+                break;
+            }
+        }
+        // The scatter uses the deviations from the location at the start of the last iteration, as cov.trob does.
+        [$a, $b, $c] = [0.0, 0.0, 0.0];
+        foreach ($centered as $i => [$dx, $dy]) {
+            [$a, $b, $c] = [$a + $w[$i] * $dx * $dx, $b + $w[$i] * $dx * $dy, $c + $w[$i] * $dy * $dy];
+        }
+
+        return [$loc, [[$a / $n, $b / $n], [$b / $n, $c / $n]]];
+    }
+
     /** @return list<float> */
     private static function seq(float $from, float $to, int $n): array
     {
