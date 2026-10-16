@@ -446,6 +446,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <li><code>quarto render docs</code> builds the site into <code>docs/_site/</code>.</li>
 <li><code>scripts/render-docs</code> runs steps 2 and 3, then copies the site into <code>docs/</code> for GitHub Pages.</li>
 </ol>
+<p>Some statistics examples build designs from model formulas with <code>stats_model_matrix()</code>, so the documentation build loads the php_stats extension: <code>PHP="php -d extension=/path/to/php_stats" scripts/render-docs</code>.</p>
 
 
 </section>

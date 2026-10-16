@@ -16,7 +16,7 @@ Several fits keyed by label are compared side by side, with one color per model.
 
 {{< include _generated/stats-coefplot-compare.md >}}
 
-`exponentiate: true` shows odds or rate ratios from a GLM on a log scale with the reference at 1.
+`exponentiate: true` shows odds or rate ratios from a GLM on a log scale with the reference at 1. The axis is labeled by the fit's link: log odds or odds ratios for logit models, and log rates or rate ratios for log links.
 
 {{< include _generated/stats-odds.md >}}
 
@@ -38,7 +38,29 @@ For formula fits, phiz builds the prediction design with `stats_model_matrix()` 
 
 {{< include _generated/stats-effects-glm.md >}}
 
-`predictions($fit, $grid)` returns the predicted rows without plotting them.
+`scale: 'link'` draws predictions on the link scale instead, where a GLM is linear in its predictors:
+
+{{< include _generated/stats-effects-link.md >}}
+
+`predictions($fit, $grid)` returns the predicted rows without plotting them, and takes the same `scale:` option.
+
+## Marginal means
+
+`marginal_means()` estimates the mean response at each level of a factor, as R's emmeans package does. For each level it averages the predictions with equal weight over the levels of the model's other categorical variables, with numeric variables at their means. The interval comes from the averaged design row. `by:` estimates the means within each level of a second factor. For a GLM, the means and intervals are computed on the link scale and transformed to the response scale, as emmeans' `type = "response"` does.
+
+The model's variables come from its formula: names inside `factor()` and non-numeric columns are categorical. For a matrix fit, pass `design:` and `variables: ['cyl' => 'categorical', 'wt' => 'numeric']`.
+
+{{< include _generated/stats-marginal-means.md >}}
+
+{{< include _generated/stats-marginal-means-glm.md >}}
+
+The linear-model means match a direct computation in R to 10 digits.
+
+## Random effects
+
+`random_effects_plot()` draws a caterpillar plot of a mixed model's random effects. It works with fits from `stats_lmer` and `stats_glmer`, and needs the data the model was fitted on. Each group's conditional mode is shown with an interval from its conditional variance. Groups are sorted by their first effect, and random slopes get their own panels. The conditional covariance for group *j* is (Z<sub>j</sub>'W<sub>j</sub>Z<sub>j</sub> / σ² + G<sup>−1</sup>)<sup>−1</sup>, treating the fixed effects and variance components as known, as lme4's `ranef(fit, condVar = TRUE)` does. W holds the working weights of binomial and Poisson GLMMs. For intercepts, the standard deviations match lme4 to 1e-8. `group:` selects a term when the model has several.
+
+{{< include _generated/stats-random-effects.md >}}
 
 ## Posterior intervals
 

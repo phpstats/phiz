@@ -34,3 +34,5 @@ The documentation is a Quarto website in `docs/`. The pages include generated fr
 2. `php scripts/docs-examples.php` runs every example. For each one it writes the code and the resulting specification to `docs/_generated/`, and an SVG to `docs/figures/`. It also copies the gallery.
 3. `quarto render docs` builds the site into `docs/_site/`.
 4. `scripts/render-docs` runs steps 2 and 3, then copies the site into `docs/` for GitHub Pages.
+
+Some statistics examples build designs from model formulas with `stats_model_matrix()`, so the documentation build loads the php_stats extension: `PHP="php -d extension=/path/to/php_stats" scripts/render-docs`.

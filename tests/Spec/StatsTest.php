@@ -11,6 +11,8 @@ use function Phiz\diagnostic_plots;
 use function Phiz\effect_plot;
 use function Phiz\fitted_plot;
 use function Phiz\interval_plot;
+use function Phiz\marginal_means;
+use function Phiz\random_effects_plot;
 use function Phiz\qq_plot;
 use function Phiz\residual_plot;
 use function Phiz\scale_location_plot;
@@ -64,6 +66,10 @@ $charts = [
     'scale location plot' => fn () => scale_location_plot(fits()['lm']),
     'diagnostic plots' => fn () => diagnostic_plots(fits()['lm']),
     'effect plot matrix fit' => fn () => effect_plot(olsFit(), Datasets::mtcars(), 'wt', n: 4, design: fn ($row) => [1, $row['wt'], $row['hp']]),
+    'marginal means with design' => fn () => marginal_means(fits()['lm_factors'], Datasets::mtcars(), 'cyl', design: carsDesign(...), variables: ['cyl' => 'categorical', 'am' => 'categorical', 'wt' => 'numeric']),
+    'marginal means by group' => fn () => marginal_means(fits()['lm_factors'], Datasets::mtcars(), 'cyl', by: 'am', design: carsDesign(...), variables: ['cyl' => 'categorical', 'am' => 'categorical', 'wt' => 'numeric']),
+    'random effects intercepts' => fn () => random_effects_plot(fits()['lmer_intercept'], Datasets::mpg()),
+    'glm effects on the link scale' => fn () => \Phiz\effect_plot(fits()['glm'], Datasets::mtcars(), 'wt', n: 3, design: fn ($r) => [1, $r['wt'], $r['hp']], scale: 'link'),
     'interval plot from draws' => fn () => interval_plot(drawColumns()),
     'interval plot of beta' => fn () => interval_plot(drawColumns(), variables: ['beta'], prob: 0.8, probOuter: 0.95, pointEst: 'mean'),
     'interval plot from summary' => fn () => interval_plot(['variable' => ['alpha', 'beta[1]'], 'mean' => [1.0, -0.3], 'median' => [1.01, -0.29], 'q5' => [0.2, -0.6], 'q95' => [1.8, 0.0]]),
@@ -123,3 +129,54 @@ it('explains what predictions need', function (Closure $build) {
     fn () => interval_plot(drawColumns(), prob: 0.95, probOuter: 0.5),
     fn () => coefplot(fits()['lm'], names: null, terms: ['nothing']),
 ])->throws(InvalidArgumentException::class);
+
+/** The design of mpg ~ factor(cyl) + factor(am) + wt, for tests without the php_stats extension. */
+function carsDesign(array $row): array
+{
+    return [1, (int) ($row['cyl'] == 6), (int) ($row['cyl'] == 8), (int) ($row['am'] == 1), $row['wt']];
+}
+
+it('matches emmeans-style marginal means computed in R', function () {
+    // R: lm(mpg ~ factor(cyl) + factor(am) + wt, mtcars), averaging the design over am with wt at its mean.
+    $rows = marginal_means(fits()['lm_factors'], Datasets::mtcars(), 'cyl', design: carsDesign(...), variables: ['cyl' => 'categorical', 'am' => 'categorical', 'wt' => 'numeric'])->data->rows;
+
+    expect(array_column($rows, 'cyl'))->toBe([4, 6, 8])
+        ->and($rows[0]['estimate'])->toEqualWithDelta(23.6956001033, 1e-8)
+        ->and($rows[0]['lower'])->toEqualWithDelta(21.4935921050, 1e-8)
+        ->and($rows[2]['upper'])->toEqualWithDelta(19.5098277969, 1e-8);
+});
+
+it('builds marginal means from the formula with php_stats', function () {
+    $rows = marginal_means(fits()['lm_factors'], Datasets::mtcars(), 'cyl')->data->rows;
+
+    expect($rows[1]['estimate'])->toEqualWithDelta(19.4382815593, 1e-8);
+})->skip(! function_exists('stats_model_matrix'), 'needs the php_stats extension');
+
+it('matches lme4 conditional standard deviations of random intercepts', function () {
+    // R: ranef(lmer(hwy ~ displ + (1 | manufacturer), mpg), condVar = TRUE)
+    $rows = random_effects_plot(fits()['lmer_intercept'], Datasets::mpg())->data->rows;
+    $sd = array_column($rows, 'std_error', 'group');
+
+    expect($sd['audi'])->toEqualWithDelta(0.7440016440, 1e-6)
+        ->and($sd['chevrolet'])->toEqualWithDelta(0.7266359164, 1e-6)
+        ->and($sd['dodge'])->toEqualWithDelta(0.5370759285, 1e-6);
+});
+
+it('draws random slopes in panels when php_stats builds their design', function () {
+    $plot = random_effects_plot(fits()['lmer_slope'], Datasets::mpg());
+
+    expect($plot)->toBeValidVegaLite()
+        ->and(array_unique(array_column($plot->data->rows, 'effect')))->toBe(['(Intercept)', 'displ']);
+})->skip(! function_exists('stats_model_matrix'), 'needs the php_stats extension');
+
+it('labels GLM coefficients by link', function () {
+    expect(coefplot(fits()['glm'])->labels['x'])->toBe('Log odds (95% CI)')
+        ->and(coefplot(fits()['glm'], exponentiate: true)->labels['x'])->toBe('Odds ratio (95% CI)');
+});
+
+it('predicts on the link scale', function () {
+    $fit = fits()['glm'];
+    $row = Charts::predictions($fit, [['wt' => 3.0, 'hp' => 120]], design: fn ($r) => [1, $r['wt'], $r['hp']], scale: 'link')[0];
+
+    expect($row['estimate'])->toEqualWithDelta($fit['coefficients'][0] + 3.0 * $fit['coefficients'][1] + 120 * $fit['coefficients'][2], 1e-12);
+});

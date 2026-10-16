@@ -29,7 +29,7 @@ The `Phiz\` namespace provides:
 - Layout and labels: `xlim`, `ylim`, `coord_flip`, `coord_cartesian`, `facet_wrap`, `facet_grid`, `labs`, `ggtitle`, `xlab`, and `ylab`.
 - Themes and size: `theme`, the `theme_*` presets, and `size`.
 - Interaction: `tooltip`, `interactive`, `brush`, and `highlight`.
-- Statistics: `coefplot`, `residual_plot`, `qq_plot`, `fitted_plot`, `scale_location_plot`, `diagnostic_plots`, `effect_plot`, `predictions`, and `interval_plot`.
+- Statistics: `coefplot`, `residual_plot`, `qq_plot`, `fitted_plot`, `scale_location_plot`, `diagnostic_plots`, `effect_plot`, `predictions`, `marginal_means`, `random_effects_plot`, and `interval_plot`.
 
 ## Other classes
 

@@ -1,0 +1,111 @@
+{
+    "$schema": "https://vega.github.io/schema/vega-lite/v6.json",
+    "data": {
+        "values": [
+            {
+                "model": "Mazda RX4",
+                "mpg": 20.090624999999996,
+                "cyl": 6.1875,
+                "disp": 230.72187500000004,
+                "hp": 146.6875,
+                "drat": 3.5965625000000006,
+                "qsec": 17.848750000000003,
+                "vs": 0,
+                "gear": 3.6875,
+                "carb": 2.8125,
+                "wt": 1.513,
+                "estimate": 11.954243516475554,
+                "lower": 2.9070237710310707,
+                "upper": 21.001463261920037,
+                "std_error": 4.616013261880218
+            },
+            {
+                "model": "Mazda RX4",
+                "mpg": 20.090624999999996,
+                "cyl": 6.1875,
+                "disp": 230.72187500000004,
+                "hp": 146.6875,
+                "drat": 3.5965625000000006,
+                "qsec": 17.848750000000003,
+                "vs": 0,
+                "gear": 3.6875,
+                "carb": 2.8125,
+                "wt": 3.4685,
+                "estimate": -3.8529922027949617,
+                "lower": -7.163760259290434,
+                "upper": -0.5422241462994895,
+                "std_error": 1.689198415180273
+            },
+            {
+                "model": "Mazda RX4",
+                "mpg": 20.090624999999996,
+                "cyl": 6.1875,
+                "disp": 230.72187500000004,
+                "hp": 146.6875,
+                "drat": 3.5965625000000006,
+                "qsec": 17.848750000000003,
+                "vs": 0,
+                "gear": 3.6875,
+                "carb": 2.8125,
+                "wt": 5.424,
+                "estimate": -19.660227922065484,
+                "lower": -34.381928710240565,
+                "upper": -4.938527133890403,
+                "std_error": 7.511209850945212
+            }
+        ]
+    },
+    "layer": [
+        {
+            "mark": {
+                "type": "area",
+                "opacity": 0.2,
+                "fill": "#3366FF"
+            },
+            "encoding": {
+                "x": {
+                    "field": "wt",
+                    "type": "quantitative",
+                    "scale": {
+                        "zero": false
+                    }
+                },
+                "y": {
+                    "field": "lower",
+                    "type": "quantitative",
+                    "title": "am (logit scale)",
+                    "scale": {
+                        "zero": false
+                    }
+                },
+                "y2": {
+                    "field": "upper"
+                }
+            }
+        },
+        {
+            "mark": {
+                "type": "line",
+                "strokeWidth": 2,
+                "color": "#3366FF"
+            },
+            "encoding": {
+                "x": {
+                    "field": "wt",
+                    "type": "quantitative",
+                    "scale": {
+                        "zero": false
+                    }
+                },
+                "y": {
+                    "field": "estimate",
+                    "type": "quantitative",
+                    "title": "am (logit scale)",
+                    "scale": {
+                        "zero": false
+                    }
+                }
+            }
+        }
+    ]
+}

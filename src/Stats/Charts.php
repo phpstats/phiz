@@ -67,7 +67,15 @@ final class Charts
             usort($order, fn ($a, $b) => array_sum($means[$b]) / count($means[$b]) <=> array_sum($means[$a]) / count($means[$a]));
         }
         $percent = rtrim(rtrim(sprintf('%.1f', 100 * ($level ?? 0.95)), '0'), '.');
-        $what = $exponentiate ? 'exp(estimate)' : 'Estimate';
+        $link = reset($fits)['link'] ?? 'identity';
+        $what = match (true) {
+            $exponentiate && $link === 'logit' => 'Odds ratio',
+            $exponentiate && $link === 'log' => 'Rate ratio',
+            $exponentiate => 'exp(estimate)',
+            $link === 'logit' => 'Log odds',
+            $link === 'log' => 'Log rate',
+            default => 'Estimate',
+        };
 
         $plot = Plot::of($rows)
             ->aes(x: 'estimate', y: \Phiz\field('term', 'nominal', sort: $order), xmin: 'lower', xmax: 'upper', color: $labelled ? 'model' : null)
@@ -164,25 +172,27 @@ final class Charts
      * were fitted on; for matrix fits (stats_ols, stats_logistic) pass design: fn (array $row) => [1, $row['x'], ...].
      * GLM predictions are on the response scale, with the interval computed on the link scale.
      */
-    public static function effects(array $fit, mixed $data, string $x, ?string $by = null, int $n = 50, float $level = 0.95, ?callable $design = null, bool $points = true): Plot
+    public static function effects(array $fit, mixed $data, string $x, ?string $by = null, int $n = 50, float $level = 0.95, ?callable $design = null, bool $points = true, string $scale = 'response'): Plot
     {
         $rows = Data::from($data)->rows ?? [];
         if ($rows === []) {
             throw new InvalidArgumentException('effect_plot needs the data the model was fitted on.');
         }
         $grid = self::grid($rows, $x, $by, $n, isset($fit['response']) ? [$fit['response']] : []);
-        $predicted = self::predictions($fit, $grid, $level, $design, $rows);
+        $predicted = self::predictions($fit, $grid, $level, $design, $rows, $scale);
         $response = $fit['response'] ?? 'y';
+        $link = $fit['link'] ?? 'identity';
+        $onLink = $scale === 'link' && ! in_array($link, ['identity', ''], true);
 
         $plot = Plot::of($predicted)->aes(x: $x, y: 'estimate', color: $by === null ? null : \Phiz\factor($by));
-        if ($points && isset($rows[0][$response])) {
+        if ($points && ! $onLink && isset($rows[0][$response])) {
             $plot = $plot->point(aes(x: $x, y: $response, color: $by === null ? null : \Phiz\factor($by)), data: $rows, inheritAes: false, alpha: 0.35);
         }
 
         return $plot
             ->geom('ribbon', aes(ymin: 'lower', ymax: 'upper', fill: $by === null ? null : \Phiz\factor($by)), style: ['alpha' => 0.2] + ($by === null ? ['fill' => '#3366FF'] : []))
             ->line(linewidth: 2, color: $by === null ? '#3366FF' : null)
-            ->labs(y: $response, fill: $by, color: $by);
+            ->labs(y: $onLink ? "{$response} ({$link} scale)" : $response, fill: $by, color: $by);
     }
 
     /**
@@ -192,18 +202,171 @@ final class Charts
      * @param list<array<string, mixed>> $data The fitting data, so factor levels match (formula fits only).
      * @return list<array<string, mixed>>
      */
-    public static function predictions(array $fit, array $grid, float $level = 0.95, ?callable $design = null, array $data = []): array
+    public static function predictions(array $fit, array $grid, float $level = 0.95, ?callable $design = null, array $data = [], string $scale = 'response'): array
     {
+        $matrix = $design !== null ? array_map(fn ($row) => array_values($design($row)), $grid) : self::design($fit, $grid, $data);
+
+        return self::linear($fit, $grid, $matrix, $level, $scale);
+    }
+
+    /**
+     * Estimated marginal means of a factor (as emmeans): for each level, the prediction averaged with equal weight
+     * over the levels of the model's other categorical variables, with numeric variables at their means. The
+     * interval comes from the averaged design row, on the link scale, then transformed to the response scale.
+     *
+     * @return Plot Points with intervals; ->data->rows holds the means.
+     */
+    public static function marginalMeans(array $fit, mixed $data, string $factor, ?string $by = null, float $level = 0.95, ?callable $design = null, string $scale = 'response', ?array $variables = null): Plot
+    {
+        $rows = Data::from($data)->rows ?? [];
+        if ($rows === [] || ! array_key_exists($factor, $rows[0])) {
+            throw new InvalidArgumentException("marginal_means needs the fitting data with a '{$factor}' column.");
+        }
+        $variables ??= self::modelVariables($fit, $rows);
+        $categorical = [];
+        $fixed = [];
+        foreach ($variables as $variable => $kind) {
+            if ($variable === $factor || $variable === $by || $variable === ($fit['response'] ?? null)) {
+                continue;
+            }
+            $values = array_values(array_filter(array_column($rows, $variable), fn ($v) => $v !== null));
+            if ($kind === 'categorical') {
+                $categorical[$variable] = self::sortedLevels($values);
+            } elseif ($values !== []) {
+                $fixed[$variable] = array_sum($values) / count($values);
+            }
+        }
+
+        // The reference grid: every combination of the other categorical variables' levels.
+        $combinations = [[]];
+        foreach ($categorical as $variable => $levels) {
+            $next = [];
+            foreach ($combinations as $combination) {
+                foreach ($levels as $level_) {
+                    $next[] = $combination + [$variable => $level_];
+                }
+            }
+            $combinations = $next;
+        }
+        $cells = [];
+        foreach (self::sortedLevels(array_column($rows, $factor)) as $value) {
+            foreach ($by === null ? [null] : self::sortedLevels(array_column($rows, $by)) as $group) {
+                $cells[] = [$factor => $value] + ($by === null ? [] : [$by => $group]);
+            }
+        }
+        $grid = [];
+        foreach ($cells as $cell) {
+            foreach ($combinations as $combination) {
+                $grid[] = $cell + $combination + $fixed;
+            }
+        }
+        $matrix = $design !== null ? array_map(fn ($row) => array_values($design($row)), $grid) : self::design($fit, $grid, $rows);
+
+        $averaged = [];
+        $per = count($combinations);
+        foreach ($cells as $c => $cell) {
+            $sum = array_fill(0, count($matrix[0]), 0.0);
+            for ($k = 0; $k < $per; $k++) {
+                foreach ($matrix[$c * $per + $k] as $j => $v) {
+                    $sum[$j] += $v / $per;
+                }
+            }
+            $averaged[] = $sum;
+        }
+        $means = self::linear($fit, $cells, $averaged, $level, $scale);
+        $response = $fit['response'] ?? 'y';
+        $link = $fit['link'] ?? 'identity';
+        $percent = rtrim(rtrim(sprintf('%.1f', 100 * $level), '0'), '.');
+
+        return Plot::of($means)
+            ->aes(x: \Phiz\factor($factor, self::sortedLevels(array_column($rows, $factor))), y: 'estimate', ymin: 'lower', ymax: 'upper', color: $by === null ? null : \Phiz\factor($by))
+            ->pointrange(position: $by === null ? null : 'dodge')
+            ->labs(x: $factor, y: ($scale === 'link' && $link !== 'identity' ? "{$response} ({$link} scale)" : $response)." (marginal mean, {$percent}% CI)", color: $by)
+            ->tooltip([$factor, ...($by === null ? [] : [$by]), 'estimate', 'lower', 'upper']);
+    }
+
+    /**
+     * A caterpillar plot of a mixed model's random effects (stats_lmer, stats_glmer): each group's conditional mode
+     * with an interval from its conditional variance, one panel per effect, groups sorted by the first effect.
+     * The conditional covariance is (Z_j'W_j Z_j / sigma^2 + G^-1)^-1 for group j, treating the fixed effects and
+     * variance components as known, as lme4's ranef(condVar = TRUE) does; W holds GLMM working weights.
+     */
+    public static function randomEffects(array $fit, mixed $data, ?string $group = null, float $level = 0.95): Plot
+    {
+        $rows = Data::from($data)->rows ?? [];
+        $terms = $fit['random'] ?? throw new InvalidArgumentException('random_effects_plot needs a mixed-model fit (stats_lmer or stats_glmer).');
+        $term = null;
+        foreach ($terms as $candidate) {
+            if ($group === null || ($candidate['group'] ?? null) === $group) {
+                $term = $candidate;
+                break;
+            }
+        }
+        if ($term === null) {
+            throw new InvalidArgumentException("The fit has no random term for group '{$group}'.");
+        }
+        $columns = $term['columns'];
+        $labels = $term['group_labels'] ?? $fit['group_labels'] ?? throw new InvalidArgumentException('The random term has no group labels.');
+        $effects = $term['effects'] ?? array_map(fn ($e) => [$e], $fit['random_effects'] ?? []);
+        $G = $term['covariance'] ?? (isset($fit['random_intercept_variance']) ? [[(float) $fit['random_intercept_variance']]] : throw new InvalidArgumentException('The random term has no covariance.'));
+        $sigma2 = (float) ($fit['residual_variance'] ?? 1.0);
+        $retained = array_map(fn ($i) => $rows[$i] ?? throw new InvalidArgumentException('The data does not match the fit\'s retained rows; pass the data the model was fitted on.'), $fit['retained_rows'] ?? array_keys($rows));
+        $Z = self::randomDesign($term, $retained);
+        $weights = self::workingWeights($fit, count($retained));
+
+        $byGroup = [];
+        foreach ($retained as $i => $row) {
+            $byGroup[(string) $row[$term['group']]][] = $i;
+        }
+        $Ginv = self::invert($G);
+        $z = Fit::normalQuantile((1 + $level) / 2);
+        $out = [];
+        foreach ($labels as $g => $label) {
+            $precision = $Ginv;
+            foreach ($byGroup[(string) $label] ?? [] as $i) {
+                foreach ($columns as $a => $_) {
+                    foreach ($columns as $b => $_) {
+                        $precision[$a][$b] += $weights[$i] * $Z[$i][$a] * $Z[$i][$b] / $sigma2;
+                    }
+                }
+            }
+            $conditional = self::invert($precision);
+            foreach ($columns as $a => $column) {
+                $estimate = (float) $effects[$g][$a];
+                $se = sqrt(max(0.0, $conditional[$a][$a]));
+                $out[] = ['group' => (string) $label, 'effect' => $column, 'estimate' => $estimate, 'std_error' => $se, 'lower' => $estimate - $z * $se, 'upper' => $estimate + $z * $se];
+            }
+        }
+        $first = array_values(array_filter($out, fn ($r) => $r['effect'] === $columns[0]));
+        usort($first, fn ($a, $b) => $a['estimate'] <=> $b['estimate']);
+        $order = array_column($first, 'group');
+        $percent = rtrim(rtrim(sprintf('%.1f', 100 * $level), '0'), '.');
+
+        $plot = Plot::of($out)
+            ->aes(x: 'estimate', y: \Phiz\field('group', 'nominal', sort: array_reverse($order)), xmin: 'lower', xmax: 'upper')
+            ->vline(0, linetype: 'dashed', color: '#888888')
+            ->pointrange(size: 30)
+            ->labs(x: "Conditional mode ({$percent}% interval)", y: $term['group'])
+            ->tooltip(['group', 'effect', 'estimate', 'lower', 'upper']);
+
+        return count($columns) > 1 ? $plot->facetWrap('effect', ncol: count($columns), scales: 'free_x')->size(220, max(120, 16 * count($labels))) : $plot->height(max(120, 16 * count($labels)));
+    }
+
+    /** Predictions from design rows: estimate, interval, and std_error (on the link scale) per grid row. */
+    private static function linear(array $fit, array $grid, array $matrix, float $level, string $scale): array
+    {
+        if (! in_array($scale, ['response', 'link'], true)) {
+            throw new InvalidArgumentException("scale must be 'response' or 'link'.");
+        }
         $beta = $fit['coefficients'] ?? throw new InvalidArgumentException('The fit has no coefficients.');
         $covariance = $fit['covariance'] ?? throw new InvalidArgumentException('Predictions need the fit\'s covariance matrix.');
-        $matrix = $design !== null ? array_map(fn ($row) => array_values($design($row)), $grid) : self::design($fit, $grid, $data);
         $critical = isset($fit['t_statistics']) && isset($fit['df_residual'])
             ? Fit::tQuantile((1 + $level) / 2, (float) $fit['df_residual'])
             : Fit::normalQuantile((1 + $level) / 2);
-        $inverse = self::inverseLink($fit['link'] ?? 'identity');
+        $inverse = $scale === 'link' ? fn (float $eta) => $eta : self::inverseLink($fit['link'] ?? 'identity');
 
         $out = [];
-        foreach ($grid as $i => $row) {
+        foreach (array_values($grid) as $i => $row) {
             $d = $matrix[$i];
             if (count($d) !== count($beta)) {
                 throw new InvalidArgumentException('The design row has '.count($d).' columns; the fit has '.count($beta).' coefficients.');
@@ -225,6 +388,132 @@ final class Charts
         }
 
         return $out;
+    }
+
+    /**
+     * The data variables a formula fit uses, as name => 'numeric' or 'categorical': names inside factor() and
+     * non-numeric columns are categorical.
+     *
+     * @return array<string, string>
+     */
+    private static function modelVariables(array $fit, array $rows): array
+    {
+        $formula = (string) ($fit['formula'] ?? '');
+        if ($formula === '') {
+            throw new InvalidArgumentException('Pass variables: [name => numeric|categorical] for a fit without a formula.');
+        }
+        $rhs = explode('~', $formula, 2)[1] ?? '';
+        $rhs = (string) preg_replace('/\(([^()]|\([^()]*\))*\|([^()]|\([^()]*\))*\)/', '', $rhs);
+        $variables = [];
+        preg_match_all('/(factor|as\.factor|C|ordered)\(\s*([A-Za-z_.][A-Za-z0-9_.]*)/', $rhs, $factors);
+        foreach ($factors[2] as $name) {
+            $variables[$name] = 'categorical';
+        }
+        preg_match_all('/\b[A-Za-z_.][A-Za-z0-9_.]*\b(?!\s*\()/', $rhs, $names);
+        foreach ($names[0] as $name) {
+            if (isset($variables[$name]) || ! array_key_exists($name, $rows[0])) {
+                continue;
+            }
+            $values = array_filter(array_column($rows, $name), fn ($v) => $v !== null);
+            $variables[$name] = array_filter($values, fn ($v) => ! is_int($v) && ! is_float($v)) === [] ? 'numeric' : 'categorical';
+        }
+
+        return $variables;
+    }
+
+    private static function sortedLevels(array $values): array
+    {
+        $levels = array_values(array_unique(array_filter($values, fn ($v) => $v !== null), SORT_REGULAR));
+        sort($levels);
+
+        return $levels;
+    }
+
+    /** The random term's design columns for each retained row. */
+    private static function randomDesign(array $term, array $rows): array
+    {
+        $lhs = trim(explode('|', (string) ($term['label'] ?? '1 |'), 2)[0]);
+        if (function_exists('stats_model_matrix') && $lhs !== '' && $lhs !== '1') {
+            $columns = [];
+            foreach ($rows as $row) {
+                foreach ($row as $key => $value) {
+                    $columns[$key][] = $value;
+                }
+            }
+            $matrix = stats_model_matrix('~ '.$lhs, $columns);
+            if (($matrix['columns'] ?? null) === $term['columns']) {
+                return $matrix['x'];
+            }
+        }
+
+        return array_map(function (array $row) use ($term) {
+            return array_map(function (string $column) use ($row) {
+                if ($column === '(Intercept)') {
+                    return 1.0;
+                }
+                if (! is_numeric($row[$column] ?? null)) {
+                    throw new InvalidArgumentException("Cannot build the random-effect column '{$column}' without the php_stats extension.");
+                }
+
+                return (float) $row[$column];
+            }, $term['columns']);
+        }, $rows);
+    }
+
+    /** GLMM working weights (dmu/deta)^2 / Var(mu) at the fitted means; ones for Gaussian fits. */
+    private static function workingWeights(array $fit, int $n): array
+    {
+        $link = $fit['link'] ?? 'identity';
+        $family = $fit['family'] ?? 'gaussian';
+        if ($family === 'gaussian' && in_array($link, ['identity', ''], true)) {
+            return array_fill(0, $n, 1.0);
+        }
+        $mu = array_map('floatval', $fit['fitted'] ?? throw new InvalidArgumentException('GLMM weights need fitted means.'));
+
+        return array_map(fn (float $m) => match ([$family, $link]) {
+            ['binomial', 'logit'] => $m * (1 - $m),
+            ['poisson', 'log'] => $m,
+            default => throw new InvalidArgumentException("Conditional variances are implemented for gaussian, binomial (logit), and poisson (log) fits, not {$family} ({$link})."),
+        }, $mu);
+    }
+
+    private static function invert(array $m): array
+    {
+        $n = count($m);
+        $inv = [];
+        for ($i = 0; $i < $n; $i++) {
+            $inv[$i] = array_fill(0, $n, 0.0);
+            $inv[$i][$i] = 1.0;
+        }
+        for ($col = 0; $col < $n; $col++) {
+            $pivot = $col;
+            for ($row = $col + 1; $row < $n; $row++) {
+                if (abs($m[$row][$col]) > abs($m[$pivot][$col])) {
+                    $pivot = $row;
+                }
+            }
+            if (abs($m[$pivot][$col]) < 1e-300) {
+                throw new InvalidArgumentException('The random-effect covariance is singular.');
+            }
+            [$m[$col], $m[$pivot]] = [$m[$pivot], $m[$col]];
+            [$inv[$col], $inv[$pivot]] = [$inv[$pivot], $inv[$col]];
+            $scale = $m[$col][$col];
+            for ($k = 0; $k < $n; $k++) {
+                $m[$col][$k] /= $scale;
+                $inv[$col][$k] /= $scale;
+            }
+            for ($row = 0; $row < $n; $row++) {
+                if ($row !== $col && $m[$row][$col] != 0) {
+                    $factor = $m[$row][$col];
+                    for ($k = 0; $k < $n; $k++) {
+                        $m[$row][$k] -= $factor * $m[$col][$k];
+                        $inv[$row][$k] -= $factor * $inv[$col][$k];
+                    }
+                }
+            }
+        }
+
+        return $inv;
     }
 
     /**

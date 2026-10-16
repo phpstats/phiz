@@ -1,0 +1,125 @@
+{
+    "$schema": "https://vega.github.io/schema/vega-lite/v6.json",
+    "data": {
+        "values": [
+            {
+                "cyl": 4,
+                "estimate": 23.695600103293096,
+                "lower": 21.493592105046385,
+                "upper": 25.897608101539806,
+                "std_error": 1.0731919525322389
+            },
+            {
+                "cyl": 6,
+                "estimate": 19.438281559261508,
+                "lower": 17.392618442418865,
+                "upper": 21.48394467610415,
+                "std_error": 0.9969941963587597
+            },
+            {
+                "cyl": 8,
+                "estimate": 17.616481236339258,
+                "lower": 15.723134675816166,
+                "upper": 19.50982779686235,
+                "std_error": 0.9227597237275437
+            }
+        ]
+    },
+    "width": 300,
+    "layer": [
+        {
+            "mark": {
+                "type": "rule",
+                "strokeWidth": 1.5,
+                "color": "#4C78A8"
+            },
+            "encoding": {
+                "x": {
+                    "field": "cyl",
+                    "type": "nominal",
+                    "sort": [
+                        4,
+                        6,
+                        8
+                    ],
+                    "title": "cyl"
+                },
+                "y": {
+                    "field": "lower",
+                    "type": "quantitative",
+                    "title": "mpg (marginal mean, 95% CI)",
+                    "scale": {
+                        "zero": false
+                    }
+                },
+                "y2": {
+                    "field": "upper"
+                },
+                "tooltip": [
+                    {
+                        "field": "cyl",
+                        "type": "quantitative"
+                    },
+                    {
+                        "field": "estimate",
+                        "type": "quantitative"
+                    },
+                    {
+                        "field": "lower",
+                        "type": "quantitative"
+                    },
+                    {
+                        "field": "upper",
+                        "type": "quantitative"
+                    }
+                ]
+            }
+        },
+        {
+            "mark": {
+                "type": "point",
+                "filled": true,
+                "size": 50,
+                "color": "#4C78A8"
+            },
+            "encoding": {
+                "y": {
+                    "field": "estimate",
+                    "type": "quantitative",
+                    "title": "mpg (marginal mean, 95% CI)",
+                    "scale": {
+                        "zero": false
+                    }
+                },
+                "x": {
+                    "field": "cyl",
+                    "type": "nominal",
+                    "sort": [
+                        4,
+                        6,
+                        8
+                    ],
+                    "title": "cyl"
+                },
+                "tooltip": [
+                    {
+                        "field": "cyl",
+                        "type": "quantitative"
+                    },
+                    {
+                        "field": "estimate",
+                        "type": "quantitative"
+                    },
+                    {
+                        "field": "lower",
+                        "type": "quantitative"
+                    },
+                    {
+                        "field": "upper",
+                        "type": "quantitative"
+                    }
+                ]
+            }
+        }
+    ]
+}

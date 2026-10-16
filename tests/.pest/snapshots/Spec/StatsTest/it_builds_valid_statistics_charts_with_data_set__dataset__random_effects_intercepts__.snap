@@ -1,0 +1,204 @@
+{
+    "$schema": "https://vega.github.io/schema/vega-lite/v6.json",
+    "data": {
+        "values": [
+            {
+                "group": "audi",
+                "effect": "(Intercept)",
+                "estimate": -0.126297764224716,
+                "std_error": 0.7440016377109375,
+                "lower": -1.5845141785769707,
+                "upper": 1.3319186501275386
+            },
+            {
+                "group": "chevrolet",
+                "effect": "(Intercept)",
+                "estimate": 3.1760062364357236,
+                "std_error": 0.7266359107077118,
+                "lower": 1.751826021575146,
+                "upper": 4.600186451296301
+            },
+            {
+                "group": "dodge",
+                "effect": "(Intercept)",
+                "estimate": -2.4127444811345033,
+                "std_error": 0.5370759273593322,
+                "lower": -3.4653939557222446,
+                "upper": -1.360095006546762
+            },
+            "... 12 more rows"
+        ]
+    },
+    "height": 240,
+    "layer": [
+        {
+            "data": {
+                "values": [
+                    []
+                ]
+            },
+            "mark": {
+                "type": "rule",
+                "color": "#888888",
+                "strokeDash": [
+                    4,
+                    4
+                ]
+            },
+            "encoding": {
+                "x": {
+                    "datum": 0,
+                    "title": "Conditional mode (95% interval)"
+                },
+                "tooltip": [
+                    {
+                        "field": "group",
+                        "type": "nominal"
+                    },
+                    {
+                        "field": "effect",
+                        "type": "nominal"
+                    },
+                    {
+                        "field": "estimate",
+                        "type": "quantitative"
+                    },
+                    {
+                        "field": "lower",
+                        "type": "quantitative"
+                    },
+                    {
+                        "field": "upper",
+                        "type": "quantitative"
+                    }
+                ]
+            }
+        },
+        {
+            "mark": {
+                "type": "rule",
+                "strokeWidth": 1.5,
+                "color": "#4C78A8"
+            },
+            "encoding": {
+                "y": {
+                    "field": "group",
+                    "type": "nominal",
+                    "sort": [
+                        "chevrolet",
+                        "pontiac",
+                        "honda",
+                        "volkswagen",
+                        "nissan",
+                        "lincoln",
+                        "hyundai",
+                        "audi",
+                        "toyota",
+                        "ford",
+                        "subaru",
+                        "mercury",
+                        "jeep",
+                        "dodge",
+                        "land rover"
+                    ],
+                    "title": "manufacturer"
+                },
+                "x": {
+                    "field": "lower",
+                    "type": "quantitative",
+                    "title": "Conditional mode (95% interval)",
+                    "scale": {
+                        "zero": false
+                    }
+                },
+                "x2": {
+                    "field": "upper"
+                },
+                "tooltip": [
+                    {
+                        "field": "group",
+                        "type": "nominal"
+                    },
+                    {
+                        "field": "effect",
+                        "type": "nominal"
+                    },
+                    {
+                        "field": "estimate",
+                        "type": "quantitative"
+                    },
+                    {
+                        "field": "lower",
+                        "type": "quantitative"
+                    },
+                    {
+                        "field": "upper",
+                        "type": "quantitative"
+                    }
+                ]
+            }
+        },
+        {
+            "mark": {
+                "type": "point",
+                "filled": true,
+                "size": 30,
+                "color": "#4C78A8"
+            },
+            "encoding": {
+                "x": {
+                    "field": "estimate",
+                    "type": "quantitative",
+                    "title": "Conditional mode (95% interval)",
+                    "scale": {
+                        "zero": false
+                    }
+                },
+                "y": {
+                    "field": "group",
+                    "type": "nominal",
+                    "sort": [
+                        "chevrolet",
+                        "pontiac",
+                        "honda",
+                        "volkswagen",
+                        "nissan",
+                        "lincoln",
+                        "hyundai",
+                        "audi",
+                        "toyota",
+                        "ford",
+                        "subaru",
+                        "mercury",
+                        "jeep",
+                        "dodge",
+                        "land rover"
+                    ],
+                    "title": "manufacturer"
+                },
+                "tooltip": [
+                    {
+                        "field": "group",
+                        "type": "nominal"
+                    },
+                    {
+                        "field": "effect",
+                        "type": "nominal"
+                    },
+                    {
+                        "field": "estimate",
+                        "type": "quantitative"
+                    },
+                    {
+                        "field": "lower",
+                        "type": "quantitative"
+                    },
+                    {
+                        "field": "upper",
+                        "type": "quantitative"
+                    }
+                ]
+            }
+        }
+    ]
+}

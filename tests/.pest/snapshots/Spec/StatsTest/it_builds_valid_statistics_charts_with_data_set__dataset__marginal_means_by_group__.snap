@@ -1,0 +1,158 @@
+{
+    "$schema": "https://vega.github.io/schema/vega-lite/v6.json",
+    "data": {
+        "values": [
+            {
+                "cyl": 4,
+                "am": 0,
+                "estimate": 23.62054854332584,
+                "lower": 21.218136408397786,
+                "upper": 26.02296067825389,
+                "std_error": 1.1708628542327923
+            },
+            {
+                "cyl": 4,
+                "am": 1,
+                "estimate": 23.770651663260345,
+                "lower": 21.034820368014483,
+                "upper": 26.506482958506208,
+                "std_error": 1.3333612465901483
+            },
+            {
+                "cyl": 6,
+                "am": 0,
+                "estimate": 19.363229999294255,
+                "lower": 17.08511584029756,
+                "upper": 21.64134415829095,
+                "std_error": 1.1102837884020627
+            },
+            "... 3 more rows"
+        ]
+    },
+    "width": 300,
+    "layer": [
+        {
+            "mark": {
+                "type": "rule",
+                "strokeWidth": 1.5
+            },
+            "encoding": {
+                "x": {
+                    "field": "cyl",
+                    "type": "nominal",
+                    "sort": [
+                        4,
+                        6,
+                        8
+                    ],
+                    "title": "cyl"
+                },
+                "y": {
+                    "field": "lower",
+                    "type": "quantitative",
+                    "title": "mpg (marginal mean, 95% CI)",
+                    "scale": {
+                        "zero": false
+                    }
+                },
+                "y2": {
+                    "field": "upper"
+                },
+                "color": {
+                    "field": "am",
+                    "type": "nominal",
+                    "title": "am"
+                },
+                "xOffset": {
+                    "field": "am",
+                    "type": "nominal"
+                },
+                "tooltip": [
+                    {
+                        "field": "cyl",
+                        "type": "quantitative"
+                    },
+                    {
+                        "field": "am",
+                        "type": "quantitative"
+                    },
+                    {
+                        "field": "estimate",
+                        "type": "quantitative"
+                    },
+                    {
+                        "field": "lower",
+                        "type": "quantitative"
+                    },
+                    {
+                        "field": "upper",
+                        "type": "quantitative"
+                    }
+                ]
+            }
+        },
+        {
+            "mark": {
+                "type": "point",
+                "filled": true,
+                "size": 50
+            },
+            "encoding": {
+                "y": {
+                    "field": "estimate",
+                    "type": "quantitative",
+                    "title": "mpg (marginal mean, 95% CI)",
+                    "scale": {
+                        "zero": false
+                    }
+                },
+                "x": {
+                    "field": "cyl",
+                    "type": "nominal",
+                    "sort": [
+                        4,
+                        6,
+                        8
+                    ],
+                    "title": "cyl"
+                },
+                "color": {
+                    "field": "am",
+                    "type": "nominal",
+                    "title": "am"
+                },
+                "xOffset": {
+                    "field": "am",
+                    "type": "nominal"
+                },
+                "tooltip": [
+                    {
+                        "field": "cyl",
+                        "type": "quantitative"
+                    },
+                    {
+                        "field": "am",
+                        "type": "quantitative"
+                    },
+                    {
+                        "field": "estimate",
+                        "type": "quantitative"
+                    },
+                    {
+                        "field": "lower",
+                        "type": "quantitative"
+                    },
+                    {
+                        "field": "upper",
+                        "type": "quantitative"
+                    }
+                ]
+            }
+        }
+    ],
+    "config": {
+        "legend": {
+            "labelLimit": 320
+        }
+    }
+}

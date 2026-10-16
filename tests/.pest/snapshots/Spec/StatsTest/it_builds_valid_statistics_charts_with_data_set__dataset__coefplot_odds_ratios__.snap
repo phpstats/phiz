@@ -39,7 +39,7 @@
             "encoding": {
                 "x": {
                     "datum": 1,
-                    "title": "exp(estimate) (95% CI)",
+                    "title": "Odds ratio (95% CI)",
                     "scale": {
                         "type": "log"
                     }
@@ -91,7 +91,7 @@
                 "x": {
                     "field": "lower",
                     "type": "quantitative",
-                    "title": "exp(estimate) (95% CI)",
+                    "title": "Odds ratio (95% CI)",
                     "scale": {
                         "type": "log"
                     }
@@ -138,7 +138,7 @@
                 "x": {
                     "field": "estimate",
                     "type": "quantitative",
-                    "title": "exp(estimate) (95% CI)",
+                    "title": "Odds ratio (95% CI)",
                     "scale": {
                         "type": "log"
                     }
