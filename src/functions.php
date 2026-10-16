@@ -178,4 +178,4 @@ function interval_plot(array $draws, mixed ...$options): Plot { return Stats\Cha
 /** Estimated marginal means of a factor with confidence intervals, as emmeans. */
 function marginal_means(array $fit, mixed $data, string $factor, mixed ...$options): Plot { return Stats\Charts::marginalMeans($fit, $data, $factor, ...$options); }
 /** A caterpillar plot of a mixed model's random effects with conditional intervals, as lme4's dotplot(ranef()). */
-function random_effects_plot(array $fit, mixed $data, mixed ...$options): Plot { return Stats\Charts::randomEffects($fit, $data, ...$options); }
+function random_effects_plot(array $fit, mixed $data = null, mixed ...$options): Plot { return Stats\Charts::randomEffects($fit, $data, ...$options); }
