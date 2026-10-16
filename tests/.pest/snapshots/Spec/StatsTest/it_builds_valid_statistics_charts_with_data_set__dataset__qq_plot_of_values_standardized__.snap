@@ -19,12 +19,32 @@
         {
             "transform": [
                 {
-                    "quantile": "sample",
-                    "as": [
-                        "__prob",
-                        "sample"
+                    "filter": "isValid(datum[\"sample\"]) && isFinite(datum[\"sample\"])"
+                },
+                {
+                    "window": [
+                        {
+                            "op": "row_number",
+                            "as": "__rank"
+                        }
                     ],
-                    "step": 0.16666666666666666
+                    "sort": [
+                        {
+                            "field": "sample"
+                        }
+                    ]
+                },
+                {
+                    "joinaggregate": [
+                        {
+                            "op": "count",
+                            "as": "__n"
+                        }
+                    ]
+                },
+                {
+                    "calculate": "datum.__n <= 10 ? (datum.__rank - 0.375) / (datum.__n + 0.25) : (datum.__rank - 0.5) / datum.__n",
+                    "as": "__prob"
                 },
                 {
                     "calculate": "quantileNormal(datum.__prob)",
@@ -115,12 +135,32 @@
         {
             "transform": [
                 {
-                    "quantile": "sample",
-                    "as": [
-                        "__prob",
-                        "sample"
+                    "filter": "isValid(datum[\"sample\"]) && isFinite(datum[\"sample\"])"
+                },
+                {
+                    "window": [
+                        {
+                            "op": "row_number",
+                            "as": "__rank"
+                        }
                     ],
-                    "step": 0.16666666666666666
+                    "sort": [
+                        {
+                            "field": "sample"
+                        }
+                    ]
+                },
+                {
+                    "joinaggregate": [
+                        {
+                            "op": "count",
+                            "as": "__n"
+                        }
+                    ]
+                },
+                {
+                    "calculate": "datum.__n <= 10 ? (datum.__rank - 0.375) / (datum.__n + 0.25) : (datum.__rank - 0.5) / datum.__n",
+                    "as": "__prob"
                 },
                 {
                     "calculate": "quantileNormal(datum.__prob)",

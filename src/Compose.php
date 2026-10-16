@@ -95,7 +95,29 @@ final class Compose extends Chart
         if ($this->title !== null) {
             $spec['title'] = $this->title;
         }
-        $spec[$this->kind] = array_map(fn (Chart $chart) => $chart->toSpec(), $this->charts);
+        $children = array_map(fn (Chart $chart) => $chart->toSpec(), $this->charts);
+        // Vega-Lite declares variable parameters (sliders, dropdowns) only at the top level of a composition.
+        $params = [];
+        foreach ($children as &$child) {
+            $kept = [];
+            foreach ($child['params'] ?? [] as $param) {
+                if (isset($param['select'])) {
+                    $kept[] = $param; // Selections stay in the view that defines them.
+                } elseif (! in_array($param, $params, true)) {
+                    $params[] = $param;
+                }
+            }
+            if ($kept === []) {
+                unset($child['params']);
+            } else {
+                $child['params'] = $kept;
+            }
+        }
+        unset($child);
+        if ($params !== []) {
+            $spec['params'] = $params;
+        }
+        $spec[$this->kind] = $children;
         if ($this->columns !== null) {
             $spec['columns'] = $this->columns;
         }

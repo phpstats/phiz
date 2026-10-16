@@ -21,6 +21,7 @@
             "encoding": {
                 "x": {
                     "field": "Sepal\\.Length",
+                    "title": "Sepal.Length",
                     "type": "quantitative",
                     "scale": {
                         "zero": false
@@ -28,6 +29,7 @@
                 },
                 "y": {
                     "field": "a\\[b\\]",
+                    "title": "a[b]",
                     "type": "quantitative",
                     "scale": {
                         "zero": false
@@ -55,6 +57,7 @@
             "encoding": {
                 "x": {
                     "field": "Sepal\\.Length",
+                    "title": "Sepal.Length",
                     "type": "quantitative",
                     "scale": {
                         "zero": false
@@ -62,6 +65,7 @@
                 },
                 "y": {
                     "field": "a\\[b\\]",
+                    "title": "a[b]",
                     "type": "quantitative",
                     "scale": {
                         "zero": false

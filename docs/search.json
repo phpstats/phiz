@@ -781,7 +781,7 @@
     "href": "statistics.html#regression-diagnostics",
     "title": "Statistics",
     "section": "Regression diagnostics",
-    "text": "Regression diagnostics\nresidual_plot(), qq_plot(), scale_location_plot(), and fitted_plot() draw the standard diagnostic panels. diagnostic_plots() arranges all four in a grid.\nuse function Phiz\\diagnostic_plots;\n\n// The fit as php-stats returns it: stats_lm('mpg ~ wt + hp + am', $mtcars).\n$fit = json_decode(file_get_contents(__DIR__.'/fits/mtcars-lm.json'), true);\n\n$plot = diagnostic_plots($fit, width: 240, height: 180);\n\nqq_plot() also accepts a plain list of values. The QQ geoms compute sample quantiles at (i - 0.5) / n and draw the line through the quartiles, as ggplot2’s stat_qq_line() does.",
+    "text": "Regression diagnostics\nresidual_plot(), qq_plot(), scale_location_plot(), and fitted_plot() draw the standard diagnostic panels. diagnostic_plots() arranges all four in a grid.\nuse function Phiz\\diagnostic_plots;\n\n// The fit as php-stats returns it: stats_lm('mpg ~ wt + hp + am', $mtcars).\n$fit = json_decode(file_get_contents(__DIR__.'/fits/mtcars-lm.json'), true);\n\n$plot = diagnostic_plots($fit, width: 240, height: 180);\n\nqq_plot() also accepts a plain list of values. The QQ geoms place the sorted sample at the normal quantiles of R’s ppoints(n), per group, as qqnorm() and ggplot2’s stat_qq() do. The reference line passes through the sample quartiles, as qqline() and stat_qq_line() draw it.",
     "crumbs": [
       "Guide",
       "Statistics"

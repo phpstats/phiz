@@ -306,7 +306,11 @@ final class Geoms
         }
         $bandwidth = $c->param('bw');
         if ($c->param('adjust') !== null) {
-            $bandwidth = ($bandwidth ?? Fit::bandwidth(array_values(array_filter($c->data->column($x), is_numeric(...))))) * $c->param('adjust');
+            $values = array_values(array_filter($c->data->column($x), is_numeric(...)));
+            if ($bandwidth === null && count($values) < 2) {
+                throw new InvalidArgumentException('density(adjust:) computes the bandwidth from inline data; with URL data set bw: instead.');
+            }
+            $bandwidth = ($bandwidth ?? Fit::bandwidth($values)) * $c->param('adjust');
         }
         foreach (['bandwidth' => $bandwidth, 'extent' => $c->param('extent'), 'counts' => $c->param('counts'), 'steps' => $c->param('n'), 'cumulative' => $c->param('cumulative')] as $key => $value) {
             if ($value !== null) {
@@ -565,11 +569,18 @@ final class Geoms
             default => throw new InvalidArgumentException("Unknown smooth method '{$method}'; use lm, poly, quad, log, exp, pow, or loess."),
         };
         $degree = match ($vlMethod) { 'linear' => 1, 'quad' => 2, 'poly' => $c->param('order', 3), default => null };
-        $se = $c->param('se') ?? ($degree !== null && $c->data->isInline());
+        $numeric = fn (string $aesthetic) => $c->fieldOf($aesthetic)?->calculate === null && $c->type($aesthetic) === 'quantitative';
+        $fittable = $degree !== null && $c->data->isInline() && $numeric('x') && $numeric('y');
+        $se = $c->param('se') ?? $fittable;
+        if ($c->param('n', 80) < 2) {
+            throw new InvalidArgumentException('smooth needs n >= 2 points.');
+        }
         $colorMapped = $c->has('color');
         $lineMark = $c->mark('line', 'line', ['strokeWidth' => 2] + ($colorMapped ? [] : ['color' => self::SMOOTH_COLOR]));
         $lineEncoding = $c->encode(['x' => 'x', 'y' => 'y', 'color' => 'color', 'linetype' => 'strokeDash', 'group' => 'detail']);
-        $lineEncoding['x']['type'] = 'quantitative';
+        if ($lineEncoding['x']['type'] !== 'temporal') {
+            $lineEncoding['x']['type'] = 'quantitative';
+        }
         $lineEncoding['y']['type'] = 'quantitative';
 
         if (! $se) {
@@ -591,7 +602,13 @@ final class Geoms
         if (! $c->data->isInline()) {
             throw new InvalidArgumentException('se bands need inline data; use se: false with URL data.');
         }
+        if (! $fittable) {
+            throw new InvalidArgumentException('se bands need numeric x and y columns in the data (not dates or calc() fields); use se: false.');
+        }
         $c->computed = Fit::smooth($c->data->rows ?? [], (string) $c->name('x'), (string) $c->name('y'), $c->groupFields(), $degree, (float) $c->param('level', 0.95), (int) $c->param('n', 80));
+        if ($c->computed === []) {
+            throw new InvalidArgumentException("smooth has no group with enough distinct x values to fit a degree {$degree} curve.");
+        }
         $c->transforms = array_values(array_filter($c->transforms, fn ($t) => ! isset($t['calculate'])));
         $band = ['x' => $lineEncoding['x'], 'y' => ['field' => '__ymin', 'type' => 'quantitative', 'title' => $c->name('y')], 'y2' => ['field' => '__ymax']];
         foreach (['group' => 'detail', 'color' => 'detail'] as $aesthetic => $channel) {
@@ -638,14 +655,18 @@ final class Geoms
         $length = $c->param('length', 8);
         $mark = $c->mark('rule', 'line', ['opacity' => 0.5]);
         $extra = $c->encode(['color' => 'color'] + self::COMMON);
+        // Ticks sit along the axis that shows their data. coordFlip() swaps channels afterwards, so a flipped
+        // plot's x rug is placed for the left edge and its y rug for the bottom edge.
+        $bottom = ['value' => new Expr('height')];
+        $bottom2 = ['value' => new Expr('height - '.$length)];
         $layers = [];
         if (str_contains($sides, 'b')) {
             $c->require('x');
-            $layers[] = ['mark' => $mark, 'encoding' => ['x' => $c->def('x', 'x'), 'y' => ['value' => new Expr('height')], 'y2' => ['value' => new Expr('height - '.$length)]] + $extra];
+            $layers[] = ['mark' => $mark, 'encoding' => ['x' => $c->def('x', 'x')] + ($c->flipped ? ['y' => ['value' => 0], 'y2' => ['value' => $length]] : ['y' => $bottom, 'y2' => $bottom2]) + $extra];
         }
         if (str_contains($sides, 'l')) {
             $c->require('y');
-            $layers[] = ['mark' => $mark, 'encoding' => ['y' => $c->def('y', 'y'), 'x' => ['value' => 0], 'x2' => ['value' => $length]] + $extra];
+            $layers[] = ['mark' => $mark, 'encoding' => ['y' => $c->def('y', 'y')] + ($c->flipped ? ['x' => $bottom, 'x2' => $bottom2] : ['x' => ['value' => 0], 'x2' => ['value' => $length]]) + $extra];
         }
 
         return $layers;
@@ -666,21 +687,24 @@ final class Geoms
         return [['mark' => $c->mark('line', 'line', ['interpolate' => 'step-after']), 'encoding' => $encoding]];
     }
 
-    /** Sample quantiles against standard normal quantiles at (i - 0.5) / n. */
+    /**
+     * Sample quantiles against standard normal quantiles at R's ppoints(n): (i - 3/8) / (n + 1/4) for n <= 10 and
+     * (i - 1/2) / n otherwise, as qqnorm and ggplot2's stat_qq use. Each group's sorted values are its sample
+     * quantiles, at probabilities from its own size.
+     */
     private static function qqTransforms(Context $c): array
     {
         $c->require('sample');
-        $sample = (string) $c->name('sample');
-        $n = count(array_filter($c->data->column($sample), is_numeric(...)));
-        $quantile = ['quantile' => $c->ref('sample'), 'as' => ['__prob', $sample]];
-        if ($n > 0) {
-            $quantile['step'] = 1 / $n;
-        }
-        if ($c->groupby() !== []) {
-            $quantile['groupby'] = $c->groupby();
-        }
+        $value = 'datum['.json_encode((string) $c->name('sample')).']';
+        $group = $c->groupby() === [] ? [] : ['groupby' => $c->groupby()];
 
-        return [$quantile, ['calculate' => 'quantileNormal(datum.__prob)', 'as' => 'theoretical']];
+        return [
+            ['filter' => "isValid({$value}) && isFinite({$value})"],
+            ['window' => [['op' => 'row_number', 'as' => '__rank']], 'sort' => [['field' => $c->ref('sample')]]] + $group,
+            ['joinaggregate' => [['op' => 'count', 'as' => '__n']]] + $group,
+            ['calculate' => 'datum.__n <= 10 ? (datum.__rank - 0.375) / (datum.__n + 0.25) : (datum.__rank - 0.5) / datum.__n', 'as' => '__prob'],
+            ['calculate' => 'quantileNormal(datum.__prob)', 'as' => 'theoretical'],
+        ];
     }
 
     private static function qq(Context $c): array
@@ -751,6 +775,6 @@ final class Geoms
             return (string) (int) $x;
         }
 
-        return rtrim(rtrim(sprintf('%.15g', $x), '0'), '.') ?: '0';
+        return sprintf('%.15g', $x);
     }
 }

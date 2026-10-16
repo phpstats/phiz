@@ -149,16 +149,22 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       if (dark && dark.matches) options.theme = 'dark'; else delete options.theme;
     }
     if (state && state.view) state.view.finalize();
+    // Each render draws into its own element, so a slow, superseded render cannot replace a newer chart.
     var token = {};
+    var holder = document.createElement('div');
+    target(el).appendChild(holder);
     views.set(el, { key: key, token: token, view: null });
-    Promise.resolve(embed(target(el), spec, options)).then(function (result) {
+    Promise.resolve(embed(holder, spec, options)).then(function (result) {
       var current = views.get(el);
-      if (!current || current.token !== token) { result.view.finalize(); return; }
+      if (!current || current.token !== token) { result.view.finalize(); holder.remove(); return; }
+      Array.prototype.slice.call(holder.parentNode.children).forEach(function (child) { if (child !== holder) child.remove(); });
       current.view = result.view;
       el.dispatchEvent(new CustomEvent('phiz:rendered', { detail: { view: result.view }, bubbles: true }));
     }).catch(function (error) {
+      var current = views.get(el);
+      if (!current || current.token !== token) { holder.remove(); return; }
       console.error('phiz:', error);
-      target(el).textContent = 'Chart error: ' + error.message;
+      holder.textContent = 'Chart error: ' + error.message;
     });
   }
 

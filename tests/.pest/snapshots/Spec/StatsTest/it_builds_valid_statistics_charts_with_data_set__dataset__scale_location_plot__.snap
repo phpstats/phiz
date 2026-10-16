@@ -46,7 +46,7 @@
                 "y": {
                     "field": "root_abs",
                     "type": "quantitative",
-                    "title": "√|standardized residual|",
+                    "title": "√|residual / σ|",
                     "scale": {
                         "zero": false
                     }
@@ -82,7 +82,7 @@
                 "y": {
                     "field": "root_abs",
                     "type": "quantitative",
-                    "title": "√|standardized residual|",
+                    "title": "√|residual / σ|",
                     "scale": {
                         "zero": false
                     }

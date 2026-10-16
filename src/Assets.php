@@ -92,7 +92,7 @@ final class Assets
         $tags = '';
         foreach ($this->sources as $library => $source) {
             if ($this->inline) {
-                $tags .= '<script>'.str_ireplace('</script', '<\/script', $source)."</script>\n";
+                $tags .= '<script>'.str_ireplace(['</script', '<!--'], ['<\/script', '<\!--'], $source)."</script>\n";
                 continue;
             }
             $attributes = 'src="'.htmlspecialchars($source, ENT_QUOTES).'"';

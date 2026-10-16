@@ -39,7 +39,7 @@ final class Compiler
         $units = []; // Each: ['specs' => list<array>, 'channels' => array, 'context' => Context]
         foreach ($plot->layers as $layer) {
             $aes = $layer->inheritAes ? $plot->aes->merge($layer->aes) : $layer->aes;
-            $context = new Context($layer, $aes, $layer->data ?? $data, $facetFields);
+            $context = new Context($layer, $aes, $layer->data ?? $data, $facetFields, $plot->flip);
             $specs = Geoms::compile($context);
             foreach ($specs as $i => $spec) {
                 $transforms = [...$context->transforms, ...($spec['transform'] ?? [])];
@@ -72,6 +72,11 @@ final class Compiler
                 }
                 if ($plot->flip) {
                     $spec['encoding'] = self::flip($spec['encoding']);
+                    if (is_array($spec['mark'] ?? null) && (isset($spec['mark']['width']) || isset($spec['mark']['height']))) {
+                        [$width, $height] = [$spec['mark']['height'] ?? null, $spec['mark']['width'] ?? null];
+                        unset($spec['mark']['width'], $spec['mark']['height']);
+                        $spec['mark'] += array_filter(['width' => $width, 'height' => $height], fn ($v) => $v !== null);
+                    }
                 }
             }
             unset($spec);
@@ -82,7 +87,7 @@ final class Compiler
         $layers = self::interact($layers, $units, $plot);
         $unit = count($layers) === 1 ? $layers[0] : ['layer' => $layers];
 
-        $size = array_filter(['width' => $plot->width ?? self::discreteSize($layers, 'x', $data), 'height' => $plot->height ?? self::discreteSize($layers, 'y', $data)], fn ($v) => $v !== null);
+        $size = array_filter(['width' => $plot->width ?? self::discreteSize($units, 'x'), 'height' => $plot->height ?? self::discreteSize($units, 'y')], fn ($v) => $v !== null);
         $spec = $topLevel ? ['$schema' => Assets::SCHEMA] : [];
         if ($plot->description !== null) {
             $spec['description'] = $plot->description;
@@ -142,17 +147,20 @@ final class Compiler
      * keeps the panel size, a discrete axis gets the 300 pixels a continuous one has, growing past that by 20 pixels
      * per level when there are many.
      */
-    private static function discreteSize(array $layers, string $channel, Data $data): ?int
+    private static function discreteSize(array $units, string $channel): ?int
     {
         $size = null;
-        foreach ($layers as $layer) {
-            $def = $layer['encoding'][$channel] ?? null;
-            if (! is_array($def) || array_is_list($def) || ! in_array($def['type'] ?? null, ['nominal', 'ordinal'], true) || isset($def['bin'])) {
-                continue;
+        foreach ($units as $unit) {
+            $data = $unit['context']->data;
+            foreach ($unit['specs'] as $layer) {
+                $def = $layer['encoding'][$channel] ?? null;
+                if (! is_array($def) || array_is_list($def) || ! in_array($def['type'] ?? null, ['nominal', 'ordinal'], true) || isset($def['bin'])) {
+                    continue;
+                }
+                $field = isset($def['field']) && is_string($def['field']) ? stripslashes($def['field']) : null;
+                $levels = $field !== null && $data->isInline() ? count($data->levels($field)) : 0;
+                $size = max($size ?? 0, 300, 20 * $levels);
             }
-            $field = isset($def['field']) && is_string($def['field']) ? stripslashes($def['field']) : null;
-            $levels = $field !== null && $data->isInline() ? count($data->levels($field)) : 0;
-            $size = max($size ?? 0, 300, 20 * $levels);
         }
 
         return $size;
@@ -258,7 +266,7 @@ final class Compiler
             return $spec;
         }
         if ($tooltip === true) {
-            $spec['mark']['tooltip'] = true;
+            $spec['mark'] = (is_array($spec['mark']) ? $spec['mark'] : ['type' => $spec['mark']]) + ['tooltip' => true];
         } elseif ($tooltip !== []) {
             $spec['encoding']['tooltip'] = array_map(function ($field) use ($data) {
                 if (is_array($field)) {
@@ -294,6 +302,9 @@ final class Compiler
         $tagged = [];
         foreach ($units as $u => $unit) {
             $context = $unit['context'];
+            if ($faceted && ! $context->constant && $context->computed === null && $context->layer->data !== null && ! $context->layer->data->isInline()) {
+                throw new InvalidArgumentException('A faceted plot cannot split a layer with its own URL or named data; give the layer inline rows or use the plot\'s data.');
+            }
             if ($faceted && ! $context->constant && ($context->computed !== null || ($context->layer->data?->isInline() ?? false))) {
                 $tagged[$u] = $context->computed ?? $context->layer->data->rows;
             }
@@ -412,10 +423,23 @@ final class Compiler
             return [];
         }
         if ($facet['type'] === 'wrap') {
-            return count($facet['facets']) === 1 ? $facet['facets'] : ['__facet'];
+            // With several fields, groups keep the raw fields (for statistics computed in PHP) and the combined
+            // __facet field the facet reads (for Vega-Lite transforms, whose output keeps only grouped fields).
+            return count($facet['facets']) === 1 ? $facet['facets'] : [...$facet['facets'], '__facet'];
         }
 
         return array_values(array_filter([$facet['rows'], $facet['cols']]));
+    }
+
+    /** The number of distinct combinations of the fields' values. */
+    private static function combinations(Data $data, array $fields): int
+    {
+        $seen = [];
+        foreach ($data->rows ?? [] as $row) {
+            $seen[json_encode(array_map(fn ($f) => $row[$f] ?? null, $fields))] = true;
+        }
+
+        return count($seen);
     }
 
     private static function facetTransforms(Plot $plot): array
@@ -449,11 +473,12 @@ final class Compiler
             $field = count($facet['facets']) === 1 ? $facet['facets'][0] : '__facet';
             $out = ['facet' => $def($field)];
             $columns = $facet['ncol'];
-            if ($columns === null && $facet['nrow'] !== null && $data->isInline()) {
-                $columns = (int) ceil(count($data->levels($field)) / $facet['nrow']);
+            $panels = $data->isInline() ? self::combinations($data, $facet['facets']) : null;
+            if ($columns === null && $facet['nrow'] !== null && $panels !== null) {
+                $columns = max(1, (int) ceil($panels / $facet['nrow']));
             }
-            if ($columns === null && $data->isInline() && $field !== '__facet') {
-                $columns = (int) ceil(sqrt(max(1, count($data->levels($field)))));
+            if ($columns === null && $panels !== null) {
+                $columns = (int) ceil(sqrt(max(1, $panels)));
             }
             if ($columns === null && $field === '__facet') {
                 $columns = 3;

@@ -96,7 +96,7 @@ final class Fit
         $out = [];
         foreach ($sets as $set) {
             $count = count($set['x']);
-            if ($count <= $degree + 1) {
+            if ($count <= $degree + 1 || count(array_unique($set['x'])) <= $degree) {
                 continue; // Too few points to fit and estimate error, as ggplot2 drops such groups.
             }
             $mean = array_sum($set['x']) / $count;
@@ -105,7 +105,11 @@ final class Fit
                 continue;
             }
             $design = fn (float $v) => array_map(fn ($k) => (($v - $mean) / $sd) ** $k, range(0, $degree));
-            $fit = self::ols(array_map($design, $set['x']), $set['y']);
+            try {
+                $fit = self::ols(array_map($design, $set['x']), $set['y']);
+            } catch (InvalidArgumentException) {
+                continue; // A singular design in one group leaves the others' fits intact.
+            }
             $t = self::tQuantile((1 + $level) / 2, $fit['df_residual']);
             [$lo, $hi] = [min($set['x']), max($set['x'])];
             for ($i = 0; $i < $n; $i++) {

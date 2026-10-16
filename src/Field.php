@@ -101,6 +101,9 @@ final class Field
         $def = [];
         if ($this->name !== null) {
             $def['field'] = self::escape($this->name);
+            if ($def['field'] !== $this->name && $this->title === null && $this->aggregate === null) {
+                $def['title'] = $this->name; // Otherwise the default title shows the escape backslashes.
+            }
         }
         $def['type'] = $this->type ?? $inferredType ?? 'nominal';
         foreach (['aggregate', 'timeUnit', 'bin', 'sort', 'title', 'format'] as $key) {

@@ -534,7 +534,7 @@ final class Plot extends Chart
         if ($field === null) {
             throw new InvalidArgumentException("highlight() needs the {$aesthetic} aesthetic mapped to a field.");
         }
-        $param = ['name' => $name, 'select' => ['type' => 'point', 'fields' => [$field]]];
+        $param = ['name' => $name, 'select' => ['type' => 'point', 'fields' => [Field::escape($field)]]];
         if ($bind !== null) {
             $param['bind'] = $bind;
         }

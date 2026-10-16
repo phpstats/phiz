@@ -26,7 +26,7 @@ Several fits keyed by label are compared side by side, with one color per model.
 
 {{< include _generated/stats-diagnostics.md >}}
 
-`qq_plot()` also accepts a plain list of values. The QQ geoms compute sample quantiles at (i - 0.5) / n and draw the line through the quartiles, as ggplot2's `stat_qq_line()` does.
+`qq_plot()` also accepts a plain list of values. The QQ geoms place the sorted sample at the normal quantiles of R's `ppoints(n)`, per group, as `qqnorm()` and ggplot2's `stat_qq()` do. The reference line passes through the sample quartiles, as `qqline()` and `stat_qq_line()` draw it.
 
 ## Predicted values
 

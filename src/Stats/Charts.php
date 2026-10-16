@@ -145,7 +145,7 @@ final class Charts
             ->aes(x: 'fitted', y: 'root_abs')
             ->point(alpha: 0.6)
             ->smooth(method: 'loess', se: false, color: '#D62728', linewidth: 1.5)
-            ->labs(title: 'Scale-location', x: 'Fitted values', y: '√|standardized residual|');
+            ->labs(title: 'Scale-location', x: 'Fitted values', y: '√|residual / σ|');
     }
 
     /** The four standard diagnostic panels in a grid. */
@@ -219,7 +219,9 @@ final class Charts
                 }
             }
             $se = sqrt(max(0.0, $variance));
-            $out[] = $row + ['estimate' => $inverse($eta), 'lower' => $inverse($eta - $critical * $se), 'upper' => $inverse($eta + $critical * $se), 'std_error' => $se];
+            // Decreasing links (inverse) swap the transformed bounds.
+            [$a, $b] = [$inverse($eta - $critical * $se), $inverse($eta + $critical * $se)];
+            $out[] = $row + ['estimate' => $inverse($eta), 'lower' => min($a, $b), 'upper' => max($a, $b), 'std_error' => $se];
         }
 
         return $out;
@@ -241,6 +243,9 @@ final class Charts
         $rows = isset($draws['variable']) ? self::summaryRows($draws, $variables, $pointEst) : self::drawRows($draws, $variables, $prob, $probOuter, $pointEst);
         $order = array_column($rows, 'variable');
         $inner = isset($rows[0]['l']);
+        if (isset($draws['variable'])) {
+            $probOuter = $rows[0]['level'] ?? $probOuter; // A summary's outer interval is set by its quantile columns.
+        }
         $percent = fn (float $p) => rtrim(rtrim(sprintf('%.1f', 100 * $p), '0'), '.').'%';
 
         $plot = Plot::of($rows)
@@ -300,7 +305,7 @@ final class Charts
             if ($variables !== null && ! in_array($row['variable'], $variables, true) && ! in_array(explode('[', (string) $row['variable'])[0], $variables, true)) {
                 continue;
             }
-            $out[] = ['variable' => (string) $row['variable'], 'll' => $row[$lo], 'm' => $row[$pointEst] ?? $row['mean'] ?? null, 'hh' => $row[$hi]];
+            $out[] = ['variable' => (string) $row['variable'], 'll' => $row[$lo], 'm' => $row[$pointEst] ?? $row['mean'] ?? null, 'hh' => $row[$hi], 'level' => ((float) substr($hi, 1) - (float) substr($lo, 1)) / 100];
         }
 
         return $out;

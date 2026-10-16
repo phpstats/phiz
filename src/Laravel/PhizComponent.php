@@ -48,7 +48,15 @@ final class PhizComponent extends Component
             default => $this->plot,
         };
         $options = array_replace((array) config('phiz.embed_options', []), $this->options);
-        $html = Html::container($spec, $options, $this->attributes->getAttributes());
+        $attributes = $this->attributes->getAttributes();
+        // Blade passes :class and :style as arrays; render them as Blade's own components do.
+        if (isset($attributes['class']) && is_array($attributes['class'])) {
+            $attributes['class'] = \Illuminate\Support\Arr::toCssClasses($attributes['class']);
+        }
+        if (isset($attributes['style']) && is_array($attributes['style'])) {
+            $attributes['style'] = \Illuminate\Support\Arr::toCssStyles($attributes['style']);
+        }
+        $html = Html::container($spec, $options, $attributes);
 
         $state = app(ScriptState::class);
         if (config('phiz.inject_scripts', true) && ! $state->included && ! request()->hasHeader('X-Livewire')) {
