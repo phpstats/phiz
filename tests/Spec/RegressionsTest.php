@@ -201,7 +201,7 @@ it('bins multi-field facet panels in PHP from columns', function () {
 });
 
 it('reads phibble table column names', function () {
-    $data = Data::from(Phibble\Frame::fromColumns(['a' => [1, 2], 'b' => ['u', 'v']]));
+    $data = Data::from(Phibble\DataFrame::fromColumns(['a' => [1, 2], 'b' => ['u', 'v']]));
 
     expect($data->fields())->toBe(['a', 'b'])->and($data->has('a'))->toBeTrue()->and($data->has('z'))->toBeFalse();
 });

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-use Phibble\Frame;
+use Phibble\DataFrame;
 use Phiz\Bin;
 use Phiz\Config;
 use Phiz\Data;
@@ -50,7 +50,7 @@ it('places points in their nearest hexagon', function () {
 });
 
 it('reads phibble tables column by column and streams generators with limits', function () {
-    $frame = Frame::fromColumns(cloud());
+    $frame = DataFrame::fromColumns(cloud());
     $stream = (function () {
         foreach (range(1, 100) as $i) {
             yield ['v' => $i];
@@ -119,7 +119,7 @@ it('downsamples lines per group', function () {
 });
 
 it('keeps tables lazy until a spec embeds them', function () {
-    $data = Data::from(Frame::fromColumns(cloud()));
+    $data = Data::from(DataFrame::fromColumns(cloud()));
 
     expect($data->count())->toBe(400)
         ->and($data->type('x'))->toBe('quantitative')
