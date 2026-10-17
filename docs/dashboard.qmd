@@ -27,7 +27,7 @@ namespace App\Livewire;
 
 use Livewire\Attributes\Url;
 use Livewire\Component;
-use Phibble\Frame;
+use Phibble\DataFrame;
 use Phit\Datasets;
 
 class FuelDashboard extends Component
@@ -47,8 +47,8 @@ class FuelDashboard extends Component
 
     public function render()
     {
-        // In an application this would be Frame::fromQuery(Car::query()) or a cached table.
-        $cars = Frame::fromRows(Datasets::mpg());
+        // In an application this would be DataFrame::fromQuery(Car::query()) or a cached table.
+        $cars = DataFrame::fromRows(Datasets::mpg());
 
         return view('livewire.fuel-dashboard', fuel_dashboard($cars, $this->drive, $this->year, $this->selected));
     }
