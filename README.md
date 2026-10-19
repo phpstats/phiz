@@ -170,7 +170,7 @@ If a component renders several charts, give each one a `wire:key`. To change the
 
 ## Documentation and gallery
 
-The documentation at <https://erikwestlund.github.io/phiz/> is a Quarto site built from `docs/`. Its examples are executed by `scripts/docs-examples.php`. `php examples/gallery.php` writes an HTML page of the 40 examples in `examples/catalog.php`.
+The documentation at <https://phpstats.github.io/phiz/> is a Quarto site built from `docs/`. Its examples are executed by `scripts/docs-examples.php`. `php examples/gallery.php` writes an HTML page of the 40 examples in `examples/catalog.php`.
 
 ## Testing
 
