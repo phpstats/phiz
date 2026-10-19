@@ -1,0 +1,104 @@
+{
+    "package": "phiz",
+    "title": "phiz",
+    "tagline": "A ggplot2-flavored grammar of graphics for PHP that emits Vega-Lite.",
+    "summary": [
+        "phiz describes a chart the way ggplot2 does: data, aesthetic mappings, layers of geoms, scales, coordinates, facets, labels, and themes. It builds a Vega-Lite specification in PHP and the browser draws it, so there is no JavaScript to write.",
+        "Plots take rows, columns, a phibble table, a Laravel collection, or a URL that Vega-Lite fetches itself. Dozens of geoms cover points, lines, areas, bars, distributions, intervals, heatmaps, densities, contours, and model fits. Scales, facets, label formatters, and guides keep ggplot2 names and arguments, and the theme presets follow its complete themes.",
+        "Interaction is expressed as Vega-Lite parameters, so tooltips, panning, zooming, brushing, and linked highlighting work in any page that renders the specification. The <x-phiz> Blade component draws a plot and redraws it when a Livewire component updates. The vl-convert binary turns the same specification into SVG, PNG, or PDF for reports and email.",
+        "The statistics helpers turn model results into ordinary plots: coefficient plots, regression diagnostics, predicted effects, marginal means, and random-effect intervals. Any plot method can restyle them."
+    ],
+    "install": [
+        "composer config repositories.phiz vcs https://github.com/phpstats/phiz",
+        "composer require phpstats/phiz:dev-main"
+    ],
+    "requires": [
+        "PHP 8.5",
+        "No other PHP dependencies",
+        "The vl-convert binary, optional, for SVG, PNG, and PDF export",
+        "Laravel, optional, for the <x-phiz> Blade component and @phizScripts"
+    ],
+    "repository": "https://github.com/phpstats/phiz",
+    "example": {
+        "pipe": "use function Phiz\\{aes, facet_wrap, geom_point, ggplot, label_dollar, labs, scale_y_continuous};\n\n$orders = \\Phiz\\Data::url('/exports/orders.csv');\n\n$plot = ggplot($orders, aes(x: 'items:Q', y: 'total:Q', color: 'channel:N'))\n    |> geom_point(alpha: 0.6)\n    |> facet_wrap('region', ncol: 3)\n    |> scale_y_continuous(labels: label_dollar())\n    |> labs(x: 'Items', y: 'Order total', color: 'Channel');\n\necho $plot->toJson(pretty: true);",
+        "output": "{\n    \"$schema\": \"https://vega.github.io/schema/vega-lite/v6.json\",\n    \"data\": {\n        \"url\": \"/exports/orders.csv\"\n    },\n    \"facet\": {\n        \"field\": \"region\",\n        \"type\": \"nominal\",\n        \"title\": null\n    },\n    \"columns\": 3,\n    \"spec\": {\n        \"mark\": {\n            \"type\": \"point\",\n            \"filled\": true,\n            \"opacity\": 0.6\n        },\n        \"encoding\": {\n            \"x\": {\n                \"field\": \"items\",\n                \"type\": \"quantitative\",\n                \"title\": \"Items\",\n                \"scale\": {\n                    \"zero\": false\n                }\n            },\n            \"y\": {\n                \"field\": \"total\",\n                \"type\": \"quantitative\",\n                \"title\": \"Order total\",\n                \"axis\": {\n                    \"labelExpr\": \"\\\"$\\\" + format(datum.value, ',~f')\"\n                },\n                \"scale\": {\n                    \"zero\": false\n                }\n            },\n            \"color\": {\n                \"field\": \"channel\",\n                \"type\": \"nominal\",\n                \"title\": \"Channel\"\n            }\n        }\n    },\n    \"config\": {\n        \"legend\": {\n            \"labelLimit\": 320\n        }\n    }\n}"
+    },
+    "docs": {
+        "root": "docs",
+        "format": "quarto",
+        "nav": [
+            {
+                "title": "Overview",
+                "path": "index.qmd"
+            },
+            {
+                "title": "Get started",
+                "path": "get-started.qmd"
+            },
+            {
+                "title": "Coming from ggplot2",
+                "path": "ggplot2.qmd"
+            },
+            {
+                "title": "Data and fields",
+                "path": "data.qmd"
+            },
+            {
+                "title": "Geoms",
+                "path": "geoms.qmd"
+            },
+            {
+                "title": "Scales, coordinates, and labels",
+                "path": "scales.qmd"
+            },
+            {
+                "title": "Facets and composition",
+                "path": "facets.qmd"
+            },
+            {
+                "title": "Themes",
+                "path": "themes.qmd"
+            },
+            {
+                "title": "Interaction",
+                "path": "interaction.qmd"
+            },
+            {
+                "title": "Statistics",
+                "path": "statistics.qmd"
+            },
+            {
+                "title": "Rendering",
+                "path": "rendering.qmd"
+            },
+            {
+                "title": "Laravel and Livewire",
+                "path": "laravel.qmd"
+            },
+            {
+                "title": "Dashboards with Livewire",
+                "path": "dashboard.qmd"
+            },
+            {
+                "title": "Large data",
+                "path": "large-data.qmd"
+            },
+            {
+                "title": "Design",
+                "path": "design.qmd"
+            },
+            {
+                "title": "API reference",
+                "path": "reference.qmd"
+            },
+            {
+                "title": "Plan: CmdStanPHP figures",
+                "path": "cmdstanphp.qmd"
+            },
+            {
+                "title": "Development",
+                "path": "development.qmd"
+            }
+        ]
+    }
+}
