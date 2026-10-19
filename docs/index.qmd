@@ -12,7 +12,8 @@ Every chart on this site was produced by running the code shown above it. The ex
 ## Install
 
 ```sh
-composer require erikwestlund/phiz
+composer config repositories.phiz vcs https://github.com/phpstats/phiz
+composer require phpstats/phiz:dev-main
 ```
 
 phiz requires PHP 8.5 and has no other dependencies. Static export needs the vl-convert binary. Laravel support is optional and is discovered automatically.

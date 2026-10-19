@@ -445,7 +445,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p>Every chart on this site was produced by running the code shown above it. The examples live in <code>docs/examples/</code>, and <code>scripts/docs-examples.php</code> runs them and embeds the specifications they returned.</p>
 <section id="install" class="level2">
 <h2 class="anchored" data-anchor-id="install">Install</h2>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode sh code-with-copy"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="ex">composer</span> require erikwestlund/phiz</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode sh code-with-copy"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="ex">composer</span> config repositories.phiz vcs https://github.com/phpstats/phiz</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="ex">composer</span> require phpstats/phiz:dev-main</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>phiz requires PHP 8.5 and has no other dependencies. Static export needs the vl-convert binary. Laravel support is optional and is discovered automatically.</p>
 </section>
 <section id="what-phiz-covers" class="level2">

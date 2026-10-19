@@ -168,7 +168,7 @@
     "href": "index.html#install",
     "title": "phiz",
     "section": "Install",
-    "text": "Install\ncomposer require erikwestlund/phiz\nphiz requires PHP 8.5 and has no other dependencies. Static export needs the vl-convert binary. Laravel support is optional and is discovered automatically.",
+    "text": "Install\ncomposer config repositories.phiz vcs https://github.com/phpstats/phiz\ncomposer require phpstats/phiz:dev-main\nphiz requires PHP 8.5 and has no other dependencies. Static export needs the vl-convert binary. Laravel support is optional and is discovered automatically.",
     "crumbs": [
       "phiz"
     ]

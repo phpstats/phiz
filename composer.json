@@ -1,5 +1,5 @@
 {
-    "name": "erikwestlund/phiz",
+    "name": "phpstats/phiz",
     "description": "A ggplot2-flavored grammar of graphics for PHP that emits Vega-Lite",
     "type": "library",
     "license": "MIT",
@@ -21,15 +21,15 @@
         "ext-json": "*"
     },
     "require-dev": {
-        "erikwestlund/phibble": "dev-main",
-        "erikwestlund/phplyr": "dev-main",
         "opis/json-schema": "^2.4",
         "orchestra/testbench": "^10.0",
-        "pestphp/pest": "^4.0"
+        "pestphp/pest": "^4.0",
+        "phpstats/phibble": "^0.3",
+        "phpstats/phplyr": "^0.3"
     },
     "suggest": {
-        "erikwestlund/phibble": "Data frames that phiz plots directly",
-        "illuminate/view": "For the <x-phiz> Blade component (auto-discovered in Laravel)"
+        "illuminate/view": "For the <x-phiz> Blade component (auto-discovered in Laravel)",
+        "phpstats/phibble": "Data frames that phiz plots directly"
     },
     "autoload": {
         "psr-4": {
@@ -66,11 +66,11 @@
     "repositories": [
         {
             "type": "vcs",
-            "url": "https://github.com/erikwestlund/phibble"
+            "url": "https://github.com/phpstats/phibble"
         },
         {
             "type": "vcs",
-            "url": "https://github.com/erikwestlund/phplyr"
+            "url": "https://github.com/phpstats/phplyr"
         }
     ]
 }
