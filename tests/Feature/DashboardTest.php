@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-use Phibble\Frame;
+use Phibble\DataFrame;
 use Phiz\Datasets;
 
 require_once __DIR__.'/../../examples/dashboard.php';
 
 it('builds the dashboard charts from phplyr summaries of a phibble table', function () {
-    $charts = fuel_dashboard(Frame::fromRows(Datasets::mpg()), drive: 'f', year: 2008, selected: 'compact');
+    $charts = fuel_dashboard(DataFrame::fromRows(Datasets::mpg()), drive: 'f', year: 2008, selected: 'compact');
     $classes = array_column($charts['summary']->toRows(), 'class');
 
     expect($classes)->toBe(['compact', 'subcompact', 'midsize', 'minivan'])
