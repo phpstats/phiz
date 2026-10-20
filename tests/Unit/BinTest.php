@@ -50,14 +50,14 @@ it('places points in their nearest hexagon', function () {
 });
 
 it('reads phibble tables column by column and streams generators with limits', function () {
-    $frame = DataFrame::fromColumns(cloud());
+    $df = DataFrame::fromColumns(cloud());
     $stream = (function () {
         foreach (range(1, 100) as $i) {
             yield ['v' => $i];
         }
     })();
 
-    expect(array_sum(array_column(Bin::grid($frame, 'x', 'y', 6), 'count')))->toBe(400)
+    expect(array_sum(array_column(Bin::grid($df, 'x', 'y', 6), 'count')))->toBe(400)
         ->and(array_sum(array_column(Bin::histogram($stream, 'v', bins: 4, limits: [1, 100]), 'count')))->toBe(100)
         ->and(fn () => Bin::histogram((fn () => yield ['v' => 1])(), 'v'))->toThrow(InvalidArgumentException::class, 'pass the limits');
 });

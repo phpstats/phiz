@@ -29,7 +29,7 @@ it('reads phibble-style tables and collections', function () {
             return ['a' => [1, 2]];
         }
     };
-    $frame = new class
+    $df = new class
     {
         public function toRows(): array
         {
@@ -50,7 +50,7 @@ it('reads phibble-style tables and collections', function () {
     };
 
     expect(Data::from($table)->rows)->toBe([['a' => 1], ['a' => 2]])
-        ->and(Data::from($frame)->rows)->toBe([['a' => 1]])
+        ->and(Data::from($df)->rows)->toBe([['a' => 1]])
         ->and(Data::from($collection)->rows)->toBe([['a' => 3]]);
 });
 
