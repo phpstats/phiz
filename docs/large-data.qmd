@@ -31,7 +31,7 @@ Histograms computed in PHP use exactly `bins` equal-width bins, or `binwidth` an
 
 ## Tables stay columnar
 
-A phibble table or an array of columns is kept as given. The binning geoms read it column by column, and rows are built only if the specification embeds them. On a laptop, a million-row phibble Frame plots as follows:
+A phibble table or an array of columns is kept as given. The binning geoms read it column by column, and rows are built only if the specification embeds them. On a laptop, a million-row phibble table plots as follows:
 
 | Plot | Time | Spec size |
 | --- | --- | --- |

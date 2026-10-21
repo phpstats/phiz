@@ -836,7 +836,7 @@
     "href": "large-data.html#tables-stay-columnar",
     "title": "Large data",
     "section": "Tables stay columnar",
-    "text": "Tables stay columnar\nA phibble table or an array of columns is kept as given. The binning geoms read it column by column, and rows are built only if the specification embeds them. On a laptop, a million-row phibble Frame plots as follows:\n\n\n\nPlot\nTime\nSpec size\n\n\n\n\nhex(bins: 40)\n0.9 s\n49 KB\n\n\nbin2d(bins: 50)\n0.6 s\n132 KB\n\n\nhistogram(bins: 60)\n0.4 s\n6 KB\n\n\n\nPeak memory was about 100 MB, of which the table took 51 MB.",
+    "text": "Tables stay columnar\nA phibble table or an array of columns is kept as given. The binning geoms read it column by column, and rows are built only if the specification embeds them. On a laptop, a million-row phibble table plots as follows:\n\n\n\nPlot\nTime\nSpec size\n\n\n\n\nhex(bins: 40)\n0.9 s\n49 KB\n\n\nbin2d(bins: 50)\n0.6 s\n132 KB\n\n\nhistogram(bins: 60)\n0.4 s\n6 KB\n\n\n\nPeak memory was about 100 MB, of which the table took 51 MB.",
     "crumbs": [
       "Output",
       "Large data"
