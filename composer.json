@@ -55,7 +55,11 @@
     "scripts": {
         "test": "pest",
         "gallery": "php examples/gallery.php",
-        "lint": "phpcs"
+        "lint": [
+            "phpcs",
+            "@test:sniffs"
+        ],
+        "test:sniffs": "php tools/phpcs/selftest/run.php"
     },
     "config": {
         "sort-packages": true,
