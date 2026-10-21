@@ -54,7 +54,8 @@
     },
     "scripts": {
         "test": "pest",
-        "gallery": "php examples/gallery.php"
+        "gallery": "php examples/gallery.php",
+        "lint": "phpcs"
     },
     "config": {
         "sort-packages": true,
