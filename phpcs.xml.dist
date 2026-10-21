@@ -37,5 +37,14 @@
         <exclude-pattern>bench/*</exclude-pattern>
         <exclude-pattern>benchmarks/*</exclude-pattern>
     </rule>
-    <rule ref="./tools/phpcs/Phpstats/Sniffs/NamingConventions/CamelCapsParameterAndPropertySniff.php"></rule>
+    <rule ref="./tools/phpcs/Phpstats/Sniffs/NamingConventions/CamelCapsParameterAndPropertySniff.php">
+        <!-- G is the standard symbol for a mixed model's random-effects
+             covariance matrix. It reaches the private static rebuiltEffects()
+             and singularNote() under that name. -->
+        <properties>
+            <property name="allowed" type="array">
+                <element value="G"/>
+            </property>
+        </properties>
+    </rule>
 </ruleset>
