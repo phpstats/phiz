@@ -16,7 +16,7 @@ composer config repositories.phiz vcs https://github.com/phpstats/phiz
 composer require phpstats/phiz:dev-main
 ```
 
-phiz requires PHP 8.5 and has no other dependencies. Static export needs the vl-convert binary. Laravel support is optional and is discovered automatically.
+phiz requires PHP 8.3 or later and has no other dependencies. The pipe operator examples need PHP 8.5. Static export needs the vl-convert binary. Laravel support is optional and is discovered automatically.
 
 ## What phiz covers
 

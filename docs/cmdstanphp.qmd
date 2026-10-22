@@ -23,7 +23,7 @@ phiz now provides what the readiness note lists as prerequisites:
 
 1. **Optional `Figure::toPhiz()`.** Add a method that returns a `Phiz\Chart` when phiz is installed, and throws a clear error otherwise. Detect phiz with `class_exists(\Phiz\Plot::class)`, as `to_frame()` detects phibble. Keep `vegaLite()`, `html()`, `svg()`, and `png()` unchanged for PHP 8.2 users.
 2. **Tests.** For each figure kind, assert that `toPhiz()` produces a spec that validates against the Vega-Lite schema and renders with vl-convert. Compare its data values with `Figure::$data`. Exact spec equality with `VegaLite::spec()` is not a goal, because phiz targets Vega-Lite 6 and applies its own defaults.
-3. **Move shared rendering.** When CmdStanPHP requires PHP 8.5, replace `Figure::html()` and the vl-convert code in `Figure::convert()` with phiz's `Html` and `Export`. The binary discovery already honors the `VL_CONVERT` variable.
+3. **Move shared rendering.** When CmdStanPHP requires PHP 8.3, replace `Figure::html()` and the vl-convert code in `Figure::convert()` with phiz's `Html` and `Export`. The binary discovery already honors the `VL_CONVERT` variable.
 4. **Rebuild the kinds.** Replace `VegaLite::spec()` with the `toPhiz()` translations and keep the `Figure` data contract and the R comparisons.
 
 ## Translations
@@ -93,6 +93,6 @@ The `intervals` kind uses the same column names (`ll`, `l`, `m`, `h`, `hh`) as p
 
 ## Open questions
 
-- **PHP floor.** phiz requires PHP 8.5. Until CmdStanPHP raises its floor from 8.2, phiz stays an optional dependency, and steps 3 and 4 wait.
+- **PHP floor.** phiz requires PHP 8.3. Until CmdStanPHP raises its floor from 8.2 to 8.3, phiz stays an optional dependency, and steps 3 and 4 wait.
 - **Thinning.** `VegaLite::thin()` keeps every k-th draw and every divergent draw. It belongs in CmdStanPHP as a row filter applied before `toPhiz()`.
 - **ASCII output.** phiz has no text backend. `AsciiChart` stays in CmdStanPHP.

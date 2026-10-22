@@ -38,7 +38,7 @@ composer config repositories.phiz vcs https://github.com/phpstats/phiz
 composer require phpstats/phiz:dev-main
 ```
 
-phiz needs PHP 8.5 and has no other dependencies. Static export needs the `vl-convert` binary on `PATH`, or its path in `PHIZ_VL_CONVERT`. Laravel support is optional and auto-discovered.
+phiz needs PHP 8.3 or later and has no other dependencies. The pipe operator needs PHP 8.5. On 8.3 and 8.4, `apply()` takes the same functions. Static export needs the `vl-convert` binary on `PATH`, or its path in `PHIZ_VL_CONVERT`. Laravel support is optional and auto-discovered.
 
 ## Data
 

@@ -18,6 +18,8 @@ The suite runs with Pest and covers several layers:
 
 Tests that need the php_stats extension skip when it is not loaded. The saved fits in `tests/fixtures/fits.json` cover the rest.
 
+CI runs the suite on PHP 8.3, 8.4, and 8.5. The tests in `tests/Pipes/` use the pipe operator, so `phpunit.xml` runs them only on PHP 8.5. Code in `src/` must parse on PHP 8.3.
+
 ## Gallery
 
 ```sh

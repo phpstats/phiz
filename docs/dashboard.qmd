@@ -6,7 +6,7 @@ This page builds a small dashboard of linked charts. A Livewire component holds 
 
 ## The charts
 
-`fuel_dashboard()` takes the cars table and the filter state and returns three plots and the class summary behind the bar chart. It lives in `examples/dashboard.php`, and the Livewire component below calls it from `render()`.
+`fuel_dashboard()` takes the cars table and the filter state and returns three plots and the class summary behind the bar chart. It lives in `examples/dashboard.php`, and the Livewire component below calls it from `render()`. The example uses the pipe operator, so it needs PHP 8.5.
 
 - The bar chart shows mean highway mpg by class, from `group_by('class') |> summarise(...)`. The selected class is highlighted with a computed field.
 - The scatterplot shows the filtered cars, with one linear fit across all of them.

@@ -33,6 +33,8 @@ PHP 8.5's pipe operator composes ggplot2-style functions. `ggplot()` starts a pl
 
 {{< include _generated/start-pipe.md >}}
 
+On PHP 8.3 and 8.4, pass the same functions to `apply()`: `ggplot($mpg, aes(x: 'displ', y: 'hwy'))->apply(geom_point(), labs(x: 'Displacement (L)'))`.
+
 The fluent methods and the functions accept the same arguments. A plot can also apply reusable fragments with `apply()`:
 
 ```php
