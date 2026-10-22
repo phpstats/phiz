@@ -68,15 +68,15 @@ final class Plot extends Chart
     public function aes(mixed ...$mappings): self
     {
         if (count($mappings) === 1 && array_is_list($mappings) && $mappings[0] instanceof Aes) {
-            return clone($this, ['aes' => $this->aes->merge($mappings[0])]);
+            return $this->with(aes: $this->aes->merge($mappings[0]));
         }
 
-        return clone($this, ['aes' => $this->aes->merge(Aes::of(...$mappings))]);
+        return $this->with(aes: $this->aes->merge(Aes::of(...$mappings)));
     }
 
     public function data(mixed $data): self
     {
-        return clone($this, ['data' => Data::from($data)]);
+        return $this->with(data: Data::from($data));
     }
 
     // Geoms.
@@ -435,7 +435,7 @@ final class Plot extends Chart
     /** A raw Vega-Lite layer, used as given. */
     public function layer(array $spec): self
     {
-        return clone($this, ['layers' => [...$this->layers, new Layer('raw', Aes::of(), ['spec' => $spec])]]);
+        return $this->with(layers: [...$this->layers, new Layer('raw', Aes::of(), ['spec' => $spec])]);
     }
 
     /** Adds a geom by name with options: the generic form behind the geom methods. */
@@ -457,7 +457,7 @@ final class Plot extends Chart
             $raw,
         );
 
-        return clone($this, ['layers' => [...$this->layers, $layer]]);
+        return $this->with(layers: [...$this->layers, $layer]);
     }
 
     // Scales.
@@ -470,7 +470,7 @@ final class Plot extends Chart
         $scales = $this->scales;
         $scales[$aesthetic] = isset($scales[$aesthetic]) ? $scales[$aesthetic]->merge($scale) : $scale;
 
-        return clone($this, ['scales' => $scales]);
+        return $this->with(scales: $scales);
     }
 
     /** x scale: type (linear, log, sqrt, time, ...), domain, range, zero, nice, reverse, name, breaks, labels, format. */
@@ -545,7 +545,7 @@ final class Plot extends Chart
     /** Swaps the x and y channels, so mappings stay as written while the plot turns sideways. */
     public function coordFlip(bool $flip = true): self
     {
-        return clone($this, ['flip' => $flip]);
+        return $this->with(flip: $flip);
     }
 
     /**
@@ -560,7 +560,7 @@ final class Plot extends Chart
             throw new InvalidArgumentException("coordPolar() takes theta 'x' or 'y' and direction 1 or -1.");
         }
 
-        return clone($this, ['coord' => ['type' => 'polar', 'theta' => $theta, 'start' => $start, 'direction' => $direction, 'innerRadius' => $innerRadius]]);
+        return $this->with(coord: ['type' => 'polar', 'theta' => $theta, 'start' => $start, 'direction' => $direction, 'innerRadius' => $innerRadius]);
     }
 
     /**
@@ -573,13 +573,13 @@ final class Plot extends Chart
             throw new InvalidArgumentException('coordFixed() needs a positive ratio.');
         }
 
-        return clone($this, ['coord' => ['type' => 'fixed', 'ratio' => $ratio]]);
+        return $this->with(coord: ['type' => 'fixed', 'ratio' => $ratio]);
     }
 
     /** Zooms to fixed domains, clipping marks outside them. */
     public function coordCartesian(?array $xlim = null, ?array $ylim = null): self
     {
-        return clone($this, ['limits' => array_filter(['x' => $xlim, 'y' => $ylim] + $this->limits, fn ($v) => $v !== null)]);
+        return $this->with(limits: array_filter(['x' => $xlim, 'y' => $ylim] + $this->limits, fn ($v) => $v !== null));
     }
 
     /**
@@ -595,7 +595,7 @@ final class Plot extends Chart
             throw new InvalidArgumentException('facetWrap needs a field.');
         }
 
-        return clone($this, ['facet' => ['type' => 'wrap', 'facets' => array_values($facets), 'ncol' => $ncol, 'nrow' => $nrow, 'scales' => $scales, 'labeller' => self::labeller($labeller), 'header' => $header]]);
+        return $this->with(facet: ['type' => 'wrap', 'facets' => array_values($facets), 'ncol' => $ncol, 'nrow' => $nrow, 'scales' => $scales, 'labeller' => self::labeller($labeller), 'header' => $header]);
     }
 
     /** A grid of panels by rows and/or cols fields. */
@@ -605,7 +605,7 @@ final class Plot extends Chart
             throw new InvalidArgumentException('facetGrid needs rows, cols, or both.');
         }
 
-        return clone($this, ['facet' => ['type' => 'grid', 'rows' => $rows, 'cols' => $cols, 'scales' => $scales, 'labeller' => self::labeller($labeller), 'header' => $header]]);
+        return $this->with(facet: ['type' => 'grid', 'rows' => $rows, 'cols' => $cols, 'scales' => $scales, 'labeller' => self::labeller($labeller), 'header' => $header]);
     }
 
     /**
@@ -634,7 +634,7 @@ final class Plot extends Chart
             $out[match ($name) { 'colour' => 'color', 'alpha' => 'opacity', default => $name }] = $title;
         }
 
-        return clone($this, ['labels' => $out]);
+        return $this->with(labels: $out);
     }
 
     public function title(?string $title, ?string $subtitle = null): self
@@ -656,28 +656,28 @@ final class Plot extends Chart
         };
         $current = $preset !== null ? [] : $this->config;
 
-        return clone($this, ['config' => Theme::merge($current, $base, Theme::options($font, $legendPosition, $background, $panelBackground, $panelBorder, $grid, $titleAnchor, $padding, $xLabelAngle, $yLabelAngle, $legendDirection, $legendTitle, $axisLine, $ticks, $gridColor, $textColor), $config)]);
+        return $this->with(config: Theme::merge($current, $base, Theme::options($font, $legendPosition, $background, $panelBackground, $panelBorder, $grid, $titleAnchor, $padding, $xLabelAngle, $yLabelAngle, $legendDirection, $legendTitle, $axisLine, $ticks, $gridColor, $textColor), $config));
     }
 
     /** Width and height in pixels (per panel when faceted); 'container' fills the parent element's width. */
     public function size(int|string|null $width = null, int|string|null $height = null): self
     {
-        return clone($this, ['width' => $width ?? $this->width, 'height' => $height ?? $this->height]);
+        return $this->with(width: $width ?? $this->width, height: $height ?? $this->height);
     }
 
     public function width(int|string $width): self
     {
-        return clone($this, ['width' => $width]);
+        return $this->with(width: $width);
     }
 
     public function height(int|string $height): self
     {
-        return clone($this, ['height' => $height]);
+        return $this->with(height: $height);
     }
 
     public function description(string $description): self
     {
-        return clone($this, ['description' => $description]);
+        return $this->with(description: $description);
     }
 
     // Interaction.
@@ -685,7 +685,7 @@ final class Plot extends Chart
     /** Tooltips on every layer: true shows the encoded fields, a list shows those fields. */
     public function tooltip(bool|array|string $fields = true): self
     {
-        return clone($this, ['tooltip' => is_string($fields) ? [$fields] : $fields]);
+        return $this->with(tooltip: is_string($fields) ? [$fields] : $fields);
     }
 
     /** Pan and zoom by dragging and scrolling (scales bound to an interval selection). */
@@ -702,7 +702,7 @@ final class Plot extends Chart
     {
         $plot = $this->select(['name' => $name, 'select' => ['type' => 'interval', 'encodings' => $encodings]]);
 
-        return $unselected === null ? $plot : clone($plot, ['conditions' => [...$plot->conditions, ['param' => $name, 'channel' => $channel, 'unselected' => $unselected, 'layer' => 'first']]]);
+        return $unselected === null ? $plot : $plot->with(conditions: [...$plot->conditions, ['param' => $name, 'channel' => $channel, 'unselected' => $unselected, 'layer' => 'first']]);
     }
 
     /** Click legend entries (or marks, with bind: null) to highlight their group; others fade to $opacity. */
@@ -720,7 +720,7 @@ final class Plot extends Chart
             $param['bind'] = $bind;
         }
 
-        return clone($this->select($param), ['conditions' => [...$this->conditions, ['param' => $name, 'channel' => 'opacity', 'unselected' => $opacity, 'selected' => 1, 'layer' => 'all']]]);
+        return $this->select($param)->with(conditions: [...$this->conditions, ['param' => $name, 'channel' => 'opacity', 'unselected' => $opacity, 'selected' => 1, 'layer' => 'all']]);
     }
 
     /** A slider bound to a parameter; use expr($name) in geoms or a filter to react to it. */
@@ -752,7 +752,7 @@ final class Plot extends Chart
             $param['bind'] = $bind;
         }
 
-        return clone($this, ['params' => [...$this->params, $param]]);
+        return $this->with(params: [...$this->params, $param]);
     }
 
     /** A raw selection parameter, attached to the first layer. */
@@ -762,7 +762,7 @@ final class Plot extends Chart
             throw new InvalidArgumentException('A selection parameter needs a name and a select definition.');
         }
 
-        return clone($this, ['params' => [...$this->params, $param]]);
+        return $this->with(params: [...$this->params, $param]);
     }
 
     // Escape hatches.
@@ -770,13 +770,13 @@ final class Plot extends Chart
     /** Vega-Lite transforms applied to the data before every layer. */
     public function transform(array ...$transforms): self
     {
-        return clone($this, ['transforms' => [...$this->transforms, ...$transforms]]);
+        return $this->with(transforms: [...$this->transforms, ...$transforms]);
     }
 
     /** Raw Vega-Lite merged into the top-level spec last (nested objects merge; lists and scalars replace). */
     public function raw(array $spec): self
     {
-        return clone($this, ['raw' => Theme::merge($this->raw, $spec)]);
+        return $this->with(raw: Theme::merge($this->raw, $spec));
     }
 
     /** Applies a function to the plot: pipe-friendly composition of reusable plot fragments. */
@@ -788,6 +788,12 @@ final class Plot extends Chart
         }
 
         return $plot;
+    }
+
+    /** A copy with the named properties replaced. */
+    private function with(mixed ...$changes): self
+    {
+        return new self(...$changes + get_object_vars($this));
     }
 
     public function toArray(): array

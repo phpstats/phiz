@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Phiz;
 
 use DateTimeInterface;
+use Error;
 use InvalidArgumentException;
 use JsonSerializable;
 use Traversable;
@@ -17,6 +18,10 @@ use BackedEnum;
  * Inline data accepts a list of row arrays, a column-oriented array of equal-length lists, a phibble Table (anything
  * with toRows() or toColumns()), a Laravel Collection (toArray()), or any iterable of rows. Rows may be arrays or
  * objects. Values are made JSON-safe: dates become ISO 8601 strings, enums their values, and NAN or INF null.
+ *
+ * @property-read list<array<string, mixed>>|null $rows Inline rows. A phibble table or an array of columns is kept
+ *     as given and turned into rows only when the spec embeds it, so binning geoms (bin2d, hex, histogram) can read
+ *     large tables column by column.
  */
 final class Data
 {
@@ -25,22 +30,6 @@ final class Data
 
     /** @var list<array<string, mixed>>|null Rows built on first use from a table or columns. */
     private ?array $built = null;
-
-    /**
-     * Inline rows. A phibble table or an array of columns is kept as given and turned into rows only when the spec
-     * embeds it, so binning geoms (bin2d, hex, histogram) can read large tables column by column.
-     *
-     * @var list<array<string, mixed>>|null
-     */
-    public ?array $rows {
-        get {
-            if ($this->eager !== null || $this->url !== null || $this->name !== null) {
-                return $this->eager;
-            }
-
-            return $this->built ??= $this->table !== null ? self::rows($this->table) : self::transpose($this->columns ?? []);
-        }
-    }
 
     /**
      * @param list<array<string, mixed>>|null $eager
@@ -55,6 +44,23 @@ final class Data
         private readonly ?object $table = null,
         private readonly ?array $columns = null,
     ) {}
+
+    public function __get(string $name): mixed
+    {
+        if ($name !== 'rows') {
+            throw new Error('Undefined property: '.self::class.'::$'.$name);
+        }
+        if ($this->eager !== null || $this->url !== null || $this->name !== null) {
+            return $this->eager;
+        }
+
+        return $this->built ??= $this->table !== null ? self::rows($this->table) : self::transpose($this->columns ?? []);
+    }
+
+    public function __isset(string $name): bool
+    {
+        return $name === 'rows' && $this->rows !== null;
+    }
 
     public static function from(mixed $data): self
     {

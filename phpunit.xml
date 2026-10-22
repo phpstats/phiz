@@ -7,6 +7,10 @@
     <testsuites>
         <testsuite name="phiz">
             <directory suffix="Test.php">./tests</directory>
+            <exclude>./tests/Pipes</exclude>
+        </testsuite>
+        <testsuite name="pipes">
+            <directory suffix="Test.php" phpVersion="8.5.0" phpVersionOperator=">=">./tests/Pipes</directory>
         </testsuite>
     </testsuites>
     <source>

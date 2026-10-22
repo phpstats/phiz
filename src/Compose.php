@@ -51,7 +51,7 @@ final class Compose extends Chart
 
     public function title(string $title, ?string $subtitle = null): self
     {
-        return clone($this, ['title' => $subtitle === null ? $title : ['text' => $title, 'subtitle' => $subtitle]]);
+        return $this->with(title: $subtitle === null ? $title : ['text' => $title, 'subtitle' => $subtitle]);
     }
 
     /** A theme preset and options for the whole composition, as Plot::theme(). */
@@ -59,18 +59,24 @@ final class Compose extends Chart
     {
         $config = Plot::of()->theme($preset, ...$options)->config;
 
-        return clone($this, ['config' => Theme::merge($this->config, $config)]);
+        return $this->with(config: Theme::merge($this->config, $config));
     }
 
     /** Shares or separates scales, axes, and legends across the plots, e.g. ['scale' => ['color' => 'independent']]. */
     public function resolve(array $resolve): self
     {
-        return clone($this, ['resolve' => $resolve]);
+        return $this->with(resolve: $resolve);
     }
 
     public function raw(array $spec): self
     {
-        return clone($this, ['raw' => Theme::merge($this->raw, $spec)]);
+        return $this->with(raw: Theme::merge($this->raw, $spec));
+    }
+
+    /** A copy with the named properties replaced. */
+    private function with(mixed ...$changes): self
+    {
+        return new self(...$changes + get_object_vars($this));
     }
 
     public function toArray(): array

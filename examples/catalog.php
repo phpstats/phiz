@@ -76,11 +76,12 @@ return [
         ->smooth(method: 'lm')
         ->labs(title: 'Bigger engines, fewer miles', x: 'Displacement (L)', y: 'Highway mpg', color: 'Drive')],
 
-    'pipe' => ['Basics', 'With the pipe operator', 'ggplot2-style functions compose with PHP 8.5 pipes.', fn () => ggplot($mpg, aes(x: 'displ', y: 'hwy'))
-        |> geom_point(alpha: 0.4)
-        |> geom_smooth(span: 0.5)
-        |> labs(title: 'Loess smooth', x: 'Displacement (L)', y: 'Highway mpg')
-        |> theme_minimal()],
+    'pipe' => ['Basics', 'With ggplot2-style functions', 'ggplot2-style functions compose with apply(), or with the pipe operator on PHP 8.5.', fn () => ggplot($mpg, aes(x: 'displ', y: 'hwy'))->apply(
+        geom_point(alpha: 0.4),
+        geom_smooth(span: 0.5),
+        labs(title: 'Loess smooth', x: 'Displacement (L)', y: 'Highway mpg'),
+        theme_minimal(),
+    )],
 
     'line' => ['Basics', 'Time series', 'ISO dates are read as temporal fields.', fn () => Plot::of($economics)
         ->aes(x: 'date', y: 'unemploy')

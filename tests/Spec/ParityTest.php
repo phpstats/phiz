@@ -90,7 +90,7 @@ $parity = [
     'label dollar' => fn () => Plot::of(Datasets::economics())->aes(x: 'date', y: 'pce')->line()->apply(scale_y_continuous(labels: label_dollar(scale: 0.001, suffix: 'k'))),
     'label comma, number, scientific, date' => fn () => Plot::of(Datasets::economics())->aes(x: 'date', y: 'pop')->line()
         ->scaleY(labels: label_comma())->scaleX(labels: label_date('%Y'))->scaleColor(labels: label_scientific())->scaleSize(labels: label_number(accuracy: 0.1, bigMark: ' ')),
-    'guides' => fn () => ggplot(Datasets::mpg(), aes(x: 'class', y: 'hwy', color: 'drv')) |> geom_point() |> guides(x: guide_axis(angle: 45), color: guide_legend(title: 'Drive', ncol: 2)),
+    'guides' => fn () => ggplot(Datasets::mpg(), aes(x: 'class', y: 'hwy', color: 'drv'))->apply(geom_point(), guides(x: guide_axis(angle: 45), color: guide_legend(title: 'Drive', ncol: 2))),
     'guides none' => fn () => $cars()->aes(x: 'displ', y: 'hwy', color: 'drv')->point()->guides(color: 'none'),
     'theme linedraw' => fn () => $cars()->aes(x: 'displ', y: 'hwy')->point()->apply(theme_linedraw()),
     'theme element options' => fn () => $cars()->aes(x: 'class', y: 'hwy', color: 'drv')->point()

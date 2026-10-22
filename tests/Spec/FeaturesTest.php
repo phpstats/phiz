@@ -99,25 +99,26 @@ it('is immutable', function () {
         ->and($lines->layers[0]->geom)->toBe('line');
 });
 
-it('composes with the pipe operator', function () {
-    $piped = Plot::of(sample())
-        |> Phiz\geom_point(alpha: 0.5)
-        |> Phiz\geom_smooth(method: 'lm', se: false)
-        |> Phiz\scale_y_log10()
-        |> Phiz\labs(title: 'Piped', x: 'X')
-        |> Phiz\theme_minimal();
+it('composes ggplot2-style functions with apply()', function () {
+    $applied = Plot::of(sample())->apply(
+        Phiz\geom_point(alpha: 0.5),
+        Phiz\geom_smooth(method: 'lm', se: false),
+        Phiz\scale_y_log10(),
+        Phiz\labs(title: 'Applied', x: 'X'),
+        Phiz\theme_minimal(),
+    );
     $fluent = Plot::of(sample())
         ->point(alpha: 0.5)
         ->smooth(method: 'lm', se: false)
         ->scaleY(type: 'log')
-        ->labs(title: 'Piped', x: 'X')
+        ->labs(title: 'Applied', x: 'X')
         ->theme('minimal');
 
-    expect($piped->aes(x: 'x', y: 'y')->toArray())->toBe($fluent->aes(x: 'x', y: 'y')->toArray());
+    expect($applied->aes(x: 'x', y: 'y')->toArray())->toBe($fluent->aes(x: 'x', y: 'y')->toArray());
 });
 
 it('starts a plot with ggplot() and aes()', function () {
-    $plot = Phiz\ggplot(sample(), aes(x: 'x', y: 'y')) |> Phiz\geom_line();
+    $plot = Phiz\ggplot(sample(), aes(x: 'x', y: 'y'))->apply(Phiz\geom_line());
 
     expect($plot->toArray()['encoding']['x']['field'])->toBe('x');
 });
