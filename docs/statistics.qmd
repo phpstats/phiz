@@ -2,7 +2,7 @@
 title: "Statistics"
 ---
 
-The statistics helpers build ordinary plots from model results, so their output can be restyled with any `Plot` method. They read the arrays that php-stats returns. Formula fits from `stats_lm`, `stats_glm`, `stats_lmer`, and `stats_glmer` name their coefficients in `columns`. Matrix fits from `stats_ols` and `stats_logistic` take a `names:` argument.
+The statistics helpers build ordinary plots from model results, so their output can be restyled with any `Plot` method. They read the arrays that [phit](https://github.com/phpstats/phit) returns, from the extension or from phit-polyfill. Formula fits from `Phit\fit_lm`, `fit_glm`, `fit_lmer`, and `fit_glmer` name their coefficients in `columns`. Matrix fits from `fit_ols` and `fit_logistic` take a `names:` argument.
 
 The fits on this page were produced by php-stats from the `mtcars` data and saved in `docs/examples/fits/`.
 
@@ -32,7 +32,7 @@ Several fits keyed by label are compared side by side, with one color per model.
 
 `effect_plot()` draws predictions with confidence bands as one variable varies across its observed range. `by:` draws one line per level of a grouping variable. Other variables are held at their mean, or at their most common value when they are categorical.
 
-For formula fits, phiz builds the prediction design with `stats_model_matrix()` on the fitting data and the grid together, so factor levels and reference categories match the fit. For matrix fits, pass `design:`, a function from a grid row to a design row. GLM intervals are computed on the link scale and transformed to the response scale. The predictions match R's `predict()` with `interval = "confidence"`.
+For formula fits, phiz builds the prediction design with `Phit\model_matrix()` on the fitting data and the grid together, so factor levels and reference categories match the fit. For matrix fits, pass `design:`, a function from a grid row to a design row. GLM intervals are computed on the link scale and transformed to the response scale. The predictions match R's `predict()` with `interval = "confidence"`.
 
 {{< include _generated/stats-effects.md >}}
 
@@ -58,7 +58,7 @@ The linear-model means match a direct computation in R to 10 digits. GLM means m
 
 ## Random effects
 
-`random_effects_plot()` draws a caterpillar plot of a mixed model's random effects. It works with fits from `stats_lmer` and `stats_glmer`. Current php-stats fits report the conditional variances themselves (`effects_cond_var`, and `random_effects_cond_var` for GLMMs), and the plot uses them directly. For older fits, pass the data the model was fitted on, and phiz rebuilds the variances from it. Each group's conditional mode is shown with an interval from its conditional variance. Groups are sorted by their first effect, and random slopes get their own panels. The conditional covariance for group *j* is (Z<sub>j</sub>'W<sub>j</sub>Z<sub>j</sub> / σ² + G<sup>−1</sup>)<sup>−1</sup>, treating the fixed effects and variance components as known, as lme4's `ranef(fit, condVar = TRUE)` does. W holds the working weights of binomial and Poisson GLMMs. For intercepts, the standard deviations match lme4 to 1e-8. `group:` selects a term when the model has several. When the fit is singular, with a variance estimated at zero or random effects perfectly correlated, the subtitle says so. The intervals still follow lme4, which computes them without inverting G.
+`random_effects_plot()` draws a caterpillar plot of a mixed model's random effects. It works with fits from `fit_lmer` and `fit_glmer`. Current phit fits report the conditional variances themselves (`effects_cond_var`, and `random_effects_cond_var` for GLMMs), and the plot uses them directly. For older fits, pass the data the model was fitted on, and phiz rebuilds the variances from it. Each group's conditional mode is shown with an interval from its conditional variance. Groups are sorted by their first effect, and random slopes get their own panels. The conditional covariance for group *j* is (Z<sub>j</sub>'W<sub>j</sub>Z<sub>j</sub> / σ² + G<sup>−1</sup>)<sup>−1</sup>, treating the fixed effects and variance components as known, as lme4's `ranef(fit, condVar = TRUE)` does. W holds the working weights of binomial and Poisson GLMMs. For intercepts, the standard deviations match lme4 to 1e-8. `group:` selects a term when the model has several. When the fit is singular, with a variance estimated at zero or random effects perfectly correlated, the subtitle says so. The intervals still follow lme4, which computes them without inverting G.
 
 {{< include _generated/stats-random-effects.md >}}
 

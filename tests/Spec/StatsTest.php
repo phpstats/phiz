@@ -115,11 +115,26 @@ it('matches R predict() for a formula fit', function () {
         ->and($first['upper'])->toEqualWithDelta(30.11307873, 1e-7);
 })->skip(! file_exists(__DIR__.'/../fixtures/fits.json'));
 
-it('builds the effect grid with stats_model_matrix when php_stats is loaded', function () {
+it('builds the effect grid from the formula with Phit\model_matrix', function () {
     $rows = Charts::effects(fits()['lm'], Datasets::mtcars(), 'wt', by: 'cyl', n: 3)->data->rows;
 
     expect(array_slice($rows, 0, 3))->toEqualWithDelta(fits()['effect_lm_grid_first3'], 1e-9);
-})->skip(! function_exists('stats_model_matrix'), 'needs the php_stats extension');
+});
+
+it('plots fits made by phit itself', function () {
+    $cars = Datasets::mtcars();
+    $columns = [];
+    foreach ($cars as $row) {
+        foreach ($row as $key => $value) {
+            $columns[$key][] = $value;
+        }
+    }
+    $effects = effect_plot(Phit\fit_lm('mpg ~ wt + hp + factor(cyl)', $columns), $cars, 'wt', by: 'cyl', n: 3)->data->rows;
+    $means = marginal_means(Phit\fit_lm('mpg ~ factor(cyl) + factor(am) + wt', $columns), $cars, 'cyl')->data->rows;
+
+    expect(array_slice($effects, 0, 3))->toEqualWithDelta(fits()['effect_lm_grid_first3'], 1e-7)
+        ->and($means[1]['estimate'])->toEqualWithDelta(19.4382815593, 1e-8);
+});
 
 it('explains what predictions need', function (Closure $build) {
     $build();
@@ -130,7 +145,7 @@ it('explains what predictions need', function (Closure $build) {
     fn () => coefplot(fits()['lm'], names: null, terms: ['nothing']),
 ])->throws(InvalidArgumentException::class);
 
-/** The design of mpg ~ factor(cyl) + factor(am) + wt, for tests without the php_stats extension. */
+/** The design of mpg ~ factor(cyl) + factor(am) + wt, for the design: argument. */
 function carsDesign(array $row): array
 {
     return [1, (int) ($row['cyl'] == 6), (int) ($row['cyl'] == 8), (int) ($row['am'] == 1), $row['wt']];
@@ -146,11 +161,11 @@ it('matches emmeans-style marginal means computed in R', function () {
         ->and($rows[2]['upper'])->toEqualWithDelta(19.5098277969, 1e-8);
 });
 
-it('builds marginal means from the formula with php_stats', function () {
+it('builds marginal means from the formula', function () {
     $rows = marginal_means(fits()['lm_factors'], Datasets::mtcars(), 'cyl')->data->rows;
 
     expect($rows[1]['estimate'])->toEqualWithDelta(19.4382815593, 1e-8);
-})->skip(! function_exists('stats_model_matrix'), 'needs the php_stats extension');
+});
 
 it('matches lme4 conditional standard deviations of random intercepts', function () {
     // R: ranef(lmer(hwy ~ displ + (1 | manufacturer), mpg), condVar = TRUE)
@@ -162,12 +177,12 @@ it('matches lme4 conditional standard deviations of random intercepts', function
         ->and($sd['dodge'])->toEqualWithDelta(0.5370759285, 1e-6);
 });
 
-it('draws random slopes in panels when php_stats builds their design', function () {
+it('draws random slopes in panels from their formula design', function () {
     $plot = random_effects_plot(fits()['lmer_slope'], Datasets::mpg());
 
     expect($plot)->toBeValidVegaLite()
         ->and(array_unique(array_column($plot->data->rows, 'effect')))->toBe(['(Intercept)', 'displ']);
-})->skip(! function_exists('stats_model_matrix'), 'needs the php_stats extension');
+});
 
 it('labels GLM coefficients by link', function () {
     expect(coefplot(fits()['glm'])->labels['x'])->toBe('Log odds (95% CI)')

@@ -24,9 +24,9 @@ phiz requires PHP 8.3 or later and has no other dependencies. The pipe operator 
 - About 30 geoms, including points, lines, areas, bars, histograms, densities, boxplots, intervals, reference lines, text, heatmaps, smoothers, QQ plots, and arcs.
 - Scales, coordinate flips and limits, facets, compositions, labels, and themes modeled on ggplot2's complete themes.
 - Tooltips, pan and zoom, brushing, legend highlighting, sliders, and linked views, all expressed as Vega-Lite parameters.
-- Statistical plots built from php-stats model results and CmdStanPHP draws: coefficient plots, regression diagnostics, predicted values with confidence bands, and posterior intervals.
+- Statistical plots built from phit model results and CmdStanPHP draws: coefficient plots, regression diagnostics, predicted values with confidence bands, and posterior intervals.
 - HTML output, static export, and an `<x-phiz>` Blade component that re-renders inside Livewire.
 
 ## The phpstats family
 
-phiz is the visualization package of the phpstats family. [php-stats](https://github.com/erikwestlund/php-stats) fits the models, [phibble](https://github.com/erikwestlund/phibble) provides data frames, [phplyr](https://github.com/erikwestlund/phplyr) provides dplyr verbs, and [CmdStanPHP](https://github.com/erikwestlund/cmdstanphp) runs Stan. phiz depends on none of them. It reads any of their tables directly.
+phiz is the visualization package of the phpstats family. [phit](https://github.com/phpstats/phit) fits the models, [phibble](https://github.com/erikwestlund/phibble) provides data frames, [phplyr](https://github.com/erikwestlund/phplyr) provides dplyr verbs, and [CmdStanPHP](https://github.com/erikwestlund/cmdstanphp) runs Stan. phiz depends on none of them. It reads any of their tables directly.

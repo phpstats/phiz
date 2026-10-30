@@ -16,7 +16,7 @@ The suite runs with Pest and covers several layers:
 - Blade component tests on Orchestra Testbench.
 - When vl-convert is available, a render of every gallery example to SVG. Some specifications pass the schema but fail to compile, and this smoke test catches them.
 
-Tests that need the php_stats extension skip when it is not loaded. The saved fits in `tests/fixtures/fits.json` cover the rest.
+The statistics tests build model designs with `Phit\model_matrix()`. They run on the phit extension when it is loaded and on phit-polyfill, a development dependency, when it is not. The saved fits in `tests/fixtures/fits.json` let them check results against R.
 
 CI runs the suite on PHP 8.3, 8.4, and 8.5. The tests in `tests/Pipes/` use the pipe operator, so `phpunit.xml` runs them only on PHP 8.5. Code in `src/` must parse on PHP 8.3.
 
@@ -37,4 +37,4 @@ The documentation is a Quarto website in `docs/`. The pages include generated fr
 3. `quarto render docs` builds the site into `docs/_site/`.
 4. `scripts/render-docs` runs steps 2 and 3, then copies the site into `docs/` for GitHub Pages.
 
-Some statistics examples build designs from model formulas with `stats_model_matrix()`, so the documentation build loads the php_stats extension: `PHP="php -d extension=/path/to/php_stats" scripts/render-docs`.
+Some statistics examples build designs from model formulas with `Phit\model_matrix()`. phit-polyfill provides it when the phit extension is not loaded, so the documentation build needs no extension.

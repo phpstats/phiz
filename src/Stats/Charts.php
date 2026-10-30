@@ -14,8 +14,8 @@ use function Phiz\aes;
 /**
  * Plots of fitted models and posterior draws, built from ordinary Plot layers so they can be restyled and extended.
  *
- * Fits are the arrays php-stats returns: stats_lm, stats_glm, stats_lmer and stats_glmer (which name their
- * coefficients in 'columns'), or stats_ols and stats_logistic (pass names:). Each needs 'coefficients', and
+ * Fits are the arrays phit returns: Phit\fit_lm, fit_glm, fit_lmer and fit_glmer (which name their coefficients
+ * in 'columns'), or fit_ols and fit_logistic (pass names:). Each needs 'coefficients', and
  * 'std_errors' or 'conf_int'; the residual plots need 'fitted' and 'residuals'.
  */
 final class Charts
@@ -168,8 +168,8 @@ final class Charts
      * Predicted values with confidence bands over a grid: x varies across its observed range (n points), $by takes
      * each of its levels, and every other column is held at its mean (numbers) or most common value.
      *
-     * Formula fits (stats_lm, stats_glm) build the grid's design with stats_model_matrix, so pass the data they
-     * were fitted on; for matrix fits (stats_ols, stats_logistic) pass design: fn (array $row) => [1, $row['x'], ...].
+     * Formula fits (fit_lm, fit_glm) build the grid's design with Phit\model_matrix, so pass the data they were
+     * fitted on; for matrix fits (fit_ols, fit_logistic) pass design: fn (array $row) => [1, $row['x'], ...].
      * GLM predictions are on the response scale, with the interval computed on the link scale.
      */
     public static function effects(array $fit, mixed $data, string $x, ?string $by = null, int $n = 50, float $level = 0.95, ?callable $design = null, bool $points = true, string $scale = 'response'): Plot
@@ -290,14 +290,14 @@ final class Charts
     }
 
     /**
-     * A caterpillar plot of a mixed model's random effects (stats_lmer, stats_glmer): each group's conditional mode
+     * A caterpillar plot of a mixed model's random effects (fit_lmer, fit_glmer): each group's conditional mode
      * with an interval from its conditional variance, one panel per effect, groups sorted by the first effect.
      * The conditional covariance is (Z_j'W_j Z_j / sigma^2 + G^-1)^-1 for group j, treating the fixed effects and
      * variance components as known, as lme4's ranef(condVar = TRUE) does; W holds GLMM working weights.
      */
     public static function randomEffects(array $fit, mixed $data = null, ?string $group = null, float $level = 0.95): Plot
     {
-        $terms = $fit['random'] ?? throw new InvalidArgumentException('random_effects_plot needs a mixed-model fit (stats_lmer or stats_glmer).');
+        $terms = $fit['random'] ?? throw new InvalidArgumentException('random_effects_plot needs a mixed-model fit (fit_lmer or fit_glmer).');
         $term = null;
         foreach ($terms as $candidate) {
             if ($group === null || ($candidate['group'] ?? null) === $group) {
@@ -313,7 +313,7 @@ final class Charts
         $effects = $term['effects'] ?? array_map(fn ($e) => [$e], $fit['random_effects'] ?? []);
         $G = $term['covariance'] ?? (isset($fit['random_intercept_variance']) ? [[(float) $fit['random_intercept_variance']]] : throw new InvalidArgumentException('The random term has no covariance.'));
         $singular = (bool) ($fit['singular'] ?? $fit['diagnostics']['singular'] ?? false);
-        // php-stats reports conditional variances (lme4's condVar): a k x k matrix per group on each term, or one
+        // phit reports conditional variances (lme4's condVar): a k x k matrix per group on each term, or one
         // variance per group for single-term GLMMs. Older fits fall back to rebuilding them from the data.
         $reported = $term['effects_cond_var'] ?? (count($columns) === 1 && isset($fit['random_effects_cond_var']) ? array_map(fn ($v) => [[(float) $v]], $fit['random_effects_cond_var']) : null);
         $out = $reported !== null
@@ -498,14 +498,14 @@ final class Charts
     private static function randomDesign(array $term, array $rows): array
     {
         $lhs = trim(explode('|', (string) ($term['label'] ?? '1 |'), 2)[0]);
-        if (function_exists('stats_model_matrix') && $lhs !== '' && $lhs !== '1') {
+        if (function_exists('Phit\model_matrix') && $lhs !== '' && $lhs !== '1') {
             $columns = [];
             foreach ($rows as $row) {
                 foreach ($row as $key => $value) {
                     $columns[$key][] = $value;
                 }
             }
-            $matrix = stats_model_matrix('~ '.$lhs, $columns);
+            $matrix = \Phit\model_matrix('~ '.$lhs, $columns);
             if (($matrix['columns'] ?? null) === $term['columns']) {
                 return $matrix['x'];
             }
@@ -517,7 +517,7 @@ final class Charts
                     return 1.0;
                 }
                 if (! is_numeric($row[$column] ?? null)) {
-                    throw new InvalidArgumentException("Cannot build the random-effect column '{$column}' without the php_stats extension.");
+                    throw new InvalidArgumentException("Cannot build the random-effect column '{$column}' without phit or phit-polyfill.");
                 }
 
                 return (float) $row[$column];
@@ -768,8 +768,8 @@ final class Charts
     /** The design matrix for grid rows from the fit's formula, built alongside the fitting data so factor levels match. */
     private static function design(array $fit, array $grid, array $data): array
     {
-        if (! isset($fit['formula']) || ! function_exists('stats_model_matrix')) {
-            throw new InvalidArgumentException('Predictions for this fit need design: fn (array $row) => [...] (formula fits need the php_stats extension).');
+        if (! isset($fit['formula']) || ! function_exists('Phit\model_matrix')) {
+            throw new InvalidArgumentException('Predictions for this fit need design: fn (array $row) => [...] (formula fits need phit or phit-polyfill).');
         }
         if ($data === []) {
             throw new InvalidArgumentException('Pass the fitting data so factor levels in the grid match the fit.');
@@ -783,7 +783,7 @@ final class Charts
                 $combined[$column][] = $row[$column] ?? null;
             }
         }
-        $matrix = stats_model_matrix($rhs, $combined);
+        $matrix = \Phit\model_matrix($rhs, $combined);
         if (($matrix['columns'] ?? null) !== ($fit['columns'] ?? null)) {
             throw new InvalidArgumentException('The grid design has columns '.json_encode($matrix['columns'] ?? null).', not the fit\'s '.json_encode($fit['columns'] ?? null).'.');
         }

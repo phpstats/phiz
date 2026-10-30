@@ -130,5 +130,5 @@ phiz adds features that ggplot2 leaves to other packages:
 
 - tooltips, pan and zoom, brushing, legend highlighting, and sliders (see [Interaction](interaction.qmd))
 - linked views across compositions
-- the statistics helpers for php-stats fits and CmdStanPHP draws (see [Statistics](statistics.qmd))
+- the statistics helpers for phit fits and CmdStanPHP draws (see [Statistics](statistics.qmd))
 - Vega-Lite aggregates and time units in field shorthand, such as `'mean(hwy)'` and `'year(date):O'`
