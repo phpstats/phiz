@@ -13,7 +13,7 @@
         "composer require phpstats/phiz:dev-main"
     ],
     "requires": [
-        "PHP 8.5",
+        "PHP 8.3 or later (8.5 for the pipe operator)",
         "No other PHP dependencies",
         "The vl-convert binary, optional, for SVG, PNG, and PDF export",
         "Laravel, optional, for the <x-phiz> Blade component and @phizScripts"
