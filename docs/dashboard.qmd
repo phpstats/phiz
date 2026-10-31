@@ -11,6 +11,60 @@ This page builds a small dashboard of linked charts. A Livewire component holds 
 
 The chart code is [`examples/dashboard.php`](https://github.com/phpstats/phiz/blob/main/examples/dashboard.php), with a method-chain version in [`examples/dashboard.chain.php`](https://github.com/phpstats/phiz/blob/main/examples/dashboard.chain.php). The test suite checks that both build the same charts.
 
+## A small component
+
+This component draws monthly revenue per customer from an `orders` table, filtered by sales channel. When a property changes, Livewire reruns `render()`, which rebuilds the pipeline, and `<x-phiz>` redraws the chart.
+
+```php
+<?php
+
+namespace App\Livewire;
+
+use App\Models\Order;
+use Livewire\Component;
+
+use function Phplyr\{col, floor_date, group_by, mutate, sum, summarise};
+
+class RevenueByMonth extends Component
+{
+    public string $channel = 'All';
+
+    public function render()
+    {
+        $orders = Order::query()
+            ->when($this->channel !== 'All', fn ($query) => $query->where('channel', $this->channel));
+
+        $monthly = \Phibble\DataFrame::fromQuery($orders) |>
+            mutate(month: floor_date(col('placed_on'), 'month')) |>
+            group_by('month', 'customer') |>
+            summarise(revenue: sum('total'));
+
+        $chart = \Phiz\Plot::of($monthly)
+            ->aes(x: 'month', y: 'revenue', color: 'customer')
+            ->line()
+            ->point()
+            ->labs(x: null, y: 'Revenue ($)', color: null);
+
+        return view('livewire.revenue-by-month', ['chart' => $chart]);
+    }
+}
+```
+
+`resources/views/livewire/revenue-by-month.blade.php`:
+
+```blade
+<div>
+    <select wire:model.live="channel">
+        <option>All</option>
+        <option>Web</option>
+        <option>App</option>
+        <option>Marketplace</option>
+    </select>
+
+    <x-phiz :plot="$chart->width('container')->height(260)" />
+</div>
+```
+
 ## The charts
 
 `fuel_dashboard()` takes the cars table and the filter state and returns three plots and the class summary behind the bar chart. The Livewire component below calls it from `render()`.
@@ -116,3 +170,7 @@ The two approaches suit different data:
 - **Browser-side linking** sends the raw rows once and responds to every interaction immediately. It suits up to a few thousand rows. [Large data](large-data.qmd) covers what to do beyond that.
 
 Both approaches can share a page. For example, a Livewire filter can choose the rows, and a brush can explore them in the browser.
+
+## A complete dashboard
+
+[A complete dashboard](https://phiz.phpstats.org/vignettes/rent-dashboard) on phpstats.org is the advanced example. It is a live Livewire page with filters, a phplyr summary, two phiz charts, a logistic model fitted with phit, and what-if predictions.

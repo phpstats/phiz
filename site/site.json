@@ -44,6 +44,23 @@
         "chain": "use function Phiz\\label_dollar;\n\n$orders = \\Phiz\\Data::url('/exports/orders.csv');\n\n$plot = \\Phiz\\Plot::of($orders)\n    ->aes(x: 'items:Q', y: 'total:Q', color: 'channel:N')\n    ->point(alpha: 0.6)\n    ->facetWrap('region', ncol: 3)\n    ->scaleY(labels: label_dollar())\n    ->labs(x: 'Items', y: 'Order total', color: 'Channel');\n\necho $plot->toJson(pretty: true);",
         "output": "{\n    \"$schema\": \"https://vega.github.io/schema/vega-lite/v6.json\",\n    \"data\": {\n        \"url\": \"/exports/orders.csv\"\n    },\n    \"facet\": {\n        \"field\": \"region\",\n        \"type\": \"nominal\",\n        \"title\": null\n    },\n    \"columns\": 3,\n    \"spec\": {\n        \"mark\": {\n            \"type\": \"point\",\n            \"filled\": true,\n            \"opacity\": 0.6\n        },\n        \"encoding\": {\n            \"x\": {\n                \"field\": \"items\",\n                \"type\": \"quantitative\",\n                \"title\": \"Items\",\n                \"scale\": {\n                    \"zero\": false\n                }\n            },\n            \"y\": {\n                \"field\": \"total\",\n                \"type\": \"quantitative\",\n                \"title\": \"Order total\",\n                \"axis\": {\n                    \"labelExpr\": \"\\\"$\\\" + format(datum.value, ',~f')\"\n                },\n                \"scale\": {\n                    \"zero\": false\n                }\n            },\n            \"color\": {\n                \"field\": \"channel\",\n                \"type\": \"nominal\",\n                \"title\": \"Channel\"\n            }\n        }\n    },\n    \"config\": {\n        \"legend\": {\n            \"labelLimit\": 320\n        }\n    }\n}"
     },
+    "examples": [
+        {
+            "path": "examples/layers",
+            "title": "Layer points and a fitted line",
+            "description": "Draws a scatterplot of engine size against highway fuel economy, with a least-squares line and its confidence band as a second layer."
+        },
+        {
+            "path": "examples/facets",
+            "title": "Compare groups with facets",
+            "description": "Splits a scatterplot of car weight against fuel economy into one panel for each number of cylinders."
+        },
+        {
+            "path": "examples/save",
+            "title": "Save a chart to a file",
+            "description": "Writes one chart to an HTML page, and to SVG and PNG images through vl-convert."
+        }
+    ],
     "docs": {
         "root": "docs",
         "format": "quarto",
@@ -139,6 +156,18 @@
             {
                 "title": "Statistics API",
                 "path": "reference-statistics.qmd"
+            },
+            {
+                "title": "Layer points and a fitted line",
+                "path": "examples/layers.qmd"
+            },
+            {
+                "title": "Compare groups with facets",
+                "path": "examples/facets.qmd"
+            },
+            {
+                "title": "Save a chart to a file",
+                "path": "examples/save.qmd"
             },
             {
                 "title": "Gallery",

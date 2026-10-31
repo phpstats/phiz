@@ -1,0 +1,37 @@
+---
+title: "Compare groups with facets"
+---
+
+This example splits a scatterplot of car weight against fuel economy into one panel for each number of cylinders.
+
+**Prerequisites:** phiz installed with Composer ([Installation](../get-started.qmd#installation)). The pipe version needs PHP 8.5, and the method chain runs on PHP 8.3 and later.
+
+## Data
+
+`Datasets::mtcars()` returns the 32 cars of R's `mtcars` data, bundled with phiz as [`resources/data/mtcars.csv`](https://github.com/phpstats/phiz/blob/main/resources/data/mtcars.csv). The example uses three of its columns:
+
+| model | mpg | cyl | wt |
+| --- | ---: | ---: | ---: |
+| Mazda RX4 | 21.0 | 6 | 2.620 |
+| Mazda RX4 Wag | 21.0 | 6 | 2.875 |
+| Datsun 710 | 22.8 | 4 | 2.320 |
+
+`wt` is the weight in thousands of pounds, `mpg` is the fuel economy in miles per gallon, and `cyl` is the number of cylinders: 11 cars have 4, 7 have 6, and 14 have 8.
+
+## Code
+
+Save the script beside the `vendor` directory and run it with `php facets.php`.
+
+{{< include ../_generated/example-facets-code.md >}}
+
+## Output
+
+{{< include ../_generated/example-facets-output.md >}}
+
+## How it works
+
+`facet_wrap('cyl', ncol: 3)` draws the same plot once for each value of `cyl`, using the rows with that value, and places the panels in three columns. The panels share their axes by default, so positions can be compared across groups. `scales: 'free'`, `'free_x'`, or `'free_y'` gives each panel its own range instead.
+
+The panels separate two effects that a single scatterplot mixes. Heavier cars tend to have more cylinders, and the panels show how weight relates to economy among cars with the same number of cylinders.
+
+Reference: [`facetWrap()`](../reference-facets.qmd#facet-wrap), [`facetGrid()`](../reference-facets.qmd#facet-grid), [`point()`](../reference-geoms.qmd#point), and [`labs()`](../reference-themes.qmd#labs). [Facets and composition](../facets.qmd) covers grids of panels and layouts of separate plots.

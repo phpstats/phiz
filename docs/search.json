@@ -513,47 +513,267 @@
     ]
   },
   {
-    "objectID": "development.html",
-    "href": "development.html",
-    "title": "Development",
+    "objectID": "examples/save.html",
+    "href": "examples/save.html",
+    "title": "Save a chart to a file",
     "section": "",
-    "text": "composer test\nThe suite runs with Pest and covers several layers:\n\nSpec snapshots for every geom, feature, statistics helper, and gallery example, in tests/.pest/snapshots/. After an intended change, run vendor/bin/pest --update-snapshots and review the diff.\nValidation of every specification against the pinned Vega-Lite 6.1.0 JSON schema in tests/fixtures/.\nNumerical checks of quantiles, least squares, smoothing bands, and predictions against values from R.\nBlade component tests on Orchestra Testbench.\nWhen vl-convert is available, a render of every gallery example to SVG. Some specifications pass the schema but fail to compile, and this smoke test catches them.\n\nThe statistics tests build model designs with Phit\\model_matrix(). They run on the phit extension when it is loaded and on phpstats/phit-polyfill, a development dependency, when it is not. The saved fits in tests/fixtures/fits.json let them check results against R.\nCI runs the suite on PHP 8.3, 8.4, and 8.5. The tests in tests/Pipes/ use the pipe operator, so phpunit.xml runs them only on PHP 8.5. Code in src/ must parse on PHP 8.3.",
+    "text": "This example writes one chart to an HTML page, an SVG image, and a PNG image.\nPrerequisites: phiz installed with Composer (Installation). The SVG and PNG files need the vl-convert binary (Installing vl-convert). The HTML file needs nothing else. The pipe version needs PHP 8.5, and the method chain runs on PHP 8.3 and later.",
     "crumbs": [
-      "Contributing",
-      "Development"
+      "Examples",
+      "Save a chart to a file"
     ]
   },
   {
-    "objectID": "development.html#tests",
-    "href": "development.html#tests",
-    "title": "Development",
+    "objectID": "examples/save.html#data",
+    "href": "examples/save.html#data",
+    "title": "Save a chart to a file",
+    "section": "Data",
+    "text": "Data\nThe chart plots weight against fuel economy for the 32 cars of R’s mtcars data, which Datasets::mtcars() returns from resources/data/mtcars.csv. wt is the weight in thousands of pounds, and mpg is the fuel economy in miles per gallon.",
+    "crumbs": [
+      "Examples",
+      "Save a chart to a file"
+    ]
+  },
+  {
+    "objectID": "examples/save.html#code",
+    "href": "examples/save.html#code",
+    "title": "Save a chart to a file",
+    "section": "Code",
+    "text": "Code\nSave the script beside the vendor directory and run it with php save.php.\n\nPHP 8.5+PHP 8.3–8.4\n\n\n&lt;?php\n\nrequire 'vendor/autoload.php';\n\nuse Phiz\\Datasets;\n\nuse function Phiz\\{aes, geom_point, ggplot, labs};\n\n$plot = ggplot(Datasets::mtcars(), aes(x: 'wt', y: 'mpg')) |&gt;\n    geom_point() |&gt;\n    labs(x: 'Weight (1,000 lb)', y: 'Miles per gallon');\n\n$plot-&gt;save('chart.html');            // no extra software needed\n$plot-&gt;save('chart.svg');             // needs vl-convert\n$plot-&gt;save('chart.png', scale: 2);   // needs vl-convert\n\n\n&lt;?php\n\nrequire 'vendor/autoload.php';\n\nuse Phiz\\Datasets;\nuse Phiz\\Plot;\n\n$plot = Plot::of(Datasets::mtcars())\n    -&gt;aes(x: 'wt', y: 'mpg')\n    -&gt;point()\n    -&gt;labs(x: 'Weight (1,000 lb)', y: 'Miles per gallon');\n\n$plot-&gt;save('chart.html');            // no extra software needed\n$plot-&gt;save('chart.svg');             // needs vl-convert\n$plot-&gt;save('chart.png', scale: 2);   // needs vl-convert",
+    "crumbs": [
+      "Examples",
+      "Save a chart to a file"
+    ]
+  },
+  {
+    "objectID": "examples/save.html#output",
+    "href": "examples/save.html#output",
+    "title": "Save a chart to a file",
+    "section": "Output",
+    "text": "Output\nThe script writes three files to the current directory. The SVG file is shown below.\nFiles written:\n\nchart.html: 15,244 bytes\nchart.png: 110,163 bytes\nchart.svg: 19,190 bytes",
+    "crumbs": [
+      "Examples",
+      "Save a chart to a file"
+    ]
+  },
+  {
+    "objectID": "examples/save.html#how-it-works",
+    "href": "examples/save.html#how-it-works",
+    "title": "Save a chart to a file",
+    "section": "How it works",
+    "text": "How it works\nsave() picks the format from the file extension: html, json, svg, png, jpg, or pdf. An HTML file is a standalone page that loads vega, vega-lite, and vega-embed from the jsDelivr CDN and draws the chart in the browser, where interaction such as tooltips works. json writes the Vega-Lite specification.\nThe image formats run vl-convert, which renders without a browser. scale: 2 doubles the pixel size of the PNG and JPG files. Without vl-convert, save('chart.svg') throws Phiz\\Exceptions\\VlConvertNotFound with installation instructions. phiz finds the binary through the PHIZ_VL_CONVERT or VL_CONVERT environment variable, then PATH. An SVG file from a given specification is the same byte for byte on every run (Reproducible SVG).\nReference: save(), html(), svg(), png(), and pdf(). Rendering covers every output option.",
+    "crumbs": [
+      "Examples",
+      "Save a chart to a file"
+    ]
+  },
+  {
+    "objectID": "examples/facets.html",
+    "href": "examples/facets.html",
+    "title": "Compare groups with facets",
     "section": "",
-    "text": "composer test\nThe suite runs with Pest and covers several layers:\n\nSpec snapshots for every geom, feature, statistics helper, and gallery example, in tests/.pest/snapshots/. After an intended change, run vendor/bin/pest --update-snapshots and review the diff.\nValidation of every specification against the pinned Vega-Lite 6.1.0 JSON schema in tests/fixtures/.\nNumerical checks of quantiles, least squares, smoothing bands, and predictions against values from R.\nBlade component tests on Orchestra Testbench.\nWhen vl-convert is available, a render of every gallery example to SVG. Some specifications pass the schema but fail to compile, and this smoke test catches them.\n\nThe statistics tests build model designs with Phit\\model_matrix(). They run on the phit extension when it is loaded and on phpstats/phit-polyfill, a development dependency, when it is not. The saved fits in tests/fixtures/fits.json let them check results against R.\nCI runs the suite on PHP 8.3, 8.4, and 8.5. The tests in tests/Pipes/ use the pipe operator, so phpunit.xml runs them only on PHP 8.5. Code in src/ must parse on PHP 8.3.",
+    "text": "This example splits a scatterplot of car weight against fuel economy into one panel for each number of cylinders.\nPrerequisites: phiz installed with Composer (Installation). The pipe version needs PHP 8.5, and the method chain runs on PHP 8.3 and later.",
     "crumbs": [
-      "Contributing",
-      "Development"
+      "Examples",
+      "Compare groups with facets"
     ]
   },
   {
-    "objectID": "development.html#gallery",
-    "href": "development.html#gallery",
-    "title": "Development",
-    "section": "Gallery",
-    "text": "Gallery\nphp examples/gallery.php [output.html] [--svg=dir]\nThe gallery writes an HTML page of every example in examples/catalog.php, with each example’s code. The catalog is a plain PHP array, so other projects can reuse it.",
+    "objectID": "examples/facets.html#data",
+    "href": "examples/facets.html#data",
+    "title": "Compare groups with facets",
+    "section": "Data",
+    "text": "Data\nDatasets::mtcars() returns the 32 cars of R’s mtcars data, bundled with phiz as resources/data/mtcars.csv. The example uses three of its columns:\n\n\n\nmodel\nmpg\ncyl\nwt\n\n\n\n\nMazda RX4\n21.0\n6\n2.620\n\n\nMazda RX4 Wag\n21.0\n6\n2.875\n\n\nDatsun 710\n22.8\n4\n2.320\n\n\n\nwt is the weight in thousands of pounds, mpg is the fuel economy in miles per gallon, and cyl is the number of cylinders: 11 cars have 4, 7 have 6, and 14 have 8.",
     "crumbs": [
-      "Contributing",
-      "Development"
+      "Examples",
+      "Compare groups with facets"
     ]
   },
   {
-    "objectID": "development.html#documentation",
-    "href": "development.html#documentation",
-    "title": "Development",
-    "section": "Documentation",
-    "text": "Documentation\nThe documentation is a Quarto website in docs/. The pages include generated fragments for their examples:\n\nEach file in docs/examples/ returns a chart. An example that uses the pipe operator has a method-chain twin, {name}.chain.php, and the page shows the two in tabs labeled “PHP 8.5+” and “PHP 8.3–8.4”.\nphp scripts/docs-examples.php runs every example and checks that each twin builds the same specification. For each example it writes the code and the specification to docs/_generated/, and an SVG to docs/figures/ when vl-convert is found. It also writes the gallery fragment from examples/catalog.php.\nphp scripts/docs-reference.php writes the API reference fragments from the signatures and docblocks in src/.\nquarto render docs builds the site into docs/_site/.\nscripts/render-docs runs steps 2 to 4, then copies the site into docs/.\n\nphpstats.org imports the committed HTML in docs/ and publishes it at https://phiz.phpstats.org/docs, so commit the rendered pages with their sources. GitHub Pages serves the gh-pages branch, which holds only redirects from the old phpstats.github.io/phiz/ addresses to the same pages on phpstats.org. The pipe examples need PHP 8.5, and the SVGs need vl-convert 1.9.0, the version the committed figures were made with:\nPHP=php8.5 PHIZ_VL_CONVERT=/path/to/vl-convert scripts/render-docs\nA render rewrites every lastmod in docs/sitemap.xml from the file times on the rendering machine. Keep the committed dates, and change the date only for pages whose content changed.\nSome statistics examples build designs from model formulas with Phit\\model_matrix(). phit-polyfill provides it when the phit extension is not loaded, so the documentation build needs no extension.\nDesign notes and plans that are not user documentation live in notes/.",
+    "objectID": "examples/facets.html#code",
+    "href": "examples/facets.html#code",
+    "title": "Compare groups with facets",
+    "section": "Code",
+    "text": "Code\nSave the script beside the vendor directory and run it with php facets.php.\n\nPHP 8.5+PHP 8.3–8.4\n\n\n&lt;?php\n\nrequire 'vendor/autoload.php';\n\nuse Phiz\\Datasets;\n\nuse function Phiz\\{aes, facet_wrap, geom_point, ggplot, labs};\n\n$plot = ggplot(Datasets::mtcars(), aes(x: 'wt', y: 'mpg')) |&gt;\n    geom_point() |&gt;\n    facet_wrap('cyl', ncol: 3) |&gt;\n    labs(x: 'Weight (1,000 lb)', y: 'Miles per gallon');\n\n$plot-&gt;save('facets.html');\n\n\n&lt;?php\n\nrequire 'vendor/autoload.php';\n\nuse Phiz\\Datasets;\nuse Phiz\\Plot;\n\n$plot = Plot::of(Datasets::mtcars())\n    -&gt;aes(x: 'wt', y: 'mpg')\n    -&gt;point()\n    -&gt;facetWrap('cyl', ncol: 3)\n    -&gt;labs(x: 'Weight (1,000 lb)', y: 'Miles per gallon');\n\n$plot-&gt;save('facets.html');",
     "crumbs": [
-      "Contributing",
-      "Development"
+      "Examples",
+      "Compare groups with facets"
+    ]
+  },
+  {
+    "objectID": "examples/facets.html#output",
+    "href": "examples/facets.html#output",
+    "title": "Compare groups with facets",
+    "section": "Output",
+    "text": "Output\nFiles written:\n\nfacets.html: 15,399 bytes\n\nVega-Lite specification",
+    "crumbs": [
+      "Examples",
+      "Compare groups with facets"
+    ]
+  },
+  {
+    "objectID": "examples/facets.html#how-it-works",
+    "href": "examples/facets.html#how-it-works",
+    "title": "Compare groups with facets",
+    "section": "How it works",
+    "text": "How it works\nfacet_wrap('cyl', ncol: 3) draws the same plot once for each value of cyl, using the rows with that value, and places the panels in three columns. The panels share their axes by default, so positions can be compared across groups. scales: 'free', 'free_x', or 'free_y' gives each panel its own range instead.\nThe panels separate two effects that a single scatterplot mixes. Heavier cars tend to have more cylinders, and the panels show how weight relates to economy among cars with the same number of cylinders.\nReference: facetWrap(), facetGrid(), point(), and labs(). Facets and composition covers grids of panels and layouts of separate plots.",
+    "crumbs": [
+      "Examples",
+      "Compare groups with facets"
+    ]
+  },
+  {
+    "objectID": "design.html",
+    "href": "design.html",
+    "title": "Design and compatibility",
+    "section": "",
+    "text": "phiz does not draw graphics. It translates a ggplot2-style description into a Vega-Lite specification. Vega-Lite then resolves scales, lays out facets and legends, runs transforms, handles interaction, and renders to canvas or SVG. The PHP side stays small, and plots behave the same in the browser and in static export.\nStatistics run as Vega-Lite transforms where Vega-Lite has them: bins, densities with the default bandwidth, aggregates, quantiles, and window functions. phiz computes a statistic in PHP when Vega-Lite has no equivalent, or when matching R needs it:\n\nsmooth() fits and their confidence bands (loess up to 3,000 rows, lm, quad, and poly)\nviolin densities, and the R bw.nrd0 bandwidth behind density(adjust:)\n2D densities, contours, and filled contours\nellipse() and the summaries of summary()\nhex(), and bin2d() and histogram() above Config::$serverRows rows\nline(downsample:)\ncurve() evaluations of PHP functions\nthe statistics helpers’ intervals and predictions",
+    "crumbs": [
+      "Compatibility and limitations",
+      "Design and compatibility"
+    ]
+  },
+  {
+    "objectID": "design.html#vega-lite-does-the-drawing",
+    "href": "design.html#vega-lite-does-the-drawing",
+    "title": "Design and compatibility",
+    "section": "",
+    "text": "phiz does not draw graphics. It translates a ggplot2-style description into a Vega-Lite specification. Vega-Lite then resolves scales, lays out facets and legends, runs transforms, handles interaction, and renders to canvas or SVG. The PHP side stays small, and plots behave the same in the browser and in static export.\nStatistics run as Vega-Lite transforms where Vega-Lite has them: bins, densities with the default bandwidth, aggregates, quantiles, and window functions. phiz computes a statistic in PHP when Vega-Lite has no equivalent, or when matching R needs it:\n\nsmooth() fits and their confidence bands (loess up to 3,000 rows, lm, quad, and poly)\nviolin densities, and the R bw.nrd0 bandwidth behind density(adjust:)\n2D densities, contours, and filled contours\nellipse() and the summaries of summary()\nhex(), and bin2d() and histogram() above Config::$serverRows rows\nline(downsample:)\ncurve() evaluations of PHP functions\nthe statistics helpers’ intervals and predictions",
+    "crumbs": [
+      "Compatibility and limitations",
+      "Design and compatibility"
+    ]
+  },
+  {
+    "objectID": "design.html#mapping-ggplot2-to-vega-lite",
+    "href": "design.html#mapping-ggplot2-to-vega-lite",
+    "title": "Design and compatibility",
+    "section": "Mapping ggplot2 to Vega-Lite",
+    "text": "Mapping ggplot2 to Vega-Lite\n\n\n\n\n\n\n\n\nggplot2\nphiz\nVega-Lite\n\n\n\n\nggplot(data, aes(...))\nPlot::of($data)-&gt;aes(...)\ndata and encoding\n\n\ngeom_*()\n-&gt;point(), -&gt;line(), …\na layer with a mark\n\n\nstat_*()\ngeom parameters\ntransform\n\n\nposition = \"dodge\"\nposition: 'dodge'\nxOffset\n\n\nscale_*()\n-&gt;scaleX(), …\nthe channel’s scale, axis, and legend\n\n\ncoord_flip()\n-&gt;coordFlip()\nswapped channels\n\n\nfacet_wrap(), facet_grid()\n-&gt;facetWrap(), -&gt;facetGrid()\nfacet with an inner spec\n\n\ntheme()\n-&gt;theme()\nconfig\n\n\npatchwork\nCompose\nhconcat, vconcat, concat",
+    "crumbs": [
+      "Compatibility and limitations",
+      "Design and compatibility"
+    ]
+  },
+  {
+    "objectID": "design.html#differences-from-ggplot2",
+    "href": "design.html#differences-from-ggplot2",
+    "title": "Design and compatibility",
+    "section": "Differences from ggplot2",
+    "text": "Differences from ggplot2\nComing from ggplot2 lists the translations and the behaviors that differ.",
+    "crumbs": [
+      "Compatibility and limitations",
+      "Design and compatibility"
+    ]
+  },
+  {
+    "objectID": "design.html#php-versions",
+    "href": "design.html#php-versions",
+    "title": "Design and compatibility",
+    "section": "PHP versions",
+    "text": "PHP versions\ncomposer.json allows PHP &gt;=8.3 &lt;8.6: PHP 8.3, 8.4, and 8.5. CI runs the test suite on all three. The library code parses on PHP 8.3. Examples and tests that use the pipe operator |&gt; need PHP 8.5. Each documentation example that uses it has a method-chain version, and the tests check that both build the same specification.",
+    "crumbs": [
+      "Compatibility and limitations",
+      "Design and compatibility"
+    ]
+  },
+  {
+    "objectID": "design.html#vega-lite-versions",
+    "href": "design.html#vega-lite-versions",
+    "title": "Design and compatibility",
+    "section": "Vega-Lite versions",
+    "text": "Vega-Lite versions\nphiz emits Vega-Lite 6 specifications. The pinned browser libraries are vega 6.4.0, vega-lite 6.4.3, and vega-embed 7.3.0. Static export uses vl-convert with Vega-Lite 6.1, and the tests validate every specification against the Vega-Lite 6.1.0 JSON schema, the version both renderers support.",
+    "crumbs": [
+      "Compatibility and limitations",
+      "Design and compatibility"
+    ]
+  },
+  {
+    "objectID": "dashboard.html",
+    "href": "dashboard.html",
+    "title": "Dashboards with Livewire",
+    "section": "",
+    "text": "This page builds a small dashboard of linked charts. A Livewire component holds the filters, phplyr summarizes a phibble table on the server, and phiz renders three charts that all follow the same state. Changing a filter re-renders the component, and each chart re-embeds in place.",
+    "crumbs": [
+      "Guides",
+      "Dashboards with Livewire"
+    ]
+  },
+  {
+    "objectID": "dashboard.html#prerequisites",
+    "href": "dashboard.html#prerequisites",
+    "title": "Dashboards with Livewire",
+    "section": "Prerequisites",
+    "text": "Prerequisites\n\na Laravel application with Livewire 3, which provides the #[Url] attribute used below\nphiz, phibble, and phplyr: composer require phpstats/phiz phpstats/phibble phpstats/phplyr\n\nThe chart code is examples/dashboard.php, with a method-chain version in examples/dashboard.chain.php. The test suite checks that both build the same charts.",
+    "crumbs": [
+      "Guides",
+      "Dashboards with Livewire"
+    ]
+  },
+  {
+    "objectID": "dashboard.html#a-small-component",
+    "href": "dashboard.html#a-small-component",
+    "title": "Dashboards with Livewire",
+    "section": "A small component",
+    "text": "A small component\nThis component draws monthly revenue per customer from an orders table, filtered by sales channel. When a property changes, Livewire reruns render(), which rebuilds the pipeline, and &lt;x-phiz&gt; redraws the chart.\n&lt;?php\n\nnamespace App\\Livewire;\n\nuse App\\Models\\Order;\nuse Livewire\\Component;\n\nuse function Phplyr\\{col, floor_date, group_by, mutate, sum, summarise};\n\nclass RevenueByMonth extends Component\n{\n    public string $channel = 'All';\n\n    public function render()\n    {\n        $orders = Order::query()\n            -&gt;when($this-&gt;channel !== 'All', fn ($query) =&gt; $query-&gt;where('channel', $this-&gt;channel));\n\n        $monthly = \\Phibble\\DataFrame::fromQuery($orders) |&gt;\n            mutate(month: floor_date(col('placed_on'), 'month')) |&gt;\n            group_by('month', 'customer') |&gt;\n            summarise(revenue: sum('total'));\n\n        $chart = \\Phiz\\Plot::of($monthly)\n            -&gt;aes(x: 'month', y: 'revenue', color: 'customer')\n            -&gt;line()\n            -&gt;point()\n            -&gt;labs(x: null, y: 'Revenue ($)', color: null);\n\n        return view('livewire.revenue-by-month', ['chart' =&gt; $chart]);\n    }\n}\nresources/views/livewire/revenue-by-month.blade.php:\n&lt;div&gt;\n    &lt;select wire:model.live=\"channel\"&gt;\n        &lt;option&gt;All&lt;/option&gt;\n        &lt;option&gt;Web&lt;/option&gt;\n        &lt;option&gt;App&lt;/option&gt;\n        &lt;option&gt;Marketplace&lt;/option&gt;\n    &lt;/select&gt;\n\n    &lt;x-phiz :plot=\"$chart-&gt;width('container')-&gt;height(260)\" /&gt;\n&lt;/div&gt;",
+    "crumbs": [
+      "Guides",
+      "Dashboards with Livewire"
+    ]
+  },
+  {
+    "objectID": "dashboard.html#the-charts",
+    "href": "dashboard.html#the-charts",
+    "title": "Dashboards with Livewire",
+    "section": "The charts",
+    "text": "The charts\nfuel_dashboard() takes the cars table and the filter state and returns three plots and the class summary behind the bar chart. The Livewire component below calls it from render().\n\nThe bar chart shows mean highway mpg by class, from phplyr’s group_by() and summarize(). The selected class is highlighted with a computed field.\nThe scatterplot shows the filtered cars, with one linear fit across all of them.\nThe trend chart compares each manufacturer’s mean in 1999 and 2008. It ignores the year filter, so the comparison stays visible.\n\n\nPHP 8.5+PHP 8.3–8.4\n\n\n/*\n * The fuel economy dashboard from the \"Dashboards with Livewire\" documentation page: three charts built from phplyr\n * summaries of one filtered phibble table. A Livewire component calls fuel_dashboard() in render() with its public\n * properties, so every chart follows the same filters.\n */\n\nuse Phibble\\Contracts\\Table;\nuse Phiz\\Plot;\n\nuse function Phiz\\aes;\n\nuse function Phplyr\\{arrange, desc, filter, group_by, mean, n, summarize};\n\n/**\n * @param string|null $drive 'f', 'r', '4', or null for all\n * @param int|null $year 1999, 2008, or null for both\n * @return array{summary: Table, bars: Plot, scatter: Plot, trend: Plot}\n */\nfunction fuel_dashboard(Table $cars, ?string $drive = null, ?int $year = null, ?string $selected = null): array\n{\n    $byDrive = $cars |&gt; filter(fn ($r) =&gt; $drive === null || $r-&gt;drv === $drive);\n    $subset = $byDrive |&gt; filter(fn ($r) =&gt; $year === null || $r-&gt;year === $year);\n\n    $byClass = $subset |&gt;\n        group_by('class') |&gt;\n        summarize(cars: n(), hwy: mean('hwy'), cty: mean('cty')) |&gt;\n        arrange(desc('hwy'));\n\n    // The trend compares the two years, so it ignores the year filter.\n    $byManufacturer = $byDrive |&gt;\n        group_by('manufacturer', 'year') |&gt;\n        summarize(hwy: mean('hwy'));\n\n    $bars = Plot::of($byClass)\n        -&gt;aes(x: 'hwy', y: \\Phiz\\field('class', sort: '-x'), fill: \\Phiz\\calc('datum.class === '.json_encode($selected ?? ''), 'selected', 'nominal'))\n        -&gt;col()\n        -&gt;scaleFill(domain: [false, true], range: ['#9ECAE1', '#08519C'], guide: false)\n        -&gt;tooltip(['class', 'cars', 'hwy', 'cty'])\n        -&gt;labs(title: 'Mean highway mpg by class', x: 'Highway mpg', y: null)\n        -&gt;size(320, 220);\n\n    $scatter = Plot::of($subset)\n        -&gt;aes(x: 'displ', y: 'hwy', color: 'class')\n        -&gt;point(alpha: 0.7, size: 40)\n        -&gt;smooth(aes(x: 'displ', y: 'hwy'), method: 'lm', color: '#333333', inheritAes: false)\n        -&gt;tooltip(['manufacturer', 'model', 'year', 'displ', 'hwy'])\n        -&gt;theme(legendPosition: 'bottom')\n        -&gt;labs(title: 'Displacement and highway mpg', x: 'Displacement (L)', y: 'Highway mpg', color: null)\n        -&gt;size(320, 220);\n\n    $trend = Plot::of($byManufacturer)\n        -&gt;aes(x: 'year:O', y: 'hwy', group: 'manufacturer')\n        -&gt;line(color: '#BBBBBB')\n        -&gt;point(color: '#666666', size: 20)\n        -&gt;tooltip(['manufacturer', 'year', 'hwy'])\n        -&gt;labs(title: 'Manufacturers, 1999 to 2008', x: null, y: 'Mean highway mpg')\n        -&gt;size(200, 220);\n\n    return ['summary' =&gt; $byClass, 'bars' =&gt; $bars, 'scatter' =&gt; $scatter, 'trend' =&gt; $trend];\n}\n\n\n/*\n * The fuel economy dashboard from the \"Dashboards with Livewire\" documentation page, written with method chains for\n * PHP 8.3 and 8.4. examples/dashboard.php is the same code with the pipe operator; the tests check that both build the\n * same charts.\n */\n\nuse Phibble\\Contracts\\Table;\nuse Phiz\\Plot;\n\nuse function Phiz\\aes;\n\nuse function Phplyr\\{desc, mean, n, phplyr};\n\n/**\n * @param string|null $drive 'f', 'r', '4', or null for all\n * @param int|null $year 1999, 2008, or null for both\n * @return array{summary: Table, bars: Plot, scatter: Plot, trend: Plot}\n */\nfunction fuel_dashboard(Table $cars, ?string $drive = null, ?int $year = null, ?string $selected = null): array\n{\n    $byDrive = phplyr($cars)-&gt;filter(fn ($r) =&gt; $drive === null || $r-&gt;drv === $drive)-&gt;get();\n    $subset = phplyr($byDrive)-&gt;filter(fn ($r) =&gt; $year === null || $r-&gt;year === $year)-&gt;get();\n\n    $byClass = phplyr($subset)\n        -&gt;groupBy('class')\n        -&gt;summarize(cars: n(), hwy: mean('hwy'), cty: mean('cty'))\n        -&gt;arrange(desc('hwy'))\n        -&gt;get();\n\n    // The trend compares the two years, so it ignores the year filter.\n    $byManufacturer = phplyr($byDrive)\n        -&gt;groupBy('manufacturer', 'year')\n        -&gt;summarize(hwy: mean('hwy'))\n        -&gt;get();\n\n    $bars = Plot::of($byClass)\n        -&gt;aes(x: 'hwy', y: \\Phiz\\field('class', sort: '-x'), fill: \\Phiz\\calc('datum.class === '.json_encode($selected ?? ''), 'selected', 'nominal'))\n        -&gt;col()\n        -&gt;scaleFill(domain: [false, true], range: ['#9ECAE1', '#08519C'], guide: false)\n        -&gt;tooltip(['class', 'cars', 'hwy', 'cty'])\n        -&gt;labs(title: 'Mean highway mpg by class', x: 'Highway mpg', y: null)\n        -&gt;size(320, 220);\n\n    $scatter = Plot::of($subset)\n        -&gt;aes(x: 'displ', y: 'hwy', color: 'class')\n        -&gt;point(alpha: 0.7, size: 40)\n        -&gt;smooth(aes(x: 'displ', y: 'hwy'), method: 'lm', color: '#333333', inheritAes: false)\n        -&gt;tooltip(['manufacturer', 'model', 'year', 'displ', 'hwy'])\n        -&gt;theme(legendPosition: 'bottom')\n        -&gt;labs(title: 'Displacement and highway mpg', x: 'Displacement (L)', y: 'Highway mpg', color: null)\n        -&gt;size(320, 220);\n\n    $trend = Plot::of($byManufacturer)\n        -&gt;aes(x: 'year:O', y: 'hwy', group: 'manufacturer')\n        -&gt;line(color: '#BBBBBB')\n        -&gt;point(color: '#666666', size: 20)\n        -&gt;tooltip(['manufacturer', 'year', 'hwy'])\n        -&gt;labs(title: 'Manufacturers, 1999 to 2008', x: null, y: 'Mean highway mpg')\n        -&gt;size(200, 220);\n\n    return ['summary' =&gt; $byClass, 'bars' =&gt; $bars, 'scatter' =&gt; $scatter, 'trend' =&gt; $trend];\n}\n\n\n\nWith the drive filter on front-wheel drive, the year on 2008, and the compact class selected, the charts look like this:\nuse Phibble\\DataFrame;\nuse Phiz\\Compose;\nuse Phiz\\Datasets;\n\nrequire_once __DIR__.'/../../examples/dashboard.php';\n\n// The dashboard with drive = 'f', year = 2008, and the compact class selected.\n$charts = fuel_dashboard(DataFrame::fromRows(Datasets::mpg()), drive: 'f', year: 2008, selected: 'compact');\n\n$plot = Compose::beside($charts['bars'], $charts['scatter'], $charts['trend']);",
+    "crumbs": [
+      "Guides",
+      "Dashboards with Livewire"
+    ]
+  },
+  {
+    "objectID": "dashboard.html#the-livewire-component",
+    "href": "dashboard.html#the-livewire-component",
+    "title": "Dashboards with Livewire",
+    "section": "The Livewire component",
+    "text": "The Livewire component\nThe component keeps the filters as public properties. render() passes them to fuel_dashboard(). Livewire calls render() after every update, so a new selection produces new specifications, and the phiz loader re-embeds each chart whose specification changed.\nnamespace App\\Livewire;\n\nuse Livewire\\Attributes\\Url;\nuse Livewire\\Component;\nuse Phibble\\DataFrame;\nuse Phiz\\Datasets;\n\nclass FuelDashboard extends Component\n{\n    #[Url]\n    public ?string $drive = null;\n\n    #[Url]\n    public ?int $year = null;\n\n    public ?string $selected = null;\n\n    public function select(string $class): void\n    {\n        $this-&gt;selected = $this-&gt;selected === $class ? null : $class;\n    }\n\n    public function render()\n    {\n        // In an application this would be DataFrame::fromQuery(Car::query()) or a cached table.\n        $cars = DataFrame::fromRows(Datasets::mpg());\n\n        return view('livewire.fuel-dashboard', fuel_dashboard($cars, $this-&gt;drive, $this-&gt;year, $this-&gt;selected));\n    }\n}\nThe view puts the filters and the three charts side by side. Each &lt;x-phiz&gt; has a wire:key, so Livewire matches each chart to its element across renders.\n&lt;div class=\"space-y-4\"&gt;\n    &lt;div class=\"flex gap-4\"&gt;\n        &lt;select wire:model.live=\"drive\"&gt;\n            &lt;option value=\"\"&gt;All drives&lt;/option&gt;\n            &lt;option value=\"f\"&gt;Front&lt;/option&gt;\n            &lt;option value=\"r\"&gt;Rear&lt;/option&gt;\n            &lt;option value=\"4\"&gt;4WD&lt;/option&gt;\n        &lt;/select&gt;\n        &lt;select wire:model.live=\"year\"&gt;\n            &lt;option value=\"\"&gt;Both years&lt;/option&gt;\n            &lt;option value=\"1999\"&gt;1999&lt;/option&gt;\n            &lt;option value=\"2008\"&gt;2008&lt;/option&gt;\n        &lt;/select&gt;\n    &lt;/div&gt;\n\n    &lt;div class=\"grid grid-cols-3 gap-4\"&gt;\n        &lt;x-phiz :plot=\"$bars\" wire:key=\"bars\" /&gt;\n        &lt;x-phiz :plot=\"$scatter\" wire:key=\"scatter\" /&gt;\n        &lt;x-phiz :plot=\"$trend\" wire:key=\"trend\" /&gt;\n    &lt;/div&gt;\n\n    &lt;ul class=\"flex gap-2 text-sm\"&gt;\n        @foreach ($summary-&gt;toRows() as $row)\n            &lt;li&gt;&lt;button wire:click=\"select('{{ $row['class'] }}')\"&gt;{{ $row['class'] }} ({{ $row['cars'] }})&lt;/button&gt;&lt;/li&gt;\n        @endforeach\n    &lt;/ul&gt;\n&lt;/div&gt;\nA click on a chart can also drive the component. The loader dispatches a phiz:rendered event with the Vega view, and a small Alpine handler can forward selections with $wire:\n&lt;div x-on:phiz:rendered=\"$event.detail.view.addEventListener('click', (e, item) =&gt; item?.datum?.class && $wire.select(item.datum.class))\"&gt;\n    &lt;x-phiz :plot=\"$bars\" wire:key=\"bars\" /&gt;\n&lt;/div&gt;",
+    "crumbs": [
+      "Guides",
+      "Dashboards with Livewire"
+    ]
+  },
+  {
+    "objectID": "dashboard.html#linking-in-the-browser",
+    "href": "dashboard.html#linking-in-the-browser",
+    "title": "Dashboards with Livewire",
+    "section": "Linking in the browser",
+    "text": "Linking in the browser\nWhen the data is small enough to send to the page, a composition links charts without a request to the server. A brush on the scatterplot filters the bar chart, and Vega-Lite recomputes the means in the browser.\nuse Phiz\\Compose;\nuse Phiz\\Datasets;\nuse Phiz\\Plot;\n\n$mpg = Datasets::mpg();\n\n// Linked in the browser: brushing the scatterplot filters the bars, with no request to the server.\n$plot = Compose::beside(\n    Plot::of($mpg)-&gt;aes(x: 'displ', y: 'hwy', color: 'drv')-&gt;point(alpha: 0.7)-&gt;brush(encodings: ['x', 'y'])-&gt;size(320, 240),\n    Plot::of($mpg)-&gt;aes(x: 'mean(hwy)', y: \\Phiz\\field('class', sort: '-x'))-&gt;col(filter: ['param' =&gt; 'brush'], fill: '#4C78A8')-&gt;labs(x: 'Mean highway mpg', y: null)-&gt;size(260, 240),\n);",
+    "crumbs": [
+      "Guides",
+      "Dashboards with Livewire"
+    ]
+  },
+  {
+    "objectID": "dashboard.html#choosing-where-to-compute",
+    "href": "dashboard.html#choosing-where-to-compute",
+    "title": "Dashboards with Livewire",
+    "section": "Choosing where to compute",
+    "text": "Choosing where to compute\nThe two approaches suit different data:\n\nServer-side summaries send only the summarized rows to the page. They suit large tables, database queries, and statistics that need PHP, such as model fits. Each interaction costs a Livewire round trip.\nBrowser-side linking sends the raw rows once and responds to every interaction immediately. It suits up to a few thousand rows. Large data covers what to do beyond that.\n\nBoth approaches can share a page. For example, a Livewire filter can choose the rows, and a brush can explore them in the browser.",
+    "crumbs": [
+      "Guides",
+      "Dashboards with Livewire"
+    ]
+  },
+  {
+    "objectID": "dashboard.html#a-complete-dashboard",
+    "href": "dashboard.html#a-complete-dashboard",
+    "title": "Dashboards with Livewire",
+    "section": "A complete dashboard",
+    "text": "A complete dashboard\nA complete dashboard on phpstats.org is the advanced example. It is a live Livewire page with filters, a phplyr summary, two phiz charts, a logistic model fitted with phit, and what-if predictions.",
+    "crumbs": [
+      "Guides",
+      "Dashboards with Livewire"
     ]
   },
   {
@@ -623,135 +843,102 @@
     ]
   },
   {
-    "objectID": "dashboard.html",
-    "href": "dashboard.html",
-    "title": "Dashboards with Livewire",
+    "objectID": "development.html",
+    "href": "development.html",
+    "title": "Development",
     "section": "",
-    "text": "This page builds a small dashboard of linked charts. A Livewire component holds the filters, phplyr summarizes a phibble table on the server, and phiz renders three charts that all follow the same state. Changing a filter re-renders the component, and each chart re-embeds in place.",
+    "text": "composer test\nThe suite runs with Pest and covers several layers:\n\nSpec snapshots for every geom, feature, statistics helper, and gallery example, in tests/.pest/snapshots/. After an intended change, run vendor/bin/pest --update-snapshots and review the diff.\nValidation of every specification against the pinned Vega-Lite 6.1.0 JSON schema in tests/fixtures/.\nNumerical checks of quantiles, least squares, smoothing bands, and predictions against values from R.\nBlade component tests on Orchestra Testbench.\nWhen vl-convert is available, a render of every gallery example to SVG. Some specifications pass the schema but fail to compile, and this smoke test catches them.\n\nThe statistics tests build model designs with Phit\\model_matrix(). They run on the phit extension when it is loaded and on phpstats/phit-polyfill, a development dependency, when it is not. The saved fits in tests/fixtures/fits.json let them check results against R.\nCI runs the suite on PHP 8.3, 8.4, and 8.5. The tests in tests/Pipes/ use the pipe operator, so phpunit.xml runs them only on PHP 8.5. Code in src/ must parse on PHP 8.3.",
     "crumbs": [
-      "Guides",
-      "Dashboards with Livewire"
+      "Contributing",
+      "Development"
     ]
   },
   {
-    "objectID": "dashboard.html#prerequisites",
-    "href": "dashboard.html#prerequisites",
-    "title": "Dashboards with Livewire",
-    "section": "Prerequisites",
-    "text": "Prerequisites\n\na Laravel application with Livewire 3, which provides the #[Url] attribute used below\nphiz, phibble, and phplyr: composer require phpstats/phiz phpstats/phibble phpstats/phplyr\n\nThe chart code is examples/dashboard.php, with a method-chain version in examples/dashboard.chain.php. The test suite checks that both build the same charts.",
-    "crumbs": [
-      "Guides",
-      "Dashboards with Livewire"
-    ]
-  },
-  {
-    "objectID": "dashboard.html#the-charts",
-    "href": "dashboard.html#the-charts",
-    "title": "Dashboards with Livewire",
-    "section": "The charts",
-    "text": "The charts\nfuel_dashboard() takes the cars table and the filter state and returns three plots and the class summary behind the bar chart. The Livewire component below calls it from render().\n\nThe bar chart shows mean highway mpg by class, from phplyr’s group_by() and summarize(). The selected class is highlighted with a computed field.\nThe scatterplot shows the filtered cars, with one linear fit across all of them.\nThe trend chart compares each manufacturer’s mean in 1999 and 2008. It ignores the year filter, so the comparison stays visible.\n\n\nPHP 8.5+PHP 8.3–8.4\n\n\n/*\n * The fuel economy dashboard from the \"Dashboards with Livewire\" documentation page: three charts built from phplyr\n * summaries of one filtered phibble table. A Livewire component calls fuel_dashboard() in render() with its public\n * properties, so every chart follows the same filters.\n */\n\nuse Phibble\\Contracts\\Table;\nuse Phiz\\Plot;\n\nuse function Phiz\\aes;\n\nuse function Phplyr\\{arrange, desc, filter, group_by, mean, n, summarize};\n\n/**\n * @param string|null $drive 'f', 'r', '4', or null for all\n * @param int|null $year 1999, 2008, or null for both\n * @return array{summary: Table, bars: Plot, scatter: Plot, trend: Plot}\n */\nfunction fuel_dashboard(Table $cars, ?string $drive = null, ?int $year = null, ?string $selected = null): array\n{\n    $byDrive = $cars |&gt; filter(fn ($r) =&gt; $drive === null || $r-&gt;drv === $drive);\n    $subset = $byDrive |&gt; filter(fn ($r) =&gt; $year === null || $r-&gt;year === $year);\n\n    $byClass = $subset |&gt;\n        group_by('class') |&gt;\n        summarize(cars: n(), hwy: mean('hwy'), cty: mean('cty')) |&gt;\n        arrange(desc('hwy'));\n\n    // The trend compares the two years, so it ignores the year filter.\n    $byManufacturer = $byDrive |&gt;\n        group_by('manufacturer', 'year') |&gt;\n        summarize(hwy: mean('hwy'));\n\n    $bars = Plot::of($byClass)\n        -&gt;aes(x: 'hwy', y: \\Phiz\\field('class', sort: '-x'), fill: \\Phiz\\calc('datum.class === '.json_encode($selected ?? ''), 'selected', 'nominal'))\n        -&gt;col()\n        -&gt;scaleFill(domain: [false, true], range: ['#9ECAE1', '#08519C'], guide: false)\n        -&gt;tooltip(['class', 'cars', 'hwy', 'cty'])\n        -&gt;labs(title: 'Mean highway mpg by class', x: 'Highway mpg', y: null)\n        -&gt;size(320, 220);\n\n    $scatter = Plot::of($subset)\n        -&gt;aes(x: 'displ', y: 'hwy', color: 'class')\n        -&gt;point(alpha: 0.7, size: 40)\n        -&gt;smooth(aes(x: 'displ', y: 'hwy'), method: 'lm', color: '#333333', inheritAes: false)\n        -&gt;tooltip(['manufacturer', 'model', 'year', 'displ', 'hwy'])\n        -&gt;theme(legendPosition: 'bottom')\n        -&gt;labs(title: 'Displacement and highway mpg', x: 'Displacement (L)', y: 'Highway mpg', color: null)\n        -&gt;size(320, 220);\n\n    $trend = Plot::of($byManufacturer)\n        -&gt;aes(x: 'year:O', y: 'hwy', group: 'manufacturer')\n        -&gt;line(color: '#BBBBBB')\n        -&gt;point(color: '#666666', size: 20)\n        -&gt;tooltip(['manufacturer', 'year', 'hwy'])\n        -&gt;labs(title: 'Manufacturers, 1999 to 2008', x: null, y: 'Mean highway mpg')\n        -&gt;size(200, 220);\n\n    return ['summary' =&gt; $byClass, 'bars' =&gt; $bars, 'scatter' =&gt; $scatter, 'trend' =&gt; $trend];\n}\n\n\n/*\n * The fuel economy dashboard from the \"Dashboards with Livewire\" documentation page, written with method chains for\n * PHP 8.3 and 8.4. examples/dashboard.php is the same code with the pipe operator; the tests check that both build the\n * same charts.\n */\n\nuse Phibble\\Contracts\\Table;\nuse Phiz\\Plot;\n\nuse function Phiz\\aes;\n\nuse function Phplyr\\{desc, mean, n, phplyr};\n\n/**\n * @param string|null $drive 'f', 'r', '4', or null for all\n * @param int|null $year 1999, 2008, or null for both\n * @return array{summary: Table, bars: Plot, scatter: Plot, trend: Plot}\n */\nfunction fuel_dashboard(Table $cars, ?string $drive = null, ?int $year = null, ?string $selected = null): array\n{\n    $byDrive = phplyr($cars)-&gt;filter(fn ($r) =&gt; $drive === null || $r-&gt;drv === $drive)-&gt;get();\n    $subset = phplyr($byDrive)-&gt;filter(fn ($r) =&gt; $year === null || $r-&gt;year === $year)-&gt;get();\n\n    $byClass = phplyr($subset)\n        -&gt;groupBy('class')\n        -&gt;summarize(cars: n(), hwy: mean('hwy'), cty: mean('cty'))\n        -&gt;arrange(desc('hwy'))\n        -&gt;get();\n\n    // The trend compares the two years, so it ignores the year filter.\n    $byManufacturer = phplyr($byDrive)\n        -&gt;groupBy('manufacturer', 'year')\n        -&gt;summarize(hwy: mean('hwy'))\n        -&gt;get();\n\n    $bars = Plot::of($byClass)\n        -&gt;aes(x: 'hwy', y: \\Phiz\\field('class', sort: '-x'), fill: \\Phiz\\calc('datum.class === '.json_encode($selected ?? ''), 'selected', 'nominal'))\n        -&gt;col()\n        -&gt;scaleFill(domain: [false, true], range: ['#9ECAE1', '#08519C'], guide: false)\n        -&gt;tooltip(['class', 'cars', 'hwy', 'cty'])\n        -&gt;labs(title: 'Mean highway mpg by class', x: 'Highway mpg', y: null)\n        -&gt;size(320, 220);\n\n    $scatter = Plot::of($subset)\n        -&gt;aes(x: 'displ', y: 'hwy', color: 'class')\n        -&gt;point(alpha: 0.7, size: 40)\n        -&gt;smooth(aes(x: 'displ', y: 'hwy'), method: 'lm', color: '#333333', inheritAes: false)\n        -&gt;tooltip(['manufacturer', 'model', 'year', 'displ', 'hwy'])\n        -&gt;theme(legendPosition: 'bottom')\n        -&gt;labs(title: 'Displacement and highway mpg', x: 'Displacement (L)', y: 'Highway mpg', color: null)\n        -&gt;size(320, 220);\n\n    $trend = Plot::of($byManufacturer)\n        -&gt;aes(x: 'year:O', y: 'hwy', group: 'manufacturer')\n        -&gt;line(color: '#BBBBBB')\n        -&gt;point(color: '#666666', size: 20)\n        -&gt;tooltip(['manufacturer', 'year', 'hwy'])\n        -&gt;labs(title: 'Manufacturers, 1999 to 2008', x: null, y: 'Mean highway mpg')\n        -&gt;size(200, 220);\n\n    return ['summary' =&gt; $byClass, 'bars' =&gt; $bars, 'scatter' =&gt; $scatter, 'trend' =&gt; $trend];\n}\n\n\n\nWith the drive filter on front-wheel drive, the year on 2008, and the compact class selected, the charts look like this:\nuse Phibble\\DataFrame;\nuse Phiz\\Compose;\nuse Phiz\\Datasets;\n\nrequire_once __DIR__.'/../../examples/dashboard.php';\n\n// The dashboard with drive = 'f', year = 2008, and the compact class selected.\n$charts = fuel_dashboard(DataFrame::fromRows(Datasets::mpg()), drive: 'f', year: 2008, selected: 'compact');\n\n$plot = Compose::beside($charts['bars'], $charts['scatter'], $charts['trend']);",
-    "crumbs": [
-      "Guides",
-      "Dashboards with Livewire"
-    ]
-  },
-  {
-    "objectID": "dashboard.html#the-livewire-component",
-    "href": "dashboard.html#the-livewire-component",
-    "title": "Dashboards with Livewire",
-    "section": "The Livewire component",
-    "text": "The Livewire component\nThe component keeps the filters as public properties. render() passes them to fuel_dashboard(). Livewire calls render() after every update, so a new selection produces new specifications, and the phiz loader re-embeds each chart whose specification changed.\nnamespace App\\Livewire;\n\nuse Livewire\\Attributes\\Url;\nuse Livewire\\Component;\nuse Phibble\\DataFrame;\nuse Phiz\\Datasets;\n\nclass FuelDashboard extends Component\n{\n    #[Url]\n    public ?string $drive = null;\n\n    #[Url]\n    public ?int $year = null;\n\n    public ?string $selected = null;\n\n    public function select(string $class): void\n    {\n        $this-&gt;selected = $this-&gt;selected === $class ? null : $class;\n    }\n\n    public function render()\n    {\n        // In an application this would be DataFrame::fromQuery(Car::query()) or a cached table.\n        $cars = DataFrame::fromRows(Datasets::mpg());\n\n        return view('livewire.fuel-dashboard', fuel_dashboard($cars, $this-&gt;drive, $this-&gt;year, $this-&gt;selected));\n    }\n}\nThe view puts the filters and the three charts side by side. Each &lt;x-phiz&gt; has a wire:key, so Livewire matches each chart to its element across renders.\n&lt;div class=\"space-y-4\"&gt;\n    &lt;div class=\"flex gap-4\"&gt;\n        &lt;select wire:model.live=\"drive\"&gt;\n            &lt;option value=\"\"&gt;All drives&lt;/option&gt;\n            &lt;option value=\"f\"&gt;Front&lt;/option&gt;\n            &lt;option value=\"r\"&gt;Rear&lt;/option&gt;\n            &lt;option value=\"4\"&gt;4WD&lt;/option&gt;\n        &lt;/select&gt;\n        &lt;select wire:model.live=\"year\"&gt;\n            &lt;option value=\"\"&gt;Both years&lt;/option&gt;\n            &lt;option value=\"1999\"&gt;1999&lt;/option&gt;\n            &lt;option value=\"2008\"&gt;2008&lt;/option&gt;\n        &lt;/select&gt;\n    &lt;/div&gt;\n\n    &lt;div class=\"grid grid-cols-3 gap-4\"&gt;\n        &lt;x-phiz :plot=\"$bars\" wire:key=\"bars\" /&gt;\n        &lt;x-phiz :plot=\"$scatter\" wire:key=\"scatter\" /&gt;\n        &lt;x-phiz :plot=\"$trend\" wire:key=\"trend\" /&gt;\n    &lt;/div&gt;\n\n    &lt;ul class=\"flex gap-2 text-sm\"&gt;\n        @foreach ($summary-&gt;toRows() as $row)\n            &lt;li&gt;&lt;button wire:click=\"select('{{ $row['class'] }}')\"&gt;{{ $row['class'] }} ({{ $row['cars'] }})&lt;/button&gt;&lt;/li&gt;\n        @endforeach\n    &lt;/ul&gt;\n&lt;/div&gt;\nA click on a chart can also drive the component. The loader dispatches a phiz:rendered event with the Vega view, and a small Alpine handler can forward selections with $wire:\n&lt;div x-on:phiz:rendered=\"$event.detail.view.addEventListener('click', (e, item) =&gt; item?.datum?.class && $wire.select(item.datum.class))\"&gt;\n    &lt;x-phiz :plot=\"$bars\" wire:key=\"bars\" /&gt;\n&lt;/div&gt;",
-    "crumbs": [
-      "Guides",
-      "Dashboards with Livewire"
-    ]
-  },
-  {
-    "objectID": "dashboard.html#linking-in-the-browser",
-    "href": "dashboard.html#linking-in-the-browser",
-    "title": "Dashboards with Livewire",
-    "section": "Linking in the browser",
-    "text": "Linking in the browser\nWhen the data is small enough to send to the page, a composition links charts without a request to the server. A brush on the scatterplot filters the bar chart, and Vega-Lite recomputes the means in the browser.\nuse Phiz\\Compose;\nuse Phiz\\Datasets;\nuse Phiz\\Plot;\n\n$mpg = Datasets::mpg();\n\n// Linked in the browser: brushing the scatterplot filters the bars, with no request to the server.\n$plot = Compose::beside(\n    Plot::of($mpg)-&gt;aes(x: 'displ', y: 'hwy', color: 'drv')-&gt;point(alpha: 0.7)-&gt;brush(encodings: ['x', 'y'])-&gt;size(320, 240),\n    Plot::of($mpg)-&gt;aes(x: 'mean(hwy)', y: \\Phiz\\field('class', sort: '-x'))-&gt;col(filter: ['param' =&gt; 'brush'], fill: '#4C78A8')-&gt;labs(x: 'Mean highway mpg', y: null)-&gt;size(260, 240),\n);",
-    "crumbs": [
-      "Guides",
-      "Dashboards with Livewire"
-    ]
-  },
-  {
-    "objectID": "dashboard.html#choosing-where-to-compute",
-    "href": "dashboard.html#choosing-where-to-compute",
-    "title": "Dashboards with Livewire",
-    "section": "Choosing where to compute",
-    "text": "Choosing where to compute\nThe two approaches suit different data:\n\nServer-side summaries send only the summarized rows to the page. They suit large tables, database queries, and statistics that need PHP, such as model fits. Each interaction costs a Livewire round trip.\nBrowser-side linking sends the raw rows once and responds to every interaction immediately. It suits up to a few thousand rows. Large data covers what to do beyond that.\n\nBoth approaches can share a page. For example, a Livewire filter can choose the rows, and a brush can explore them in the browser.",
-    "crumbs": [
-      "Guides",
-      "Dashboards with Livewire"
-    ]
-  },
-  {
-    "objectID": "design.html",
-    "href": "design.html",
-    "title": "Design and compatibility",
+    "objectID": "development.html#tests",
+    "href": "development.html#tests",
+    "title": "Development",
     "section": "",
-    "text": "phiz does not draw graphics. It translates a ggplot2-style description into a Vega-Lite specification. Vega-Lite then resolves scales, lays out facets and legends, runs transforms, handles interaction, and renders to canvas or SVG. The PHP side stays small, and plots behave the same in the browser and in static export.\nStatistics run as Vega-Lite transforms where Vega-Lite has them: bins, densities with the default bandwidth, aggregates, quantiles, and window functions. phiz computes a statistic in PHP when Vega-Lite has no equivalent, or when matching R needs it:\n\nsmooth() fits and their confidence bands (loess up to 3,000 rows, lm, quad, and poly)\nviolin densities, and the R bw.nrd0 bandwidth behind density(adjust:)\n2D densities, contours, and filled contours\nellipse() and the summaries of summary()\nhex(), and bin2d() and histogram() above Config::$serverRows rows\nline(downsample:)\ncurve() evaluations of PHP functions\nthe statistics helpers’ intervals and predictions",
+    "text": "composer test\nThe suite runs with Pest and covers several layers:\n\nSpec snapshots for every geom, feature, statistics helper, and gallery example, in tests/.pest/snapshots/. After an intended change, run vendor/bin/pest --update-snapshots and review the diff.\nValidation of every specification against the pinned Vega-Lite 6.1.0 JSON schema in tests/fixtures/.\nNumerical checks of quantiles, least squares, smoothing bands, and predictions against values from R.\nBlade component tests on Orchestra Testbench.\nWhen vl-convert is available, a render of every gallery example to SVG. Some specifications pass the schema but fail to compile, and this smoke test catches them.\n\nThe statistics tests build model designs with Phit\\model_matrix(). They run on the phit extension when it is loaded and on phpstats/phit-polyfill, a development dependency, when it is not. The saved fits in tests/fixtures/fits.json let them check results against R.\nCI runs the suite on PHP 8.3, 8.4, and 8.5. The tests in tests/Pipes/ use the pipe operator, so phpunit.xml runs them only on PHP 8.5. Code in src/ must parse on PHP 8.3.",
     "crumbs": [
-      "Compatibility and limitations",
-      "Design and compatibility"
+      "Contributing",
+      "Development"
     ]
   },
   {
-    "objectID": "design.html#vega-lite-does-the-drawing",
-    "href": "design.html#vega-lite-does-the-drawing",
-    "title": "Design and compatibility",
+    "objectID": "development.html#gallery",
+    "href": "development.html#gallery",
+    "title": "Development",
+    "section": "Gallery",
+    "text": "Gallery\nphp examples/gallery.php [output.html] [--svg=dir]\nThe gallery writes an HTML page of every example in examples/catalog.php, with each example’s code. The catalog is a plain PHP array, so other projects can reuse it.",
+    "crumbs": [
+      "Contributing",
+      "Development"
+    ]
+  },
+  {
+    "objectID": "development.html#documentation",
+    "href": "development.html#documentation",
+    "title": "Development",
+    "section": "Documentation",
+    "text": "Documentation\nThe documentation is a Quarto website in docs/. The pages include generated fragments for their examples:\n\nEach file in docs/examples/ returns a chart. An example that uses the pipe operator has a method-chain twin, {name}.chain.php, and the page shows the two in tabs labeled “PHP 8.5+” and “PHP 8.3–8.4”.\nphp scripts/docs-examples.php runs every example and checks that each twin builds the same specification. For each example it writes the code and the specification to docs/_generated/, and an SVG to docs/figures/ when vl-convert is found. It also writes the gallery fragment from examples/catalog.php.\nphp scripts/docs-reference.php writes the API reference fragments from the signatures and docblocks in src/.\nquarto render docs builds the site into docs/_site/.\nscripts/render-docs runs steps 2 to 4, then copies the site into docs/.\n\nphpstats.org imports the committed HTML in docs/ and publishes it at https://phiz.phpstats.org/docs, so commit the rendered pages with their sources. GitHub Pages serves the gh-pages branch, which holds only redirects from the old phpstats.github.io/phiz/ addresses to the same pages on phpstats.org. The pipe examples need PHP 8.5, and the SVGs need vl-convert 1.9.0, the version the committed figures were made with:\nPHP=php8.5 PHIZ_VL_CONVERT=/path/to/vl-convert scripts/render-docs\nA render rewrites every lastmod in docs/sitemap.xml from the file times on the rendering machine. Keep the committed dates, and change the date only for pages whose content changed.\nSome statistics examples build designs from model formulas with Phit\\model_matrix(). phit-polyfill provides it when the phit extension is not loaded, so the documentation build needs no extension.\nDesign notes and plans that are not user documentation live in notes/.",
+    "crumbs": [
+      "Contributing",
+      "Development"
+    ]
+  },
+  {
+    "objectID": "examples/layers.html",
+    "href": "examples/layers.html",
+    "title": "Layer points and a fitted line",
     "section": "",
-    "text": "phiz does not draw graphics. It translates a ggplot2-style description into a Vega-Lite specification. Vega-Lite then resolves scales, lays out facets and legends, runs transforms, handles interaction, and renders to canvas or SVG. The PHP side stays small, and plots behave the same in the browser and in static export.\nStatistics run as Vega-Lite transforms where Vega-Lite has them: bins, densities with the default bandwidth, aggregates, quantiles, and window functions. phiz computes a statistic in PHP when Vega-Lite has no equivalent, or when matching R needs it:\n\nsmooth() fits and their confidence bands (loess up to 3,000 rows, lm, quad, and poly)\nviolin densities, and the R bw.nrd0 bandwidth behind density(adjust:)\n2D densities, contours, and filled contours\nellipse() and the summaries of summary()\nhex(), and bin2d() and histogram() above Config::$serverRows rows\nline(downsample:)\ncurve() evaluations of PHP functions\nthe statistics helpers’ intervals and predictions",
+    "text": "This example draws a scatterplot of engine size against fuel economy and adds a least-squares line with its confidence band as a second layer.\nPrerequisites: phiz installed with Composer (Installation). The pipe version needs PHP 8.5, and the method chain runs on PHP 8.3 and later.",
     "crumbs": [
-      "Compatibility and limitations",
-      "Design and compatibility"
+      "Examples",
+      "Layer points and a fitted line"
     ]
   },
   {
-    "objectID": "design.html#mapping-ggplot2-to-vega-lite",
-    "href": "design.html#mapping-ggplot2-to-vega-lite",
-    "title": "Design and compatibility",
-    "section": "Mapping ggplot2 to Vega-Lite",
-    "text": "Mapping ggplot2 to Vega-Lite\n\n\n\n\n\n\n\n\nggplot2\nphiz\nVega-Lite\n\n\n\n\nggplot(data, aes(...))\nPlot::of($data)-&gt;aes(...)\ndata and encoding\n\n\ngeom_*()\n-&gt;point(), -&gt;line(), …\na layer with a mark\n\n\nstat_*()\ngeom parameters\ntransform\n\n\nposition = \"dodge\"\nposition: 'dodge'\nxOffset\n\n\nscale_*()\n-&gt;scaleX(), …\nthe channel’s scale, axis, and legend\n\n\ncoord_flip()\n-&gt;coordFlip()\nswapped channels\n\n\nfacet_wrap(), facet_grid()\n-&gt;facetWrap(), -&gt;facetGrid()\nfacet with an inner spec\n\n\ntheme()\n-&gt;theme()\nconfig\n\n\npatchwork\nCompose\nhconcat, vconcat, concat",
+    "objectID": "examples/layers.html#data",
+    "href": "examples/layers.html#data",
+    "title": "Layer points and a fitted line",
+    "section": "Data",
+    "text": "Data\nDatasets::mpg() returns the 234 cars of ggplot2’s mpg data, bundled with phiz as resources/data/mpg.csv. The example uses two of its columns:\n\n\n\ndispl\nhwy\n\n\n\n\n1.8\n29\n\n\n1.8\n29\n\n\n2.0\n31\n\n\n\ndispl is the engine displacement in liters, and hwy is the highway fuel economy in miles per gallon.",
     "crumbs": [
-      "Compatibility and limitations",
-      "Design and compatibility"
+      "Examples",
+      "Layer points and a fitted line"
     ]
   },
   {
-    "objectID": "design.html#differences-from-ggplot2",
-    "href": "design.html#differences-from-ggplot2",
-    "title": "Design and compatibility",
-    "section": "Differences from ggplot2",
-    "text": "Differences from ggplot2\nComing from ggplot2 lists the translations and the behaviors that differ.",
+    "objectID": "examples/layers.html#code",
+    "href": "examples/layers.html#code",
+    "title": "Layer points and a fitted line",
+    "section": "Code",
+    "text": "Code\nSave the script beside the vendor directory and run it with php layers.php.\n\nPHP 8.5+PHP 8.3–8.4\n\n\n&lt;?php\n\nrequire 'vendor/autoload.php';\n\nuse Phiz\\Datasets;\n\nuse function Phiz\\{aes, geom_point, geom_smooth, ggplot, labs};\n\n$plot = ggplot(Datasets::mpg(), aes(x: 'displ', y: 'hwy')) |&gt;\n    geom_point(alpha: 0.5) |&gt;\n    geom_smooth(method: 'lm') |&gt;\n    labs(x: 'Engine displacement (L)', y: 'Highway miles per gallon');\n\n$plot-&gt;save('layers.html');\n\n\n&lt;?php\n\nrequire 'vendor/autoload.php';\n\nuse Phiz\\Datasets;\nuse Phiz\\Plot;\n\n$plot = Plot::of(Datasets::mpg())\n    -&gt;aes(x: 'displ', y: 'hwy')\n    -&gt;point(alpha: 0.5)\n    -&gt;smooth(method: 'lm')\n    -&gt;labs(x: 'Engine displacement (L)', y: 'Highway miles per gallon');\n\n$plot-&gt;save('layers.html');",
     "crumbs": [
-      "Compatibility and limitations",
-      "Design and compatibility"
+      "Examples",
+      "Layer points and a fitted line"
     ]
   },
   {
-    "objectID": "design.html#php-versions",
-    "href": "design.html#php-versions",
-    "title": "Design and compatibility",
-    "section": "PHP versions",
-    "text": "PHP versions\ncomposer.json allows PHP &gt;=8.3 &lt;8.6: PHP 8.3, 8.4, and 8.5. CI runs the test suite on all three. The library code parses on PHP 8.3. Examples and tests that use the pipe operator |&gt; need PHP 8.5. Each documentation example that uses it has a method-chain version, and the tests check that both build the same specification.",
+    "objectID": "examples/layers.html#output",
+    "href": "examples/layers.html#output",
+    "title": "Layer points and a fitted line",
+    "section": "Output",
+    "text": "Output\nFiles written:\n\nlayers.html: 106,202 bytes\n\nVega-Lite specification",
     "crumbs": [
-      "Compatibility and limitations",
-      "Design and compatibility"
+      "Examples",
+      "Layer points and a fitted line"
     ]
   },
   {
-    "objectID": "design.html#vega-lite-versions",
-    "href": "design.html#vega-lite-versions",
-    "title": "Design and compatibility",
-    "section": "Vega-Lite versions",
-    "text": "Vega-Lite versions\nphiz emits Vega-Lite 6 specifications. The pinned browser libraries are vega 6.4.0, vega-lite 6.4.3, and vega-embed 7.3.0. Static export uses vl-convert with Vega-Lite 6.1, and the tests validate every specification against the Vega-Lite 6.1.0 JSON schema, the version both renderers support.",
+    "objectID": "examples/layers.html#how-it-works",
+    "href": "examples/layers.html#how-it-works",
+    "title": "Layer points and a fitted line",
+    "section": "How it works",
+    "text": "How it works\nggplot() and aes() set the data and the mappings that every layer inherits. geom_point() adds the points, with alpha: 0.5 so that overlapping cars show as darker points. geom_smooth(method: 'lm') adds a second layer: a straight line fitted by least squares, and a shaded 95% confidence band for the mean. phiz fits the line and computes the band in PHP, and the band matches R’s predict(fit, interval = \"confidence\"). save() writes a standalone HTML page that draws the chart in a browser.\nThe line summarizes the trend: highway economy falls as displacement rises. The points curve upward again at the largest displacements, which a straight line cannot follow. The default method, loess, follows local changes like this one (Geoms).\nReference: ggplot(), aes(), point(), smooth(), labs(), and save().",
     "crumbs": [
-      "Compatibility and limitations",
-      "Design and compatibility"
+      "Examples",
+      "Layer points and a fitted line"
     ]
   },
   {

@@ -3,6 +3,7 @@ project:
   output-dir: _site
   render:
     - "*.qmd"
+    - "examples/*.qmd"
   resources:
     - figures/
     - gallery/
@@ -48,6 +49,9 @@ website:
           - reference-statistics.qmd
       - section: "Examples"
         contents:
+          - examples/layers.qmd
+          - examples/facets.qmd
+          - examples/save.qmd
           - gallery.qmd
       - section: "Compatibility and limitations"
         contents:

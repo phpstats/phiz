@@ -34,7 +34,7 @@
   </url>
   <url>
     <loc>https://phiz.phpstats.org/docs/dashboard</loc>
-    <lastmod>2026-10-31T14:57:59.000Z</lastmod>
+    <lastmod>2026-10-31T22:01:44.000Z</lastmod>
   </url>
   <url>
     <loc>https://phiz.phpstats.org/docs/data</loc>
@@ -103,5 +103,17 @@
   <url>
     <loc>https://phiz.phpstats.org/docs/reference-statistics</loc>
     <lastmod>2026-10-31T19:54:20.000Z</lastmod>
+  </url>
+  <url>
+    <loc>https://phiz.phpstats.org/docs/examples/layers</loc>
+    <lastmod>2026-10-31T22:01:44.000Z</lastmod>
+  </url>
+  <url>
+    <loc>https://phiz.phpstats.org/docs/examples/facets</loc>
+    <lastmod>2026-10-31T22:01:44.000Z</lastmod>
+  </url>
+  <url>
+    <loc>https://phiz.phpstats.org/docs/examples/save</loc>
+    <lastmod>2026-10-31T22:01:44.000Z</lastmod>
   </url>
 </urlset>

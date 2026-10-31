@@ -1,0 +1,37 @@
+---
+title: "Layer points and a fitted line"
+---
+
+This example draws a scatterplot of engine size against fuel economy and adds a least-squares line with its confidence band as a second layer.
+
+**Prerequisites:** phiz installed with Composer ([Installation](../get-started.qmd#installation)). The pipe version needs PHP 8.5, and the method chain runs on PHP 8.3 and later.
+
+## Data
+
+`Datasets::mpg()` returns the 234 cars of ggplot2's `mpg` data, bundled with phiz as [`resources/data/mpg.csv`](https://github.com/phpstats/phiz/blob/main/resources/data/mpg.csv). The example uses two of its columns:
+
+| displ | hwy |
+| ---: | ---: |
+| 1.8 | 29 |
+| 1.8 | 29 |
+| 2.0 | 31 |
+
+`displ` is the engine displacement in liters, and `hwy` is the highway fuel economy in miles per gallon.
+
+## Code
+
+Save the script beside the `vendor` directory and run it with `php layers.php`.
+
+{{< include ../_generated/example-layers-code.md >}}
+
+## Output
+
+{{< include ../_generated/example-layers-output.md >}}
+
+## How it works
+
+`ggplot()` and `aes()` set the data and the mappings that every layer inherits. `geom_point()` adds the points, with `alpha: 0.5` so that overlapping cars show as darker points. `geom_smooth(method: 'lm')` adds a second layer: a straight line fitted by least squares, and a shaded 95% confidence band for the mean. phiz fits the line and computes the band in PHP, and the band matches R's `predict(fit, interval = "confidence")`. `save()` writes a standalone HTML page that draws the chart in a browser.
+
+The line summarizes the trend: highway economy falls as displacement rises. The points curve upward again at the largest displacements, which a straight line cannot follow. The default method, loess, follows local changes like this one ([Geoms](../geoms.qmd)).
+
+Reference: [`ggplot()`](../reference-plots.qmd#ggplot-function), [`aes()`](../reference-plots.qmd#aes-function), [`point()`](../reference-geoms.qmd#point), [`smooth()`](../reference-geoms.qmd#smooth), [`labs()`](../reference-themes.qmd#labs), and [`save()`](../reference-output.qmd#save).

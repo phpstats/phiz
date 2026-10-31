@@ -1,0 +1,31 @@
+---
+title: "Save a chart to a file"
+---
+
+This example writes one chart to an HTML page, an SVG image, and a PNG image.
+
+**Prerequisites:** phiz installed with Composer ([Installation](../get-started.qmd#installation)). The SVG and PNG files need the vl-convert binary ([Installing vl-convert](../rendering.qmd#installing-vl-convert)). The HTML file needs nothing else. The pipe version needs PHP 8.5, and the method chain runs on PHP 8.3 and later.
+
+## Data
+
+The chart plots weight against fuel economy for the 32 cars of R's `mtcars` data, which `Datasets::mtcars()` returns from [`resources/data/mtcars.csv`](https://github.com/phpstats/phiz/blob/main/resources/data/mtcars.csv). `wt` is the weight in thousands of pounds, and `mpg` is the fuel economy in miles per gallon.
+
+## Code
+
+Save the script beside the `vendor` directory and run it with `php save.php`.
+
+{{< include ../_generated/example-save-code.md >}}
+
+## Output
+
+The script writes three files to the current directory. The SVG file is shown below.
+
+{{< include ../_generated/example-save-output.md >}}
+
+## How it works
+
+`save()` picks the format from the file extension: `html`, `json`, `svg`, `png`, `jpg`, or `pdf`. An HTML file is a standalone page that loads vega, vega-lite, and vega-embed from the jsDelivr CDN and draws the chart in the browser, where interaction such as tooltips works. `json` writes the Vega-Lite specification.
+
+The image formats run vl-convert, which renders without a browser. `scale: 2` doubles the pixel size of the PNG and JPG files. Without vl-convert, `save('chart.svg')` throws `Phiz\Exceptions\VlConvertNotFound` with installation instructions. phiz finds the binary through the `PHIZ_VL_CONVERT` or `VL_CONVERT` environment variable, then `PATH`. An SVG file from a given specification is the same byte for byte on every run ([Reproducible SVG](../rendering.qmd#reproducible-svg)).
+
+Reference: [`save()`](../reference-output.qmd#save), [`html()`](../reference-output.qmd#html), [`svg()`](../reference-output.qmd#svg), [`png()`](../reference-output.qmd#png), and [`pdf()`](../reference-output.qmd#pdf). [Rendering](../rendering.qmd) covers every output option.
