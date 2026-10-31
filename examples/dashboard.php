@@ -13,7 +13,7 @@ use Phiz\Plot;
 
 use function Phiz\aes;
 
-use function Phplyr\{arrange, desc, filter, group_by, mean, n, summarise};
+use function Phplyr\{arrange, desc, filter, group_by, mean, n, summarize};
 
 /**
  * @param string|null $drive 'f', 'r', '4', or null for all
@@ -25,15 +25,15 @@ function fuel_dashboard(Table $cars, ?string $drive = null, ?int $year = null, ?
     $byDrive = $cars |> filter(fn ($r) => $drive === null || $r->drv === $drive);
     $subset = $byDrive |> filter(fn ($r) => $year === null || $r->year === $year);
 
-    $byClass = $subset
-        |> group_by('class')
-        |> summarise(cars: n(), hwy: mean('hwy'), cty: mean('cty'))
-        |> arrange(desc('hwy'));
+    $byClass = $subset |>
+        group_by('class') |>
+        summarize(cars: n(), hwy: mean('hwy'), cty: mean('cty')) |>
+        arrange(desc('hwy'));
 
     // The trend compares the two years, so it ignores the year filter.
-    $byManufacturer = $byDrive
-        |> group_by('manufacturer', 'year')
-        |> summarise(hwy: mean('hwy'));
+    $byManufacturer = $byDrive |>
+        group_by('manufacturer', 'year') |>
+        summarize(hwy: mean('hwy'));
 
     $bars = Plot::of($byClass)
         ->aes(x: 'hwy', y: \Phiz\field('class', sort: '-x'), fill: \Phiz\calc('datum.class === '.json_encode($selected ?? ''), 'selected', 'nominal'))

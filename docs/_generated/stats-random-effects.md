@@ -3,7 +3,7 @@ use Phiz\Datasets;
 
 use function Phiz\random_effects_plot;
 
-// stats_lmer('hwy ~ displ + (1 + displ | manufacturer)', $mpg)
+// Phit\fit_lmer('hwy ~ displ + (1 + displ | manufacturer)', $mpg)
 $mixed = json_decode(file_get_contents(__DIR__.'/fits/mpg-lmer-slopes.json'), true);
 
 $plot = random_effects_plot($mixed, Datasets::mpg());

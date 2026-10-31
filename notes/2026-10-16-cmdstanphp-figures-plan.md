@@ -1,8 +1,6 @@
----
-title: "Plan: CmdStanPHP figures on phiz"
----
+# Plan: CmdStanPHP figures on phiz (2026-10-16)
 
-This page proposes how CmdStanPHP's figures can use phiz. It is written as an issue for CmdStanPHP and changes nothing there. It builds on CmdStanPHP's planning note, `docs/notes/phiz-readiness.md`. Whether and when to proceed is the CmdStanPHP maintainer's decision.
+This note was a page of the phiz documentation until 2026-10-31. It proposes how CmdStanPHP's figures can use phiz. It is written as an issue for CmdStanPHP and changes nothing there. It builds on CmdStanPHP's planning note, `docs/notes/phiz-readiness.md`. Whether and when to proceed is the CmdStanPHP maintainer's decision.
 
 ## Background
 

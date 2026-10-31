@@ -4,11 +4,18 @@ title: "Dashboards with Livewire"
 
 This page builds a small dashboard of linked charts. A Livewire component holds the filters, phplyr summarizes a phibble table on the server, and phiz renders three charts that all follow the same state. Changing a filter re-renders the component, and each chart re-embeds in place.
 
+## Prerequisites
+
+- a Laravel application with Livewire 3, which provides the `#[Url]` attribute used below
+- phiz, phibble, and phplyr: `composer require phpstats/phiz phpstats/phibble phpstats/phplyr`
+
+The chart code is [`examples/dashboard.php`](https://github.com/phpstats/phiz/blob/main/examples/dashboard.php), with a method-chain version in [`examples/dashboard.chain.php`](https://github.com/phpstats/phiz/blob/main/examples/dashboard.chain.php). The test suite checks that both build the same charts.
+
 ## The charts
 
-`fuel_dashboard()` takes the cars table and the filter state and returns three plots and the class summary behind the bar chart. It lives in `examples/dashboard.php`, and the Livewire component below calls it from `render()`. The example uses the pipe operator, so it needs PHP 8.5.
+`fuel_dashboard()` takes the cars table and the filter state and returns three plots and the class summary behind the bar chart. The Livewire component below calls it from `render()`.
 
-- The bar chart shows mean highway mpg by class, from `group_by('class') |> summarise(...)`. The selected class is highlighted with a computed field.
+- The bar chart shows mean highway mpg by class, from phplyr's `group_by()` and `summarize()`. The selected class is highlighted with a computed field.
 - The scatterplot shows the filtered cars, with one linear fit across all of them.
 - The trend chart compares each manufacturer's mean in 1999 and 2008. It ignores the year filter, so the comparison stays visible.
 

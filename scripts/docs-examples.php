@@ -8,9 +8,11 @@ declare(strict_types=1);
  * - docs/_generated/{name}.md: the example's code and its live chart (the spec it actually produced)
  * - docs/figures/{name}.svg: a static rendering through vl-convert, when it is installed
  * - docs/_phiz-scripts.html: the pinned vega, vega-lite, vega-embed and phiz loader script tags
- * - docs/gallery.html: the examples/ gallery page
+ * - docs/_generated/gallery.md: the examples/catalog.php gallery, for docs/gallery.qmd
  *
- * An example file returns a Chart. Its code is shown as written, with `return` shown as `$plot =`.
+ * An example file returns a Chart. Its code is shown as written, with `return` shown as `$plot =`. An example that
+ * uses the pipe operator has a method-chain twin, {name}.chain.php; the two are shown in tabs labeled "PHP 8.5+" and
+ * "PHP 8.3–8.4", and must build the same specification. Pipe examples need PHP 8.5 to run.
  *
  *     php scripts/docs-examples.php [name ...]
  */
@@ -33,7 +35,7 @@ file_put_contents("{$docs}/_phiz-scripts.html", "<style>.phiz-figure{margin:0.5r
 $count = 0;
 foreach (glob("{$docs}/examples/*.php") as $file) {
     $name = basename($file, '.php');
-    if (str_starts_with($name, '_') || ($only !== [] && ! in_array($name, $only, true))) {
+    if (str_starts_with($name, '_') || str_ends_with($name, '.chain') || ($only !== [] && ! in_array($name, $only, true))) {
         continue;
     }
     $chart = (static fn () => require $file)();
@@ -41,11 +43,19 @@ foreach (glob("{$docs}/examples/*.php") as $file) {
         fwrite(STDERR, "{$name}: expected a Chart, got ".get_debug_type($chart)."\n");
         exit(1);
     }
-    $code = (string) file_get_contents($file);
-    $code = preg_replace('/^<\?php\s*(declare\(strict_types=1\);\s*)?/', '', $code);
-    $code = preg_replace('/^return /m', '$plot = ', trim($code));
+    $chainFile = "{$docs}/examples/{$name}.chain.php";
+    if (is_file($chainFile)) {
+        $chain = (static fn () => require $chainFile)();
+        if (! $chain instanceof Chart || $chain->toArray() !== $chart->toArray()) {
+            fwrite(STDERR, "{$name}: {$name}.chain.php does not build the same specification\n");
+            exit(1);
+        }
+        $markdown = syntax_tabs(display_code($file), display_code($chainFile));
+    } else {
+        $markdown = "```php\n".display_code($file)."\n```\n";
+    }
 
-    $markdown = "```php\n{$code}\n```\n\n```{=html}\n<div class=\"phiz-figure\">"
+    $markdown .= "\n```{=html}\n<div class=\"phiz-figure\">"
         .Html::container($chart, ['actions' => false], ['aria-label' => $chart->toArray()['description'] ?? $name])
         ."</div>\n```\n";
     file_put_contents("{$docs}/_generated/{$name}.md", $markdown);
@@ -57,14 +67,30 @@ foreach (glob("{$docs}/examples/*.php") as $file) {
 
 // Source listings of shared example code, for pages that show it whole.
 foreach (glob(dirname(__DIR__).'/examples/dashboard.php') as $file) {
-    $code = preg_replace('/^<\?php\s*(declare\(strict_types=1\);\s*)?/', '', (string) file_get_contents($file));
-    file_put_contents("{$docs}/_generated/source-".basename($file, '.php').'.md', "```php\n".trim($code)."\n```\n");
+    $chainFile = substr($file, 0, -4).'.chain.php';
+    $listing = fn (string $path) => trim(preg_replace('/^<\?php\s*(declare\(strict_types=1\);\s*)?/', '', (string) file_get_contents($path)));
+    $markdown = is_file($chainFile) ? syntax_tabs($listing($file), $listing($chainFile)) : "```php\n".$listing($file)."\n```\n";
+    file_put_contents("{$docs}/_generated/source-".basename($file, '.php').'.md', $markdown);
 }
 
 if ($only === []) {
-    passthru(escapeshellarg(PHP_BINARY).' '.escapeshellarg(dirname(__DIR__).'/examples/gallery.php').' '.escapeshellarg("{$docs}/gallery.html"), $status);
+    passthru(escapeshellarg(PHP_BINARY).' '.escapeshellarg(dirname(__DIR__).'/examples/gallery.php').' '.escapeshellarg("{$docs}/_generated/gallery.md"), $status);
     if ($status !== 0) {
         exit($status);
     }
 }
+/** An example's code as the page shows it: without the opening tag, with `return` shown as `$plot =`. */
+function display_code(string $file): string
+{
+    $code = preg_replace('/^<\?php\s*(declare\(strict_types=1\);\s*)?/', '', (string) file_get_contents($file));
+
+    return preg_replace('/^return /m', '$plot = ', trim($code));
+}
+
+/** Quarto tabs holding the pipe and method-chain versions of the same code. */
+function syntax_tabs(string $pipe, string $chain): string
+{
+    return "::: {.panel-tabset}\n\n#### PHP 8.5+\n\n```php\n{$pipe}\n```\n\n#### PHP 8.3–8.4\n\n```php\n{$chain}\n```\n\n:::\n";
+}
+
 fwrite(STDERR, "Ran {$count} documentation examples".($svg ? ' and rendered SVGs' : ' (vl-convert not found; no SVGs)').".\n");

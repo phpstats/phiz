@@ -2,7 +2,29 @@
 title: "Get started"
 ---
 
-## A first plot
+## A complete first chart
+
+Install phiz in a project with `composer require phpstats/phiz`, then save this script as `chart.php` beside the `vendor` directory:
+
+```php
+<?php
+
+require __DIR__.'/vendor/autoload.php';
+
+use Phiz\Datasets;
+use Phiz\Plot;
+
+$plot = Plot::of(Datasets::mpg())
+    ->aes(x: 'displ', y: 'hwy', color: 'drv')
+    ->point()
+    ->labs(x: 'Displacement (L)', y: 'Highway mpg', color: 'Drive');
+
+$plot->save('chart.html');
+```
+
+`php chart.php` writes `chart.html`, a standalone page. Open it in a browser to see the chart. The page loads vega, vega-lite, and vega-embed from the jsDelivr CDN, so viewing it needs a network connection. `save('chart.svg')`, `save('chart.png')`, and `save('chart.pdf')` write static files instead and need the vl-convert binary ([Rendering](rendering.qmd)).
+
+## Data, mappings, and geoms
 
 A plot starts with data and aesthetic mappings. `Plot::of()` takes the data, `aes()` maps fields to visual channels, and a geom such as `point()` adds a layer. The bundled `Datasets` class provides a few classic datasets for examples.
 
@@ -29,13 +51,11 @@ $smooth = $base->point(alpha: 0.3)->smooth(method: 'lm');
 
 ## Pipes
 
-PHP 8.5's pipe operator composes ggplot2-style functions. `ggplot()` starts a plot, and each `geom_*()`, `scale_*()`, `labs()`, or `theme_*()` function returns a closure that takes a plot and returns the next one.
+PHP 8.5's pipe operator composes ggplot2-style functions. `ggplot()` starts a plot, and each `geom_*()`, `scale_*()`, `labs()`, or `theme_*()` function returns a closure that takes a plot and returns the next one. The method chain builds the same specification on every supported PHP version.
 
 {{< include _generated/start-pipe.md >}}
 
-On PHP 8.3 and 8.4, pass the same functions to `apply()`: `ggplot($mpg, aes(x: 'displ', y: 'hwy'))->apply(geom_point(), labs(x: 'Displacement (L)'))`.
-
-The fluent methods and the functions accept the same arguments. A plot can also apply reusable fragments with `apply()`:
+The functions and the methods accept the same arguments. On PHP 8.3 and 8.4, `apply()` also takes the functions: `ggplot($mpg, aes(x: 'displ', y: 'hwy'))->apply(geom_point(), labs(x: 'Displacement (L)'))`. A plot can also apply reusable fragments with `apply()`:
 
 ```php
 $house = fn (Plot $plot) => $plot->theme('minimal', baseSize: 12)->size(480, 300);

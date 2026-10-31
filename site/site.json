@@ -11,12 +11,36 @@
     "install": [
         "composer require phpstats/phiz"
     ],
-    "requires": [
-        "PHP 8.3+"
+    "php": [
+        "8.3",
+        "8.4",
+        "8.5"
     ],
+    "requires": [],
+    "optional": [
+        {
+            "name": "vl-convert",
+            "for": "SVG, PNG, and PDF export"
+        },
+        {
+            "name": "Laravel",
+            "for": "the <x-phiz> Blade component and the @phizScripts directive"
+        },
+        {
+            "name": "phit",
+            "for": "predictions from formula fits in effect_plot(), predictions(), and marginal_means()"
+        }
+    ],
+    "build": [],
+    "platforms": [
+        "Linux",
+        "macOS"
+    ],
+    "quickstart": "get-started",
     "repository": "https://github.com/phpstats/phiz",
     "example": {
-        "pipe": "use function Phiz\\{aes, facet_wrap, geom_point, ggplot, label_dollar, labs, scale_y_continuous};\n\n$orders = \\Phiz\\Data::url('/exports/orders.csv');\n\n$plot = ggplot($orders, aes(x: 'items:Q', y: 'total:Q', color: 'channel:N'))\n    |> geom_point(alpha: 0.6)\n    |> facet_wrap('region', ncol: 3)\n    |> scale_y_continuous(labels: label_dollar())\n    |> labs(x: 'Items', y: 'Order total', color: 'Channel');\n\necho $plot->toJson(pretty: true);",
+        "pipe": "use function Phiz\\{aes, facet_wrap, geom_point, ggplot, label_dollar, labs, scale_y_continuous};\n\n$orders = \\Phiz\\Data::url('/exports/orders.csv');\n\n$plot = ggplot($orders, aes(x: 'items:Q', y: 'total:Q', color: 'channel:N')) |>\n    geom_point(alpha: 0.6) |>\n    facet_wrap('region', ncol: 3) |>\n    scale_y_continuous(labels: label_dollar()) |>\n    labs(x: 'Items', y: 'Order total', color: 'Channel');\n\necho $plot->toJson(pretty: true);",
+        "chain": "use function Phiz\\label_dollar;\n\n$orders = \\Phiz\\Data::url('/exports/orders.csv');\n\n$plot = \\Phiz\\Plot::of($orders)\n    ->aes(x: 'items:Q', y: 'total:Q', color: 'channel:N')\n    ->point(alpha: 0.6)\n    ->facetWrap('region', ncol: 3)\n    ->scaleY(labels: label_dollar())\n    ->labs(x: 'Items', y: 'Order total', color: 'Channel');\n\necho $plot->toJson(pretty: true);",
         "output": "{\n    \"$schema\": \"https://vega.github.io/schema/vega-lite/v6.json\",\n    \"data\": {\n        \"url\": \"/exports/orders.csv\"\n    },\n    \"facet\": {\n        \"field\": \"region\",\n        \"type\": \"nominal\",\n        \"title\": null\n    },\n    \"columns\": 3,\n    \"spec\": {\n        \"mark\": {\n            \"type\": \"point\",\n            \"filled\": true,\n            \"opacity\": 0.6\n        },\n        \"encoding\": {\n            \"x\": {\n                \"field\": \"items\",\n                \"type\": \"quantitative\",\n                \"title\": \"Items\",\n                \"scale\": {\n                    \"zero\": false\n                }\n            },\n            \"y\": {\n                \"field\": \"total\",\n                \"type\": \"quantitative\",\n                \"title\": \"Order total\",\n                \"axis\": {\n                    \"labelExpr\": \"\\\"$\\\" + format(datum.value, ',~f')\"\n                },\n                \"scale\": {\n                    \"zero\": false\n                }\n            },\n            \"color\": {\n                \"field\": \"channel\",\n                \"type\": \"nominal\",\n                \"title\": \"Channel\"\n            }\n        }\n    },\n    \"config\": {\n        \"legend\": {\n            \"labelLimit\": 320\n        }\n    }\n}"
     },
     "docs": {
@@ -80,25 +104,21 @@
                 "path": "large-data.qmd"
             },
             {
-                "title": "Design",
-                "path": "design.qmd"
-            },
-            {
                 "title": "API reference",
                 "path": "reference.qmd"
             },
             {
-                "title": "Plan: CmdStanPHP figures",
-                "path": "cmdstanphp.qmd"
+                "title": "Gallery",
+                "path": "gallery.qmd"
+            },
+            {
+                "title": "Design and compatibility",
+                "path": "design.qmd"
             },
             {
                 "title": "Development",
                 "path": "development.qmd"
             }
         ]
-    },
-    "optional": [
-        "Laravel",
-        "vl-convert"
-    ]
+    }
 }

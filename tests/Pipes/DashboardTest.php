@@ -17,3 +17,17 @@ it('builds the dashboard charts from phplyr summaries of a phibble table', funct
         ->and($charts['trend'])->toBeValidVegaLite()
         ->and(array_unique(array_column($charts['trend']->data->rows, 'year')))->toEqualCanonicalizing([1999, 2008]);
 });
+
+it('builds the same dashboard with pipes and with method chains', function () {
+    $examples = __DIR__.'/../../examples';
+
+    expect(dashboardCharts("{$examples}/dashboard.php"))->toBe(dashboardCharts("{$examples}/dashboard.chain.php"));
+});
+
+it('builds the same documentation examples with pipes and with method chains', function () {
+    foreach (glob(__DIR__.'/../../docs/examples/*.chain.php') as $chain) {
+        $pipe = (static fn () => require str_replace('.chain.php', '.php', $chain))();
+
+        expect((static fn () => require $chain)()->toArray())->toBe($pipe->toArray());
+    }
+});

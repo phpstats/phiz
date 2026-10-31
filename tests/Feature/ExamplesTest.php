@@ -32,3 +32,14 @@ it('writes the gallery page', function () {
     expect(substr_count($html, 'data-phiz="'))->toBe(count(require __DIR__.'/../../examples/catalog.php'))
         ->and($html)->toContain('<details><summary>Code</summary>');
 });
+
+it('writes the gallery fragment for the documentation', function () {
+    $output = sys_get_temp_dir().'/phiz-gallery-'.bin2hex(random_bytes(4)).'.md';
+    exec(escapeshellarg(PHP_BINARY).' '.escapeshellarg(__DIR__.'/../../examples/gallery.php').' '.escapeshellarg($output).' 2>&1', $lines, $status);
+
+    expect($status)->toBe(0);
+    $markdown = (string) file_get_contents($output);
+    unlink($output);
+    expect(substr_count($markdown, 'data-phiz="'))->toBe(count(require __DIR__.'/../../examples/catalog.php'))
+        ->and($markdown)->toContain("## Statistics\n");
+});

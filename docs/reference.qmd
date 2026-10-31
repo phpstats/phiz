@@ -2,18 +2,19 @@
 title: "API reference"
 ---
 
+This reference is generated from the public signatures and docblocks in `src/`. Every method that adds or changes something returns a new `Plot`, and the plot it was called on is unchanged.
+
+## Exceptions
+
+- `InvalidArgumentException` for input phiz cannot use, such as an unknown aesthetic, scale type, theme, or legend position, a geom without an aesthetic it needs, data that is neither rows nor columns, or a plot with no layers. The message names the problem.
+- `Phiz\Exceptions\VlConvertNotFound` when static export cannot find the vl-convert binary.
+- `Phiz\Exceptions\ExportFailed` when vl-convert fails, times out, or writes nothing, or when a file cannot be written.
+
+Both export exceptions implement `Phiz\Exceptions\PhizException`.
+
 ## Plot
 
-| Group | Methods |
-| --- | --- |
-| Start | `Plot::of($data, $aes)`, `aes(...)`, `data($data)` |
-| Geoms | `point`, `jitter`, `line`, `path`, `step`, `area`, `ribbon`, `bar`, `col`, `histogram`, `freqpoly`, `density`, `boxplot`, `violin`, `errorbar`, `linerange`, `pointrange`, `hline`, `vline`, `abline`, `rule`, `segment`, `text`, `label`, `tile`, `raster`, `rect`, `bin2d`, `hex`, `smooth`, `curve`, `rug`, `ecdf`, `qq`, `qqLine`, `arc`, `pie`, `layer`, `geom` |
-| Scales | `scale`, `scaleX`, `scaleY`, `scaleColor`, `scaleFill`, `scaleSize`, `scaleShape`, `scaleOpacity`, `scaleLinetype`, `xlim`, `ylim` |
-| Coordinates and facets | `coordFlip`, `coordCartesian`, `facetWrap`, `facetGrid` |
-| Labels, theme, size | `labs`, `title`, `theme`, `size`, `width`, `height`, `description` |
-| Interaction | `tooltip`, `interactive`, `brush`, `highlight`, `slider`, `dropdown`, `param`, `select` |
-| Escape hatches | `transform`, `raw`, `apply` |
-| Output | `toArray`, `toJson`, `toSpec`, `embed`, `html`, `svg`, `png`, `pdf`, `save` |
+{{< include _generated/reference-plot.md >}}
 
 ## Aesthetics
 
@@ -21,15 +22,9 @@ title: "API reference"
 
 ## Functions
 
-The `Phiz\` namespace provides:
+Most functions in the `Phiz\` namespace return a closure that applies the method of the same name, for the pipe operator and `apply()`. They take the same arguments as that method.
 
-- Construction: `aes`, `ggplot`, `field`, `factor`, `calc`, and `expr`.
-- Every geom as `geom_*`, plus `stat_ecdf`, `stat_qq`, and `stat_qq_line`.
-- Scales: `scale_x_continuous`, `scale_x_log10`, `scale_x_sqrt`, `scale_x_reverse`, `scale_x_date`, and their `y` versions, plus `scale_color`, `scale_fill`, `scale_*_manual`, `scale_*_scheme`, `scale_*_viridis`, `scale_*_brewer`, `scale_*_gradient`, `scale_*_gradient2`, `scale_size`, `scale_shape`, `scale_alpha`, and `scale_linetype`.
-- Layout and labels: `xlim`, `ylim`, `coord_flip`, `coord_cartesian`, `facet_wrap`, `facet_grid`, `labs`, `ggtitle`, `xlab`, and `ylab`.
-- Themes and size: `theme`, the `theme_*` presets, and `size`.
-- Interaction: `tooltip`, `interactive`, `brush`, and `highlight`.
-- Statistics: `coefplot`, `residual_plot`, `qq_plot`, `fitted_plot`, `scale_location_plot`, `diagnostic_plots`, `effect_plot`, `predictions`, `marginal_means`, `random_effects_plot`, and `interval_plot`.
+{{< include _generated/reference-functions.md >}}
 
 ## Other classes
 
@@ -47,3 +42,5 @@ The `Phiz\` namespace provides:
 | `Config` | large-data thresholds: `$serverRows` and `$warnRows` |
 | `Stats\Charts` | the statistics helpers |
 | `Stats\Fit` | least squares, smoothing bands, and normal and t quantiles |
+
+{{< include _generated/reference-classes.md >}}

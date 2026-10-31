@@ -2,9 +2,26 @@
 title: "Statistics"
 ---
 
-The statistics helpers build ordinary plots from model results, so their output can be restyled with any `Plot` method. They read the arrays that [phit](https://github.com/phpstats/phit) returns, from the extension or from phit-polyfill. Formula fits from `Phit\fit_lm`, `fit_glm`, `fit_lmer`, and `fit_glmer` name their coefficients in `columns`. Matrix fits from `fit_ols` and `fit_logistic` take a `names:` argument.
+The statistics helpers build ordinary plots from model results, so their output can be restyled with any `Plot` method. They read the arrays that [phit](https://github.com/phpstats/phit) returns, from its extension or its PHP polyfill. Formula fits from `Phit\fit_lm`, `fit_glm`, `fit_lmer`, and `fit_glmer` name their coefficients in `columns`. Matrix fits from `fit_ols` and `fit_logistic` take a `names:` argument.
 
-The fits on this page were produced by php-stats from the `mtcars` data and saved in `docs/examples/fits/`.
+The fits on this page are saved as JSON in `docs/examples/fits/`, from the `mtcars` and `mpg` data. phit's polyfill, version 0.3.0, reproduces each of them to within 1e-13, relative. The test suite refits them and checks the coefficients and covariance matrices to 1e-9.
+
+## Requirements and fit keys
+
+The helpers need no extension to plot a fit array. Two operations build design rows from the fit's formula with `Phit\model_matrix()`, which comes from the phit extension or its polyfill:
+
+- predictions for formula fits in `effect_plot()`, `predictions()`, and `marginal_means()`, unless `design:` is given
+- random-slope design columns in `random_effects_plot()`, when it rebuilds conditional variances from the data
+
+Without either, these calls throw an `InvalidArgumentException`. Each helper reads these keys of the fit array:
+
+| Helper | Keys |
+| --- | --- |
+| `coefplot()` | `coefficients`, `conf_int`, `std_errors` and `df_residual` when `level:` recomputes the intervals, `columns` or `names:`, and `link` for the axis label |
+| `residual_plot()`, `qq_plot()`, `fitted_plot()` | `fitted` and `residuals` |
+| `scale_location_plot()` | `fitted`, `residuals`, and `sigma`, or `df_residual` to estimate it |
+| `effect_plot()`, `predictions()`, `marginal_means()` | `coefficients`, `covariance`, `formula`, `columns`, `response`, `link`, `df_residual`, and `retained_rows` when rows were dropped |
+| `random_effects_plot()` | `random`, with `effects_cond_var` or `random_effects_cond_var` when present |
 
 ## Coefficient plots
 
@@ -54,7 +71,7 @@ The model's variables come from its formula: names inside `factor()` and non-num
 
 {{< include _generated/stats-marginal-means-glm.md >}}
 
-The linear-model means match a direct computation in R to 10 digits. GLM means match too. Their intervals differ from R's by about 1e-5, because R's `vcov()` for a GLM uses the weights of the iteration before convergence, while php-stats evaluates the information matrix at the final estimates.
+The linear-model means match a direct computation in R to 10 digits. GLM means match too. Their intervals differ from R's by about 1e-5. The difference comes from the fit's covariance matrix. For `am ~ wt + hp`, phit's coefficients agree with R's `glm()` to 12 digits, while the variance of the `wt` coefficient is 9.4167679 in phit and 9.4167669 in R's `vcov()`.
 
 ## Random effects
 

@@ -31,7 +31,7 @@ $mtcars = Datasets::mtcars();
 $economics = Datasets::economics();
 $faithful = Datasets::faithful();
 
-// A model fit in the shape php-stats returns, computed here so the examples run without the extension.
+// A model fit in the shape Phit\fit_lm() returns, computed here so the examples need neither phit nor its polyfill.
 $fit = (function () use ($mtcars) {
     $x = array_map(fn ($r) => [1, $r['wt'], $r['hp'], $r['am']], $mtcars);
     $fit = Fit::ols($x, array_column($mtcars, 'mpg'));
@@ -291,7 +291,7 @@ return [
         ->hline(expr('cutoff'), linetype: 'dashed')],
 
     // Statistics.
-    'coefplot' => ['Statistics', 'Coefficient plot', 'Straight from a php-stats fit (stats_lm, stats_glm, ...).', fn () => coefplot($fit)
+    'coefplot' => ['Statistics', 'Coefficient plot', 'Straight from a phit fit (fit_lm, fit_glm, ...).', fn () => coefplot($fit)
         ->labs(title: 'mpg ~ wt + hp + am')],
 
     'coefplot-compare' => ['Statistics', 'Comparing models', 'Several fits, dodged.', fn () => coefplot(['Full' => $fit, 'Without am' => $reduced])],

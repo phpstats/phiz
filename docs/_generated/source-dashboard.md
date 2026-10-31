@@ -1,3 +1,7 @@
+::: {.panel-tabset}
+
+#### PHP 8.5+
+
 ```php
 /*
  * The fuel economy dashboard from the "Dashboards with Livewire" documentation page: three charts built from phplyr
@@ -10,7 +14,7 @@ use Phiz\Plot;
 
 use function Phiz\aes;
 
-use function Phplyr\{arrange, desc, filter, group_by, mean, n, summarise};
+use function Phplyr\{arrange, desc, filter, group_by, mean, n, summarize};
 
 /**
  * @param string|null $drive 'f', 'r', '4', or null for all
@@ -22,15 +26,15 @@ function fuel_dashboard(Table $cars, ?string $drive = null, ?int $year = null, ?
     $byDrive = $cars |> filter(fn ($r) => $drive === null || $r->drv === $drive);
     $subset = $byDrive |> filter(fn ($r) => $year === null || $r->year === $year);
 
-    $byClass = $subset
-        |> group_by('class')
-        |> summarise(cars: n(), hwy: mean('hwy'), cty: mean('cty'))
-        |> arrange(desc('hwy'));
+    $byClass = $subset |>
+        group_by('class') |>
+        summarize(cars: n(), hwy: mean('hwy'), cty: mean('cty')) |>
+        arrange(desc('hwy'));
 
     // The trend compares the two years, so it ignores the year filter.
-    $byManufacturer = $byDrive
-        |> group_by('manufacturer', 'year')
-        |> summarise(hwy: mean('hwy'));
+    $byManufacturer = $byDrive |>
+        group_by('manufacturer', 'year') |>
+        summarize(hwy: mean('hwy'));
 
     $bars = Plot::of($byClass)
         ->aes(x: 'hwy', y: \Phiz\field('class', sort: '-x'), fill: \Phiz\calc('datum.class === '.json_encode($selected ?? ''), 'selected', 'nominal'))
@@ -60,3 +64,72 @@ function fuel_dashboard(Table $cars, ?string $drive = null, ?int $year = null, ?
     return ['summary' => $byClass, 'bars' => $bars, 'scatter' => $scatter, 'trend' => $trend];
 }
 ```
+
+#### PHP 8.3–8.4
+
+```php
+/*
+ * The fuel economy dashboard from the "Dashboards with Livewire" documentation page, written with method chains for
+ * PHP 8.3 and 8.4. examples/dashboard.php is the same code with the pipe operator; the tests check that both build the
+ * same charts.
+ */
+
+use Phibble\Contracts\Table;
+use Phiz\Plot;
+
+use function Phiz\aes;
+
+use function Phplyr\{desc, mean, n, phplyr};
+
+/**
+ * @param string|null $drive 'f', 'r', '4', or null for all
+ * @param int|null $year 1999, 2008, or null for both
+ * @return array{summary: Table, bars: Plot, scatter: Plot, trend: Plot}
+ */
+function fuel_dashboard(Table $cars, ?string $drive = null, ?int $year = null, ?string $selected = null): array
+{
+    $byDrive = phplyr($cars)->filter(fn ($r) => $drive === null || $r->drv === $drive)->get();
+    $subset = phplyr($byDrive)->filter(fn ($r) => $year === null || $r->year === $year)->get();
+
+    $byClass = phplyr($subset)
+        ->groupBy('class')
+        ->summarize(cars: n(), hwy: mean('hwy'), cty: mean('cty'))
+        ->arrange(desc('hwy'))
+        ->get();
+
+    // The trend compares the two years, so it ignores the year filter.
+    $byManufacturer = phplyr($byDrive)
+        ->groupBy('manufacturer', 'year')
+        ->summarize(hwy: mean('hwy'))
+        ->get();
+
+    $bars = Plot::of($byClass)
+        ->aes(x: 'hwy', y: \Phiz\field('class', sort: '-x'), fill: \Phiz\calc('datum.class === '.json_encode($selected ?? ''), 'selected', 'nominal'))
+        ->col()
+        ->scaleFill(domain: [false, true], range: ['#9ECAE1', '#08519C'], guide: false)
+        ->tooltip(['class', 'cars', 'hwy', 'cty'])
+        ->labs(title: 'Mean highway mpg by class', x: 'Highway mpg', y: null)
+        ->size(320, 220);
+
+    $scatter = Plot::of($subset)
+        ->aes(x: 'displ', y: 'hwy', color: 'class')
+        ->point(alpha: 0.7, size: 40)
+        ->smooth(aes(x: 'displ', y: 'hwy'), method: 'lm', color: '#333333', inheritAes: false)
+        ->tooltip(['manufacturer', 'model', 'year', 'displ', 'hwy'])
+        ->theme(legendPosition: 'bottom')
+        ->labs(title: 'Displacement and highway mpg', x: 'Displacement (L)', y: 'Highway mpg', color: null)
+        ->size(320, 220);
+
+    $trend = Plot::of($byManufacturer)
+        ->aes(x: 'year:O', y: 'hwy', group: 'manufacturer')
+        ->line(color: '#BBBBBB')
+        ->point(color: '#666666', size: 20)
+        ->tooltip(['manufacturer', 'year', 'hwy'])
+        ->labs(title: 'Manufacturers, 1999 to 2008', x: null, y: 'Mean highway mpg')
+        ->size(200, 220);
+
+    return ['summary' => $byClass, 'bars' => $bars, 'scatter' => $scatter, 'trend' => $trend];
+}
+```
+
+:::

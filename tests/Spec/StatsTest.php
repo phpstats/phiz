@@ -216,3 +216,22 @@ it('uses the conditional variances php-stats reports, without the data', functio
         ->and(fn () => random_effects_plot(['random' => [array_diff_key($fit['random'][0], ['effects_cond_var' => true])]] + $fit))
         ->toThrow(InvalidArgumentException::class, 'pass the data');
 });
+
+it('reproduces the documentation fits with phit', function (string $file) {
+    $saved = json_decode((string) file_get_contents($file), true);
+    $rows = str_starts_with(basename($file), 'mpg') ? Datasets::mpg() : Datasets::mtcars();
+    $columns = [];
+    foreach ($rows as $row) {
+        foreach ($row as $key => $value) {
+            $columns[$key][] = $value;
+        }
+    }
+    $fit = match (true) {
+        str_contains($saved['formula'], '|') => Phit\fit_lmer($saved['formula'], $columns),
+        isset($saved['family']) => Phit\fit_glm($saved['formula'], $columns, $saved['family']),
+        default => Phit\fit_lm($saved['formula'], $columns),
+    };
+
+    expect($fit['coefficients'])->toEqualWithDelta($saved['coefficients'], 1e-9)
+        ->and($fit['covariance'])->toEqualWithDelta($saved['covariance'], 1e-9);
+})->with(array_values(array_filter(glob(__DIR__.'/../../docs/examples/fits/*.json'), fn ($f) => ! str_contains($f, 'draws'))));

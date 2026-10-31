@@ -16,6 +16,24 @@ ggplot(mpg, aes(displ, hwy, colour = drv)) +
   theme_minimal()
 ```
 
+In phiz, the pipe form keeps ggplot2's function names. The method chain builds the same plot on PHP 8.3 and 8.4.
+
+::: {.panel-tabset}
+
+#### PHP 8.5+
+
+```php
+ggplot($mpg, aes(x: 'displ', y: 'hwy', color: 'drv')) |>
+    geom_point(alpha: 0.5) |>
+    geom_smooth(method: 'lm') |>
+    facet_wrap('year') |>
+    scale_y_log10() |>
+    labs(x: 'Displacement (L)', y: 'Highway mpg') |>
+    theme_minimal();
+```
+
+#### PHP 8.3–8.4
+
 ```php
 Plot::of($mpg)
     ->aes(x: 'displ', y: 'hwy', color: 'drv')
@@ -27,17 +45,7 @@ Plot::of($mpg)
     ->theme('minimal');
 ```
 
-The pipe form is closer still:
-
-```php
-ggplot($mpg, aes(x: 'displ', y: 'hwy', color: 'drv'))
-    |> geom_point(alpha: 0.5)
-    |> geom_smooth(method: 'lm')
-    |> facet_wrap('year')
-    |> scale_y_log10()
-    |> labs(x: 'Displacement (L)', y: 'Highway mpg')
-    |> theme_minimal();
-```
+:::
 
 Aesthetics are named arguments, so `aes(displ, hwy)` becomes `aes(x: 'displ', y: 'hwy')`. Field names are strings. `colour` and `alpha` are accepted as aliases of `color` and `opacity`.
 

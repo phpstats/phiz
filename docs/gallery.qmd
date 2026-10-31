@@ -1,0 +1,7 @@
+---
+title: "Gallery"
+---
+
+Each chart below is drawn from the code under it. The code uses the bundled datasets, loaded as `$mpg = Datasets::mpg()`, `$mtcars = Datasets::mtcars()`, `$economics = Datasets::economics()`, and `$faithful = Datasets::faithful()`. The statistics examples use a linear model fit and posterior draws defined at the top of [`examples/catalog.php`](https://github.com/phpstats/phiz/blob/main/examples/catalog.php), which holds every example.
+
+{{< include _generated/gallery.md >}}

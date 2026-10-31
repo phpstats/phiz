@@ -4,6 +4,8 @@ title: "Laravel and Livewire"
 
 phiz's Laravel service provider is discovered automatically. It registers the `<x-phiz>` Blade component and the `@phizScripts` directive. Without Laravel, the same classes are never loaded.
 
+The component's tests run on Laravel 12 through Orchestra Testbench 10. The Livewire behavior below is not covered by the test suite, and phiz does not depend on Livewire.
+
 ## Blade
 
 ```blade
@@ -50,8 +52,10 @@ Publish the configuration with `php artisan vendor:publish --tag=phiz-config`.
 
 | Key | Default | Meaning |
 | --- | --- | --- |
-| `assets` | `cdn` | `cdn`, a URL prefix serving the three library files, or `none` |
+| `assets` | `cdn` | `cdn`, a URL prefix serving the three library files, or `none`; the `PHIZ_ASSETS` environment variable sets it |
 | `inject_scripts` | `true` | whether `<x-phiz>` adds the script tags once per page |
 | `embed_options` | `['actions' => false]` | default vega-embed options |
+| `server_rows` | `10_000` | inline rows above which `bin2d()` and `histogram()` bin in PHP ([Large data](large-data.qmd)) |
+| `warn_rows` | `20_000` | embedded rows above which phiz raises a warning, or `null` for none |
 
 If your Vite bundle already imports vega-embed, set `assets` to `none` and assign it to `window.vegaEmbed` in your bundle. The phiz loader uses it.

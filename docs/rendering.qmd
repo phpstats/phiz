@@ -65,6 +65,6 @@ On macOS, download `vl-convert_osx-arm64.zip` from the same release and unzip it
 
 ### Reproducible SVG
 
-SVG output from a given specification is byte-for-byte identical between runs. It is also identical between macOS and Linux, between ARM and x86, and with or without system fonts installed. vl-convert measures `sans-serif` text with its bundled Liberation Sans, so the layout does not depend on the machine's fonts. The SVG keeps its text as `<text font-family="sans-serif">` elements, so the viewer's browser chooses the font that is displayed.
+SVG output from a given specification is byte-for-byte identical between runs, except for charts that use `jitter()`. Jitter is computed with Vega's unseeded `random()`, so a jittered chart changes on every render. It is also identical between macOS and Linux, between ARM and x86, and with or without system fonts installed. vl-convert measures `sans-serif` text with its bundled Liberation Sans, so the layout does not depend on the machine's fonts. The SVG keeps its text as `<text font-family="sans-serif">` elements, so the viewer's browser chooses the font that is displayed.
 
 Committed SVG files therefore change only when the specification, the vl-convert version, or the pinned Vega-Lite version changes. A theme that names a font other than `sans-serif`, or an export with `fontDir:`, makes text measurement depend on the fonts available to vl-convert. Pin the vl-convert version wherever committed figures are generated.

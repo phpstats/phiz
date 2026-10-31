@@ -6,6 +6,8 @@ phiz embeds inline data in the specification, and the browser keeps every row in
 
 ## Sizes to expect
 
+The thresholds below are rough guidance. The limits in practice depend on the mark type, the number of layers and interactions, the browser, and the device. Only the warning threshold is fixed by phiz.
+
 | Rows embedded | Effect |
 | --- | --- |
 | up to about 5,000 | renders immediately, and interaction stays smooth |
@@ -31,7 +33,7 @@ Histograms computed in PHP use exactly `bins` equal-width bins, or `binwidth` an
 
 ## Tables stay columnar
 
-A phibble table or an array of columns is kept as given. The binning geoms read it column by column, and rows are built only if the specification embeds them. On a laptop, a million-row phibble table plots as follows:
+A phibble table or an array of columns is kept as given. The binning geoms read it column by column, and rows are built only if the specification embeds them. These timings were measured on a laptop on 2026-10-16, with phiz 0.3.0 and a million-row phibble table:
 
 | Plot | Time | Spec size |
 | --- | --- | --- |
@@ -69,6 +71,6 @@ Plot::of($bins)
 
 ## Other approaches
 
-- **Summarize first.** A phplyr `group_by() |> summarise()` or a SQL `GROUP BY` usually answers the question with far fewer rows. [Dashboards with Livewire](dashboard.qmd) shows charts built from summaries.
+- **Summarize first.** phplyr's `group_by()` and `summarize()`, or a SQL `GROUP BY`, usually answers the question with far fewer rows. [Dashboards with Livewire](dashboard.qmd) shows charts built from summaries.
 - **Load from a URL.** `Data::url('/data/points.csv')` lets the browser fetch the file, so the page itself stays small. The browser still holds every row, so this helps page size, not drawing speed.
 - **Sample.** `Bin::sample()` keeps a uniform random subset when a scatterplot of individual points matters more than exact counts.

@@ -4,23 +4,24 @@ project:
   render:
     - "*.qmd"
   resources:
-    - gallery.html
     - figures/
     - examples/
 
 website:
-  site-url: "https://erikwestlund.github.io/phiz/"
+  site-url: "https://phpstats.github.io/phiz/"
   title: "phiz"
-  repo-url: https://github.com/erikwestlund/phiz
+  repo-url: https://github.com/phpstats/phiz
   repo-actions: [source, issue]
   sidebar:
     style: docked
     search: true
     contents:
       - index.qmd
-      - get-started.qmd
-      - ggplot2.qmd
-      - section: "Guide"
+      - section: "Getting started"
+        contents:
+          - get-started.qmd
+          - ggplot2.qmd
+      - section: "Guides"
         contents:
           - data.qmd
           - geoms.qmd
@@ -29,19 +30,21 @@ website:
           - themes.qmd
           - interaction.qmd
           - statistics.qmd
-      - section: "Output"
-        contents:
           - rendering.qmd
           - laravel.qmd
           - dashboard.qmd
           - large-data.qmd
-      - href: gallery.html
-        text: Gallery
-      - section: "Project"
+      - section: "Reference"
+        contents:
+          - reference.qmd
+      - section: "Examples"
+        contents:
+          - gallery.qmd
+      - section: "Compatibility and limitations"
         contents:
           - design.qmd
-          - reference.qmd
-          - cmdstanphp.qmd
+      - section: "Contributing"
+        contents:
           - development.qmd
 
 format:

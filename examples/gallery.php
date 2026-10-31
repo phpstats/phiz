@@ -4,8 +4,9 @@ declare(strict_types=1);
 
 /*
  * Writes an HTML page of every example in catalog.php: the chart, a description, and the code that built it.
+ * An output path ending in .md writes a Markdown fragment instead, which the documentation's gallery page includes.
  *
- *     php examples/gallery.php [output.html] [--svg=dir]
+ *     php examples/gallery.php [output.html|output.md] [--svg=dir]
  *
  * --svg also renders each example to dir/{id}.svg through vl-convert.
  */
@@ -46,6 +47,20 @@ $code = function (Closure $build) use ($source): string {
 
     return implode("\n", array_map(fn ($line, $i) => $i === 0 ? $line : substr($line, min($indent, strlen($line) - strlen(ltrim($line)))), $lines, array_keys($lines))).';';
 };
+
+if (str_ends_with($output, '.md')) {
+    $markdown = [];
+    foreach ($catalog as $id => [$section, $title, $description, $build]) {
+        $chart = $build();
+        $markdown[$section] ??= "## {$section}\n\n";
+        $markdown[$section] .= "### {$title} {#{$id}}\n\n{$description}\n\n```{=html}\n<div class=\"phiz-figure\">"
+            .Html::container($chart, ['actions' => false], ['aria-label' => $title])
+            ."</div>\n```\n\n```php\n".$code($build)."\n```\n\n";
+    }
+    file_put_contents($output, implode('', $markdown));
+    fwrite(STDERR, 'Wrote '.count($catalog)." examples to {$output}\n");
+    exit(0);
+}
 
 $sections = [];
 $count = 0;
