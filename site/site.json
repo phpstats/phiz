@@ -34,7 +34,8 @@
     ],
     "build": [],
     "platforms": [
-        "Linux"
+        "Linux",
+        "macOS"
     ],
     "quickstart": "get-started",
     "repository": "https://github.com/phpstats/phiz",

@@ -8,7 +8,7 @@ title: "Get started"
 composer require phpstats/phiz
 ```
 
-phiz supports PHP 8.3, 8.4, and 8.5 (composer.json allows `>=8.3 <8.6`), and CI tests all three on Linux. Examples written with the pipe operator `|>` need PHP 8.5, and each one also has a method-chain version for PHP 8.3 and 8.4. phiz needs only the `json` extension, which PHP includes by default, and has no required Composer dependencies.
+phiz supports PHP 8.3, 8.4, and 8.5 (composer.json allows `>=8.3 <8.6`), and CI tests all three on Linux. macOS is supported too. Examples written with the pipe operator `|>` need PHP 8.5, and each one also has a method-chain version for PHP 8.3 and 8.4. phiz needs only the `json` extension, which PHP includes by default, and has no required Composer dependencies.
 
 These features are optional:
 
