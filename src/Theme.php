@@ -28,6 +28,7 @@ final class Theme
             'legend' => ['labelFontSize' => $small, 'titleFontSize' => $baseSize],
             'header' => ['labelFontSize' => $small, 'titleFontSize' => $baseSize],
             'title' => ['fontSize' => round($baseSize * 1.2, 1), 'subtitleFontSize' => $baseSize],
+            'caption' => ['fontSize' => $small],
         ];
     }
 
@@ -115,6 +116,9 @@ final class Theme
         ?bool $ticks = null,
         ?string $gridColor = null,
         ?string $textColor = null,
+        int|float|null $captionSize = null,
+        ?string $captionColor = null,
+        ?string $captionAnchor = null,
     ): array {
         $config = [];
         foreach (['axisX' => $xLabelAngle, 'axisY' => $yLabelAngle] as $axis => $angle) {
@@ -142,7 +146,7 @@ final class Theme
             $config['axis']['gridColor'] = $gridColor;
         }
         if ($textColor !== null) {
-            foreach (['axis' => ['labelColor', 'titleColor'], 'legend' => ['labelColor', 'titleColor'], 'header' => ['labelColor', 'titleColor'], 'title' => ['color', 'subtitleColor']] as $part => $keys) {
+            foreach (['axis' => ['labelColor', 'titleColor'], 'legend' => ['labelColor', 'titleColor'], 'header' => ['labelColor', 'titleColor'], 'title' => ['color', 'subtitleColor'], 'caption' => ['color']] as $part => $keys) {
                 foreach ($keys as $key) {
                     $config[$part][$key] = $textColor;
                 }
@@ -176,6 +180,15 @@ final class Theme
         }
         if ($padding !== null) {
             $config['padding'] = $padding;
+        }
+        if ($captionSize !== null) {
+            $config['caption']['fontSize'] = $captionSize;
+        }
+        if ($captionColor !== null) {
+            $config['caption']['color'] = $captionColor;
+        }
+        if ($captionAnchor !== null) {
+            $config['caption']['anchor'] = $captionAnchor;
         }
 
         return $config;

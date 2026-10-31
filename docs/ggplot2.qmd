@@ -93,6 +93,7 @@ Geom arguments keep ggplot2's names where they exist: `bins`, `binwidth`, `bound
 | `scale_y_continuous(labels = scales::label_percent())` | `scaleY(labels: label_percent())` |
 | `label_comma()`, `label_dollar()`, `label_number()`, `label_scientific()`, `label_date()` | the functions of the same names |
 | `guides(colour = "none", x = guide_axis(angle = 45))` | `guides(color: 'none', x: guide_axis(angle: 45))` |
+| `guide_axis(cap = "both")` | `guide_axis(cap: true)` |
 | `coord_flip()` | `coordFlip()` |
 | `coord_cartesian(xlim, ylim)` | `coordCartesian(xlim:, ylim:)` |
 | `coord_fixed(ratio)`, `coord_equal()` | `coordFixed(ratio)` |
@@ -105,6 +106,7 @@ Geom arguments keep ggplot2's names where they exist: `bins`, `binwidth`, `bound
 | `theme(legend.position = "bottom")` | `theme(legendPosition: 'bottom')` |
 | `theme(axis.text.x = element_text(angle = 45))` | `theme(xLabelAngle: 45)` |
 | `theme(legend.title = element_blank())` | `theme(legendTitle: false)` |
+| `labs(caption = "Source")`, `theme(plot.caption = element_text(colour, size, hjust))` | `labs(caption: 'Source')`, `theme(captionColor:, captionSize:, captionAnchor:)` |
 | patchwork `p1 + p2`, `p1 / p2` | `Compose::beside($p1, $p2)`, `Compose::stack($p1, $p2)` |
 | `factor(cyl)` | `factor('cyl')` or `'cyl:N'` |
 | `after_stat(density)` in a histogram | `histogram(density: true)` |

@@ -93,6 +93,7 @@ final class Compose extends Chart
                 }
             }
         }
+        unset($config['caption']); // phiz's caption style; each plot applies its own.
         if (($config['range']['category'] ?? null) === 'hue') {
             $config['range']['category'] = Palette::hue(8);
         }

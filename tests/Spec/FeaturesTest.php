@@ -25,6 +25,9 @@ $features = [
     'labs' => fn () => $base()->labs(title: 'Title', subtitle: 'Subtitle', x: 'X axis', y: 'Y axis', color: 'Group'),
     'labs on facets' => fn () => $base()->facetWrap('h')->labs(h: 'Panel'),
     'title only' => fn () => $base()->title('Just a title'),
+    'caption' => fn () => $base()->labs(x: 'X axis', caption: 'Source: sample data')->theme('minimal', captionColor: '#475569', captionAnchor: 'middle'),
+    'caption with title' => fn () => $base()->labs(title: 'Title', caption: 'Source: sample data')->facetWrap('h'),
+    'capped axis' => fn () => $base()->scaleX(domain: [0, 5], breaks: [1, 2, 3, 4])->guides(x: Phiz\guide_axis(cap: true))->theme('classic'),
     'facet wrap' => fn () => $base()->facetWrap('h', ncol: 2),
     'facet wrap free scales' => fn () => $base()->facetWrap('h', scales: 'free_y'),
     'facet wrap two fields' => fn () => $base()->facetWrap(['g', 'h']),
@@ -88,6 +91,39 @@ it('compiles each feature to a valid Vega-Lite spec', function (Closure $build) 
     expect($chart)->toBeValidVegaLite();
     expect(specSnapshot($chart))->toMatchSnapshot();
 })->with('features');
+
+it('places a caption below the plot and styles it from the theme', function () {
+    $plot = Plot::of(sample())->aes(x: 'x', y: 'y')->point()->labs(caption: 'Source')->theme('gray', baseSize: 20, captionColor: '#475569');
+    $spec = $plot->toArray();
+
+    expect($spec['title'])->toBe(['text' => 'Source', 'orient' => 'bottom', 'anchor' => 'end', 'fontWeight' => 'normal', 'fontSize' => 16.0, 'color' => '#475569'])
+        ->and($spec['config'])->not->toHaveKey('caption')
+        ->and($spec)->toHaveKey('encoding');
+});
+
+it('keeps the title on top when a plot also has a caption', function () {
+    $spec = Plot::of(sample())->aes(x: 'x', y: 'y')->point()->labs(title: 'Title', caption: 'Source')->size(300, 200)->toArray();
+
+    expect($spec['title'])->toBe('Title')
+        ->and($spec['vconcat'])->toHaveCount(1)
+        ->and($spec['vconcat'][0]['title']['text'])->toBe('Source')
+        ->and($spec['vconcat'][0]['width'])->toBe(300);
+});
+
+it('caps the axis line at the outer breaks', function () {
+    $spec = Plot::of(sample())->aes(x: 'x', y: 'y')->line()->scaleX(domain: [-4, 104], breaks: [0, 50, 100])->guides(x: Phiz\guide_axis(cap: true))->toArray();
+    $rule = end($spec['layer']);
+
+    expect($spec['layer'][0]['encoding']['x']['axis'])->toBe(['values' => [0, 50, 100], 'domain' => false])
+        ->and($rule['mark']['type'])->toBe('rule')
+        ->and($rule['encoding']['x']['datum'])->toBe(0)
+        ->and($rule['encoding']['x2']['datum'])->toBe(100)
+        ->and($rule['encoding']['y']['value'])->toBe('height');
+});
+
+it('refuses a capped axis on a faceted plot', function () {
+    Plot::of(sample())->aes(x: 'x', y: 'y')->point()->facetWrap('h')->guides(x: Phiz\guide_axis(cap: true))->scaleX(breaks: [1, 2])->toArray();
+})->throws(InvalidArgumentException::class, 'faceted');
 
 it('is immutable', function () {
     $base = Plot::of(sample())->aes(x: 'x', y: 'y');

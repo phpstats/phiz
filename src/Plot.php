@@ -624,8 +624,8 @@ final class Plot extends Chart
     // Labels, theme, size.
 
     /**
-     * Titles: title, subtitle, and one per aesthetic (x, y, color, fill, size, shape, ...). A facet field's name sets
-     * its panel header title. Null removes a title.
+     * Titles: title, subtitle, caption, and one per aesthetic (x, y, color, fill, size, shape, ...). A facet field's
+     * name sets its panel header title. Null removes a title. The caption sits below the plot; theme() styles it.
      */
     public function labs(mixed ...$labels): self
     {
@@ -646,8 +646,9 @@ final class Plot extends Chart
      * A theme preset (gray, bw, linedraw, minimal, classic, light, dark, void, vega) and/or individual options; config
      * is raw Vega-Lite config merged last. Successive calls build on each other. xLabelAngle and yLabelAngle turn axis
      * labels anticlockwise, as element_text(angle =); legendTitle: false, axisLine, and ticks switch those parts.
+     * captionSize, captionColor, and captionAnchor (start, middle, or end) style labs(caption:).
      */
-    public function theme(?string $preset = null, int|float|null $baseSize = null, ?string $font = null, ?string $legendPosition = null, ?string $background = null, ?string $panelBackground = null, ?string $panelBorder = null, ?bool $grid = null, ?string $titleAnchor = null, int|float|null $padding = null, int|float|null $xLabelAngle = null, int|float|null $yLabelAngle = null, ?string $legendDirection = null, ?bool $legendTitle = null, ?bool $axisLine = null, ?bool $ticks = null, ?string $gridColor = null, ?string $textColor = null, array $config = []): self
+    public function theme(?string $preset = null, int|float|null $baseSize = null, ?string $font = null, ?string $legendPosition = null, ?string $background = null, ?string $panelBackground = null, ?string $panelBorder = null, ?bool $grid = null, ?string $titleAnchor = null, int|float|null $padding = null, int|float|null $xLabelAngle = null, int|float|null $yLabelAngle = null, ?string $legendDirection = null, ?bool $legendTitle = null, ?bool $axisLine = null, ?bool $ticks = null, ?string $gridColor = null, ?string $textColor = null, int|float|null $captionSize = null, ?string $captionColor = null, ?string $captionAnchor = null, array $config = []): self
     {
         $base = match (true) {
             $preset !== null => Theme::preset($preset, $baseSize ?? 11),
@@ -656,7 +657,7 @@ final class Plot extends Chart
         };
         $current = $preset !== null ? [] : $this->config;
 
-        return $this->with(config: Theme::merge($current, $base, Theme::options($font, $legendPosition, $background, $panelBackground, $panelBorder, $grid, $titleAnchor, $padding, $xLabelAngle, $yLabelAngle, $legendDirection, $legendTitle, $axisLine, $ticks, $gridColor, $textColor), $config));
+        return $this->with(config: Theme::merge($current, $base, Theme::options($font, $legendPosition, $background, $panelBackground, $panelBorder, $grid, $titleAnchor, $padding, $xLabelAngle, $yLabelAngle, $legendDirection, $legendTitle, $axisLine, $ticks, $gridColor, $textColor, $captionSize, $captionColor, $captionAnchor), $config));
     }
 
     /** Width and height in pixels (per panel when faceted); 'container' fills the parent element's width. */

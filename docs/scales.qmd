@@ -65,6 +65,8 @@ The label functions follow the scales package. Pass one as `labels:`.
 
 `guides()` sets the axis or legend for each aesthetic, as ggplot2's `guides()` does. `'none'` hides one. `guide_axis(angle:)` turns axis labels, `guide_legend(title:, ncol:, direction:)` arranges a legend, and `guide_colorbar(barwidth:, barheight:)` sizes a color bar. Any other Vega-Lite axis or legend property can be passed as a named argument.
 
+`guide_axis(cap: true)` draws the axis line only from the first break to the last, as ggplot2's `guide_axis(cap = "both")` does. With a padded domain, such as `scaleX(domain: [-4, 104], breaks: [0, 20, 40, 60, 80, 100])`, the line stops at 0 and 100 and stands apart from the panel corners. It needs breaks or a domain. Faceted plots do not support it, because the line would be drawn in every panel.
+
 {{< include _generated/scale-discrete.md >}}
 
 ## Coordinates
@@ -85,8 +87,10 @@ The label functions follow the scales package. Pass one as `labels:`.
 
 ## Labels
 
-`labs()` sets the title, subtitle, and the title for any aesthetic. A null title removes it. Titles for position aesthetics apply to everything drawn on that axis, including ranges and reference lines. A facet field's name sets its panel header title.
+`labs()` sets the title, subtitle, caption, and the title for any aesthetic. A null title removes it. Titles for position aesthetics apply to everything drawn on that axis, including ranges and reference lines. A facet field's name sets its panel header title.
 
 ```php
 $plot->labs(title: 'Fuel economy', subtitle: 'EPA data, 1999 and 2008', x: 'Displacement (L)', y: 'Highway mpg', color: 'Drive');
 ```
+
+The caption is placed below the plot, under the axis titles. By default it is right-aligned and smaller than the axis titles, as in ggplot2. `theme(captionSize:, captionColor:, captionAnchor:)` changes its size, color, and alignment (`start`, `middle`, or `end`). Vega-Lite gives each view one title. A plot with both a title and a caption is therefore emitted as a `vconcat` that holds the single view, with the title on the outside and the caption on the view. Vega-Lite does not apply `autosize` fit to a `vconcat`. In such a plot, `size()` sets the plot area alone, and the titles, axes, and caption are added around it. A caption without a title keeps the exact size under `autosize` fit.

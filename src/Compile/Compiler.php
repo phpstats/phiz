@@ -99,6 +99,7 @@ final class Compiler
 
         [$layers, $topData] = self::data($units, $data, $facetFields !== []);
         $layers = self::interact($layers, $units, $plot);
+        $layers = self::capAxes($layers, $plot->config, $plot->facet !== null);
         $size = array_filter(['width' => $plot->width ?? self::discreteSize($units, 'x'), 'height' => $plot->height ?? self::discreteSize($units, 'y')], fn ($v) => $v !== null);
         if (($plot->coord['type'] ?? null) === 'fixed') {
             [$layers, $size] = self::fixed($layers, $units, $size, (float) $plot->coord['ratio'], $plot->flip);
@@ -133,12 +134,17 @@ final class Compiler
             $spec += $size + $unit;
         }
         $config = $plot->config;
+        $captionStyle = $config['caption'] ?? []; // phiz's own key: Vega-Lite has no captions.
+        unset($config['caption']);
         if (($config['range']['category'] ?? null) === 'hue') {
             $config['range']['category'] = Palette::hue(self::categoryLevels($units) ?: 8);
         }
         if (self::hasLegend($layers) && ! isset($config['legend']['labelLimit'])) {
             // Vega-Lite truncates legend labels at 160 pixels; long category names are common in data.
             $config['legend']['labelLimit'] = 320;
+        }
+        if (isset($plot->labels['caption'])) {
+            $spec = self::caption($spec, $plot->labels['caption'], $captionStyle, $config);
         }
         if ($config !== []) {
             $spec['config'] = $config;
@@ -577,6 +583,66 @@ final class Compiler
         }
 
         return $subtitle === null ? $title : ['text' => $title ?? '', 'subtitle' => $subtitle];
+    }
+
+    /**
+     * guide_axis(cap: true) draws the axis line only from the first break to the last, as ggplot2's cap = "both":
+     * the axis's own domain line is hidden and a rule along the panel edge takes its place. Facet panels share axes,
+     * and the rule would be drawn in every panel, so faceted plots are refused.
+     */
+    private static function capAxes(array $layers, array $config, bool $faceted): array
+    {
+        foreach (self::AXIS_CHANNELS as $channel) {
+            $capped = null;
+            foreach ($layers as $i => $layer) {
+                if (! empty($layer['encoding'][$channel]['axis']['cap'])) {
+                    $capped ??= $layer['encoding'][$channel];
+                }
+                if (is_array($layer['encoding'][$channel]['axis'] ?? null) && array_key_exists('cap', $layer['encoding'][$channel]['axis'])) {
+                    unset($layers[$i]['encoding'][$channel]['axis']['cap']);
+                    $layers[$i]['encoding'][$channel]['axis']['domain'] = false;
+                }
+            }
+            if ($capped === null) {
+                continue;
+            }
+            if ($faceted) {
+                throw new InvalidArgumentException('guide_axis(cap: true) does not support faceted plots.');
+            }
+            $ends = $capped['axis']['values'] ?? $capped['scale']['domain'] ?? throw new InvalidArgumentException("guide_axis(cap: true) on {$channel} needs breaks or a domain.");
+            $axis = ($config[$channel === 'x' ? 'axisX' : 'axisY'] ?? []) + ($config['axis'] ?? []);
+            unset($capped['field'], $capped['axis']['cap'], $capped['aggregate'], $capped['bin'], $capped['timeUnit']);
+            $capped['axis']['domain'] = false;
+            $layers[] = [
+                'data' => ['values' => [new \stdClass()]],
+                'mark' => ['type' => 'rule', 'color' => $axis['domainColor'] ?? '#888888', 'strokeWidth' => $axis['domainWidth'] ?? 1, 'clip' => false],
+                'encoding' => [
+                    $channel => ['datum' => min($ends)] + $capped,
+                    "{$channel}2" => ['datum' => max($ends)],
+                    $channel === 'x' ? 'y' : 'x' => ['value' => $channel === 'x' ? 'height' : 0],
+                ],
+            ];
+        }
+
+        return $layers;
+    }
+
+    /**
+     * A caption is a title below the view, which Vega-Lite lays out under the axes. A view has one title, so a plot
+     * with both moves its contents into a single-view vconcat that carries the caption, under the outer title.
+     */
+    private static function caption(array $spec, string|array $caption, array $style, array $config): array
+    {
+        $title = ['text' => $caption, 'orient' => 'bottom', 'anchor' => 'end', 'fontWeight' => 'normal', 'fontSize' => 10]
+            + array_filter(['color' => $config['title']['subtitleColor'] ?? $config['title']['color'] ?? null, 'font' => $config['title']['font'] ?? null], fn ($v) => $v !== null);
+        $title = array_merge($title, $style);
+        if (! isset($spec['title'])) {
+            return array_intersect_key($spec, array_flip(['$schema', 'description'])) + ['title' => $title] + $spec;
+        }
+        $outer = array_intersect_key($spec, array_flip(['$schema', 'description', 'title']));
+        $inner = array_diff_key($spec, $outer);
+
+        return $outer + ['vconcat' => [['title' => $title] + $inner]];
     }
 
     /** @return list<string> */

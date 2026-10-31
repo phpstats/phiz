@@ -28,6 +28,7 @@ The individual options are:
 - `grid`, `gridColor`, `axisLine`, and `ticks`
 - `xLabelAngle` and `yLabelAngle`, which turn axis labels anticlockwise as `element_text(angle =)` does
 - `titleAnchor` and `padding`
+- `captionSize`, `captionColor`, and `captionAnchor`, which style `labs(caption:)`
 
 `config:` accepts raw Vega-Lite config, merged last. Calls without a preset build on the current theme.
 
