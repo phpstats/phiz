@@ -87,3 +87,20 @@ function sample(): array
 }
 
 pest()->extend(Phiz\Tests\Laravel\TestCase::class)->in('Laravel');
+
+/**
+ * The dashboard's specifications and class order from one of its versions, built in a separate process because both
+ * versions declare fuel_dashboard().
+ *
+ * @return array{classes: list<string>, bars: array, scatter: array, trend: array}
+ */
+function dashboardCharts(string $file): array
+{
+    $script = 'require '.var_export(dirname(__DIR__).'/vendor/autoload.php', true).'; require '.var_export($file, true).';'
+        .' $c = fuel_dashboard(Phibble\DataFrame::fromRows(Phiz\Datasets::mpg()), drive: "f", year: 2008, selected: "compact");'
+        .' echo json_encode(["classes" => array_column($c["summary"]->toRows(), "class"), "bars" => $c["bars"]->toArray(), "scatter" => $c["scatter"]->toArray(), "trend" => $c["trend"]->toArray()]);';
+    exec(escapeshellarg(PHP_BINARY).' -r '.escapeshellarg($script).' 2>&1', $lines, $status);
+    expect($status)->toBe(0, implode("\n", $lines));
+
+    return json_decode(implode("\n", $lines), true, flags: JSON_THROW_ON_ERROR);
+}

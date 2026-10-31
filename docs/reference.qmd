@@ -2,7 +2,28 @@
 title: "API reference"
 ---
 
-This reference is generated from the public signatures and docblocks in `src/`. Every method that adds or changes something returns a new `Plot`, and the plot it was called on is unchanged.
+The reference is generated from the public signatures and docblocks in `src/`, and is split into pages by topic. Each page starts with an index of its methods and functions, and every entry has its own anchor.
+
+| Page | Contents |
+| --- | --- |
+| [Plots and data API](reference-plots.qmd) | `Plot::of()`, `aes()`, data sources, the bundled datasets, and binning in PHP |
+| [Geoms API](reference-geoms.qmd) | the layer methods, from `point()` to `arc()`, and their `geom_*()` and `stat_*()` functions |
+| [Scales and guides API](reference-scales.qmd) | scales, limits, guides, color schemes, and label formatters |
+| [Coordinates, facets, and composition API](reference-facets.qmd) | coordinate systems, `facetWrap()`, `facetGrid()`, and `Compose` |
+| [Labels and themes API](reference-themes.qmd) | titles, axis labels, captions, themes, and the chart size |
+| [Interaction API](reference-interaction.qmd) | tooltips, pan and zoom, brushing, highlighting, and parameters |
+| [Output API](reference-output.qmd) | specifications, HTML, static export, and the escape hatches into raw Vega-Lite |
+| [Statistics API](reference-statistics.qmd) | coefficient plots, diagnostics, predictions, marginal means, and posterior intervals |
+
+## Conventions
+
+Every `Plot` method that adds or changes something returns a new `Plot`, and the plot it was called on is unchanged.
+
+Most functions in the `Phiz\` namespace return a closure that applies the `Plot` method of the same name, for PHP 8.5's pipe operator and for `apply()`. They take the same arguments as that method. Each method's entry lists the functions that wrap it. A function with arguments of its own, such as `scale_color_manual()`, also has an entry.
+
+## Aesthetics
+
+`aes()` and every geom's `aes` argument accept these names: `x`, `y`, `xmin`, `xmax`, `ymin`, `ymax`, `xend`, `yend`, `color` (or `colour`), `fill`, `size`, `shape`, `opacity` (or `alpha`), `linetype`, `group`, `detail`, `tooltip`, `label` (or `text`), `order`, `href`, `theta`, `radius`, `xintercept`, `yintercept`, `sample`, `key`, and `description`.
 
 ## Exceptions
 
@@ -12,35 +33,15 @@ This reference is generated from the public signatures and docblocks in `src/`. 
 
 Both export exceptions implement `Phiz\Exceptions\PhizException`.
 
-## Plot
-
-{{< include _generated/reference-plot.md >}}
-
-## Aesthetics
-
-`x`, `y`, `xmin`, `xmax`, `ymin`, `ymax`, `xend`, `yend`, `color` (or `colour`), `fill`, `size`, `shape`, `opacity` (or `alpha`), `linetype`, `group`, `detail`, `tooltip`, `label` (or `text`), `order`, `href`, `theta`, `radius`, `xintercept`, `yintercept`, `sample`, `key`, and `description`.
-
-## Functions
-
-Most functions in the `Phiz\` namespace return a closure that applies the method of the same name, for the pipe operator and `apply()`. They take the same arguments as that method.
-
-{{< include _generated/reference-functions.md >}}
-
 ## Other classes
+
+These classes are used through the methods above and are not documented entry by entry.
 
 | Class | Purpose |
 | --- | --- |
-| `Compose` | `beside`, `stack`, and `grid` compositions |
-| `Data` | `from`, `url`, and `named` data sources |
-| `Field` | field definitions and shorthand parsing |
+| `Field` | field definitions and shorthand parsing, created by `field()`, `factor()`, and `calc()` |
 | `Scale`, `Theme`, `Style` | scale, theme, and style translation |
 | `Palette` | ggplot2's hue palette and R's `hcl()` colors |
-| `Html`, `Assets` | HTML output and the pinned browser libraries |
-| `Export` | vl-convert export |
-| `Datasets` | `mpg`, `mtcars`, `economics`, and `faithful` |
-| `Bin` | histograms, 2D and hexagonal bins, LTTB downsampling, and sampling in PHP |
-| `Config` | large-data thresholds: `$serverRows` and `$warnRows` |
-| `Stats\Charts` | the statistics helpers |
+| `Config` | large-data thresholds: `$serverRows` and `$warnRows` ([Large data](large-data.qmd)) |
+| `Stats\Charts` | the implementations behind the statistics functions |
 | `Stats\Fit` | least squares, smoothing bands, and normal and t quantiles |
-
-{{< include _generated/reference-classes.md >}}

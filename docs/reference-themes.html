@@ -1,0 +1,1066 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.10.18">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>Labels and themes API – phiz</title>
+<style>
+/* Default styles provided by pandoc.
+** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+*/
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: 1.5em;}
+div.column{flex: auto;}
+@media screen {
+div.columns{gap: min(4vw, 1.5em);}
+div.column{overflow-x: auto;}
+}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/headroom.min.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<script src="site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-64a204ab8560d761af7679ceaba22944.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap-5a69534754b34dc075d7f980428dccec.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+<style>.phiz-figure{margin:0.5rem 0 1.5rem;overflow-x:auto}</style>
+<script src="https://cdn.jsdelivr.net/npm/vega@6.4.0/build/vega.min.js" integrity="sha384-VKdcJr3ZaBIJMbVcopTAI/JEuUkSY6qnwVu9iLuw0DnQ9gQ1JjsfZJhXFQAgNi43" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/vega-lite@6.4.3/build/vega-lite.min.js" integrity="sha384-9/70gNCfOu6G7xXvkdreMfuqAEsoaGJVXV2BN/JLRXkSmcGvnMqtsRx8HZtUWAvI" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/vega-embed@7.3.0/build/vega-embed.min.js" integrity="sha384-Muy1QRxYFeNrA1zShc1KtN4OfipkR/61gt+HWqN57c1Zxu3Oe16TsilsruVVjfKL" crossorigin="anonymous"></script>
+<script>/*
+ * phiz: renders [data-phiz] elements with vega-embed, and re-renders when their spec changes (Livewire morphs).
+ * A [data-phiz-deferred] element fetches its spec from its [data-phiz-spec] link when it nears the viewport, then
+ * renders like any other.
+ */
+(function () {
+  if (window.Phiz) return;
+  var views = new WeakMap();
+  var dark = window.matchMedia ? window.matchMedia('(prefers-color-scheme: dark)') : null;
+
+  function parse(json, fallback) {
+    if (!json) return fallback;
+    try { return JSON.parse(json); } catch (e) { console.error('phiz: invalid JSON', e); return fallback; }
+  }
+
+  function target(el) {
+    var view = el.querySelector(':scope > [data-phiz-view]');
+    if (!view) {
+      view = document.createElement('div');
+      view.setAttribute('data-phiz-view', '');
+      view.setAttribute('wire:ignore', '');
+      el.appendChild(view);
+    }
+    return view;
+  }
+
+  function render(el) {
+    var embed = Phiz.embed || window.vegaEmbed;
+    if (!embed) { pending = true; return; }
+    var json = el.getAttribute('data-phiz');
+    var optionsJson = el.getAttribute('data-phiz-options') || '';
+    var key = json + '\u0000' + optionsJson + '\u0000' + (dark && dark.matches ? 'dark' : 'light');
+    var state = views.get(el);
+    if (state && state.key === key) return;
+    var spec = parse(json, null);
+    if (!spec) return;
+    var options = parse(optionsJson, {});
+    if (options.theme === 'auto') {
+      if (dark && dark.matches) options.theme = 'dark'; else delete options.theme;
+    }
+    if (state && state.view) state.view.finalize();
+    // Each render draws into its own element, so a slow, superseded render cannot replace a newer chart.
+    var token = {};
+    var holder = document.createElement('div');
+    target(el).appendChild(holder);
+    views.set(el, { key: key, token: token, view: null });
+    Promise.resolve(embed(holder, spec, options)).then(function (result) {
+      var current = views.get(el);
+      if (!current || current.token !== token) { result.view.finalize(); holder.remove(); return; }
+      Array.prototype.slice.call(holder.parentNode.children).forEach(function (child) { if (child !== holder) child.remove(); });
+      current.view = result.view;
+      el.dispatchEvent(new CustomEvent('phiz:rendered', { detail: { view: result.view }, bubbles: true }));
+    }).catch(function (error) {
+      var current = views.get(el);
+      if (!current || current.token !== token) { holder.remove(); return; }
+      console.error('phiz:', error);
+      holder.textContent = 'Chart error: ' + error.message;
+    });
+  }
+
+  function load(el) {
+    if (el.hasAttribute('data-phiz') || el.getAttribute('data-phiz-deferred') === 'loading') return;
+    var link = el.querySelector('a[data-phiz-spec]');
+    if (!link) return;
+    el.setAttribute('data-phiz-deferred', 'loading');
+    fetch(link.href).then(function (response) {
+      if (!response.ok) throw new Error(response.status + ' ' + response.statusText);
+      return response.text();
+    }).then(function (json) {
+      el.setAttribute('data-phiz-deferred', 'loaded');
+      el.setAttribute('data-phiz', json);
+    }).catch(function (error) {
+      el.setAttribute('data-phiz-deferred', 'failed');
+      console.error('phiz: cannot load ' + link.href, error);
+    });
+  }
+
+  var nearby = window.IntersectionObserver ? new IntersectionObserver(function (entries) {
+    entries.forEach(function (entry) {
+      if (entry.isIntersecting) { nearby.unobserve(entry.target); load(entry.target); }
+    });
+  }, { rootMargin: '200px' }) : null;
+
+  function defer(el) {
+    if (el.hasAttribute('data-phiz') || el.getAttribute('data-phiz-deferred')) return;
+    if (nearby) nearby.observe(el); else load(el);
+  }
+
+  function scan(root) {
+    if (root.nodeType !== 1) return;
+    if (root.hasAttribute('data-phiz')) render(root);
+    root.querySelectorAll('[data-phiz]').forEach(render);
+    if (root.hasAttribute('data-phiz-deferred')) defer(root);
+    root.querySelectorAll('[data-phiz-deferred]').forEach(defer);
+  }
+
+  function release(root) {
+    if (root.nodeType !== 1) return;
+    var nodes = root.hasAttribute('data-phiz') ? [root] : [];
+    root.querySelectorAll('[data-phiz]').forEach(function (n) { nodes.push(n); });
+    nodes.forEach(function (n) {
+      if (n.isConnected) return;
+      var state = views.get(n);
+      if (state && state.view) state.view.finalize();
+      views.delete(n);
+    });
+  }
+
+  var pending = false;
+  var Phiz = window.Phiz = {
+    embed: null,
+    render: render,
+    scan: function () { scan(document.documentElement); },
+    view: function (el) { var s = views.get(el); return s ? s.view : null; }
+  };
+
+  new MutationObserver(function (mutations) {
+    mutations.forEach(function (m) {
+      if (m.type === 'attributes') { render(m.target); return; }
+      m.addedNodes.forEach(scan);
+      m.removedNodes.forEach(release);
+    });
+  }).observe(document.documentElement, { subtree: true, childList: true, attributes: true, attributeFilter: ['data-phiz', 'data-phiz-options'] });
+
+  if (dark && dark.addEventListener) dark.addEventListener('change', function () { Phiz.scan(); });
+
+  function start() { pending = false; Phiz.scan(); }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', start); else start();
+  window.addEventListener('load', function () { if (pending) start(); });
+})();</script>
+
+
+</head>
+
+<body class="nav-sidebar docked quarto-light">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./reference.html">Reference</a></li><li class="breadcrumb-item"><a href="./reference-themes.html">Labels and themes API</a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+      <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
+        <i class="bi bi-search"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation docked overflow-auto">
+    <div class="pt-lg-2 mt-2 text-left sidebar-header">
+    <div class="sidebar-title mb-0 py-0">
+      <a href="./">phiz</a> 
+    </div>
+      </div>
+        <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Search"></div>
+        </div>
+        </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">phiz</span></a>
+  </div>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true">
+ <span class="menu-text">Getting started</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./get-started.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Get started</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./ggplot2.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Coming from ggplot2</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true">
+ <span class="menu-text">Guides</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./data.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Data and fields</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./geoms.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Geoms</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./scales.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Scales, coordinates, and labels</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./facets.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Facets and composition</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./themes.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Themes</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./interaction.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Interaction</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./statistics.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Statistics</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./rendering.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Rendering</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./laravel.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Laravel and Livewire</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./dashboard.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Dashboards with Livewire</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./large-data.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Large data</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true">
+ <span class="menu-text">Reference</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./reference.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">API reference</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./reference-plots.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Plots and data API</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./reference-geoms.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Geoms API</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./reference-scales.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Scales and guides API</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./reference-facets.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Coordinates, facets, and composition API</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./reference-themes.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text">Labels and themes API</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./reference-interaction.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Interaction API</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./reference-output.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Output API</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./reference-statistics.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Statistics API</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" role="navigation" aria-expanded="true">
+ <span class="menu-text">Examples</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-4" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./gallery.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Gallery</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" role="navigation" aria-expanded="true">
+ <span class="menu-text">Compatibility and limitations</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-5" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./design.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Design and compatibility</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" role="navigation" aria-expanded="true">
+ <span class="menu-text">Contributing</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-6" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./development.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Development</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul class="collapse">
+  <li><a href="#functions" id="toc-functions" class="nav-link active" data-scroll-target="#functions">Functions</a></li>
+  </ul>
+<div class="toc-actions"><ul class="collapse"><li><a href="https://github.com/phpstats/phiz/blob/main/reference-themes.qmd" class="toc-action"><i class="bi bi-github"></i>View source</a></li><li><a href="https://github.com/phpstats/phiz/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./reference.html">Reference</a></li><li class="breadcrumb-item"><a href="./reference-themes.html">Labels and themes API</a></li></ol></nav>
+<div class="quarto-title">
+<h1 class="title">Labels and themes API</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<p>These methods set the titles, axis and legend labels, caption, theme, and size of a plot. <a href="./themes.html">Themes</a> shows the theme presets and options.</p>
+<p><strong>Methods:</strong> <a href="#labs"><code>labs()</code></a> · <a href="#title"><code>title()</code></a> · <a href="#theme"><code>theme()</code></a> · <a href="#size"><code>size()</code></a> · <a href="#width"><code>width()</code></a> · <a href="#height"><code>height()</code></a> · <a href="#description"><code>description()</code></a></p>
+<p><strong>Functions:</strong> <a href="#labs-function"><code>labs()</code></a> · <a href="#ggtitle-function"><code>ggtitle()</code></a> · <a href="#xlab-function"><code>xlab()</code></a> · <a href="#ylab-function"><code>ylab()</code></a> · <a href="#theme-function"><code>theme()</code></a> · <a href="#theme_gray"><code>theme_gray()</code></a> · <a href="#theme_grey"><code>theme_grey()</code></a> · <a href="#theme_bw"><code>theme_bw()</code></a> · <a href="#theme_minimal"><code>theme_minimal()</code></a> · <a href="#theme_classic"><code>theme_classic()</code></a> · <a href="#theme_light"><code>theme_light()</code></a> · <a href="#theme_dark"><code>theme_dark()</code></a> · <a href="#theme_void"><code>theme_void()</code></a> · <a href="#theme_linedraw"><code>theme_linedraw()</code></a> · <a href="#size-function"><code>size()</code></a></p>
+<section id="labs" class="level3">
+<h3 class="anchored" data-anchor-id="labs"><code>labs()</code></h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode php code-with-copy"><code class="sourceCode php"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>-&gt;labs(<span class="dt">mixed</span> ...<span class="va">$labels</span>)<span class="ot">:</span> Plot</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Titles: title, subtitle, caption, and one per aesthetic (x, y, color, fill, size, shape, …). A facet field’s name sets its panel header title. Null removes a title. The caption sits below the plot; theme() styles it.</p>
+<p>Functions: <span id="labs-function"><code>labs()</code></span>, <a href="#xlab-function"><code>xlab()</code></a>, <a href="#ylab-function"><code>ylab()</code></a>.</p>
+</section>
+<section id="title" class="level3">
+<h3 class="anchored" data-anchor-id="title"><code>title()</code></h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode php code-with-copy"><code class="sourceCode php"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>-&gt;title(<span class="ot">?</span><span class="dt">string</span> <span class="va">$title</span><span class="ot">,</span> <span class="ot">?</span><span class="dt">string</span> <span class="va">$subtitle</span> <span class="op">=</span> <span class="kw">null</span>)<span class="ot">:</span> Plot</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Function: <a href="#ggtitle-function"><code>ggtitle()</code></a>.</p>
+</section>
+<section id="theme" class="level3">
+<h3 class="anchored" data-anchor-id="theme"><code>theme()</code></h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode php code-with-copy"><code class="sourceCode php"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>-&gt;theme(</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>    <span class="ot">?</span><span class="dt">string</span> <span class="va">$preset</span> <span class="op">=</span> <span class="kw">null</span><span class="ot">,</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>    <span class="dt">int</span><span class="op">|</span><span class="dt">float</span><span class="op">|</span><span class="kw">null</span> <span class="va">$baseSize</span> <span class="op">=</span> <span class="kw">null</span><span class="ot">,</span></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>    <span class="ot">?</span><span class="dt">string</span> <span class="va">$font</span> <span class="op">=</span> <span class="kw">null</span><span class="ot">,</span></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>    <span class="ot">?</span><span class="dt">string</span> <span class="va">$legendPosition</span> <span class="op">=</span> <span class="kw">null</span><span class="ot">,</span></span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>    <span class="ot">?</span><span class="dt">string</span> <span class="va">$background</span> <span class="op">=</span> <span class="kw">null</span><span class="ot">,</span></span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>    <span class="ot">?</span><span class="dt">string</span> <span class="va">$panelBackground</span> <span class="op">=</span> <span class="kw">null</span><span class="ot">,</span></span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>    <span class="ot">?</span><span class="dt">string</span> <span class="va">$panelBorder</span> <span class="op">=</span> <span class="kw">null</span><span class="ot">,</span></span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>    <span class="ot">?</span><span class="dt">bool</span> <span class="va">$grid</span> <span class="op">=</span> <span class="kw">null</span><span class="ot">,</span></span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>    <span class="ot">?</span><span class="dt">string</span> <span class="va">$titleAnchor</span> <span class="op">=</span> <span class="kw">null</span><span class="ot">,</span></span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>    <span class="dt">int</span><span class="op">|</span><span class="dt">float</span><span class="op">|</span><span class="kw">null</span> <span class="va">$padding</span> <span class="op">=</span> <span class="kw">null</span><span class="ot">,</span></span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a>    <span class="dt">int</span><span class="op">|</span><span class="dt">float</span><span class="op">|</span><span class="kw">null</span> <span class="va">$xLabelAngle</span> <span class="op">=</span> <span class="kw">null</span><span class="ot">,</span></span>
+<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a>    <span class="dt">int</span><span class="op">|</span><span class="dt">float</span><span class="op">|</span><span class="kw">null</span> <span class="va">$yLabelAngle</span> <span class="op">=</span> <span class="kw">null</span><span class="ot">,</span></span>
+<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a>    <span class="ot">?</span><span class="dt">string</span> <span class="va">$legendDirection</span> <span class="op">=</span> <span class="kw">null</span><span class="ot">,</span></span>
+<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a>    <span class="ot">?</span><span class="dt">bool</span> <span class="va">$legendTitle</span> <span class="op">=</span> <span class="kw">null</span><span class="ot">,</span></span>
+<span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a>    <span class="ot">?</span><span class="dt">bool</span> <span class="va">$axisLine</span> <span class="op">=</span> <span class="kw">null</span><span class="ot">,</span></span>
+<span id="cb3-17"><a href="#cb3-17" aria-hidden="true" tabindex="-1"></a>    <span class="ot">?</span><span class="dt">bool</span> <span class="va">$ticks</span> <span class="op">=</span> <span class="kw">null</span><span class="ot">,</span></span>
+<span id="cb3-18"><a href="#cb3-18" aria-hidden="true" tabindex="-1"></a>    <span class="ot">?</span><span class="dt">string</span> <span class="va">$gridColor</span> <span class="op">=</span> <span class="kw">null</span><span class="ot">,</span></span>
+<span id="cb3-19"><a href="#cb3-19" aria-hidden="true" tabindex="-1"></a>    <span class="ot">?</span><span class="dt">string</span> <span class="va">$textColor</span> <span class="op">=</span> <span class="kw">null</span><span class="ot">,</span></span>
+<span id="cb3-20"><a href="#cb3-20" aria-hidden="true" tabindex="-1"></a>    <span class="dt">int</span><span class="op">|</span><span class="dt">float</span><span class="op">|</span><span class="kw">null</span> <span class="va">$captionSize</span> <span class="op">=</span> <span class="kw">null</span><span class="ot">,</span></span>
+<span id="cb3-21"><a href="#cb3-21" aria-hidden="true" tabindex="-1"></a>    <span class="ot">?</span><span class="dt">string</span> <span class="va">$captionColor</span> <span class="op">=</span> <span class="kw">null</span><span class="ot">,</span></span>
+<span id="cb3-22"><a href="#cb3-22" aria-hidden="true" tabindex="-1"></a>    <span class="ot">?</span><span class="dt">string</span> <span class="va">$captionAnchor</span> <span class="op">=</span> <span class="kw">null</span><span class="ot">,</span></span>
+<span id="cb3-23"><a href="#cb3-23" aria-hidden="true" tabindex="-1"></a>    <span class="dt">array</span> <span class="va">$config</span> <span class="op">=</span> []<span class="ot">,</span></span>
+<span id="cb3-24"><a href="#cb3-24" aria-hidden="true" tabindex="-1"></a>)<span class="ot">:</span> Plot</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>A theme preset (gray, bw, linedraw, minimal, classic, light, dark, void, vega) and/or individual options; config is raw Vega-Lite config merged last. Successive calls build on each other. xLabelAngle and yLabelAngle turn axis labels anticlockwise, as element_text(angle =); legendTitle: false, axisLine, and ticks switch those parts. captionSize, captionColor, and captionAnchor (start, middle, or end) style labs(caption:).</p>
+<p>Functions: <span id="theme-function"><code>theme()</code></span>, <a href="#theme_gray"><code>theme_gray()</code></a>, <a href="#theme_grey"><code>theme_grey()</code></a>, <a href="#theme_bw"><code>theme_bw()</code></a>, <a href="#theme_minimal"><code>theme_minimal()</code></a>, <a href="#theme_classic"><code>theme_classic()</code></a>, <a href="#theme_light"><code>theme_light()</code></a>, <a href="#theme_dark"><code>theme_dark()</code></a>, <a href="#theme_void"><code>theme_void()</code></a>, <a href="#theme_linedraw"><code>theme_linedraw()</code></a>.</p>
+</section>
+<section id="size" class="level3">
+<h3 class="anchored" data-anchor-id="size"><code>size()</code></h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode php code-with-copy"><code class="sourceCode php"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>-&gt;size(<span class="dt">string</span><span class="op">|</span><span class="dt">int</span><span class="op">|</span><span class="kw">null</span> <span class="va">$width</span> <span class="op">=</span> <span class="kw">null</span><span class="ot">,</span> <span class="dt">string</span><span class="op">|</span><span class="dt">int</span><span class="op">|</span><span class="kw">null</span> <span class="va">$height</span> <span class="op">=</span> <span class="kw">null</span>)<span class="ot">:</span> Plot</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Width and height in pixels (per panel when faceted); ‘container’ fills the parent element’s width.</p>
+<p>Function: <a href="#size-function"><code>size()</code></a>.</p>
+</section>
+<section id="width" class="level3">
+<h3 class="anchored" data-anchor-id="width"><code>width()</code></h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="sourceCode php code-with-copy"><code class="sourceCode php"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>-&gt;width(<span class="dt">string</span><span class="op">|</span><span class="dt">int</span> <span class="va">$width</span>)<span class="ot">:</span> Plot</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</section>
+<section id="height" class="level3">
+<h3 class="anchored" data-anchor-id="height"><code>height()</code></h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb6"><pre class="sourceCode php code-with-copy"><code class="sourceCode php"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>-&gt;height(<span class="dt">string</span><span class="op">|</span><span class="dt">int</span> <span class="va">$height</span>)<span class="ot">:</span> Plot</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</section>
+<section id="description" class="level3">
+<h3 class="anchored" data-anchor-id="description"><code>description()</code></h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb7"><pre class="sourceCode php code-with-copy"><code class="sourceCode php"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>-&gt;description(<span class="dt">string</span> <span class="va">$description</span>)<span class="ot">:</span> Plot</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</section>
+<section id="functions" class="level2">
+<h2 class="anchored" data-anchor-id="functions">Functions</h2>
+<section id="ggtitle-function" class="level3">
+<h3 class="anchored" data-anchor-id="ggtitle-function"><code>ggtitle()</code></h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb8"><pre class="sourceCode php code-with-copy"><code class="sourceCode php"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>ggtitle(<span class="ot">?</span><span class="dt">string</span> <span class="va">$title</span><span class="ot">,</span> <span class="ot">?</span><span class="dt">string</span> <span class="va">$subtitle</span> <span class="op">=</span> <span class="kw">null</span>)<span class="ot">:</span> <span class="bu">Closure</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</section>
+<section id="xlab-function" class="level3">
+<h3 class="anchored" data-anchor-id="xlab-function"><code>xlab()</code></h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb9"><pre class="sourceCode php code-with-copy"><code class="sourceCode php"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>xlab(<span class="ot">?</span><span class="dt">string</span> <span class="va">$title</span>)<span class="ot">:</span> <span class="bu">Closure</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</section>
+<section id="ylab-function" class="level3">
+<h3 class="anchored" data-anchor-id="ylab-function"><code>ylab()</code></h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb10"><pre class="sourceCode php code-with-copy"><code class="sourceCode php"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>ylab(<span class="ot">?</span><span class="dt">string</span> <span class="va">$title</span>)<span class="ot">:</span> <span class="bu">Closure</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</section>
+<section id="theme_gray" class="level3">
+<h3 class="anchored" data-anchor-id="theme_gray"><code>theme_gray()</code></h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb11"><pre class="sourceCode php code-with-copy"><code class="sourceCode php"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>theme_gray(<span class="dt">int</span><span class="op">|</span><span class="dt">float</span> <span class="va">$baseSize</span> <span class="op">=</span> <span class="dv">11</span>)<span class="ot">:</span> <span class="bu">Closure</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</section>
+<section id="theme_grey" class="level3">
+<h3 class="anchored" data-anchor-id="theme_grey"><code>theme_grey()</code></h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb12"><pre class="sourceCode php code-with-copy"><code class="sourceCode php"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>theme_grey(<span class="dt">int</span><span class="op">|</span><span class="dt">float</span> <span class="va">$baseSize</span> <span class="op">=</span> <span class="dv">11</span>)<span class="ot">:</span> <span class="bu">Closure</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</section>
+<section id="theme_bw" class="level3">
+<h3 class="anchored" data-anchor-id="theme_bw"><code>theme_bw()</code></h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb13"><pre class="sourceCode php code-with-copy"><code class="sourceCode php"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>theme_bw(<span class="dt">int</span><span class="op">|</span><span class="dt">float</span> <span class="va">$baseSize</span> <span class="op">=</span> <span class="dv">11</span>)<span class="ot">:</span> <span class="bu">Closure</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</section>
+<section id="theme_minimal" class="level3">
+<h3 class="anchored" data-anchor-id="theme_minimal"><code>theme_minimal()</code></h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb14"><pre class="sourceCode php code-with-copy"><code class="sourceCode php"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>theme_minimal(<span class="dt">int</span><span class="op">|</span><span class="dt">float</span> <span class="va">$baseSize</span> <span class="op">=</span> <span class="dv">11</span>)<span class="ot">:</span> <span class="bu">Closure</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</section>
+<section id="theme_classic" class="level3">
+<h3 class="anchored" data-anchor-id="theme_classic"><code>theme_classic()</code></h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb15"><pre class="sourceCode php code-with-copy"><code class="sourceCode php"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>theme_classic(<span class="dt">int</span><span class="op">|</span><span class="dt">float</span> <span class="va">$baseSize</span> <span class="op">=</span> <span class="dv">11</span>)<span class="ot">:</span> <span class="bu">Closure</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</section>
+<section id="theme_light" class="level3">
+<h3 class="anchored" data-anchor-id="theme_light"><code>theme_light()</code></h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb16"><pre class="sourceCode php code-with-copy"><code class="sourceCode php"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>theme_light(<span class="dt">int</span><span class="op">|</span><span class="dt">float</span> <span class="va">$baseSize</span> <span class="op">=</span> <span class="dv">11</span>)<span class="ot">:</span> <span class="bu">Closure</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</section>
+<section id="theme_dark" class="level3">
+<h3 class="anchored" data-anchor-id="theme_dark"><code>theme_dark()</code></h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb17"><pre class="sourceCode php code-with-copy"><code class="sourceCode php"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>theme_dark(<span class="dt">int</span><span class="op">|</span><span class="dt">float</span> <span class="va">$baseSize</span> <span class="op">=</span> <span class="dv">11</span>)<span class="ot">:</span> <span class="bu">Closure</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</section>
+<section id="theme_void" class="level3">
+<h3 class="anchored" data-anchor-id="theme_void"><code>theme_void()</code></h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb18"><pre class="sourceCode php code-with-copy"><code class="sourceCode php"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>theme_void(<span class="dt">int</span><span class="op">|</span><span class="dt">float</span> <span class="va">$baseSize</span> <span class="op">=</span> <span class="dv">11</span>)<span class="ot">:</span> <span class="bu">Closure</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</section>
+<section id="theme_linedraw" class="level3">
+<h3 class="anchored" data-anchor-id="theme_linedraw"><code>theme_linedraw()</code></h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb19"><pre class="sourceCode php code-with-copy"><code class="sourceCode php"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>theme_linedraw(<span class="dt">int</span><span class="op">|</span><span class="dt">float</span> <span class="va">$baseSize</span> <span class="op">=</span> <span class="dv">11</span>)<span class="ot">:</span> <span class="bu">Closure</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</section>
+<section id="size-function" class="level3">
+<h3 class="anchored" data-anchor-id="size-function"><code>size()</code></h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb20"><pre class="sourceCode php code-with-copy"><code class="sourceCode php"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>size(<span class="dt">string</span><span class="op">|</span><span class="dt">int</span><span class="op">|</span><span class="kw">null</span> <span class="va">$width</span> <span class="op">=</span> <span class="kw">null</span><span class="ot">,</span> <span class="dt">string</span><span class="op">|</span><span class="dt">int</span><span class="op">|</span><span class="kw">null</span> <span class="va">$height</span> <span class="op">=</span> <span class="kw">null</span>)<span class="ot">:</span> <span class="bu">Closure</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+
+
+</section>
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp("https:\/\/phiz\.phpstats\.org\/docs");
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+</div> <!-- /content -->
+
+
+
+
+<footer class="footer"><div class="nav-footer"><div class="nav-footer-center"><div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.com/phpstats/phiz/blob/main/reference-themes.qmd" class="toc-action"><i class="bi bi-github"></i>View source</a></li><li><a href="https://github.com/phpstats/phiz/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></div></div></footer></body></html>

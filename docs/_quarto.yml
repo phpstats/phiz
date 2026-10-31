@@ -38,6 +38,14 @@ website:
       - section: "Reference"
         contents:
           - reference.qmd
+          - reference-plots.qmd
+          - reference-geoms.qmd
+          - reference-scales.qmd
+          - reference-facets.qmd
+          - reference-themes.qmd
+          - reference-interaction.qmd
+          - reference-output.qmd
+          - reference-statistics.qmd
       - section: "Examples"
         contents:
           - gallery.qmd

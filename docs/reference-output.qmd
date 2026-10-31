@@ -1,0 +1,8 @@
+---
+title: "Output API"
+toc-depth: 2
+---
+
+A plot compiles to a Vega-Lite specification, which it returns as an array or JSON, embeds in HTML, or exports to SVG, PNG, or PDF through vl-convert. The escape hatches add raw Vega-Lite where phiz has no method. [Rendering](rendering.qmd) covers the options for each output.
+
+{{< include _generated/reference-output.md >}}

@@ -1,0 +1,8 @@
+---
+title: "Plots and data API"
+toc-depth: 2
+---
+
+A plot starts with `Plot::of()` or `ggplot()`, which take the data and optional mappings. The data can be rows, columns, a phibble table, a Laravel collection, or a `Data` source. [Data and fields](data.qmd) explains the forms data can take, and [Large data](large-data.qmd) explains when to bin in PHP with `Bin`.
+
+{{< include _generated/reference-plots.md >}}

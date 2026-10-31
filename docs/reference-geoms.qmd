@@ -1,0 +1,8 @@
+---
+title: "Geoms API"
+toc-depth: 2
+---
+
+Each geom method adds a layer. Most geoms take `aes` (the layer's own mappings) and `data` (the layer's own data) as their first arguments, `inheritAes` (false ignores the plot's mappings), `filter` (a Vega expression or selection predicate), and fixed visual properties by their ggplot2 names, such as `alpha`, `color`, and `linewidth`, or as any Vega-Lite mark property, such as `strokeWidth: 2`. [Geoms](geoms.qmd) shows each geom with an example.
+
+{{< include _generated/reference-geoms.md >}}

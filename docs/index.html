@@ -401,6 +401,54 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
  <span class="menu-text">API reference</span></a>
   </div>
 </li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./reference-plots.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Plots and data API</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./reference-geoms.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Geoms API</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./reference-scales.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Scales and guides API</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./reference-facets.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Coordinates, facets, and composition API</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./reference-themes.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Labels and themes API</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./reference-interaction.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Interaction API</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./reference-output.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Output API</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./reference-statistics.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Statistics API</span></a>
+  </div>
+</li>
       </ul>
   </li>
         <li class="sidebar-item sidebar-item-section">
@@ -508,13 +556,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="install" class="level2">
 <h2 class="anchored" data-anchor-id="install">Install</h2>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode sh code-with-copy"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="ex">composer</span> require phpstats/phiz</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>phiz supports PHP 8.3, 8.4, and 8.5 (composer.json allows <code>&gt;=8.3 &lt;8.6</code>), and CI tests all three. Examples written with the pipe operator <code>|&gt;</code> need PHP 8.5. Each one also has a method-chain version for PHP 8.3 and 8.4.</p>
-<p>phiz has no required dependencies beyond PHP. These are optional:</p>
-<ul>
-<li>the vl-convert binary, for SVG, PNG, and PDF export (<a href="./rendering.html">Rendering</a>)</li>
-<li>Laravel, for the <code>&lt;x-phiz&gt;</code> Blade component, whose service provider is discovered automatically (<a href="./laravel.html">Laravel and Livewire</a>)</li>
-<li>phit, for predictions from formula fits in the statistics helpers (<a href="./statistics.html">Statistics</a>)</li>
-</ul>
+<p>phiz supports PHP 8.3, 8.4, and 8.5. Examples written with the pipe operator <code>|&gt;</code> need PHP 8.5. Each one also has a method-chain version for PHP 8.3 and 8.4. phiz has no required dependencies beyond PHP. vl-convert (static export), Laravel (the Blade component), and phit (formula predictions in the statistics helpers) are optional. <a href="./get-started.html#installation">Installation</a> gives the details for each.</p>
 <p><a href="./get-started.html">Get started</a> builds a first chart and saves it.</p>
 </section>
 <section id="what-phiz-covers" class="level2">

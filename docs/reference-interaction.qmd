@@ -1,0 +1,8 @@
+---
+title: "Interaction API"
+toc-depth: 2
+---
+
+Interaction is expressed as Vega-Lite parameters, so it works wherever the specification is rendered in a browser. [Interaction](interaction.qmd) shows each method with an example.
+
+{{< include _generated/reference-interaction.md >}}

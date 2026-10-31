@@ -1,0 +1,8 @@
+---
+title: "Scales and guides API"
+toc-depth: 2
+---
+
+Scale methods set the domain, range, transformation, labels, and guide of one aesthetic. [Scales, coordinates, and labels](scales.qmd) shows them with examples.
+
+{{< include _generated/reference-scales.md >}}

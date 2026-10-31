@@ -2,9 +2,23 @@
 title: "Get started"
 ---
 
+## Installation
+
+```sh
+composer require phpstats/phiz
+```
+
+phiz supports PHP 8.3, 8.4, and 8.5 (composer.json allows `>=8.3 <8.6`), and CI tests all three on Linux. Examples written with the pipe operator `|>` need PHP 8.5, and each one also has a method-chain version for PHP 8.3 and 8.4. phiz needs only the `json` extension, which PHP includes by default, and has no required Composer dependencies.
+
+These features are optional:
+
+- **vl-convert**, a standalone binary, adds `svg()`, `png()`, `pdf()`, and `save()` with those extensions. Version 1.9.0 is tested. [Installing vl-convert](rendering.qmd#installing-vl-convert) gives the commands for Linux and macOS.
+- **Laravel** adds the `<x-phiz>` Blade component and the `@phizScripts` directive. The service provider is discovered automatically. The component's tests run on Laravel 12. [Laravel and Livewire](laravel.qmd) covers it.
+- **phit**, the extension or its pure-PHP polyfill `phpstats/phit-polyfill`, builds design rows from a fit's formula. Predictions for formula fits in `effect_plot()`, `predictions()`, and `marginal_means()` need it unless `design:` is given, and so do random-slope design columns in `random_effects_plot()` when it rebuilds conditional variances from the data. The documentation fits are checked against polyfill 0.3.0. [Statistics](statistics.qmd) describes the fit arrays the helpers read.
+
 ## A complete first chart
 
-Install phiz in a project with `composer require phpstats/phiz`, then save this script as `chart.php` beside the `vendor` directory:
+In a new directory, run `composer require phpstats/phiz`, then save this script as `chart.php` beside the `vendor` directory:
 
 ```php
 <?php
@@ -43,6 +57,7 @@ Each geom adds a layer, and layers inherit the plot's mappings. This plot overla
 Plots are immutable. Every method returns a new plot, so a base plot can be stored and extended in several directions.
 
 ```php
+$mpg = Datasets::mpg();
 $base = Plot::of($mpg)->aes(x: 'displ', y: 'hwy');
 
 $scatter = $base->point();
@@ -55,12 +70,12 @@ PHP 8.5's pipe operator composes ggplot2-style functions. `ggplot()` starts a pl
 
 {{< include _generated/start-pipe.md >}}
 
-The functions and the methods accept the same arguments. On PHP 8.3 and 8.4, `apply()` also takes the functions: `ggplot($mpg, aes(x: 'displ', y: 'hwy'))->apply(geom_point(), labs(x: 'Displacement (L)'))`. A plot can also apply reusable fragments with `apply()`:
+The functions and the methods accept the same arguments. On PHP 8.3 and 8.4, `apply()` also takes the functions, after `use function Phiz\{aes, geom_point, ggplot, labs};`: `ggplot(Datasets::mpg(), aes(x: 'displ', y: 'hwy'))->apply(geom_point(), labs(x: 'Displacement (L)'))`. A plot can also apply reusable fragments with `apply()`:
 
 ```php
 $house = fn (Plot $plot) => $plot->theme('minimal', baseSize: 12)->size(480, 300);
 
-$plot = Plot::of($mpg)->aes(x: 'displ', y: 'hwy')->point()->apply($house);
+$plot = Plot::of(Datasets::mpg())->aes(x: 'displ', y: 'hwy')->point()->apply($house);
 ```
 
 ## Output

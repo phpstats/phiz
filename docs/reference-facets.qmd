@@ -1,0 +1,8 @@
+---
+title: "Coordinates, facets, and composition API"
+toc-depth: 2
+---
+
+Coordinate methods flip, zoom, or change the coordinate system, facet methods split a plot into panels by a field, and `Compose` places separate plots side by side or in a grid. [Facets and composition](facets.qmd) shows them with examples.
+
+{{< include _generated/reference-facets.md >}}
