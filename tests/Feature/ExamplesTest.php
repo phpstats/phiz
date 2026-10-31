@@ -43,3 +43,22 @@ it('writes the gallery fragment for the documentation', function () {
     expect(substr_count($markdown, 'data-phiz="'))->toBe(count(require __DIR__.'/../../examples/catalog.php'))
         ->and($markdown)->toContain("## Statistics\n");
 });
+
+it('writes a gallery fragment whose charts load their specs from files', function () {
+    $dir = sys_get_temp_dir().'/phiz-gallery-'.bin2hex(random_bytes(4));
+    mkdir($dir);
+    exec(escapeshellarg(PHP_BINARY).' '.escapeshellarg(__DIR__.'/../../examples/gallery.php').' '.escapeshellarg("{$dir}/gallery.md").' '.escapeshellarg("--specs={$dir}/specs").' 2>&1', $lines, $status);
+
+    expect($status)->toBe(0);
+    $markdown = (string) file_get_contents("{$dir}/gallery.md");
+    $catalog = require __DIR__.'/../../examples/catalog.php';
+    $specs = glob("{$dir}/specs/*.json");
+    expect($markdown)->not->toContain('data-phiz="')
+        ->and(substr_count($markdown, 'data-phiz-deferred'))->toBe(count($catalog))
+        ->and($markdown)->toContain('href="specs/coefplot.json"')
+        ->and($specs)->toHaveCount(count($catalog))
+        ->and(file_get_contents("{$dir}/specs/coefplot.json"))->toBe($catalog['coefplot'][3]()->toJson());
+    array_map(unlink(...), [...$specs, "{$dir}/gallery.md"]);
+    rmdir("{$dir}/specs");
+    rmdir($dir);
+});

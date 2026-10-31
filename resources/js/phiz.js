@@ -1,4 +1,8 @@
-/* phiz: renders [data-phiz] elements with vega-embed, and re-renders when their spec changes (Livewire morphs). */
+/*
+ * phiz: renders [data-phiz] elements with vega-embed, and re-renders when their spec changes (Livewire morphs).
+ * A [data-phiz-deferred] element fetches its spec from its [data-phiz-spec] link when it nears the viewport, then
+ * renders like any other.
+ */
 (function () {
   if (window.Phiz) return;
   var views = new WeakMap();
@@ -54,10 +58,40 @@
     });
   }
 
+  function load(el) {
+    if (el.hasAttribute('data-phiz') || el.getAttribute('data-phiz-deferred') === 'loading') return;
+    var link = el.querySelector('a[data-phiz-spec]');
+    if (!link) return;
+    el.setAttribute('data-phiz-deferred', 'loading');
+    fetch(link.href).then(function (response) {
+      if (!response.ok) throw new Error(response.status + ' ' + response.statusText);
+      return response.text();
+    }).then(function (json) {
+      el.setAttribute('data-phiz-deferred', 'loaded');
+      el.setAttribute('data-phiz', json);
+    }).catch(function (error) {
+      el.setAttribute('data-phiz-deferred', 'failed');
+      console.error('phiz: cannot load ' + link.href, error);
+    });
+  }
+
+  var nearby = window.IntersectionObserver ? new IntersectionObserver(function (entries) {
+    entries.forEach(function (entry) {
+      if (entry.isIntersecting) { nearby.unobserve(entry.target); load(entry.target); }
+    });
+  }, { rootMargin: '200px' }) : null;
+
+  function defer(el) {
+    if (el.hasAttribute('data-phiz') || el.getAttribute('data-phiz-deferred')) return;
+    if (nearby) nearby.observe(el); else load(el);
+  }
+
   function scan(root) {
     if (root.nodeType !== 1) return;
     if (root.hasAttribute('data-phiz')) render(root);
     root.querySelectorAll('[data-phiz]').forEach(render);
+    if (root.hasAttribute('data-phiz-deferred')) defer(root);
+    root.querySelectorAll('[data-phiz-deferred]').forEach(defer);
   }
 
   function release(root) {

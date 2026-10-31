@@ -5,8 +5,10 @@ declare(strict_types=1);
 /*
  * Writes an HTML page of every example in catalog.php: the chart, a description, and the code that built it.
  * An output path ending in .md writes a Markdown fragment instead, which the documentation's gallery page includes.
+ * With --specs=dir, the fragment's charts load their specs from dir/{id}.json as they scroll into view, so the page
+ * does not embed every spec; the fragment links to them as {basename of dir}/{id}.json.
  *
- *     php examples/gallery.php [output.html|output.md] [--svg=dir]
+ *     php examples/gallery.php [output.html|output.md] [--svg=dir] [--specs=dir]
  *
  * --svg also renders each example to dir/{id}.svg through vl-convert.
  */
@@ -18,8 +20,11 @@ require __DIR__.'/../vendor/autoload.php';
 
 $output = __DIR__.'/gallery.html';
 $svgDir = null;
+$specDir = null;
 foreach (array_slice($argv, 1) as $arg) {
-    if (str_starts_with($arg, '--svg=')) {
+    if (str_starts_with($arg, '--specs=')) {
+        $specDir = rtrim(substr($arg, 8), '/');
+    } elseif (str_starts_with($arg, '--svg=')) {
         $svgDir = substr($arg, 6);
     } else {
         $output = $arg;
@@ -50,11 +55,21 @@ $code = function (Closure $build) use ($source): string {
 
 if (str_ends_with($output, '.md')) {
     $markdown = [];
+    if ($specDir !== null) {
+        is_dir($specDir) || mkdir($specDir, 0777, true);
+        array_map(unlink(...), glob("{$specDir}/*.json"));
+    }
     foreach ($catalog as $id => [$section, $title, $description, $build]) {
         $chart = $build();
+        if ($specDir !== null) {
+            file_put_contents("{$specDir}/{$id}.json", $chart->toJson());
+            $figure = Html::deferred(basename($specDir)."/{$id}.json", ['actions' => false], ['aria-label' => $title]);
+        } else {
+            $figure = Html::container($chart, ['actions' => false], ['aria-label' => $title]);
+        }
         $markdown[$section] ??= "## {$section}\n\n";
         $markdown[$section] .= "### {$title} {#{$id}}\n\n{$description}\n\n```{=html}\n<div class=\"phiz-figure\">"
-            .Html::container($chart, ['actions' => false], ['aria-label' => $title])
+            .$figure
             ."</div>\n```\n\n```php\n".$code($build)."\n```\n\n";
     }
     file_put_contents($output, implode('', $markdown));

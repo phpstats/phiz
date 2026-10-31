@@ -40,7 +40,7 @@ $plot->save('chart.html');
 composer require phpstats/phiz
 ```
 
-phiz supports PHP 8.3, 8.4, and 8.5, and CI tests all three. It has no required dependencies beyond PHP. These are optional:
+phiz supports PHP 8.3, 8.4, and 8.5 (composer.json allows `>=8.3 <8.6`), and CI tests all three. It has no required dependencies beyond PHP. These are optional:
 
 - the vl-convert binary, for SVG, PNG, and PDF export
 - Laravel, for the `<x-phiz>` Blade component, whose service provider is discovered automatically
@@ -48,12 +48,12 @@ phiz supports PHP 8.3, 8.4, and 8.5, and CI tests all three. It has no required 
 
 ## Documentation
 
-The documentation is at <https://phpstats.github.io/phiz/>:
+The documentation is at <https://phiz.phpstats.org/docs>:
 
-- [Get started](https://phpstats.github.io/phiz/get-started.html) builds and saves a first chart.
-- [Coming from ggplot2](https://phpstats.github.io/phiz/ggplot2.html) translates ggplot2 code and lists the differences.
-- [Gallery](https://phpstats.github.io/phiz/gallery.html) shows the 46 examples in `examples/catalog.php` with their code.
-- [API reference](https://phpstats.github.io/phiz/reference.html) lists every method and function with its signature.
+- [Get started](https://phiz.phpstats.org/docs/get-started) builds and saves a first chart.
+- [Coming from ggplot2](https://phiz.phpstats.org/docs/ggplot2) translates ggplot2 code and lists the differences.
+- [Gallery](https://phiz.phpstats.org/docs/gallery) shows the 46 examples in `examples/catalog.php` with their code.
+- [API reference](https://phiz.phpstats.org/docs/reference) lists every method and function with its signature.
 
 ## Development
 
@@ -62,7 +62,7 @@ composer test
 composer lint
 ```
 
-[Development](https://phpstats.github.io/phiz/development.html) covers the test layers, the gallery, and how the documentation is rendered.
+[Development](https://phiz.phpstats.org/docs/development) covers the test layers, the gallery, and how the documentation is rendered.
 
 ## License
 

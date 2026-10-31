@@ -17,7 +17,7 @@ Each chart in these pages is drawn from the code shown with it.
 composer require phpstats/phiz
 ```
 
-phiz supports PHP 8.3, 8.4, and 8.5, and CI tests all three. Examples written with the pipe operator `|>` need PHP 8.5. Each one also has a method-chain version for PHP 8.3 and 8.4.
+phiz supports PHP 8.3, 8.4, and 8.5 (composer.json allows `>=8.3 <8.6`), and CI tests all three. Examples written with the pipe operator `|>` need PHP 8.5. Each one also has a method-chain version for PHP 8.3 and 8.4.
 
 phiz has no required dependencies beyond PHP. These are optional:
 

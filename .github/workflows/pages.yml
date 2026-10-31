@@ -1,0 +1,72 @@
+name: pages
+
+# GitHub Pages serves only redirects: each docs/*.html page moves to the same page on phpstats.org, which imports the
+# rendered docs from main:/docs. The redirects are generated here, so docs/ keeps the real pages.
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'docs/*.html'
+      - '.github/workflows/pages.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Generate redirect stubs
+        run: |
+          base=https://phiz.phpstats.org/docs
+          mkdir -p _redirects
+          stub() {
+            cat > "$1" <<EOF
+          <!DOCTYPE html>
+          <html lang="en">
+          <head>
+          <meta charset="utf-8">
+          <title>phiz documentation has moved</title>
+          <link rel="canonical" href="$2">
+          <meta http-equiv="refresh" content="0; url=$2">
+          <script>location.replace("$2" + location.hash);</script>
+          </head>
+          <body>
+          <p>This page has moved to <a href="$2">$2</a>.</p>
+          </body>
+          </html>
+          EOF
+          }
+          for page in docs/*.html; do
+            name=$(basename "$page" .html)
+            case "$name" in _*) continue ;; esac
+            if [ "$name" = index ]; then url=$base; else url="$base/$name"; fi
+            stub "_redirects/$name.html" "$url"
+          done
+          stub _redirects/404.html "$base"
+          touch _redirects/.nojekyll
+          ls _redirects
+
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: _redirects
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4

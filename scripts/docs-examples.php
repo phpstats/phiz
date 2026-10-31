@@ -8,7 +8,8 @@ declare(strict_types=1);
  * - docs/_generated/{name}.md: the example's code and its live chart (the spec it actually produced)
  * - docs/figures/{name}.svg: a static rendering through vl-convert, when it is installed
  * - docs/_phiz-scripts.html: the pinned vega, vega-lite, vega-embed and phiz loader script tags
- * - docs/_generated/gallery.md: the examples/catalog.php gallery, for docs/gallery.qmd
+ * - docs/_generated/gallery.md: the examples/catalog.php gallery, for docs/gallery.qmd, with each chart's spec in
+ *   docs/gallery/{id}.json, loaded as the chart scrolls into view
  *
  * An example file returns a Chart. Its code is shown as written, with `return` shown as `$plot =`. An example that
  * uses the pipe operator has a method-chain twin, {name}.chain.php; the two are shown in tabs labeled "PHP 8.5+" and
@@ -74,7 +75,7 @@ foreach (glob(dirname(__DIR__).'/examples/dashboard.php') as $file) {
 }
 
 if ($only === []) {
-    passthru(escapeshellarg(PHP_BINARY).' '.escapeshellarg(dirname(__DIR__).'/examples/gallery.php').' '.escapeshellarg("{$docs}/_generated/gallery.md"), $status);
+    passthru(escapeshellarg(PHP_BINARY).' '.escapeshellarg(dirname(__DIR__).'/examples/gallery.php').' '.escapeshellarg("{$docs}/_generated/gallery.md").' '.escapeshellarg("--specs={$docs}/gallery"), $status);
     if ($status !== 0) {
         exit($status);
     }

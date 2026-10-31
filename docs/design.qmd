@@ -37,7 +37,7 @@ Statistics run as Vega-Lite transforms where Vega-Lite has them: bins, densities
 
 ## PHP versions
 
-composer.json requires PHP `^8.3`. phiz supports PHP 8.3, 8.4, and 8.5, and CI runs the test suite on all three. The library code parses on PHP 8.3. Examples and tests that use the pipe operator `|>` need PHP 8.5. Each documentation example that uses it has a method-chain version, and the tests check that both build the same specification.
+composer.json allows PHP `>=8.3 <8.6`: PHP 8.3, 8.4, and 8.5. CI runs the test suite on all three. The library code parses on PHP 8.3. Examples and tests that use the pipe operator `|>` need PHP 8.5. Each documentation example that uses it has a method-chain version, and the tests check that both build the same specification.
 
 ## Vega-Lite versions
 

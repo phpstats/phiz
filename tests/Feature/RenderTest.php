@@ -23,6 +23,15 @@ it('embeds the spec in an attribute the loader reads', function () {
         ->not->toContain('</script><b>');
 });
 
+it('defers a spec to a link the loader fetches', function () {
+    $html = Html::deferred('specs/a "b".json', ['actions' => false], ['class' => 'w-full']);
+
+    expect($html)->toContain('data-phiz-deferred')->not->toContain('data-phiz="')
+        ->toContain('<a data-phiz-spec href="specs/a &quot;b&quot;.json">Vega-Lite specification</a>')
+        ->toContain('data-phiz-options="{&quot;actions&quot;:false}"')->toContain('class="w-full"')
+        ->and(Assets::loader())->toContain('data-phiz-deferred')->toContain('IntersectionObserver');
+});
+
 it('can leave out the script tags', function () {
     expect(tiny()->embed(assets: false))->not->toContain('<script');
 });

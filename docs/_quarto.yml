@@ -5,10 +5,11 @@ project:
     - "*.qmd"
   resources:
     - figures/
+    - gallery/
     - examples/
 
 website:
-  site-url: "https://phpstats.github.io/phiz/"
+  site-url: "https://phiz.phpstats.org/docs"
   title: "phiz"
   repo-url: https://github.com/phpstats/phiz
   repo-actions: [source, issue]

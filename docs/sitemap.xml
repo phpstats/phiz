@@ -1,75 +1,75 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
-    <loc>https://phpstats.github.io/phiz/themes.html</loc>
+    <loc>https://phiz.phpstats.org/docs/themes</loc>
     <lastmod>2026-10-31T14:57:59.000Z</lastmod>
   </url>
   <url>
-    <loc>https://phpstats.github.io/phiz/scales.html</loc>
+    <loc>https://phiz.phpstats.org/docs/scales</loc>
     <lastmod>2026-10-31T14:57:59.000Z</lastmod>
   </url>
   <url>
-    <loc>https://phpstats.github.io/phiz/reference.html</loc>
-    <lastmod>2026-10-31T15:10:41.000Z</lastmod>
+    <loc>https://phiz.phpstats.org/docs/reference</loc>
+    <lastmod>2026-10-31T15:28:28.000Z</lastmod>
   </url>
   <url>
-    <loc>https://phpstats.github.io/phiz/laravel.html</loc>
+    <loc>https://phiz.phpstats.org/docs/laravel</loc>
     <lastmod>2026-10-31T14:57:59.000Z</lastmod>
   </url>
   <url>
-    <loc>https://phpstats.github.io/phiz/index.html</loc>
+    <loc>https://phiz.phpstats.org/docs</loc>
+    <lastmod>2026-10-31T15:28:28.000Z</lastmod>
+  </url>
+  <url>
+    <loc>https://phiz.phpstats.org/docs/get-started</loc>
     <lastmod>2026-10-31T14:57:59.000Z</lastmod>
   </url>
   <url>
-    <loc>https://phpstats.github.io/phiz/get-started.html</loc>
-    <lastmod>2026-10-31T14:57:59.000Z</lastmod>
-  </url>
-  <url>
-    <loc>https://phpstats.github.io/phiz/facets.html</loc>
+    <loc>https://phiz.phpstats.org/docs/facets</loc>
     <lastmod>2026-10-16T08:17:52.180Z</lastmod>
   </url>
   <url>
-    <loc>https://phpstats.github.io/phiz/design.html</loc>
+    <loc>https://phiz.phpstats.org/docs/design</loc>
+    <lastmod>2026-10-31T15:28:28.000Z</lastmod>
+  </url>
+  <url>
+    <loc>https://phiz.phpstats.org/docs/dashboard</loc>
     <lastmod>2026-10-31T14:57:59.000Z</lastmod>
   </url>
   <url>
-    <loc>https://phpstats.github.io/phiz/dashboard.html</loc>
-    <lastmod>2026-10-31T14:57:59.000Z</lastmod>
-  </url>
-  <url>
-    <loc>https://phpstats.github.io/phiz/data.html</loc>
+    <loc>https://phiz.phpstats.org/docs/data</loc>
     <lastmod>2026-10-31T15:10:41.000Z</lastmod>
   </url>
   <url>
-    <loc>https://phpstats.github.io/phiz/development.html</loc>
-    <lastmod>2026-10-31T14:57:59.000Z</lastmod>
+    <loc>https://phiz.phpstats.org/docs/development</loc>
+    <lastmod>2026-10-31T15:28:28.000Z</lastmod>
   </url>
   <url>
-    <loc>https://phpstats.github.io/phiz/geoms.html</loc>
+    <loc>https://phiz.phpstats.org/docs/geoms</loc>
     <lastmod>2026-10-31T15:10:41.000Z</lastmod>
   </url>
   <url>
-    <loc>https://phpstats.github.io/phiz/ggplot2.html</loc>
+    <loc>https://phiz.phpstats.org/docs/ggplot2</loc>
     <lastmod>2026-10-31T14:57:59.000Z</lastmod>
   </url>
   <url>
-    <loc>https://phpstats.github.io/phiz/interaction.html</loc>
+    <loc>https://phiz.phpstats.org/docs/interaction</loc>
     <lastmod>2026-10-16T07:53:12.797Z</lastmod>
   </url>
   <url>
-    <loc>https://phpstats.github.io/phiz/large-data.html</loc>
+    <loc>https://phiz.phpstats.org/docs/large-data</loc>
     <lastmod>2026-10-31T14:57:59.000Z</lastmod>
   </url>
   <url>
-    <loc>https://phpstats.github.io/phiz/rendering.html</loc>
+    <loc>https://phiz.phpstats.org/docs/rendering</loc>
     <lastmod>2026-10-31T15:10:41.000Z</lastmod>
   </url>
   <url>
-    <loc>https://phpstats.github.io/phiz/statistics.html</loc>
+    <loc>https://phiz.phpstats.org/docs/statistics</loc>
     <lastmod>2026-10-31T14:57:59.000Z</lastmod>
   </url>
   <url>
-    <loc>https://phpstats.github.io/phiz/gallery.html</loc>
-    <lastmod>2026-10-31T14:57:59.000Z</lastmod>
+    <loc>https://phiz.phpstats.org/docs/gallery</loc>
+    <lastmod>2026-10-31T15:28:28.000Z</lastmod>
   </url>
 </urlset>

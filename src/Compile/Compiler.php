@@ -222,7 +222,7 @@ final class Compiler
             $message = sprintf(
                 'phiz: this plot embeds %s data rows in its spec, more than Config::$warnRows (%s). Browsers slow down with large inline data. '
                 .'Summarize first (bin2d(), hex(), histogram(compute: \'server\'), line(downsample:), Bin::sample(), or phplyr), '
-                .'or load the data from a URL with Data::url(). See https://phpstats.github.io/phiz/large-data.html.',
+                .'or load the data from a URL with Data::url(). See https://phiz.phpstats.org/docs/large-data.',
                 number_format($rows),
                 number_format(Config::$warnRows),
             );

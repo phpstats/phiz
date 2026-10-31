@@ -169,6 +169,12 @@ Html::container(Chart|array $chart, array $options = [], array $attributes = [])
 The container element for a chart.
 
 ```php
+Html::deferred(string $url, array $options = [], array $attributes = [], string $text = 'Vega-Lite specification'): string
+```
+
+A container that loads its spec from a URL when it scrolls into view, for pages with many charts. The URL is the href of a link inside the container, so the page still links to each spec without JavaScript, and tools that rewrite links move the spec files with the page.
+
+```php
 Html::embed(Chart|array $chart, array $options = [], Assets|false|null $assets = null, array $attributes = []): string
 ```
 

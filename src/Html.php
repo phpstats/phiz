@@ -28,6 +28,26 @@ final class Html
         return '<div'.self::attributes($attrs).'><div data-phiz-view wire:ignore></div></div>';
     }
 
+    /**
+     * A container that loads its spec from a URL when it scrolls into view, for pages with many charts. The URL is the
+     * href of a link inside the container, so the page still links to each spec without JavaScript, and tools that
+     * rewrite links move the spec files with the page.
+     *
+     * @param array<string, mixed> $options vega-embed options, as for container().
+     * @param array<string, string|int|bool|null> $attributes Extra attributes for the container.
+     */
+    public static function deferred(string $url, array $options = [], array $attributes = [], string $text = 'Vega-Lite specification'): string
+    {
+        $attrs = ['data-phiz-deferred' => true];
+        if ($options !== []) {
+            $attrs['data-phiz-options'] = json_encode($options, Chart::JSON_FLAGS);
+        }
+        $attrs += $attributes;
+
+        return '<div'.self::attributes($attrs).'><div data-phiz-view wire:ignore><a data-phiz-spec href="'
+            .htmlspecialchars($url, ENT_QUOTES | ENT_HTML5).'">'.htmlspecialchars($text, ENT_QUOTES | ENT_HTML5).'</a></div></div>';
+    }
+
     /** A self-contained fragment: the container plus script tags (null assets means the pinned CDN copies). */
     public static function embed(Chart|array $chart, array $options = [], Assets|false|null $assets = null, array $attributes = []): string
     {
