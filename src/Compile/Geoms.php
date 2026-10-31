@@ -93,8 +93,9 @@ final class Geoms
         $jitter = $c->param('jitter');
         if ($jitter !== null && $jitter !== false) {
             [$width, $height] = is_array($jitter) ? [$jitter[0] ?? null, $jitter[1] ?? 0] : [is_numeric($jitter) ? $jitter : null, 0];
-            $encoding = self::jitter($c, $encoding, 'x', $width);
-            $encoding = self::jitter($c, $encoding, 'y', $height);
+            $noise = self::seededNoise($c, $c->param('seed'));
+            $encoding = self::jitter($c, $encoding, 'x', $width, $noise);
+            $encoding = self::jitter($c, $encoding, 'y', $height, $noise);
         }
 
         $encoding = self::dodge($c, $encoding);
@@ -126,23 +127,52 @@ final class Geoms
         return $encoding;
     }
 
+    /**
+     * With a seed, uniform noise in [-0.5, 0.5) for each row and axis, drawn in PHP with the Mt19937 engine and stored
+     * as columns of the layer's rows, so the jitter is the same on every render. Without one, Vega's random() is used.
+     *
+     * @return array{x: string, y: string}|null the Vega expressions for each axis's noise, or null for random()
+     */
+    private static function seededNoise(Context $c, ?int $seed): ?array
+    {
+        if ($seed === null) {
+            return null;
+        }
+        if (! $c->data->isInline()) {
+            throw new InvalidArgumentException('jitter with a seed needs inline data; URL and named data are jittered in the browser.');
+        }
+        $randomizer = new \Random\Randomizer(new \Random\Engine\Mt19937($seed));
+        $rows = $c->data->rows;
+        foreach (['x', 'y'] as $axis) {
+            foreach ($rows as $i => $row) {
+                $row = (array) $row;
+                $row["__noise_{$axis}"] = $randomizer->getFloat(0, 1) - 0.5;
+                $rows[$i] = $row;
+            }
+        }
+        $c->computed = array_values($rows);
+
+        return ['x' => 'datum.__noise_x', 'y' => 'datum.__noise_y'];
+    }
+
     /** Random displacement: within the band for a discrete axis, in data units (default 40% of resolution) for a continuous one. */
-    private static function jitter(Context $c, array $encoding, string $axis, int|float|null $amount): array
+    private static function jitter(Context $c, array $encoding, string $axis, int|float|null $amount, ?array $noise = null): array
     {
         if (! isset($encoding[$axis]) || $amount === 0 || $amount === 0.0) {
             return $encoding;
         }
         $as = "__jitter_{$axis}";
+        $random = $noise[$axis] ?? '(random() - 0.5)';
         if ($c->discrete($axis)) {
             // Offsets span the band, so a domain of ±0.25/w moves points up to w of a band from its center.
             $half = 0.25 / ($amount ?? 0.4);
-            $c->calculate('random() - 0.5', $as);
+            $c->calculate($random === '(random() - 0.5)' ? 'random() - 0.5' : $random, $as);
             $encoding["{$axis}Offset"] = ['field' => $as, 'type' => 'quantitative', 'scale' => ['domain' => [-$half, $half]]];
 
             return $encoding;
         }
         $amount ??= 0.4 * self::resolution($c->data->column((string) $c->name($axis)));
-        $c->calculate('datum['.json_encode($c->name($axis)).'] + (random() - 0.5) * '.self::number(2 * $amount), $as);
+        $c->calculate('datum['.json_encode($c->name($axis)).'] + '.$random.' * '.self::number(2 * $amount), $as);
         $encoding[$axis] = array_replace($encoding[$axis], ['field' => $as, 'title' => $encoding[$axis]['title'] ?? $c->name($axis)]);
 
         return $encoding;

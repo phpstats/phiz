@@ -81,16 +81,22 @@ final class Plot extends Chart
 
     // Geoms.
 
-    /** Scatterplot points. jitter: true (or a width, or [width, height]) displaces them randomly. */
-    public function point(Aes|array|null $aes = null, mixed $data = null, int|float|null $alpha = null, int|float|null $size = null, ?string $color = null, ?string $fill = null, string|int|null $shape = null, bool|int|float|array|null $jitter = null, ?string $position = null, bool $inheritAes = true, string|array|null $filter = null, mixed ...$style): self
+    /**
+     * Scatterplot points. jitter: true (or a width, or [width, height]) displaces them randomly. seed: makes the jitter
+     * reproducible: phiz draws it in PHP and embeds it in the data, so every render places the points the same way.
+     */
+    public function point(Aes|array|null $aes = null, mixed $data = null, int|float|null $alpha = null, int|float|null $size = null, ?string $color = null, ?string $fill = null, string|int|null $shape = null, bool|int|float|array|null $jitter = null, ?string $position = null, ?int $seed = null, bool $inheritAes = true, string|array|null $filter = null, mixed ...$style): self
     {
-        return $this->add('point', $aes, $data, ['jitter' => $jitter, 'position' => $position], compact('alpha', 'size', 'color', 'fill', 'shape') + $style, $inheritAes, $filter);
+        return $this->add('point', $aes, $data, ['jitter' => $jitter, 'position' => $position, 'seed' => $seed], compact('alpha', 'size', 'color', 'fill', 'shape') + $style, $inheritAes, $filter);
     }
 
-    /** Points jittered by up to width/height (fraction of a band on discrete axes, data units otherwise). */
-    public function jitter(Aes|array|null $aes = null, mixed $data = null, int|float|null $width = null, int|float $height = 0, int|float|null $alpha = null, int|float|null $size = null, ?string $color = null, bool $inheritAes = true, string|array|null $filter = null, mixed ...$style): self
+    /**
+     * Points jittered by up to width/height (fraction of a band on discrete axes, data units otherwise). Without a seed
+     * the browser draws the jitter, so it changes on every render; with seed: phiz draws it in PHP and it is the same.
+     */
+    public function jitter(Aes|array|null $aes = null, mixed $data = null, int|float|null $width = null, int|float $height = 0, int|float|null $alpha = null, int|float|null $size = null, ?string $color = null, ?int $seed = null, bool $inheritAes = true, string|array|null $filter = null, mixed ...$style): self
     {
-        return $this->add('point', $aes, $data, ['jitter' => [$width, $height]], compact('alpha', 'size', 'color') + $style, $inheritAes, $filter);
+        return $this->add('point', $aes, $data, ['jitter' => [$width, $height], 'seed' => $seed], compact('alpha', 'size', 'color') + $style, $inheritAes, $filter);
     }
 
     /** Lines connecting points in order of x. downsample: n keeps about n points per group (LTTB), in PHP. */

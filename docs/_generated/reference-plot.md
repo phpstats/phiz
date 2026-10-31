@@ -21,16 +21,16 @@ Adds plot-wide aesthetic mappings: x, y, color, fill, size, shape, alpha, group,
 ### Geoms
 
 ```php
-->point(Aes|array|null $aes = null, mixed $data = null, int|float|null $alpha = null, int|float|null $size = null, ?string $color = null, ?string $fill = null, string|int|null $shape = null, array|int|float|bool|null $jitter = null, ?string $position = null, bool $inheritAes = true, array|string|null $filter = null, mixed ...$style): Plot
+->point(Aes|array|null $aes = null, mixed $data = null, int|float|null $alpha = null, int|float|null $size = null, ?string $color = null, ?string $fill = null, string|int|null $shape = null, array|int|float|bool|null $jitter = null, ?string $position = null, ?int $seed = null, bool $inheritAes = true, array|string|null $filter = null, mixed ...$style): Plot
 ```
 
-Scatterplot points. jitter: true (or a width, or [width, height]) displaces them randomly.
+Scatterplot points. jitter: true (or a width, or [width, height]) displaces them randomly. seed: makes the jitter reproducible: phiz draws it in PHP and embeds it in the data, so every render places the points the same way.
 
 ```php
-->jitter(Aes|array|null $aes = null, mixed $data = null, int|float|null $width = null, int|float $height = 0, int|float|null $alpha = null, int|float|null $size = null, ?string $color = null, bool $inheritAes = true, array|string|null $filter = null, mixed ...$style): Plot
+->jitter(Aes|array|null $aes = null, mixed $data = null, int|float|null $width = null, int|float $height = 0, int|float|null $alpha = null, int|float|null $size = null, ?string $color = null, ?int $seed = null, bool $inheritAes = true, array|string|null $filter = null, mixed ...$style): Plot
 ```
 
-Points jittered by up to width/height (fraction of a band on discrete axes, data units otherwise).
+Points jittered by up to width/height (fraction of a band on discrete axes, data units otherwise). Without a seed the browser draws the jitter, so it changes on every render; with seed: phiz draws it in PHP and it is the same.
 
 ```php
 ->line(Aes|array|null $aes = null, mixed $data = null, int|float|null $alpha = null, int|float|null $linewidth = null, ?string $color = null, array|string|null $linetype = null, ?int $downsample = null, bool $inheritAes = true, array|string|null $filter = null, mixed ...$style): Plot

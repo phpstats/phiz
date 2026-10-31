@@ -191,3 +191,24 @@ it('rejects unknown aesthetics, themes, and facet scales', function (Closure $bu
     fn () => Plot::of(sample())->aes(x: 'x', y: 'y')->line(linetype: 'wavy')->toArray(),
     fn () => Plot::of(sample())->highlight(),
 ])->throws(InvalidArgumentException::class);
+
+it('draws seeded jitter in PHP so every render is the same', function () {
+    $build = fn (int $seed) => Plot::of(sample())->aes(x: 'g', y: 'y')->jitter(width: 0.3, seed: $seed)->toArray();
+    $spec = $build(42);
+    $values = $spec['data']['values'];
+
+    expect($spec)->toBeValidVegaLite()
+        ->and($build(42))->toBe($spec)
+        ->and($build(43))->not->toBe($spec)
+        ->and(json_encode($spec))->not->toContain('random()')
+        ->and(array_column($values, '__noise_x'))->each->toBeGreaterThanOrEqual(-0.5)->toBeLessThan(0.5)
+        ->and($spec['transform'][0]['calculate'])->toBe('datum.__noise_x');
+});
+
+it('keeps unseeded jitter in the browser', function () {
+    expect(json_encode(Plot::of(sample())->aes(x: 'x', y: 'y')->point(jitter: 0.2)->toArray()))->toContain('random()');
+});
+
+it('refuses seeded jitter on URL data', function () {
+    Plot::of(Data::url('cars.json'))->aes(x: 'a:Q', y: 'b:Q')->jitter(seed: 1)->toArray();
+})->throws(InvalidArgumentException::class, 'inline data');

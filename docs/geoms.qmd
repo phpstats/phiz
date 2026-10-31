@@ -22,7 +22,9 @@ As in ggplot2, `color` is the outline of bars, areas, and tiles, and `fill` is t
 
 {{< include _generated/geom-density.md >}}
 
-`boxplot()` draws Tukey boxplots with whiskers at `coef:` interquartile ranges. Points layered on top show the raw data.
+`boxplot()` draws Tukey boxplots with whiskers at `coef:` interquartile ranges. Points layered on top show the raw data, here with `jitter()`.
+
+`jitter()`, or `point(jitter:)`, moves points by a random amount: up to `width:` and `height:` of a band on a discrete axis, or in data units on a continuous one. Without a seed, the browser draws the offsets with Vega's `random()`, so the points move on every render. `seed:` draws them in PHP with a fixed seed and embeds them in the data, so every render and every static export places the points the same way. A seed needs inline data.
 
 {{< include _generated/geom-boxplot.md >}}
 
