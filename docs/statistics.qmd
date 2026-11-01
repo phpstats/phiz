@@ -108,7 +108,7 @@ The test suite compares the helpers with R on the documentation fits. The agreem
 
 | Computation | Compared with | Tolerance |
 | --- | --- | --- |
-| documentation fits refitted with phit | the saved coefficients and covariance matrices (polyfill 0.3.0) | 1e-9 |
+| documentation fits refitted with phit | the saved coefficients and covariance matrices (polyfill 0.4.1) | 1e-9 |
 | predictions and bands | `predict(lm(), interval = "confidence")` | 1e-7 |
 | linear-model marginal means and intervals | a direct computation in R | 1e-8 |
 | random-intercept conditional standard deviations | lme4's `ranef(fit, condVar = TRUE)` | 1e-6 |

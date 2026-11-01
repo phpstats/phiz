@@ -679,7 +679,7 @@ Plot::of($mpg)
 
 ### Coefficient plot {#coefplot}
 
-From a fit in the shape phit's fit_lm() returns.
+From a fit in the shape phit's fit_ols() returns.
 
 ```{=html}
 <div class="phiz-figure"><div data-phiz-deferred data-phiz-options="{&quot;actions&quot;:false}" aria-label="Coefficient plot"><div data-phiz-view wire:ignore><a data-phiz-spec href="gallery/coefplot.json">Vega-Lite specification</a></div></div></div>

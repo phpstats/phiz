@@ -129,8 +129,8 @@ it('plots fits made by phit itself', function () {
             $columns[$key][] = $value;
         }
     }
-    $effects = effect_plot(Phit\fit_lm('mpg ~ wt + hp + factor(cyl)', $columns), $cars, 'wt', by: 'cyl', n: 3)->data->rows;
-    $means = marginal_means(Phit\fit_lm('mpg ~ factor(cyl) + factor(am) + wt', $columns), $cars, 'cyl')->data->rows;
+    $effects = effect_plot(Phit\fit_ols('mpg ~ wt + hp + factor(cyl)', $columns), $cars, 'wt', by: 'cyl', n: 3)->data->rows;
+    $means = marginal_means(Phit\fit_ols('mpg ~ factor(cyl) + factor(am) + wt', $columns), $cars, 'cyl')->data->rows;
 
     expect(array_slice($effects, 0, 3))->toEqualWithDelta(fits()['effect_lm_grid_first3'], 1e-7)
         ->and($means[1]['estimate'])->toEqualWithDelta(19.4382815593, 1e-8);
@@ -227,9 +227,9 @@ it('reproduces the documentation fits with phit', function (string $file) {
         }
     }
     $fit = match (true) {
-        str_contains($saved['formula'], '|') => Phit\fit_lmer($saved['formula'], $columns),
-        isset($saved['family']) => Phit\fit_glm($saved['formula'], $columns, $saved['family']),
-        default => Phit\fit_lm($saved['formula'], $columns),
+        str_contains($saved['formula'], '|') => Phit\fit_mixed_gaussian($saved['formula'], $columns),
+        isset($saved['family']) => Phit\fit_generalized_linear($saved['formula'], $columns, $saved['family']),
+        default => Phit\fit_ols($saved['formula'], $columns),
     };
 
     expect($fit['coefficients'])->toEqualWithDelta($saved['coefficients'], 1e-9)
