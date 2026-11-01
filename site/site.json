@@ -4,8 +4,7 @@
     "tagline": "A ggplot2-flavored grammar of graphics for PHP that emits Vega-Lite.",
     "summary": [
         "Build charts in PHP with data, mappings, and layers. Render interactive charts with Vega-Lite or export static images.",
-        "phiz follows ggplot2: data, aesthetic mappings, layers of geoms, scales, facets, labels, and themes. It compiles each plot to a Vega-Lite specification that the browser draws, so there is no JavaScript to write.",
-        "Plots take rows, columns, phibble tables, and Laravel collections. Interaction such as tooltips, zoom, and brushing works wherever the chart is drawn, and the <x-phiz> Blade component redraws with Livewire."
+        "phiz follows ggplot2's grammar of data, mappings, layers, scales, facets, and themes. No JavaScript is written by hand."
     ],
     "install": [
         "composer require phpstats/phiz"
