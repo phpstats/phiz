@@ -35,6 +35,18 @@ Histograms computed in PHP use exactly `bins` equal-width bins, or `binwidth` an
 
 A phibble table or an array of columns is kept as given. The binning geoms read it column by column, and rows are built only if the specification embeds them.
 
+Binning a phibble table of one million rows and two numeric columns:
+
+| Plot | Median | Runs (s) | Spec size | Peak memory |
+| --- | --- | --- | --- | --- |
+| `hex(bins: 40)` | 1.66 s | 1.66, 1.65, 1.65, 1.66, 1.66, 1.66, 1.68 | 61 KB | 60 MB |
+| `bin2d(bins: 50)` | 1.29 s | 1.30, 1.29, 1.29, 1.29, 1.30, 1.29, 1.29 | 168 KB | 60 MB |
+| `histogram(bins: 60)` | 0.80 s | 0.81, 0.80, 0.80, 0.80, 0.80, 0.80, 0.80 | 6 KB | 59 MB |
+
+- **Machine.** Ubuntu 24.04.5 LTS, kernel 6.8.0-90-generic, an AMD Ryzen 9 9955HX with 2 dedicated logical CPUs, and 7.8 GiB of usable memory. PHP 8.5.12, phiz 0.5.2, and phibble 0.6.1.
+- **Method.** Each plot runs in its own process: seven runs of building the plot and encoding its specification, with the median shown. Peak memory is the process's peak anonymous memory, measured with `peakmem`, and includes building the table. `scripts/bench-large-data.php` reproduces the table.
+- **Scope.** The times apply to this machine and data. Other hardware, data, and options give different numbers.
+
 ## Downsampling lines
 
 `line(downsample: n)` keeps about `n` points per group with Largest-Triangle-Three-Buckets (LTTB). LTTB splits the line into buckets and keeps the point in each bucket that best preserves the shape around it.
