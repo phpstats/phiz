@@ -10,6 +10,6 @@ $plot = Plot::of(Datasets::mtcars())
     ->point()
     ->labs(x: 'Weight (1,000 lb)', y: 'Miles per gallon');
 
-$plot->save('chart.html');            // no extra software needed
-$plot->save('chart.svg');             // needs vl-convert
-$plot->save('chart.png', scale: 2);   // needs vl-convert
+$plot->save('chart.html');            // drawn by the browser
+$plot->save('chart.svg');             // rendered by vl-convert
+$plot->save('chart.png', scale: 2);   // rendered by vl-convert

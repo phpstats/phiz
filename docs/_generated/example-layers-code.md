@@ -3,10 +3,6 @@
 #### PHP 8.5+
 
 ```php
-<?php
-
-require 'vendor/autoload.php';
-
 use Phiz\Datasets;
 
 use function Phiz\{aes, geom_point, geom_smooth, ggplot, labs};
@@ -22,10 +18,6 @@ $plot->save('layers.html');
 #### PHP 8.3–8.4
 
 ```php
-<?php
-
-require 'vendor/autoload.php';
-
 use Phiz\Datasets;
 use Phiz\Plot;
 

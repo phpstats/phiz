@@ -517,18 +517,7 @@
     "href": "examples/save.html",
     "title": "Save a chart to a file",
     "section": "",
-    "text": "This example writes one chart to an HTML page, an SVG image, and a PNG image.\nPrerequisites: phiz installed with Composer (Installation). The SVG and PNG files need the vl-convert binary (Installing vl-convert). The HTML file needs nothing else. The pipe version needs PHP 8.5, and the method chain runs on PHP 8.3 and later.",
-    "crumbs": [
-      "Examples",
-      "Save a chart to a file"
-    ]
-  },
-  {
-    "objectID": "examples/save.html#data",
-    "href": "examples/save.html#data",
-    "title": "Save a chart to a file",
-    "section": "Data",
-    "text": "Data\nThe chart plots weight against fuel economy for the 32 cars of R’s mtcars data, which Datasets::mtcars() returns from resources/data/mtcars.csv. wt is the weight in thousands of pounds, and mpg is the fuel economy in miles per gallon.",
+    "text": "Write one chart to an HTML page, an SVG image, and a PNG image.",
     "crumbs": [
       "Examples",
       "Save a chart to a file"
@@ -539,29 +528,18 @@
     "href": "examples/save.html#code",
     "title": "Save a chart to a file",
     "section": "Code",
-    "text": "Code\nSave the script beside the vendor directory and run it with php save.php.\n\nPHP 8.5+PHP 8.3–8.4\n\n\n&lt;?php\n\nrequire 'vendor/autoload.php';\n\nuse Phiz\\Datasets;\n\nuse function Phiz\\{aes, geom_point, ggplot, labs};\n\n$plot = ggplot(Datasets::mtcars(), aes(x: 'wt', y: 'mpg')) |&gt;\n    geom_point() |&gt;\n    labs(x: 'Weight (1,000 lb)', y: 'Miles per gallon');\n\n$plot-&gt;save('chart.html');            // no extra software needed\n$plot-&gt;save('chart.svg');             // needs vl-convert\n$plot-&gt;save('chart.png', scale: 2);   // needs vl-convert\n\n\n&lt;?php\n\nrequire 'vendor/autoload.php';\n\nuse Phiz\\Datasets;\nuse Phiz\\Plot;\n\n$plot = Plot::of(Datasets::mtcars())\n    -&gt;aes(x: 'wt', y: 'mpg')\n    -&gt;point()\n    -&gt;labs(x: 'Weight (1,000 lb)', y: 'Miles per gallon');\n\n$plot-&gt;save('chart.html');            // no extra software needed\n$plot-&gt;save('chart.svg');             // needs vl-convert\n$plot-&gt;save('chart.png', scale: 2);   // needs vl-convert",
+    "text": "Code\nThe chart plots weight against fuel economy for the 32 cars of R’s mtcars data, bundled with phiz as resources/data/mtcars.csv.\n\nPHP 8.5+PHP 8.3–8.4\n\n\nuse Phiz\\Datasets;\n\nuse function Phiz\\{aes, geom_point, ggplot, labs};\n\n$plot = ggplot(Datasets::mtcars(), aes(x: 'wt', y: 'mpg')) |&gt;\n    geom_point() |&gt;\n    labs(x: 'Weight (1,000 lb)', y: 'Miles per gallon');\n\n$plot-&gt;save('chart.html');            // drawn by the browser\n$plot-&gt;save('chart.svg');             // rendered by vl-convert\n$plot-&gt;save('chart.png', scale: 2);   // rendered by vl-convert\n\n\nuse Phiz\\Datasets;\nuse Phiz\\Plot;\n\n$plot = Plot::of(Datasets::mtcars())\n    -&gt;aes(x: 'wt', y: 'mpg')\n    -&gt;point()\n    -&gt;labs(x: 'Weight (1,000 lb)', y: 'Miles per gallon');\n\n$plot-&gt;save('chart.html');            // drawn by the browser\n$plot-&gt;save('chart.svg');             // rendered by vl-convert\n$plot-&gt;save('chart.png', scale: 2);   // rendered by vl-convert\n\n\n\nRunnable scripts: save.php (PHP 8.5+) and save.chain.php (PHP 8.3–8.4).",
     "crumbs": [
       "Examples",
       "Save a chart to a file"
     ]
   },
   {
-    "objectID": "examples/save.html#output",
-    "href": "examples/save.html#output",
+    "objectID": "examples/save.html#result",
+    "href": "examples/save.html#result",
     "title": "Save a chart to a file",
-    "section": "Output",
-    "text": "Output\nThe script writes three files to the current directory. The SVG file is shown below.\nFiles written:\n\nchart.html: 15,244 bytes\nchart.png: 110,163 bytes\nchart.svg: 19,190 bytes",
-    "crumbs": [
-      "Examples",
-      "Save a chart to a file"
-    ]
-  },
-  {
-    "objectID": "examples/save.html#how-it-works",
-    "href": "examples/save.html#how-it-works",
-    "title": "Save a chart to a file",
-    "section": "How it works",
-    "text": "How it works\nsave() picks the format from the file extension: html, json, svg, png, jpg, or pdf. An HTML file is a standalone page that loads vega, vega-lite, and vega-embed from the jsDelivr CDN and draws the chart in the browser, where interaction such as tooltips works. json writes the Vega-Lite specification.\nThe image formats run vl-convert, which renders without a browser. scale: 2 doubles the pixel size of the PNG and JPG files. Without vl-convert, save('chart.svg') throws Phiz\\Exceptions\\VlConvertNotFound with installation instructions. phiz finds the binary through the PHIZ_VL_CONVERT or VL_CONVERT environment variable, then PATH. An SVG file from a given specification is the same byte for byte on every run (Reproducible SVG).\nReference: save(), html(), svg(), png(), and pdf(). Rendering covers every output option.",
+    "section": "Result",
+    "text": "Result\nThe SVG file:\n\nsave() picks the format from the file extension: html (or htm), json, svg, png, jpg (or jpeg), or pdf. Any other extension throws an InvalidArgumentException.\n\nHTML is drawn by the browser. The page holds the Vega-Lite specification and loads vega, vega-lite, and vega-embed from the jsDelivr CDN, so it needs a network connection to display. Tooltips and other interaction work there. For a page that works offline, write $plot-&gt;html(assets: Assets::inline(...)) to a file (HTML).\nImages are rendered by vl-convert. SVG, PNG, JPG, and PDF need the vl-convert binary, which renders without a browser. Without it, save() throws Phiz\\Exceptions\\VlConvertNotFound with installation instructions (Installing vl-convert). Images are static, so interaction is lost.\nscale: 2 doubles the pixel dimensions of PNG and JPG files. It is also the default.\njson writes the Vega-Lite specification.\nReproducibility. With the same vl-convert version, the same specification produces the same SVG bytes on every run, except for unseeded jitter (Reproducible SVG).\n\nSee also: save() · html() · svg() · png() · pdf() · Rendering",
     "crumbs": [
       "Examples",
       "Save a chart to a file"
@@ -572,7 +550,7 @@
     "href": "examples/facets.html",
     "title": "Compare groups with facets",
     "section": "",
-    "text": "This example splits a scatterplot of car weight against fuel economy into one panel for each number of cylinders.\nPrerequisites: phiz installed with Composer (Installation). The pipe version needs PHP 8.5, and the method chain runs on PHP 8.3 and later.",
+    "text": "Split a scatterplot of car weight against fuel economy into one panel for each number of cylinders.",
     "crumbs": [
       "Examples",
       "Compare groups with facets"
@@ -594,29 +572,18 @@
     "href": "examples/facets.html#code",
     "title": "Compare groups with facets",
     "section": "Code",
-    "text": "Code\nSave the script beside the vendor directory and run it with php facets.php.\n\nPHP 8.5+PHP 8.3–8.4\n\n\n&lt;?php\n\nrequire 'vendor/autoload.php';\n\nuse Phiz\\Datasets;\n\nuse function Phiz\\{aes, facet_wrap, geom_point, ggplot, labs};\n\n$plot = ggplot(Datasets::mtcars(), aes(x: 'wt', y: 'mpg')) |&gt;\n    geom_point() |&gt;\n    facet_wrap('cyl', ncol: 3) |&gt;\n    labs(x: 'Weight (1,000 lb)', y: 'Miles per gallon');\n\n$plot-&gt;save('facets.html');\n\n\n&lt;?php\n\nrequire 'vendor/autoload.php';\n\nuse Phiz\\Datasets;\nuse Phiz\\Plot;\n\n$plot = Plot::of(Datasets::mtcars())\n    -&gt;aes(x: 'wt', y: 'mpg')\n    -&gt;point()\n    -&gt;facetWrap('cyl', ncol: 3)\n    -&gt;labs(x: 'Weight (1,000 lb)', y: 'Miles per gallon');\n\n$plot-&gt;save('facets.html');",
+    "text": "Code\n\nPHP 8.5+PHP 8.3–8.4\n\n\nuse Phiz\\Datasets;\n\nuse function Phiz\\{aes, facet_wrap, geom_point, ggplot, labs};\n\n$plot = ggplot(Datasets::mtcars(), aes(x: 'wt', y: 'mpg')) |&gt;\n    geom_point() |&gt;\n    facet_wrap('cyl', ncol: 3) |&gt;\n    labs(x: 'Weight (1,000 lb)', y: 'Miles per gallon');\n\n$plot-&gt;save('facets.html');\n\n\nuse Phiz\\Datasets;\nuse Phiz\\Plot;\n\n$plot = Plot::of(Datasets::mtcars())\n    -&gt;aes(x: 'wt', y: 'mpg')\n    -&gt;point()\n    -&gt;facetWrap('cyl', ncol: 3)\n    -&gt;labs(x: 'Weight (1,000 lb)', y: 'Miles per gallon');\n\n$plot-&gt;save('facets.html');\n\n\n\nRunnable scripts: facets.php (PHP 8.5+) and facets.chain.php (PHP 8.3–8.4).",
     "crumbs": [
       "Examples",
       "Compare groups with facets"
     ]
   },
   {
-    "objectID": "examples/facets.html#output",
-    "href": "examples/facets.html#output",
+    "objectID": "examples/facets.html#result",
+    "href": "examples/facets.html#result",
     "title": "Compare groups with facets",
-    "section": "Output",
-    "text": "Output\nFiles written:\n\nfacets.html: 15,399 bytes\n\nVega-Lite specification",
-    "crumbs": [
-      "Examples",
-      "Compare groups with facets"
-    ]
-  },
-  {
-    "objectID": "examples/facets.html#how-it-works",
-    "href": "examples/facets.html#how-it-works",
-    "title": "Compare groups with facets",
-    "section": "How it works",
-    "text": "How it works\nfacet_wrap('cyl', ncol: 3) draws the same plot once for each value of cyl, using the rows with that value, and places the panels in three columns. The panels share their axes by default, so positions can be compared across groups. scales: 'free', 'free_x', or 'free_y' gives each panel its own range instead.\nThe panels separate two effects that a single scatterplot mixes. Heavier cars tend to have more cylinders, and the panels show how weight relates to economy among cars with the same number of cylinders.\nReference: facetWrap(), facetGrid(), point(), and labs(). Facets and composition covers grids of panels and layouts of separate plots.",
+    "section": "Result",
+    "text": "Result\nVega-Lite specification\nfacet_wrap('cyl', ncol: 3) draws the plot once for each value of cyl, from the rows with that value, and wraps the panels into three columns.\n\nShared scales. By default every panel uses the same axis ranges, so a position means the same weight and economy in each panel.\nFree scales. scales: 'free' gives each panel its own ranges, and 'free_x' or 'free_y' frees one axis. Free scales show the spread within each group, but panels can no longer be compared by position.\nReading the panels. Heavier cars tend to have more cylinders, so a single scatterplot mixes the two. The panels show how weight and economy are associated among cars with the same number of cylinders.\n\nIn R, the same chart is ggplot(mtcars, aes(wt, mpg)) + geom_point() + facet_wrap(~cyl, ncol = 3).\nSee also: facet_wrap() / -&gt;facetWrap() · facet_grid() / -&gt;facetGrid() · geom_point() / -&gt;point() · labs() · Facets and composition",
     "crumbs": [
       "Examples",
       "Compare groups with facets"
@@ -891,7 +858,7 @@
     "href": "examples/layers.html",
     "title": "Layer points and a fitted line",
     "section": "",
-    "text": "This example draws a scatterplot of engine size against fuel economy and adds a least-squares line with its confidence band as a second layer.\nPrerequisites: phiz installed with Composer (Installation). The pipe version needs PHP 8.5, and the method chain runs on PHP 8.3 and later.",
+    "text": "Plot highway fuel economy against engine displacement, then add a least-squares line with its confidence band.",
     "crumbs": [
       "Examples",
       "Layer points and a fitted line"
@@ -913,29 +880,18 @@
     "href": "examples/layers.html#code",
     "title": "Layer points and a fitted line",
     "section": "Code",
-    "text": "Code\nSave the script beside the vendor directory and run it with php layers.php.\n\nPHP 8.5+PHP 8.3–8.4\n\n\n&lt;?php\n\nrequire 'vendor/autoload.php';\n\nuse Phiz\\Datasets;\n\nuse function Phiz\\{aes, geom_point, geom_smooth, ggplot, labs};\n\n$plot = ggplot(Datasets::mpg(), aes(x: 'displ', y: 'hwy')) |&gt;\n    geom_point(alpha: 0.5) |&gt;\n    geom_smooth(method: 'lm') |&gt;\n    labs(x: 'Engine displacement (L)', y: 'Highway miles per gallon');\n\n$plot-&gt;save('layers.html');\n\n\n&lt;?php\n\nrequire 'vendor/autoload.php';\n\nuse Phiz\\Datasets;\nuse Phiz\\Plot;\n\n$plot = Plot::of(Datasets::mpg())\n    -&gt;aes(x: 'displ', y: 'hwy')\n    -&gt;point(alpha: 0.5)\n    -&gt;smooth(method: 'lm')\n    -&gt;labs(x: 'Engine displacement (L)', y: 'Highway miles per gallon');\n\n$plot-&gt;save('layers.html');",
+    "text": "Code\n\nPHP 8.5+PHP 8.3–8.4\n\n\nuse Phiz\\Datasets;\n\nuse function Phiz\\{aes, geom_point, geom_smooth, ggplot, labs};\n\n$plot = ggplot(Datasets::mpg(), aes(x: 'displ', y: 'hwy')) |&gt;\n    geom_point(alpha: 0.5) |&gt;\n    geom_smooth(method: 'lm') |&gt;\n    labs(x: 'Engine displacement (L)', y: 'Highway miles per gallon');\n\n$plot-&gt;save('layers.html');\n\n\nuse Phiz\\Datasets;\nuse Phiz\\Plot;\n\n$plot = Plot::of(Datasets::mpg())\n    -&gt;aes(x: 'displ', y: 'hwy')\n    -&gt;point(alpha: 0.5)\n    -&gt;smooth(method: 'lm')\n    -&gt;labs(x: 'Engine displacement (L)', y: 'Highway miles per gallon');\n\n$plot-&gt;save('layers.html');\n\n\n\nRunnable scripts: layers.php (PHP 8.5+) and layers.chain.php (PHP 8.3–8.4).",
     "crumbs": [
       "Examples",
       "Layer points and a fitted line"
     ]
   },
   {
-    "objectID": "examples/layers.html#output",
-    "href": "examples/layers.html#output",
+    "objectID": "examples/layers.html#result",
+    "href": "examples/layers.html#result",
     "title": "Layer points and a fitted line",
-    "section": "Output",
-    "text": "Output\nFiles written:\n\nlayers.html: 106,202 bytes\n\nVega-Lite specification",
-    "crumbs": [
-      "Examples",
-      "Layer points and a fitted line"
-    ]
-  },
-  {
-    "objectID": "examples/layers.html#how-it-works",
-    "href": "examples/layers.html#how-it-works",
-    "title": "Layer points and a fitted line",
-    "section": "How it works",
-    "text": "How it works\nggplot() and aes() set the data and the mappings that every layer inherits. geom_point() adds the points, with alpha: 0.5 so that overlapping cars show as darker points. geom_smooth(method: 'lm') adds a second layer: a straight line fitted by least squares, and a shaded 95% confidence band for the mean. phiz fits the line and computes the band in PHP, and the band matches R’s predict(fit, interval = \"confidence\"). save() writes a standalone HTML page that draws the chart in a browser.\nThe line summarizes the trend: highway economy falls as displacement rises. The points curve upward again at the largest displacements, which a straight line cannot follow. The default method, loess, follows local changes like this one (Geoms).\nReference: ggplot(), aes(), point(), smooth(), labs(), and save().",
+    "section": "Result",
+    "text": "Result\nVega-Lite specification\n\nInheritance. Both layers use the data and the x and y mappings given to ggplot() and aes(). A layer can add its own mappings or data, or set inheritAes: false to ignore the plot’s mappings.\nThe band. method: 'lm' fits a straight line by least squares. The shaded band is a 95% confidence interval for the mean highway economy at each displacement, so most individual cars fall outside it. phiz computes the fit and the band in PHP, and they match R’s predict(fit, interval = \"confidence\"). level: changes the confidence level, and se: false hides the band.\nThe fit. Cars with larger engines tend to have lower highway economy. At the largest displacements the points rise again, which a straight line cannot follow. The default method, loess, fits a local curve instead (Fitted curves).\nTransparency. alpha: 0.5 makes overlapping points show as darker points.\n\nIn R, the same chart is ggplot(mpg, aes(displ, hwy)) + geom_point(alpha = 0.5) + geom_smooth(method = \"lm\").\nSee also: ggplot() · aes() · geom_point() / -&gt;point() · geom_smooth() / -&gt;smooth() · labs() · save()",
     "crumbs": [
       "Examples",
       "Layer points and a fitted line"

@@ -10,8 +10,9 @@ declare(strict_types=1);
  * - docs/_phiz-scripts.html: the pinned vega, vega-lite, vega-embed and phiz loader script tags
  * - docs/_generated/gallery.md: the examples/catalog.php gallery, for docs/gallery.qmd, with each chart's spec in
  *   docs/gallery/{id}.json, loaded as the chart scrolls into view
- * - docs/_generated/example-{name}-code.md and -output.md: the complete scripts in docs/examples/scripts, run in an
- *   empty directory, with the files they wrote and their chart, in docs/examples/charts/{name}.json or .svg
+ * - docs/_generated/example-{name}-code.md and -output.md: the scripts in docs/examples/scripts, shown without their
+ *   bootstrap, and the chart each one produced when run in an empty directory, in docs/examples/charts/{name}.json or
+ *   .svg
  *
  * An example file returns a Chart. Its code is shown as written, with `return` shown as `$plot =`. An example that
  * uses the pipe operator has a method-chain twin, {name}.chain.php; the two are shown in tabs labeled "PHP 8.5+" and
@@ -76,7 +77,7 @@ foreach (glob(dirname(__DIR__).'/examples/dashboard.php') as $file) {
     file_put_contents("{$docs}/_generated/source-".basename($file, '.php').'.md', $markdown);
 }
 
-// The example pages: complete scripts, each run in an empty directory, shown with the chart and the files they wrote.
+// The example pages: complete scripts, each run in an empty directory, shown without the opening tag and autoloader.
 @mkdir("{$docs}/examples/charts", 0777, true);
 foreach (glob("{$docs}/examples/scripts/*.php") as $file) {
     $name = basename($file, '.php');
@@ -95,7 +96,7 @@ foreach (glob("{$docs}/examples/scripts/*.php") as $file) {
         fwrite(STDERR, "examples/scripts/{$name}: needs vl-convert, so its committed output is kept\n");
         continue;
     }
-    $listing = fn (string $path) => trim((string) file_get_contents($path));
+    $listing = fn (string $path) => trim(preg_replace('/^<\?php\s*(require \'vendor\/autoload\.php\';\s*)?/', '', (string) file_get_contents($path)));
     file_put_contents("{$docs}/_generated/example-{$name}-code.md", is_file($chainFile)
         ? syntax_tabs($listing($file), $listing($chainFile))
         : "```php\n".$listing($file)."\n```\n");
@@ -110,8 +111,7 @@ foreach (glob("{$docs}/examples/scripts/*.php") as $file) {
     } else {
         $figure = Html::deferred("charts/{$name}.json", ['actions' => false], ['aria-label' => $label]);
     }
-    $list = implode('', array_map(fn ($path) => "- `{$path}`: ".number_format(strlen($files[$path]))." bytes\n", array_keys($files)));
-    file_put_contents("{$docs}/_generated/example-{$name}-output.md", "Files written:\n\n{$list}\n```{=html}\n<div class=\"phiz-figure\">{$figure}</div>\n```\n");
+    file_put_contents("{$docs}/_generated/example-{$name}-output.md", "```{=html}\n<div class=\"phiz-figure\">{$figure}</div>\n```\n");
     $count++;
 }
 

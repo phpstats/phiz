@@ -530,10 +530,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#data" id="toc-data" class="nav-link active" data-scroll-target="#data">Data</a></li>
-  <li><a href="#code" id="toc-code" class="nav-link" data-scroll-target="#code">Code</a></li>
-  <li><a href="#output" id="toc-output" class="nav-link" data-scroll-target="#output">Output</a></li>
-  <li><a href="#how-it-works" id="toc-how-it-works" class="nav-link" data-scroll-target="#how-it-works">How it works</a></li>
+  <li><a href="#code" id="toc-code" class="nav-link active" data-scroll-target="#code">Code</a></li>
+  <li><a href="#result" id="toc-result" class="nav-link" data-scroll-target="#result">Result</a></li>
   </ul>
 <div class="toc-actions"><ul><li><a href="https://github.com/phpstats/phiz/blob/main/examples/save.qmd" class="toc-action"><i class="bi bi-github"></i>View source</a></li><li><a href="https://github.com/phpstats/phiz/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></nav>
     </div>
@@ -559,71 +557,56 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </header>
 
 
-<p>This example writes one chart to an HTML page, an SVG image, and a PNG image.</p>
-<p><strong>Prerequisites:</strong> phiz installed with Composer (<a href="../get-started.html#installation">Installation</a>). The SVG and PNG files need the vl-convert binary (<a href="../rendering.html#installing-vl-convert">Installing vl-convert</a>). The HTML file needs nothing else. The pipe version needs PHP 8.5, and the method chain runs on PHP 8.3 and later.</p>
-<section id="data" class="level2">
-<h2 class="anchored" data-anchor-id="data">Data</h2>
-<p>The chart plots weight against fuel economy for the 32 cars of R’s <code>mtcars</code> data, which <code>Datasets::mtcars()</code> returns from <a href="https://github.com/phpstats/phiz/blob/main/resources/data/mtcars.csv"><code>resources/data/mtcars.csv</code></a>. <code>wt</code> is the weight in thousands of pounds, and <code>mpg</code> is the fuel economy in miles per gallon.</p>
-</section>
+<p>Write one chart to an HTML page, an SVG image, and a PNG image.</p>
 <section id="code" class="level2">
 <h2 class="anchored" data-anchor-id="code">Code</h2>
-<p>Save the script beside the <code>vendor</code> directory and run it with <code>php save.php</code>.</p>
+<p>The chart plots weight against fuel economy for the 32 cars of R’s <code>mtcars</code> data, bundled with phiz as <a href="https://github.com/phpstats/phiz/blob/main/resources/data/mtcars.csv"><code>resources/data/mtcars.csv</code></a>.</p>
 <div class="tabset-margin-container"></div><div class="panel-tabset">
 <ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-1-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-1" role="tab" aria-controls="tabset-1-1" aria-selected="true" href="">PHP 8.5+</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-1-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-2" role="tab" aria-controls="tabset-1-2" aria-selected="false" href="">PHP 8.3–8.4</a></li></ul>
 <div class="tab-content">
 <div id="tabset-1-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-1-1-tab">
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode php code-with-copy"><code class="sourceCode php"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="kw">&lt;?php</span></span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode php code-with-copy"><code class="sourceCode php"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="kw">use</span> Phiz\Datasets<span class="ot">;</span></span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="kw">require</span> <span class="st">'vendor/autoload.php'</span><span class="ot">;</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="kw">use</span> <span class="kw">function</span> Phiz\{aes<span class="ot">,</span> geom_point<span class="ot">,</span> ggplot<span class="ot">,</span> labs}<span class="ot">;</span></span>
 <span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="kw">use</span> Phiz\Datasets<span class="ot">;</span></span>
-<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="kw">use</span> <span class="kw">function</span> Phiz\{aes<span class="ot">,</span> geom_point<span class="ot">,</span> ggplot<span class="ot">,</span> labs}<span class="ot">;</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="va">$plot</span> <span class="op">=</span> ggplot(Datasets::mtcars()<span class="ot">,</span> aes(x<span class="ot">:</span> <span class="st">'wt'</span><span class="ot">,</span> y<span class="ot">:</span> <span class="st">'mpg'</span>)) <span class="op">|&gt;</span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>    geom_point() <span class="op">|&gt;</span></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>    labs(x<span class="ot">:</span> <span class="st">'Weight (1,000 lb)'</span><span class="ot">,</span> y<span class="ot">:</span> <span class="st">'Miles per gallon'</span>)<span class="ot">;</span></span>
 <span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="va">$plot</span> <span class="op">=</span> ggplot(Datasets::mtcars()<span class="ot">,</span> aes(x<span class="ot">:</span> <span class="st">'wt'</span><span class="ot">,</span> y<span class="ot">:</span> <span class="st">'mpg'</span>)) <span class="op">|&gt;</span></span>
-<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>    geom_point() <span class="op">|&gt;</span></span>
-<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>    labs(x<span class="ot">:</span> <span class="st">'Weight (1,000 lb)'</span><span class="ot">,</span> y<span class="ot">:</span> <span class="st">'Miles per gallon'</span>)<span class="ot">;</span></span>
-<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a><span class="va">$plot</span>-&gt;save(<span class="st">'chart.html'</span>)<span class="ot">;</span>            <span class="co">// no extra software needed</span></span>
-<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a><span class="va">$plot</span>-&gt;save(<span class="st">'chart.svg'</span>)<span class="ot">;</span>             <span class="co">// needs vl-convert</span></span>
-<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a><span class="va">$plot</span>-&gt;save(<span class="st">'chart.png'</span><span class="ot">,</span> scale<span class="ot">:</span> <span class="dv">2</span>)<span class="ot">;</span>   <span class="co">// needs vl-convert</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="va">$plot</span>-&gt;save(<span class="st">'chart.html'</span>)<span class="ot">;</span>            <span class="co">// drawn by the browser</span></span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a><span class="va">$plot</span>-&gt;save(<span class="st">'chart.svg'</span>)<span class="ot">;</span>             <span class="co">// rendered by vl-convert</span></span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a><span class="va">$plot</span>-&gt;save(<span class="st">'chart.png'</span><span class="ot">,</span> scale<span class="ot">:</span> <span class="dv">2</span>)<span class="ot">;</span>   <span class="co">// rendered by vl-convert</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <div id="tabset-1-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-1-2-tab">
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode php code-with-copy"><code class="sourceCode php"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="kw">&lt;?php</span></span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="kw">require</span> <span class="st">'vendor/autoload.php'</span><span class="ot">;</span></span>
-<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="kw">use</span> Phiz\Datasets<span class="ot">;</span></span>
-<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a><span class="kw">use</span> Phiz\Plot<span class="ot">;</span></span>
-<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a><span class="va">$plot</span> <span class="op">=</span> Plot::of(Datasets::mtcars())</span>
-<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>    -&gt;aes(x<span class="ot">:</span> <span class="st">'wt'</span><span class="ot">,</span> y<span class="ot">:</span> <span class="st">'mpg'</span>)</span>
-<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>    -&gt;point()</span>
-<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>    -&gt;labs(x<span class="ot">:</span> <span class="st">'Weight (1,000 lb)'</span><span class="ot">,</span> y<span class="ot">:</span> <span class="st">'Miles per gallon'</span>)<span class="ot">;</span></span>
-<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a><span class="va">$plot</span>-&gt;save(<span class="st">'chart.html'</span>)<span class="ot">;</span>            <span class="co">// no extra software needed</span></span>
-<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a><span class="va">$plot</span>-&gt;save(<span class="st">'chart.svg'</span>)<span class="ot">;</span>             <span class="co">// needs vl-convert</span></span>
-<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a><span class="va">$plot</span>-&gt;save(<span class="st">'chart.png'</span><span class="ot">,</span> scale<span class="ot">:</span> <span class="dv">2</span>)<span class="ot">;</span>   <span class="co">// needs vl-convert</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode php code-with-copy"><code class="sourceCode php"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="kw">use</span> Phiz\Datasets<span class="ot">;</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="kw">use</span> Phiz\Plot<span class="ot">;</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="va">$plot</span> <span class="op">=</span> Plot::of(Datasets::mtcars())</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>    -&gt;aes(x<span class="ot">:</span> <span class="st">'wt'</span><span class="ot">,</span> y<span class="ot">:</span> <span class="st">'mpg'</span>)</span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>    -&gt;point()</span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>    -&gt;labs(x<span class="ot">:</span> <span class="st">'Weight (1,000 lb)'</span><span class="ot">,</span> y<span class="ot">:</span> <span class="st">'Miles per gallon'</span>)<span class="ot">;</span></span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a><span class="va">$plot</span>-&gt;save(<span class="st">'chart.html'</span>)<span class="ot">;</span>            <span class="co">// drawn by the browser</span></span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a><span class="va">$plot</span>-&gt;save(<span class="st">'chart.svg'</span>)<span class="ot">;</span>             <span class="co">// rendered by vl-convert</span></span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a><span class="va">$plot</span>-&gt;save(<span class="st">'chart.png'</span><span class="ot">,</span> scale<span class="ot">:</span> <span class="dv">2</span>)<span class="ot">;</span>   <span class="co">// rendered by vl-convert</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 </div>
 </div>
+<p>Runnable scripts: <a href="https://github.com/phpstats/phiz/blob/main/docs/examples/scripts/save.php"><code>save.php</code></a> (PHP 8.5+) and <a href="https://github.com/phpstats/phiz/blob/main/docs/examples/scripts/save.chain.php"><code>save.chain.php</code></a> (PHP 8.3–8.4).</p>
 </section>
-<section id="output" class="level2">
-<h2 class="anchored" data-anchor-id="output">Output</h2>
-<p>The script writes three files to the current directory. The SVG file is shown below.</p>
-<p>Files written:</p>
-<ul>
-<li><code>chart.html</code>: 15,244 bytes</li>
-<li><code>chart.png</code>: 110,163 bytes</li>
-<li><code>chart.svg</code>: 19,190 bytes</li>
-</ul>
+<section id="result" class="level2">
+<h2 class="anchored" data-anchor-id="result">Result</h2>
+<p>The SVG file:</p>
 <div class="phiz-figure"><img src="charts/save.svg" alt="Save a chart to a file" loading="lazy"></div>
-</section>
-<section id="how-it-works" class="level2">
-<h2 class="anchored" data-anchor-id="how-it-works">How it works</h2>
-<p><code>save()</code> picks the format from the file extension: <code>html</code>, <code>json</code>, <code>svg</code>, <code>png</code>, <code>jpg</code>, or <code>pdf</code>. An HTML file is a standalone page that loads vega, vega-lite, and vega-embed from the jsDelivr CDN and draws the chart in the browser, where interaction such as tooltips works. <code>json</code> writes the Vega-Lite specification.</p>
-<p>The image formats run vl-convert, which renders without a browser. <code>scale: 2</code> doubles the pixel size of the PNG and JPG files. Without vl-convert, <code>save('chart.svg')</code> throws <code>Phiz\Exceptions\VlConvertNotFound</code> with installation instructions. phiz finds the binary through the <code>PHIZ_VL_CONVERT</code> or <code>VL_CONVERT</code> environment variable, then <code>PATH</code>. An SVG file from a given specification is the same byte for byte on every run (<a href="../rendering.html#reproducible-svg">Reproducible SVG</a>).</p>
-<p>Reference: <a href="../reference-output.html#save"><code>save()</code></a>, <a href="../reference-output.html#html"><code>html()</code></a>, <a href="../reference-output.html#svg"><code>svg()</code></a>, <a href="../reference-output.html#png"><code>png()</code></a>, and <a href="../reference-output.html#pdf"><code>pdf()</code></a>. <a href="../rendering.html">Rendering</a> covers every output option.</p>
+<p><code>save()</code> picks the format from the file extension: <code>html</code> (or <code>htm</code>), <code>json</code>, <code>svg</code>, <code>png</code>, <code>jpg</code> (or <code>jpeg</code>), or <code>pdf</code>. Any other extension throws an <code>InvalidArgumentException</code>.</p>
+<ul>
+<li><strong>HTML is drawn by the browser.</strong> The page holds the Vega-Lite specification and loads vega, vega-lite, and vega-embed from the jsDelivr CDN, so it needs a network connection to display. Tooltips and other interaction work there. For a page that works offline, write <code>$plot-&gt;html(assets: Assets::inline(...))</code> to a file (<a href="../rendering.html#html">HTML</a>).</li>
+<li><strong>Images are rendered by vl-convert.</strong> SVG, PNG, JPG, and PDF need the vl-convert binary, which renders without a browser. Without it, <code>save()</code> throws <code>Phiz\Exceptions\VlConvertNotFound</code> with installation instructions (<a href="../rendering.html#installing-vl-convert">Installing vl-convert</a>). Images are static, so interaction is lost.</li>
+<li><strong><code>scale: 2</code></strong> doubles the pixel dimensions of PNG and JPG files. It is also the default.</li>
+<li><strong><code>json</code></strong> writes the Vega-Lite specification.</li>
+<li><strong>Reproducibility.</strong> With the same vl-convert version, the same specification produces the same SVG bytes on every run, except for unseeded jitter (<a href="../rendering.html#reproducible-svg">Reproducible SVG</a>).</li>
+</ul>
+<p><strong>See also:</strong> <a href="../reference-output.html#save"><code>save()</code></a> · <a href="../reference-output.html#html"><code>html()</code></a> · <a href="../reference-output.html#svg"><code>svg()</code></a> · <a href="../reference-output.html#png"><code>png()</code></a> · <a href="../reference-output.html#pdf"><code>pdf()</code></a> · <a href="../rendering.html">Rendering</a></p>
 
 
 </section>

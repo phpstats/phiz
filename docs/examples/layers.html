@@ -532,8 +532,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <ul>
   <li><a href="#data" id="toc-data" class="nav-link active" data-scroll-target="#data">Data</a></li>
   <li><a href="#code" id="toc-code" class="nav-link" data-scroll-target="#code">Code</a></li>
-  <li><a href="#output" id="toc-output" class="nav-link" data-scroll-target="#output">Output</a></li>
-  <li><a href="#how-it-works" id="toc-how-it-works" class="nav-link" data-scroll-target="#how-it-works">How it works</a></li>
+  <li><a href="#result" id="toc-result" class="nav-link" data-scroll-target="#result">Result</a></li>
   </ul>
 <div class="toc-actions"><ul><li><a href="https://github.com/phpstats/phiz/blob/main/examples/layers.qmd" class="toc-action"><i class="bi bi-github"></i>View source</a></li><li><a href="https://github.com/phpstats/phiz/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></nav>
     </div>
@@ -559,8 +558,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </header>
 
 
-<p>This example draws a scatterplot of engine size against fuel economy and adds a least-squares line with its confidence band as a second layer.</p>
-<p><strong>Prerequisites:</strong> phiz installed with Composer (<a href="../get-started.html#installation">Installation</a>). The pipe version needs PHP 8.5, and the method chain runs on PHP 8.3 and later.</p>
+<p>Plot highway fuel economy against engine displacement, then add a least-squares line with its confidence band.</p>
 <section id="data" class="level2">
 <h2 class="anchored" data-anchor-id="data">Data</h2>
 <p><code>Datasets::mpg()</code> returns the 234 cars of ggplot2’s <code>mpg</code> data, bundled with phiz as <a href="https://github.com/phpstats/phiz/blob/main/resources/data/mpg.csv"><code>resources/data/mpg.csv</code></a>. The example uses two of its columns:</p>
@@ -590,58 +588,48 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="code" class="level2">
 <h2 class="anchored" data-anchor-id="code">Code</h2>
-<p>Save the script beside the <code>vendor</code> directory and run it with <code>php layers.php</code>.</p>
 <div class="tabset-margin-container"></div><div class="panel-tabset">
 <ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-1-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-1" role="tab" aria-controls="tabset-1-1" aria-selected="true" href="">PHP 8.5+</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-1-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-2" role="tab" aria-controls="tabset-1-2" aria-selected="false" href="">PHP 8.3–8.4</a></li></ul>
 <div class="tab-content">
 <div id="tabset-1-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-1-1-tab">
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode php code-with-copy"><code class="sourceCode php"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="kw">&lt;?php</span></span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode php code-with-copy"><code class="sourceCode php"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="kw">use</span> Phiz\Datasets<span class="ot">;</span></span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="kw">require</span> <span class="st">'vendor/autoload.php'</span><span class="ot">;</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="kw">use</span> <span class="kw">function</span> Phiz\{aes<span class="ot">,</span> geom_point<span class="ot">,</span> geom_smooth<span class="ot">,</span> ggplot<span class="ot">,</span> labs}<span class="ot">;</span></span>
 <span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="kw">use</span> Phiz\Datasets<span class="ot">;</span></span>
-<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="kw">use</span> <span class="kw">function</span> Phiz\{aes<span class="ot">,</span> geom_point<span class="ot">,</span> geom_smooth<span class="ot">,</span> ggplot<span class="ot">,</span> labs}<span class="ot">;</span></span>
-<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="va">$plot</span> <span class="op">=</span> ggplot(Datasets::mpg()<span class="ot">,</span> aes(x<span class="ot">:</span> <span class="st">'displ'</span><span class="ot">,</span> y<span class="ot">:</span> <span class="st">'hwy'</span>)) <span class="op">|&gt;</span></span>
-<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>    geom_point(alpha<span class="ot">:</span> <span class="fl">0.5</span>) <span class="op">|&gt;</span></span>
-<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>    geom_smooth(method<span class="ot">:</span> <span class="st">'lm'</span>) <span class="op">|&gt;</span></span>
-<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>    labs(x<span class="ot">:</span> <span class="st">'Engine displacement (L)'</span><span class="ot">,</span> y<span class="ot">:</span> <span class="st">'Highway miles per gallon'</span>)<span class="ot">;</span></span>
-<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a><span class="va">$plot</span>-&gt;save(<span class="st">'layers.html'</span>)<span class="ot">;</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="va">$plot</span> <span class="op">=</span> ggplot(Datasets::mpg()<span class="ot">,</span> aes(x<span class="ot">:</span> <span class="st">'displ'</span><span class="ot">,</span> y<span class="ot">:</span> <span class="st">'hwy'</span>)) <span class="op">|&gt;</span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>    geom_point(alpha<span class="ot">:</span> <span class="fl">0.5</span>) <span class="op">|&gt;</span></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>    geom_smooth(method<span class="ot">:</span> <span class="st">'lm'</span>) <span class="op">|&gt;</span></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>    labs(x<span class="ot">:</span> <span class="st">'Engine displacement (L)'</span><span class="ot">,</span> y<span class="ot">:</span> <span class="st">'Highway miles per gallon'</span>)<span class="ot">;</span></span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a><span class="va">$plot</span>-&gt;save(<span class="st">'layers.html'</span>)<span class="ot">;</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <div id="tabset-1-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-1-2-tab">
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode php code-with-copy"><code class="sourceCode php"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="kw">&lt;?php</span></span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="kw">require</span> <span class="st">'vendor/autoload.php'</span><span class="ot">;</span></span>
-<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="kw">use</span> Phiz\Datasets<span class="ot">;</span></span>
-<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a><span class="kw">use</span> Phiz\Plot<span class="ot">;</span></span>
-<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a><span class="va">$plot</span> <span class="op">=</span> Plot::of(Datasets::mpg())</span>
-<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>    -&gt;aes(x<span class="ot">:</span> <span class="st">'displ'</span><span class="ot">,</span> y<span class="ot">:</span> <span class="st">'hwy'</span>)</span>
-<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>    -&gt;point(alpha<span class="ot">:</span> <span class="fl">0.5</span>)</span>
-<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>    -&gt;smooth(method<span class="ot">:</span> <span class="st">'lm'</span>)</span>
-<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>    -&gt;labs(x<span class="ot">:</span> <span class="st">'Engine displacement (L)'</span><span class="ot">,</span> y<span class="ot">:</span> <span class="st">'Highway miles per gallon'</span>)<span class="ot">;</span></span>
-<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a><span class="va">$plot</span>-&gt;save(<span class="st">'layers.html'</span>)<span class="ot">;</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode php code-with-copy"><code class="sourceCode php"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="kw">use</span> Phiz\Datasets<span class="ot">;</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="kw">use</span> Phiz\Plot<span class="ot">;</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="va">$plot</span> <span class="op">=</span> Plot::of(Datasets::mpg())</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>    -&gt;aes(x<span class="ot">:</span> <span class="st">'displ'</span><span class="ot">,</span> y<span class="ot">:</span> <span class="st">'hwy'</span>)</span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>    -&gt;point(alpha<span class="ot">:</span> <span class="fl">0.5</span>)</span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>    -&gt;smooth(method<span class="ot">:</span> <span class="st">'lm'</span>)</span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>    -&gt;labs(x<span class="ot">:</span> <span class="st">'Engine displacement (L)'</span><span class="ot">,</span> y<span class="ot">:</span> <span class="st">'Highway miles per gallon'</span>)<span class="ot">;</span></span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a><span class="va">$plot</span>-&gt;save(<span class="st">'layers.html'</span>)<span class="ot">;</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 </div>
 </div>
+<p>Runnable scripts: <a href="https://github.com/phpstats/phiz/blob/main/docs/examples/scripts/layers.php"><code>layers.php</code></a> (PHP 8.5+) and <a href="https://github.com/phpstats/phiz/blob/main/docs/examples/scripts/layers.chain.php"><code>layers.chain.php</code></a> (PHP 8.3–8.4).</p>
 </section>
-<section id="output" class="level2">
-<h2 class="anchored" data-anchor-id="output">Output</h2>
-<p>Files written:</p>
-<ul>
-<li><code>layers.html</code>: 106,202 bytes</li>
-</ul>
+<section id="result" class="level2">
+<h2 class="anchored" data-anchor-id="result">Result</h2>
 <div class="phiz-figure"><div data-phiz-deferred="" data-phiz-options="{&quot;actions&quot;:false}" aria-label="Layer points and a fitted line"><div data-phiz-view="" wire:ignore=""><a data-phiz-spec="" href="charts/layers.json">Vega-Lite specification</a></div></div></div>
-</section>
-<section id="how-it-works" class="level2">
-<h2 class="anchored" data-anchor-id="how-it-works">How it works</h2>
-<p><code>ggplot()</code> and <code>aes()</code> set the data and the mappings that every layer inherits. <code>geom_point()</code> adds the points, with <code>alpha: 0.5</code> so that overlapping cars show as darker points. <code>geom_smooth(method: 'lm')</code> adds a second layer: a straight line fitted by least squares, and a shaded 95% confidence band for the mean. phiz fits the line and computes the band in PHP, and the band matches R’s <code>predict(fit, interval = "confidence")</code>. <code>save()</code> writes a standalone HTML page that draws the chart in a browser.</p>
-<p>The line summarizes the trend: highway economy falls as displacement rises. The points curve upward again at the largest displacements, which a straight line cannot follow. The default method, loess, follows local changes like this one (<a href="../geoms.html">Geoms</a>).</p>
-<p>Reference: <a href="../reference-plots.html#ggplot-function"><code>ggplot()</code></a>, <a href="../reference-plots.html#aes-function"><code>aes()</code></a>, <a href="../reference-geoms.html#point"><code>point()</code></a>, <a href="../reference-geoms.html#smooth"><code>smooth()</code></a>, <a href="../reference-themes.html#labs"><code>labs()</code></a>, and <a href="../reference-output.html#save"><code>save()</code></a>.</p>
+<ul>
+<li><strong>Inheritance.</strong> Both layers use the data and the <code>x</code> and <code>y</code> mappings given to <code>ggplot()</code> and <code>aes()</code>. A layer can add its own mappings or data, or set <code>inheritAes: false</code> to ignore the plot’s mappings.</li>
+<li><strong>The band.</strong> <code>method: 'lm'</code> fits a straight line by least squares. The shaded band is a 95% confidence interval for the mean highway economy at each displacement, so most individual cars fall outside it. phiz computes the fit and the band in PHP, and they match R’s <code>predict(fit, interval = "confidence")</code>. <code>level:</code> changes the confidence level, and <code>se: false</code> hides the band.</li>
+<li><strong>The fit.</strong> Cars with larger engines tend to have lower highway economy. At the largest displacements the points rise again, which a straight line cannot follow. The default method, loess, fits a local curve instead (<a href="../geoms.html#fitted-curves">Fitted curves</a>).</li>
+<li><strong>Transparency.</strong> <code>alpha: 0.5</code> makes overlapping points show as darker points.</li>
+</ul>
+<p>In R, the same chart is <code>ggplot(mpg, aes(displ, hwy)) + geom_point(alpha = 0.5) + geom_smooth(method = "lm")</code>.</p>
+<p><strong>See also:</strong> <a href="../reference-plots.html#ggplot-function"><code>ggplot()</code></a> · <a href="../reference-plots.html#aes-function"><code>aes()</code></a> · <a href="../reference-geoms.html#point"><code>geom_point()</code> / <code>-&gt;point()</code></a> · <a href="../reference-geoms.html#smooth"><code>geom_smooth()</code> / <code>-&gt;smooth()</code></a> · <a href="../reference-themes.html#labs"><code>labs()</code></a> · <a href="../reference-output.html#save"><code>save()</code></a></p>
 
 
 </section>

@@ -2,9 +2,7 @@
 title: "Compare groups with facets"
 ---
 
-This example splits a scatterplot of car weight against fuel economy into one panel for each number of cylinders.
-
-**Prerequisites:** phiz installed with Composer ([Installation](../get-started.qmd#installation)). The pipe version needs PHP 8.5, and the method chain runs on PHP 8.3 and later.
+Split a scatterplot of car weight against fuel economy into one panel for each number of cylinders.
 
 ## Data
 
@@ -20,18 +18,20 @@ This example splits a scatterplot of car weight against fuel economy into one pa
 
 ## Code
 
-Save the script beside the `vendor` directory and run it with `php facets.php`.
-
 {{< include ../_generated/example-facets-code.md >}}
 
-## Output
+Runnable scripts: [`facets.php`](https://github.com/phpstats/phiz/blob/main/docs/examples/scripts/facets.php) (PHP 8.5+) and [`facets.chain.php`](https://github.com/phpstats/phiz/blob/main/docs/examples/scripts/facets.chain.php) (PHP 8.3–8.4).
+
+## Result
 
 {{< include ../_generated/example-facets-output.md >}}
 
-## How it works
+`facet_wrap('cyl', ncol: 3)` draws the plot once for each value of `cyl`, from the rows with that value, and wraps the panels into three columns.
 
-`facet_wrap('cyl', ncol: 3)` draws the same plot once for each value of `cyl`, using the rows with that value, and places the panels in three columns. The panels share their axes by default, so positions can be compared across groups. `scales: 'free'`, `'free_x'`, or `'free_y'` gives each panel its own range instead.
+- **Shared scales.** By default every panel uses the same axis ranges, so a position means the same weight and economy in each panel.
+- **Free scales.** `scales: 'free'` gives each panel its own ranges, and `'free_x'` or `'free_y'` frees one axis. Free scales show the spread within each group, but panels can no longer be compared by position.
+- **Reading the panels.** Heavier cars tend to have more cylinders, so a single scatterplot mixes the two. The panels show how weight and economy are associated among cars with the same number of cylinders.
 
-The panels separate two effects that a single scatterplot mixes. Heavier cars tend to have more cylinders, and the panels show how weight relates to economy among cars with the same number of cylinders.
+In R, the same chart is `ggplot(mtcars, aes(wt, mpg)) + geom_point() + facet_wrap(~cyl, ncol = 3)`.
 
-Reference: [`facetWrap()`](../reference-facets.qmd#facet-wrap), [`facetGrid()`](../reference-facets.qmd#facet-grid), [`point()`](../reference-geoms.qmd#point), and [`labs()`](../reference-themes.qmd#labs). [Facets and composition](../facets.qmd) covers grids of panels and layouts of separate plots.
+**See also:** [`facet_wrap()` / `->facetWrap()`](../reference-facets.qmd#facet-wrap) · [`facet_grid()` / `->facetGrid()`](../reference-facets.qmd#facet-grid) · [`geom_point()` / `->point()`](../reference-geoms.qmd#point) · [`labs()`](../reference-themes.qmd#labs) · [Facets and composition](../facets.qmd)

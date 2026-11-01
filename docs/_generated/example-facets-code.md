@@ -3,10 +3,6 @@
 #### PHP 8.5+
 
 ```php
-<?php
-
-require 'vendor/autoload.php';
-
 use Phiz\Datasets;
 
 use function Phiz\{aes, facet_wrap, geom_point, ggplot, labs};
@@ -22,10 +18,6 @@ $plot->save('facets.html');
 #### PHP 8.3–8.4
 
 ```php
-<?php
-
-require 'vendor/autoload.php';
-
 use Phiz\Datasets;
 use Phiz\Plot;
 
