@@ -54,27 +54,27 @@ foreach (array_keys(build_cases()) as $case) {
         'peak_memory_mib' => $result['peak_memory_mib'],
         'peak_rss_mib' => $result['peak_rss_mib'],
         'php_peak_mib' => $result['php_peak_mib'],
-        'note' => sprintf('Specification: %.1f KB.', $result['bytes'] / 1024),
+        'note' => sprintf('%.1f KB specification.', $result['bytes'] / 1024),
     ];
 }
 
 $phiz = trim((string) shell_exec('git -C '.escapeshellarg(dirname(__DIR__)).' describe --tags --always'));
 bench_write('small-plot-build', [
-    'title' => 'Small plots: building a specification in PHP',
+    'title' => 'Small plots',
     'label' => 'Small plots',
-    'description' => 'Build an ordinary plot from a bundled dataset and encode its specification as JSON, as a page does for each chart it serves.',
-    'workload' => 'Plots of 234 to 574 inline rows',
+    'description' => 'Building of an ordinary plot from a bundled dataset and encoding of its specification as JSON, as for each chart a page serves.',
+    'workload' => 'Small plots, 234 to 574 inline rows',
     'implementations' => ['phiz' => "phiz {$phiz}, plain PHP"],
     'measure' => 'Elapsed time per plot',
     'unit' => 'ms',
     'statistic' => 'median',
-    'method' => 'Each run builds the plot and encodes its specification 100 times; the time is the run\'s mean per plot. The bundled dataset is loaded and cached before timing, and one run is a warmup. Starting PHP is excluded.',
-    'time_spent_in' => 'the PHP process (building the specification only; no browser rendering or vl-convert)',
+    'method' => 'Mean time per plot over 100 builds and encodings per run. One warmup run. Dataset loading and PHP startup excluded.',
+    'time_spent_in' => 'The PHP process; specification building only, without browser rendering or vl-convert.',
     'memory_measure' => 'peak anonymous memory',
-    'memory_method' => 'RssAnon of the whole PHP process, sampled every millisecond by peakmem (phpolars bench/csv-pipeline/peakmem.c). php_peak_mib is memory_get_peak_usage(true).',
+    'memory_method' => 'Peak anonymous memory (RssAnon) of the whole PHP process, sampled every millisecond by peakmem (phpolars bench/csv-pipeline/peakmem.c). Also reported: peak resident set size, and PHP allocator peak (memory_get_peak_usage(true)).',
     'environment' => bench_environment(REPEATS, 1),
     'rows' => $rows,
     'reproduce' => ['composer install', 'php scripts/bench-build.php'],
     'source' => 'scripts/bench-build.php',
-    'group' => 'phiz in PHP',
+    'group' => 'Specification building',
 ]);

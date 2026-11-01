@@ -1,8 +1,8 @@
 {
-    "title": "Large data: binning a million-row table in PHP",
-    "label": "Large data",
-    "description": "Bin one million (x, y) points from a phibble table into hexagons, rectangles, or a histogram, and encode the specification as JSON. Only the bins are embedded.",
-    "workload": "1,000,000 rows, 2 numeric columns",
+    "title": "Large-data binning",
+    "label": "Large-data binning",
+    "description": "Binning of one million (x, y) points from a phibble table into hexagons, rectangles, or a histogram, and encoding of the specification as JSON. Only the bins are embedded.",
+    "workload": "Large-data binning, 1,000,000 rows, 2 numeric columns",
     "dataset": {
         "rows": 1000000,
         "columns": 2,
@@ -14,10 +14,10 @@
     "measure": "Elapsed time",
     "unit": "s",
     "statistic": "median",
-    "method": "From building the Plot to holding the JSON specification: compiling, reading the table column by column, binning, and encoding. Building the table and starting PHP are excluded.",
-    "time_spent_in": "the PHP process (building the specification only; no browser rendering or vl-convert)",
+    "method": "Timed from building the Plot to holding the JSON specification: compilation, columnar reads, binning, and encoding. Table generation and PHP startup excluded.",
+    "time_spent_in": "The PHP process; specification building only, without browser rendering or vl-convert.",
     "memory_measure": "peak anonymous memory",
-    "memory_method": "RssAnon of the whole PHP process, including the generated table, sampled every millisecond by peakmem (phpolars bench/csv-pipeline/peakmem.c). php_peak_mib is memory_get_peak_usage(true).",
+    "memory_method": "Peak anonymous memory (RssAnon) of the whole PHP process, including the generated table, sampled every millisecond by peakmem (phpolars bench/csv-pipeline/peakmem.c). Also reported: peak resident set size, and PHP allocator peak (memory_get_peak_usage(true)).",
     "environment": {
         "cpu": "AMD Ryzen 9 9955HX 16-Core Processor",
         "cores": 2,
@@ -51,7 +51,7 @@
             "peak_memory_mib": 59.8,
             "peak_rss_mib": 82.9,
             "php_peak_mib": 56,
-            "note": "Specification: 61 KB."
+            "note": "61 KB specification."
         },
         {
             "case": "bin2d(bins: 50)",
@@ -69,7 +69,7 @@
             "peak_memory_mib": 60.4,
             "peak_rss_mib": 83.4,
             "php_peak_mib": 56,
-            "note": "Specification: 168 KB."
+            "note": "168 KB specification."
         },
         {
             "case": "histogram(bins: 60)",
@@ -87,7 +87,7 @@
             "peak_memory_mib": 58.9,
             "peak_rss_mib": 81.9,
             "php_peak_mib": 56,
-            "note": "Specification: 6 KB."
+            "note": "6 KB specification."
         }
     ],
     "reproduce": [
@@ -95,5 +95,5 @@
         "php scripts/bench-large-data.php"
     ],
     "source": "scripts/bench-large-data.php",
-    "group": "phiz in PHP"
+    "group": "Specification building"
 }

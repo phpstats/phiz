@@ -21,11 +21,11 @@ use function Phiz\{marginal_means, predictions, random_effects_plot};
 function evidence_rules(): array
 {
     return [
-        'tight' => ['id' => 'tight', 'applies_to' => 'fits, quantiles, intervals, and polygon points', 'kind' => 'tolerance', 'atol' => 1e-9, 'rtol' => 1e-9, 'rel_floor' => 1e-12],
-        'grid' => ['id' => 'grid', 'applies_to' => 'the 100 × 100 density grid, whose tails reach 1e-30', 'kind' => 'tolerance', 'atol' => 1e-12, 'rtol' => 1e-9, 'rel_floor' => 1e-12],
-        'shape' => ['id' => 'shape', 'applies_to' => 'relative density heights at five points', 'kind' => 'tolerance', 'atol' => 1e-3, 'rel_floor' => 1e-12],
-        'mixed' => ['id' => 'mixed', 'applies_to' => 'mixed-model conditional modes and standard deviations, which follow the REML optimum', 'kind' => 'tolerance', 'atol' => 1e-6, 'rtol' => 1e-6, 'rel_floor' => 1e-12],
-        'exact' => ['id' => 'exact', 'applies_to' => 'counts, levels, piece sizes, and colors', 'kind' => 'exact'],
+        'tight' => ['id' => 'tight', 'applies_to' => 'Numerical results; fits, quantiles, intervals, and polygon points', 'kind' => 'tolerance', 'atol' => 1e-9, 'rtol' => 1e-9, 'rel_floor' => 1e-12],
+        'grid' => ['id' => 'grid', 'applies_to' => 'Density grid; tails reach 1e-30', 'kind' => 'tolerance', 'atol' => 1e-12, 'rtol' => 1e-9, 'rel_floor' => 1e-12],
+        'shape' => ['id' => 'shape', 'applies_to' => 'Relative density heights', 'kind' => 'tolerance', 'atol' => 1e-3, 'rel_floor' => 1e-12],
+        'mixed' => ['id' => 'mixed', 'applies_to' => 'Mixed-model conditional modes and standard deviations; dependent on the REML optimum', 'kind' => 'tolerance', 'atol' => 1e-6, 'rtol' => 1e-6, 'rel_floor' => 1e-12],
+        'exact' => ['id' => 'exact', 'applies_to' => 'Counts, levels, piece sizes, and colors', 'kind' => 'exact'],
     ];
 }
 
@@ -118,15 +118,16 @@ function evidence_parity(array $fixture): array
         }
     }
     $records['r-smoothing'] = [
-        'title' => 'Smoothing: agreement with R',
+        'title' => 'Smoothing',
         'label' => 'Smoothing',
-        'checked' => 'The least-squares and loess fits, standard errors, and confidence bands behind smooth(), computed in PHP, against R\'s lm(), predict(), and loess().',
-        'reference' => "R {$versions['R']} lm(), predict(), and loess(surface = \"direct\", statistics = \"exact\")",
+        'checked' => 'Least-squares coefficients, standard errors, and confidence bands; loess fits, standard errors, degrees of freedom, residual standard errors, and confidence bands. Identical inputs and evaluation points across implementations.',
+        'description' => 'scripts/evidence/r-references.R computes the reference values in R and writes tests/fixtures/r-references.json. scripts/evidence/parity.php computes the same quantities with phiz\'s PHP implementations behind smooth() and compares them value by value.',
+        'reference' => "R {$versions['R']}: lm(), predict(), loess(surface = \"direct\", statistics = \"exact\")",
         'versions' => ['R' => $versions['R']],
         'inputs' => [['name' => 'mtcars', 'detail' => '32 rows, R\'s datasets package'], ['name' => 'mpg', 'detail' => '234 rows, ggplot2 '.$versions['ggplot2']]],
         'comparison' => evidence_used_rules($cases),
         'cases' => $cases,
-        'known_differences' => ['ggplot2\'s geom_smooth() interpolates the loess surface; phiz computes it directly, as loess(surface = "direct"), so ggplot2\'s curve can differ slightly.'],
+        'known_differences' => ['ggplot2\'s geom_smooth() interpolates the loess surface; phiz computes it directly, as loess(surface = "direct") does. ggplot2\'s curve can therefore differ slightly.'],
     ];
 
     // Distributions and contours.
@@ -160,16 +161,17 @@ function evidence_parity(array $fixture): array
     $cases[] = evidence_case('faithful eruptions', 'violin evaluation points', array_column($violin, 'eruptions'), $ref['density']['x'], 'tight');
     $cases[] = evidence_case('faithful eruptions', 'violin widths against density() heights, relative to the largest', array_column($violin, '__width'), $ref['density']['relative'], 'shape');
     $records['r-distributions'] = [
-        'title' => 'Distributions and contours: agreement with R',
-        'label' => 'Distributions and contours',
-        'checked' => 'Quantiles, bandwidths, 2D densities, contour levels and pieces, ellipses, stat_summary intervals, and violin densities computed in PHP, against R, MASS, and ggplot2 on the same data.',
-        'reference' => "R {$versions['R']} with MASS {$versions['MASS']} and ggplot2 {$versions['ggplot2']}",
+        'title' => 'Distributions',
+        'label' => 'Distributions',
+        'checked' => 'Normal and t quantiles, sample quantiles, bandwidths, two-dimensional density grids, contour levels and pieces, confidence ellipses, mean_cl_normal intervals, and violin densities. Identical data across implementations.',
+        'description' => 'scripts/evidence/r-references.R computes the reference values with R, MASS, and ggplot2 and writes tests/fixtures/r-references.json. scripts/evidence/parity.php computes the same quantities with phiz and compares them value by value.',
+        'reference' => "R {$versions['R']}, MASS {$versions['MASS']}, ggplot2 {$versions['ggplot2']}",
         'versions' => ['R' => $versions['R'], 'MASS' => $versions['MASS'], 'ggplot2' => $versions['ggplot2']],
         'inputs' => [['name' => 'faithful', 'detail' => '272 rows, R\'s datasets package'], ['name' => 'mtcars', 'detail' => '32 rows, R\'s datasets package'], ['name' => 'mpg', 'detail' => '234 rows, ggplot2 '.$versions['ggplot2']]],
         'comparison' => evidence_used_rules($cases),
         'cases' => $cases,
-        'exclusions' => ['Violin widths are compared as relative heights: phiz scales each violin to its band, so absolute densities are not part of the output.'],
-        'known_differences' => ['R\'s density() approximates the kernel sum with an FFT over a binned grid; phiz evaluates the kernel sum exactly, so relative heights differ by about 1e-4.'],
+        'exclusions' => ['Violin widths are compared as relative heights. phiz scales each violin to its band, so absolute densities are not part of the output.'],
+        'known_differences' => ['R\'s density() approximates the kernel sum with an FFT over a binned grid; phiz evaluates the kernel sum exactly. Relative heights differ by about 1e-4.'],
     ];
 
     // Palettes.
@@ -179,12 +181,13 @@ function evidence_parity(array $fixture): array
     }
     $cases[] = evidence_case('4 levels', 'grey_pal() colors', Palette::grey(4), $ref['palettes']['grey4'], 'exact');
     $records['scales-palettes'] = [
-        'title' => 'Palettes: agreement with scales',
+        'title' => 'Palettes',
         'label' => 'Palettes',
-        'checked' => 'The hue and grey palettes that theme("gray"), scale_color_hue(), and scale_color_grey() compute, against the scales package.',
-        'reference' => "scales {$versions['scales']} hue_pal() and grey_pal()",
+        'checked' => 'Hue and grey palette colors, as used by theme("gray"), scale_color_hue(), and scale_color_grey().',
+        'description' => 'scripts/evidence/r-references.R computes the palettes with the scales package. scripts/evidence/parity.php computes them with phiz and compares the hex colors.',
+        'reference' => "R {$versions['R']}, scales {$versions['scales']}: hue_pal(), grey_pal()",
         'versions' => ['R' => $versions['R'], 'scales' => $versions['scales']],
-        'inputs' => 'Palette sizes of 3, 4, 5, and 8 levels.',
+        'inputs' => 'Palettes of 3, 4, 5, and 8 levels.',
         'comparison' => evidence_used_rules($cases),
         'cases' => $cases,
     ];
@@ -205,15 +208,16 @@ function evidence_parity(array $fixture): array
     $cases[] = evidence_case('mpg, hwy ~ displ + (1 | manufacturer)', 'conditional modes of 15 manufacturers', array_map(fn ($g) => $effects[$g]['estimate'] ?? null, $groups), $ref['random_effects']['mode'], 'mixed');
     $cases[] = evidence_case('mpg, hwy ~ displ + (1 | manufacturer)', 'conditional standard deviations of 15 manufacturers', array_map(fn ($g) => $effects[$g]['std_error'] ?? null, $groups), $ref['random_effects']['sd'], 'mixed');
     $records['r-statistics'] = [
-        'title' => 'Statistics helpers: agreement with R',
-        'label' => 'Statistics helpers',
-        'checked' => 'predictions(), marginal_means(), and random_effects_plot() on fits from phit, against R\'s predict(), an emmeans-style computation in R, and lme4\'s ranef(condVar = TRUE).',
-        'reference' => "R {$versions['R']} lm() and predict(); lme4 {$versions['lme4']} lmer() and ranef()",
+        'title' => 'Statistics',
+        'label' => 'Statistics',
+        'checked' => 'Predictions with confidence intervals, marginal means with confidence intervals, and random-effect conditional modes and standard deviations. Identical model formulas and data across implementations.',
+        'description' => 'scripts/evidence/r-references.R fits the models in R and lme4 and writes tests/fixtures/r-references.json. scripts/evidence/parity.php fits the same models with phit, passes the fits to predictions(), marginal_means(), and random_effects_plot(), and compares the results value by value.',
+        'reference' => "R {$versions['R']}: lm(), predict(); lme4 {$versions['lme4']}: lmer(), ranef(condVar = TRUE)",
         'versions' => ['R' => $versions['R'], 'lme4' => $versions['lme4'], 'phit-polyfill' => Composer\InstalledVersions::getPrettyVersion('phpstats/phit-polyfill')],
         'inputs' => [['name' => 'mtcars', 'detail' => '32 rows, R\'s datasets package'], ['name' => 'mpg', 'detail' => '234 rows, ggplot2 '.$versions['ggplot2']]],
         'comparison' => evidence_used_rules($cases),
         'cases' => $cases,
-        'exclusions' => ['The fits come from phit (phit-polyfill), so these cases test phiz\'s helpers together with phit\'s fits. phit\'s own agreement with R is in phit\'s verification.', 'Marginal means are compared with the emmeans formula computed directly in R; emmeans itself was not installed.'],
+        'exclusions' => ['The fits come from phit-polyfill; the cases test phiz\'s helpers together with phit\'s fits. phit\'s fits are verified separately.', 'Marginal means are compared with the emmeans formula computed directly in R; the emmeans package is not used.'],
     ];
 
     return $records;

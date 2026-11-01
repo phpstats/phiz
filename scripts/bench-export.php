@@ -77,7 +77,7 @@ foreach (array_keys(export_plots()) as $plotName) {
             'peak_memory_mib' => $result['peak_memory_mib'],
             'php_peak_mib' => $result['php_peak_mib'],
             'child_peak_rss_mib' => $result['child_peak_rss_mib'],
-            'note' => sprintf('Output: %d KB. Building the %d KB specification in PHP: %s ms of the total.', round($result['bytes'] / 1024), round($result['spec_bytes'] / 1024), bench_round($result['spec_ms'])),
+            'note' => sprintf('%d KB output; building the %d KB specification in PHP took %s ms.', round($result['bytes'] / 1024), round($result['spec_bytes'] / 1024), bench_round($result['spec_ms'])),
         ];
     }
 }
@@ -86,19 +86,19 @@ $binary = (string) (getenv('PHIZ_VL_CONVERT') ?: getenv('VL_CONVERT') ?: 'vl-con
 $version = preg_replace('/^vl-convert\s*/', '', trim((string) shell_exec(escapeshellarg($binary).' --version 2>/dev/null')));
 $phiz = trim((string) shell_exec('git -C '.escapeshellarg(dirname(__DIR__)).' describe --tags --always'));
 bench_write('vl-convert-export', [
-    'title' => 'Static export: SVG, PNG, and PDF through vl-convert',
-    'label' => 'Static export',
-    'description' => 'Export a plot with svg(), png(scale: 2), or pdf(): phiz builds the specification and runs vl-convert, which renders it without a browser.',
-    'workload' => 'A 234-point scatterplot with a least-squares band, and a 20,000-point scatterplot',
+    'title' => 'vl-convert export',
+    'label' => 'vl-convert export',
+    'description' => 'Export of a plot with svg(), png(scale: 2), or pdf(). phiz builds the specification and runs vl-convert, which renders it without a browser.',
+    'workload' => 'vl-convert export, a 234-point scatterplot with a least-squares band and a 20,000-point scatterplot',
     'dataset' => ['detail' => 'ggplot2\'s mpg (234 rows); 20,000 uniform points from mt_rand seeded with 1'],
     'implementations' => ['phiz + vl-convert' => "phiz {$phiz}, running vl-convert {$version} once per export"],
     'measure' => 'Elapsed time per export',
     'unit' => 'ms',
     'statistic' => 'median',
-    'method' => 'From the export call to holding the image bytes: building the specification in PHP, starting vl-convert, rendering, and reading its output. One export is a warmup. Building the plot\'s data and starting PHP are excluded.',
-    'time_spent_in' => 'vl-convert\'s executable, launched by phiz, plus building the specification in the PHP process (shown in each row\'s note)',
+    'method' => 'Timed from the export call to holding the output bytes: specification building in PHP, vl-convert startup, rendering, and output reading. One warmup export. Data generation and PHP startup excluded.',
+    'time_spent_in' => 'vl-convert, launched by phiz once per export. Specification building in the PHP process is given in each row\'s note.',
     'memory_measure' => 'peak anonymous memory',
-    'memory_method' => 'peak_memory_mib is RssAnon of the PHP process alone, sampled every millisecond by peakmem (phpolars bench/csv-pipeline/peakmem.c). child_peak_rss_mib is the largest peak resident set size of the vl-convert processes, from getrusage(RUSAGE_CHILDREN) in the PHP process. php_peak_mib is memory_get_peak_usage(true).',
+    'memory_method' => 'Peak anonymous memory (RssAnon) of the PHP process alone, sampled every millisecond by peakmem (phpolars bench/csv-pipeline/peakmem.c). Also reported: the largest vl-convert process\'s peak resident set size, from getrusage(RUSAGE_CHILDREN), and PHP allocator peak (memory_get_peak_usage(true)).',
     'environment' => bench_environment(REPEATS, WARMUPS) + ['versions' => ['vl-convert' => $version]],
     'rows' => $rows,
     'reproduce' => ['composer install', 'PHIZ_VL_CONVERT=/path/to/vl-convert php scripts/bench-export.php'],

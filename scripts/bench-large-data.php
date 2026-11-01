@@ -68,28 +68,28 @@ foreach (array_keys(large_data_cases()) as $case) {
         'peak_memory_mib' => $result['peak_memory_mib'],
         'peak_rss_mib' => $result['peak_rss_mib'],
         'php_peak_mib' => $result['php_peak_mib'],
-        'note' => sprintf('Specification: %d KB.', round($result['bytes'] / 1024)),
+        'note' => sprintf('%d KB specification.', round($result['bytes'] / 1024)),
     ];
 }
 
 $phiz = trim((string) shell_exec('git -C '.escapeshellarg(dirname(__DIR__)).' describe --tags --always'));
 bench_write('large-data-binning', [
-    'title' => 'Large data: binning a million-row table in PHP',
-    'label' => 'Large data',
-    'description' => 'Bin one million (x, y) points from a phibble table into hexagons, rectangles, or a histogram, and encode the specification as JSON. Only the bins are embedded.',
-    'workload' => '1,000,000 rows, 2 numeric columns',
+    'title' => 'Large-data binning',
+    'label' => 'Large-data binning',
+    'description' => 'Binning of one million (x, y) points from a phibble table into hexagons, rectangles, or a histogram, and encoding of the specification as JSON. Only the bins are embedded.',
+    'workload' => 'Large-data binning, 1,000,000 rows, 2 numeric columns',
     'dataset' => ['rows' => 1_000_000, 'columns' => 2, 'detail' => 'correlated standard normal pairs from mt_rand seeded with 1, built in the measured process'],
     'implementations' => ['phiz' => "phiz {$phiz}, plain PHP, reading a phibble ".InstalledVersions::getPrettyVersion('phpstats/phibble').' table'],
     'measure' => 'Elapsed time',
     'unit' => 's',
     'statistic' => 'median',
-    'method' => 'From building the Plot to holding the JSON specification: compiling, reading the table column by column, binning, and encoding. Building the table and starting PHP are excluded.',
-    'time_spent_in' => 'the PHP process (building the specification only; no browser rendering or vl-convert)',
+    'method' => 'Timed from building the Plot to holding the JSON specification: compilation, columnar reads, binning, and encoding. Table generation and PHP startup excluded.',
+    'time_spent_in' => 'The PHP process; specification building only, without browser rendering or vl-convert.',
     'memory_measure' => 'peak anonymous memory',
-    'memory_method' => 'RssAnon of the whole PHP process, including the generated table, sampled every millisecond by peakmem (phpolars bench/csv-pipeline/peakmem.c). php_peak_mib is memory_get_peak_usage(true).',
+    'memory_method' => 'Peak anonymous memory (RssAnon) of the whole PHP process, including the generated table, sampled every millisecond by peakmem (phpolars bench/csv-pipeline/peakmem.c). Also reported: peak resident set size, and PHP allocator peak (memory_get_peak_usage(true)).',
     'environment' => bench_environment(REPEATS, 0) + ['versions' => ['phibble' => InstalledVersions::getPrettyVersion('phpstats/phibble')]],
     'rows' => $rows,
     'reproduce' => ['composer install', 'php scripts/bench-large-data.php'],
     'source' => 'scripts/bench-large-data.php',
-    'group' => 'phiz in PHP',
+    'group' => 'Specification building',
 ]);

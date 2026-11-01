@@ -1,8 +1,8 @@
 {
-    "title": "Static export: SVG, PNG, and PDF through vl-convert",
-    "label": "Static export",
-    "description": "Export a plot with svg(), png(scale: 2), or pdf(): phiz builds the specification and runs vl-convert, which renders it without a browser.",
-    "workload": "A 234-point scatterplot with a least-squares band, and a 20,000-point scatterplot",
+    "title": "vl-convert export",
+    "label": "vl-convert export",
+    "description": "Export of a plot with svg(), png(scale: 2), or pdf(). phiz builds the specification and runs vl-convert, which renders it without a browser.",
+    "workload": "vl-convert export, a 234-point scatterplot with a least-squares band and a 20,000-point scatterplot",
     "dataset": {
         "detail": "ggplot2's mpg (234 rows); 20,000 uniform points from mt_rand seeded with 1"
     },
@@ -12,10 +12,10 @@
     "measure": "Elapsed time per export",
     "unit": "ms",
     "statistic": "median",
-    "method": "From the export call to holding the image bytes: building the specification in PHP, starting vl-convert, rendering, and reading its output. One export is a warmup. Building the plot's data and starting PHP are excluded.",
-    "time_spent_in": "vl-convert's executable, launched by phiz, plus building the specification in the PHP process (shown in each row's note)",
+    "method": "Timed from the export call to holding the output bytes: specification building in PHP, vl-convert startup, rendering, and output reading. One warmup export. Data generation and PHP startup excluded.",
+    "time_spent_in": "vl-convert, launched by phiz once per export. Specification building in the PHP process is given in each row's note.",
     "memory_measure": "peak anonymous memory",
-    "memory_method": "peak_memory_mib is RssAnon of the PHP process alone, sampled every millisecond by peakmem (phpolars bench/csv-pipeline/peakmem.c). child_peak_rss_mib is the largest peak resident set size of the vl-convert processes, from getrusage(RUSAGE_CHILDREN) in the PHP process. php_peak_mib is memory_get_peak_usage(true).",
+    "memory_method": "Peak anonymous memory (RssAnon) of the PHP process alone, sampled every millisecond by peakmem (phpolars bench/csv-pipeline/peakmem.c). Also reported: the largest vl-convert process's peak resident set size, from getrusage(RUSAGE_CHILDREN), and PHP allocator peak (memory_get_peak_usage(true)).",
     "environment": {
         "cpu": "AMD Ryzen 9 9955HX 16-Core Processor",
         "cores": 2,
@@ -49,7 +49,7 @@
             "peak_memory_mib": 13.1,
             "php_peak_mib": 8,
             "child_peak_rss_mib": 77.9,
-            "note": "Output: 71 KB. Building the 52 KB specification in PHP: 0.609 ms of the total."
+            "note": "71 KB output; building the 52 KB specification in PHP took 0.609 ms."
         },
         {
             "case": "234 points with lm band: PNG, scale 2",
@@ -67,7 +67,7 @@
             "peak_memory_mib": 13.2,
             "php_peak_mib": 8,
             "child_peak_rss_mib": 80.8,
-            "note": "Output: 149 KB. Building the 52 KB specification in PHP: 0.606 ms of the total."
+            "note": "149 KB output; building the 52 KB specification in PHP took 0.606 ms."
         },
         {
             "case": "234 points with lm band: PDF",
@@ -85,7 +85,7 @@
             "peak_memory_mib": 13.1,
             "php_peak_mib": 8,
             "child_peak_rss_mib": 79.3,
-            "note": "Output: 173 KB. Building the 52 KB specification in PHP: 0.61 ms of the total."
+            "note": "173 KB output; building the 52 KB specification in PHP took 0.61 ms."
         },
         {
             "case": "20,000 points: SVG",
@@ -103,7 +103,7 @@
             "peak_memory_mib": 33.4,
             "php_peak_mib": 27.4,
             "child_peak_rss_mib": 177.2,
-            "note": "Output: 5498 KB. Building the 948 KB specification in PHP: 12.3 ms of the total."
+            "note": "5498 KB output; building the 948 KB specification in PHP took 12.3 ms."
         },
         {
             "case": "20,000 points: PNG, scale 2",
@@ -121,7 +121,7 @@
             "peak_memory_mib": 28.1,
             "php_peak_mib": 22,
             "child_peak_rss_mib": 197.7,
-            "note": "Output: 834 KB. Building the 948 KB specification in PHP: 12.3 ms of the total."
+            "note": "834 KB output; building the 948 KB specification in PHP took 12.3 ms."
         },
         {
             "case": "20,000 points: PDF",
@@ -139,7 +139,7 @@
             "peak_memory_mib": 41.5,
             "php_peak_mib": 35.5,
             "child_peak_rss_mib": 211.7,
-            "note": "Output: 13780 KB. Building the 948 KB specification in PHP: 12.3 ms of the total."
+            "note": "13780 KB output; building the 948 KB specification in PHP took 12.3 ms."
         }
     ],
     "reproduce": [
