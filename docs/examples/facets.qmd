@@ -14,24 +14,23 @@ Split a scatterplot of car weight against fuel economy into one panel for each n
 | Mazda RX4 Wag | 21.0 | 6 | 2.875 |
 | Datsun 710 | 22.8 | 4 | 2.320 |
 
-`wt` is the weight in thousands of pounds, `mpg` is the fuel economy in miles per gallon, and `cyl` is the number of cylinders: 11 cars have 4, 7 have 6, and 14 have 8.
+`wt` is the weight in thousands of pounds, `mpg` is the fuel economy in miles per gallon, and `cyl` is the number of cylinders.
 
 ## Code
 
 {{< include ../_generated/example-facets-code.md >}}
 
-Runnable scripts: [`facets.php`](https://github.com/phpstats/phiz/blob/main/docs/examples/scripts/facets.php) (PHP 8.5+) and [`facets.chain.php`](https://github.com/phpstats/phiz/blob/main/docs/examples/scripts/facets.chain.php) (PHP 8.3–8.4).
+Runnable script: [`facets.php`](https://github.com/phpstats/phiz/blob/main/docs/examples/scripts/facets.php) (PHP 8.5+) or [`facets.chain.php`](https://github.com/phpstats/phiz/blob/main/docs/examples/scripts/facets.chain.php) (PHP 8.3–8.4).
 
 ## Result
 
 {{< include ../_generated/example-facets-output.md >}}
 
-`facet_wrap('cyl', ncol: 3)` draws the plot once for each value of `cyl`, from the rows with that value, and wraps the panels into three columns.
+- **Shared scales.** By default every panel has the same axis ranges, so positions compare across panels.
+- **Free scales.** `scales: 'free'`, `'free_x'`, or `'free_y'` gives each panel its own ranges. Positions then no longer compare across panels.
+- **Mixed effects.** Heavier cars also tend to have more cylinders. Each panel shows the weight and economy association among cars with the same cylinder count.
+- **Small groups.** The panels hold 11, 7, and 14 cars, so a trend within one panel is a rough description.
 
-- **Shared scales.** By default every panel uses the same axis ranges, so a position means the same weight and economy in each panel.
-- **Free scales.** `scales: 'free'` gives each panel its own ranges, and `'free_x'` or `'free_y'` frees one axis. Free scales show the spread within each group, but panels can no longer be compared by position.
-- **Reading the panels.** Heavier cars tend to have more cylinders, so a single scatterplot mixes the two. The panels show how weight and economy are associated among cars with the same number of cylinders.
-
-In R, the same chart is `ggplot(mtcars, aes(wt, mpg)) + geom_point() + facet_wrap(~cyl, ncol = 3)`.
+In R: `ggplot(mtcars, aes(wt, mpg)) + geom_point() + facet_wrap(~cyl, ncol = 3)`.
 
 **See also:** [`facet_wrap()` / `->facetWrap()`](../reference-facets.qmd#facet-wrap) · [`facet_grid()` / `->facetGrid()`](../reference-facets.qmd#facet-grid) · [`geom_point()` / `->point()`](../reference-geoms.qmd#point) · [`labs()`](../reference-themes.qmd#labs) · [Facets and composition](../facets.qmd)

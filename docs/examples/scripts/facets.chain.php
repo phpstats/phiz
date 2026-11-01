@@ -5,7 +5,9 @@ require 'vendor/autoload.php';
 use Phiz\Datasets;
 use Phiz\Plot;
 
-$plot = Plot::of(Datasets::mtcars())
+$mtcars = Datasets::mtcars();
+
+$plot = Plot::of($mtcars)
     ->aes(x: 'wt', y: 'mpg')
     ->point()
     ->facetWrap('cyl', ncol: 3)

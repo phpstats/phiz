@@ -3,21 +3,21 @@
     "data": {
         "values": [
             {
-                "date": "2005-05-01",
-                "series": "Unemployed",
-                "value": 7651
+                "month": 1,
+                "channel": "Web",
+                "orders": 412
             },
             {
-                "date": "2005-05-01",
-                "series": "Median weeks unemployed (x1000)",
-                "value": 9100.0
+                "month": 1,
+                "channel": "App",
+                "orders": 170
             },
             {
-                "date": "2005-06-01",
-                "series": "Unemployed",
-                "value": 7524
+                "month": 1,
+                "channel": "Store",
+                "orders": 294
             },
-            "... 237 more rows"
+            "... 69 more rows"
         ]
     },
     "mark": {
@@ -26,21 +26,23 @@
     },
     "encoding": {
         "x": {
-            "field": "date",
-            "type": "temporal"
+            "field": "month",
+            "type": "quantitative",
+            "title": "Month"
         },
         "y": {
-            "field": "value",
-            "type": "quantitative"
+            "field": "orders",
+            "type": "quantitative",
+            "title": "Orders"
         },
         "color": {
-            "field": "series",
-            "type": "nominal"
+            "field": "channel",
+            "type": "nominal",
+            "title": "Channel"
         }
     },
     "config": {
         "legend": {
-            "orient": "bottom",
             "labelLimit": 320
         }
     }

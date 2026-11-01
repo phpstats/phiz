@@ -11,12 +11,13 @@ declare(strict_types=1);
  * - docs/_generated/gallery.md: the examples/catalog.php gallery, for docs/gallery.qmd, with each chart's spec in
  *   docs/gallery/{id}.json, loaded as the chart scrolls into view
  * - docs/_generated/example-{name}-code.md and -output.md: the scripts in docs/examples/scripts, shown without their
- *   bootstrap, and the chart each one produced when run in an empty directory, in docs/examples/charts/{name}.json or
- *   .svg
+ *   bootstrap, and the chart each one produced when run in an empty directory, in docs/examples/charts/{name}.json
+ *   (sized to the page by docs_fit()) or .svg
  *
- * An example file returns a Chart. Its code is shown as written, with `return` shown as `$plot =`. An example that
- * uses the pipe operator has a method-chain twin, {name}.chain.php; the two are shown in tabs labeled "PHP 8.5+" and
- * "PHP 8.3–8.4", and must build the same specification. Pipe examples need PHP 8.5 to run.
+ * An example file returns a Chart. Its code is shown as written, with `return` shown as `$plot =`; a file named
+ * {name}-preview.php shows only its chart. An example that uses the pipe operator has a method-chain twin,
+ * {name}.chain.php; the two are shown in tabs labeled "PHP 8.5+" and "PHP 8.3–8.4", and must build the same
+ * specification. Pipe examples need PHP 8.5 to run.
  *
  *     php scripts/docs-examples.php [name ...]
  */
@@ -27,6 +28,7 @@ use Phiz\Export;
 use Phiz\Html;
 
 require __DIR__.'/../vendor/autoload.php';
+require __DIR__.'/docs-fit.php';
 
 $docs = dirname(__DIR__).'/docs';
 @mkdir("{$docs}/_generated", 0777, true);
@@ -48,7 +50,9 @@ foreach (glob("{$docs}/examples/*.php") as $file) {
         exit(1);
     }
     $chainFile = "{$docs}/examples/{$name}.chain.php";
-    if (is_file($chainFile)) {
+    if (str_ends_with($name, '-preview')) {
+        $markdown = '';
+    } elseif (is_file($chainFile)) {
         $chain = (static fn () => require $chainFile)();
         if (! $chain instanceof Chart || $chain->toArray() !== $chart->toArray()) {
             fwrite(STDERR, "{$name}: {$name}.chain.php does not build the same specification\n");
@@ -69,10 +73,10 @@ foreach (glob("{$docs}/examples/*.php") as $file) {
     $count++;
 }
 
-// Source listings of shared example code, for pages that show it whole.
+// Source listings of shared example code, for pages that show it whole, without the file's opening comment.
 foreach (glob(dirname(__DIR__).'/examples/dashboard.php') as $file) {
     $chainFile = substr($file, 0, -4).'.chain.php';
-    $listing = fn (string $path) => trim(preg_replace('/^<\?php\s*(declare\(strict_types=1\);\s*)?/', '', (string) file_get_contents($path)));
+    $listing = fn (string $path) => trim(preg_replace('/^<\?php\s*(declare\(strict_types=1\);\s*)?(\/\*.*?\*\/\s*)?/s', '', (string) file_get_contents($path)));
     $markdown = is_file($chainFile) ? syntax_tabs($listing($file), $listing($chainFile)) : "```php\n".$listing($file)."\n```\n";
     file_put_contents("{$docs}/_generated/source-".basename($file, '.php').'.md', $markdown);
 }
@@ -101,13 +105,13 @@ foreach (glob("{$docs}/examples/scripts/*.php") as $file) {
         ? syntax_tabs($listing($file), $listing($chainFile))
         : "```php\n".$listing($file)."\n```\n");
 
-    file_put_contents("{$docs}/examples/charts/{$name}.json", $plot->toJson());
+    file_put_contents("{$docs}/examples/charts/{$name}.json", json_encode(docs_fit($plot), Chart::JSON_FLAGS));
     preg_match('/^title: "(.+)"$/m', (string) @file_get_contents("{$docs}/examples/{$name}.qmd"), $title);
     $label = htmlspecialchars($title[1] ?? $name);
     $svgFile = array_key_first(array_filter($files, fn ($bytes, $path) => str_ends_with($path, '.svg'), ARRAY_FILTER_USE_BOTH));
     if ($svgFile !== null) {
         file_put_contents("{$docs}/examples/charts/{$name}.svg", $files[$svgFile]);
-        $figure = "<img src=\"charts/{$name}.svg\" alt=\"{$label}\" loading=\"lazy\">";
+        $figure = "<img src=\"charts/{$name}.svg\" alt=\"{$label}\" loading=\"lazy\" style=\"max-width:100%;height:auto\">";
     } else {
         $figure = Html::deferred("charts/{$name}.json", ['actions' => false], ['aria-label' => $label]);
     }

@@ -48,17 +48,17 @@
         {
             "path": "examples/layers",
             "title": "Layer points and a fitted line",
-            "description": "Adds a least-squares line and its 95% confidence band to a scatterplot with geom_smooth(method: 'lm')."
+            "description": "Adds a fitted line to a scatterplot and explains what its confidence band covers."
         },
         {
             "path": "examples/facets",
             "title": "Compare groups with facets",
-            "description": "Draws one scatterplot panel for each group with facet_wrap(), on shared or free axis scales."
+            "description": "Draws one panel per group and explains shared and free axis scales."
         },
         {
             "path": "examples/save",
             "title": "Save a chart to a file",
-            "description": "Writes HTML that the browser draws, or SVG, PNG, JPG, and PDF images rendered by vl-convert, with save()."
+            "description": "Writes one chart as an interactive HTML page and as static SVG and PNG images."
         }
     ],
     "docs": {

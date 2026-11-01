@@ -594,41 +594,54 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div id="tabset-1-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-1-1-tab">
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode php code-with-copy"><code class="sourceCode php"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="kw">use</span> Phiz\Datasets<span class="ot">;</span></span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="kw">use</span> <span class="kw">function</span> Phiz\{aes<span class="ot">,</span> geom_point<span class="ot">,</span> geom_smooth<span class="ot">,</span> ggplot<span class="ot">,</span> labs}<span class="ot">;</span></span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="va">$plot</span> <span class="op">=</span> ggplot(Datasets::mpg()<span class="ot">,</span> aes(x<span class="ot">:</span> <span class="st">'displ'</span><span class="ot">,</span> y<span class="ot">:</span> <span class="st">'hwy'</span>)) <span class="op">|&gt;</span></span>
-<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>    geom_point(alpha<span class="ot">:</span> <span class="fl">0.5</span>) <span class="op">|&gt;</span></span>
-<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>    geom_smooth(method<span class="ot">:</span> <span class="st">'lm'</span>) <span class="op">|&gt;</span></span>
-<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>    labs(x<span class="ot">:</span> <span class="st">'Engine displacement (L)'</span><span class="ot">,</span> y<span class="ot">:</span> <span class="st">'Highway miles per gallon'</span>)<span class="ot">;</span></span>
-<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a><span class="va">$plot</span>-&gt;save(<span class="st">'layers.html'</span>)<span class="ot">;</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="kw">use</span> <span class="kw">function</span> Phiz\{</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>    aes<span class="ot">,</span> geom_point<span class="ot">,</span> geom_smooth<span class="ot">,</span> ggplot<span class="ot">,</span> labs<span class="ot">,</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>}<span class="ot">;</span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="va">$mpg</span> <span class="op">=</span> Datasets::mpg()<span class="ot">;</span></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="va">$plot</span> <span class="op">=</span> ggplot(<span class="va">$mpg</span><span class="ot">,</span> aes(x<span class="ot">:</span> <span class="st">'displ'</span><span class="ot">,</span> y<span class="ot">:</span> <span class="st">'hwy'</span>)) <span class="op">|&gt;</span></span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>    geom_point(alpha<span class="ot">:</span> <span class="fl">0.5</span>) <span class="op">|&gt;</span></span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>    geom_smooth(method<span class="ot">:</span> <span class="st">'lm'</span>) <span class="op">|&gt;</span></span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>    labs(</span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>        x<span class="ot">:</span> <span class="st">'Engine displacement (L)'</span><span class="ot">,</span></span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a>        y<span class="ot">:</span> <span class="st">'Highway miles per gallon'</span><span class="ot">,</span></span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a>    )<span class="ot">;</span></span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a><span class="va">$plot</span>-&gt;save(<span class="st">'layers.html'</span>)<span class="ot">;</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <div id="tabset-1-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-1-2-tab">
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode php code-with-copy"><code class="sourceCode php"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="kw">use</span> Phiz\Datasets<span class="ot">;</span></span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="kw">use</span> Phiz\Plot<span class="ot">;</span></span>
 <span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="va">$plot</span> <span class="op">=</span> Plot::of(Datasets::mpg())</span>
-<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>    -&gt;aes(x<span class="ot">:</span> <span class="st">'displ'</span><span class="ot">,</span> y<span class="ot">:</span> <span class="st">'hwy'</span>)</span>
-<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>    -&gt;point(alpha<span class="ot">:</span> <span class="fl">0.5</span>)</span>
-<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>    -&gt;smooth(method<span class="ot">:</span> <span class="st">'lm'</span>)</span>
-<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>    -&gt;labs(x<span class="ot">:</span> <span class="st">'Engine displacement (L)'</span><span class="ot">,</span> y<span class="ot">:</span> <span class="st">'Highway miles per gallon'</span>)<span class="ot">;</span></span>
-<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a><span class="va">$plot</span>-&gt;save(<span class="st">'layers.html'</span>)<span class="ot">;</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="va">$mpg</span> <span class="op">=</span> Datasets::mpg()<span class="ot">;</span></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a><span class="va">$plot</span> <span class="op">=</span> Plot::of(<span class="va">$mpg</span>)</span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>    -&gt;aes(x<span class="ot">:</span> <span class="st">'displ'</span><span class="ot">,</span> y<span class="ot">:</span> <span class="st">'hwy'</span>)</span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>    -&gt;point(alpha<span class="ot">:</span> <span class="fl">0.5</span>)</span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>    -&gt;smooth(method<span class="ot">:</span> <span class="st">'lm'</span>)</span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>    -&gt;labs(</span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>        x<span class="ot">:</span> <span class="st">'Engine displacement (L)'</span><span class="ot">,</span></span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>        y<span class="ot">:</span> <span class="st">'Highway miles per gallon'</span><span class="ot">,</span></span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a>    )<span class="ot">;</span></span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a><span class="va">$plot</span>-&gt;save(<span class="st">'layers.html'</span>)<span class="ot">;</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 </div>
 </div>
-<p>Runnable scripts: <a href="https://github.com/phpstats/phiz/blob/main/docs/examples/scripts/layers.php"><code>layers.php</code></a> (PHP 8.5+) and <a href="https://github.com/phpstats/phiz/blob/main/docs/examples/scripts/layers.chain.php"><code>layers.chain.php</code></a> (PHP 8.3–8.4).</p>
+<p>Runnable script: <a href="https://github.com/phpstats/phiz/blob/main/docs/examples/scripts/layers.php"><code>layers.php</code></a> (PHP 8.5+) or <a href="https://github.com/phpstats/phiz/blob/main/docs/examples/scripts/layers.chain.php"><code>layers.chain.php</code></a> (PHP 8.3–8.4).</p>
 </section>
 <section id="result" class="level2">
 <h2 class="anchored" data-anchor-id="result">Result</h2>
 <div class="phiz-figure"><div data-phiz-deferred="" data-phiz-options="{&quot;actions&quot;:false}" aria-label="Layer points and a fitted line"><div data-phiz-view="" wire:ignore=""><a data-phiz-spec="" href="charts/layers.json">Vega-Lite specification</a></div></div></div>
 <ul>
-<li><strong>Inheritance.</strong> Both layers use the data and the <code>x</code> and <code>y</code> mappings given to <code>ggplot()</code> and <code>aes()</code>. A layer can add its own mappings or data, or set <code>inheritAes: false</code> to ignore the plot’s mappings.</li>
-<li><strong>The band.</strong> <code>method: 'lm'</code> fits a straight line by least squares. The shaded band is a 95% confidence interval for the mean highway economy at each displacement, so most individual cars fall outside it. phiz computes the fit and the band in PHP, and they match R’s <code>predict(fit, interval = "confidence")</code>. <code>level:</code> changes the confidence level, and <code>se: false</code> hides the band.</li>
-<li><strong>The fit.</strong> Cars with larger engines tend to have lower highway economy. At the largest displacements the points rise again, which a straight line cannot follow. The default method, loess, fits a local curve instead (<a href="../geoms.html#fitted-curves">Fitted curves</a>).</li>
-<li><strong>Transparency.</strong> <code>alpha: 0.5</code> makes overlapping points show as darker points.</li>
+<li><strong>Inheritance.</strong> Both layers use the data and the <code>x</code> and <code>y</code> mappings given to <code>ggplot()</code>. A layer’s own mappings or data override them.</li>
+<li><strong>The band.</strong> The band is a 95% confidence interval for the mean response, not a prediction interval for individual cars.</li>
+<li><strong>R parity.</strong> phiz computes the line and the band in PHP. They match R’s <code>predict(fit, interval = "confidence")</code>.</li>
+<li><strong>Straight line.</strong> The points rise again at the largest displacements, which a straight line cannot follow. The default method, loess, fits a local curve (<a href="../geoms.html#fitted-curves">Fitted curves</a>).</li>
+<li><strong>Association.</strong> Cars with larger engines tend to have lower highway economy in this data. The line describes that association, not the effect of changing a car’s engine.</li>
 </ul>
-<p>In R, the same chart is <code>ggplot(mpg, aes(displ, hwy)) + geom_point(alpha = 0.5) + geom_smooth(method = "lm")</code>.</p>
+<p>In R: <code>ggplot(mpg, aes(displ, hwy)) + geom_point(alpha = 0.5) + geom_smooth(method = "lm")</code>.</p>
 <p><strong>See also:</strong> <a href="../reference-plots.html#ggplot-function"><code>ggplot()</code></a> · <a href="../reference-plots.html#aes-function"><code>aes()</code></a> · <a href="../reference-geoms.html#point"><code>geom_point()</code> / <code>-&gt;point()</code></a> · <a href="../reference-geoms.html#smooth"><code>geom_smooth()</code> / <code>-&gt;smooth()</code></a> · <a href="../reference-themes.html#labs"><code>labs()</code></a> · <a href="../reference-output.html#save"><code>save()</code></a></p>
 
 

@@ -6,7 +6,8 @@ declare(strict_types=1);
  * Writes an HTML page of every example in catalog.php: the chart, a description, and the code that built it.
  * An output path ending in .md writes a Markdown fragment instead, which the documentation's gallery page includes.
  * With --specs=dir, the fragment's charts load their specs from dir/{id}.json as they scroll into view, so the page
- * does not embed every spec; the fragment links to them as {basename of dir}/{id}.json.
+ * does not embed every spec; the fragment links to them as {basename of dir}/{id}.json. The specs are sized to the
+ * documentation page by scripts/docs-fit.php.
  *
  *     php examples/gallery.php [output.html|output.md] [--svg=dir] [--specs=dir]
  *
@@ -34,7 +35,7 @@ foreach (array_slice($argv, 1) as $arg) {
 $catalog = require __DIR__.'/catalog.php';
 $source = file(__DIR__.'/catalog.php');
 
-/** The body of an example's build closure, dedented. */
+/** The body of an example's build closure, without the four spaces of indentation every catalog entry has. */
 $code = function (Closure $build) use ($source): string {
     $reflection = new ReflectionFunction($build);
     $lines = array_slice($source, $reflection->getStartLine() - 1, $reflection->getEndLine() - $reflection->getStartLine() + 1);
@@ -42,18 +43,12 @@ $code = function (Closure $build) use ($source): string {
     $text = preg_replace('/^.*?fn \(\) => /s', '', $text);
     $text = preg_replace('/\],\s*$/', '', rtrim($text));
     $lines = explode("\n", $text);
-    $indent = PHP_INT_MAX;
-    foreach (array_slice($lines, 1) as $line) {
-        if (trim($line) !== '') {
-            $indent = min($indent, strlen($line) - strlen(ltrim($line)));
-        }
-    }
-    $indent = $indent === PHP_INT_MAX ? 0 : max(0, $indent - 4);
 
-    return implode("\n", array_map(fn ($line, $i) => $i === 0 ? $line : substr($line, min($indent, strlen($line) - strlen(ltrim($line)))), $lines, array_keys($lines))).';';
+    return implode("\n", array_map(fn ($line, $i) => $i === 0 ? $line : preg_replace('/^ {1,4}/', '', $line), $lines, array_keys($lines))).';';
 };
 
 if (str_ends_with($output, '.md')) {
+    require_once __DIR__.'/../scripts/docs-fit.php';
     $markdown = [];
     if ($specDir !== null) {
         is_dir($specDir) || mkdir($specDir, 0777, true);
@@ -62,13 +57,13 @@ if (str_ends_with($output, '.md')) {
     foreach ($catalog as $id => [$section, $title, $description, $build]) {
         $chart = $build();
         if ($specDir !== null) {
-            file_put_contents("{$specDir}/{$id}.json", $chart->toJson());
+            file_put_contents("{$specDir}/{$id}.json", json_encode(docs_fit($chart), Phiz\Chart::JSON_FLAGS));
             $figure = Html::deferred(basename($specDir)."/{$id}.json", ['actions' => false], ['aria-label' => $title]);
         } else {
             $figure = Html::container($chart, ['actions' => false], ['aria-label' => $title]);
         }
         $markdown[$section] ??= "## {$section}\n\n";
-        $markdown[$section] .= "### {$title} {#{$id}}\n\n{$description}\n\n```{=html}\n<div class=\"phiz-figure\">"
+        $markdown[$section] .= "### {$title} {#{$id}}\n\n".($description === '' ? '' : "{$description}\n\n")."```{=html}\n<div class=\"phiz-figure\">"
             .$figure
             ."</div>\n```\n\n```php\n".$code($build)."\n```\n\n";
     }
@@ -82,7 +77,7 @@ $count = 0;
 foreach ($catalog as $id => [$section, $title, $description, $build]) {
     $chart = $build();
     $sections[$section] ??= '';
-    $sections[$section] .= '<article id="'.htmlspecialchars($id).'"><h3>'.htmlspecialchars($title).'</h3><p>'.htmlspecialchars($description).'</p>'
+    $sections[$section] .= '<article id="'.htmlspecialchars($id).'"><h3>'.htmlspecialchars($title).'</h3>'.($description === '' ? '' : '<p>'.htmlspecialchars($description).'</p>')
         .Html::container($chart, ['actions' => ['source' => true, 'editor' => true, 'export' => true, 'compiled' => false]], ['class' => 'chart'])
         .'<details><summary>Code</summary><pre><code>'.htmlspecialchars($code($build)).'</code></pre></details></article>'."\n";
     if ($svgDir !== null) {

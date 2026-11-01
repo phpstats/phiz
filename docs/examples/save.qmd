@@ -10,7 +10,7 @@ The chart plots weight against fuel economy for the 32 cars of R's `mtcars` data
 
 {{< include ../_generated/example-save-code.md >}}
 
-Runnable scripts: [`save.php`](https://github.com/phpstats/phiz/blob/main/docs/examples/scripts/save.php) (PHP 8.5+) and [`save.chain.php`](https://github.com/phpstats/phiz/blob/main/docs/examples/scripts/save.chain.php) (PHP 8.3–8.4).
+Runnable script: [`save.php`](https://github.com/phpstats/phiz/blob/main/docs/examples/scripts/save.php) (PHP 8.5+) or [`save.chain.php`](https://github.com/phpstats/phiz/blob/main/docs/examples/scripts/save.chain.php) (PHP 8.3–8.4).
 
 ## Result
 
@@ -18,12 +18,12 @@ The SVG file:
 
 {{< include ../_generated/example-save-output.md >}}
 
-`save()` picks the format from the file extension: `html` (or `htm`), `json`, `svg`, `png`, `jpg` (or `jpeg`), or `pdf`. Any other extension throws an `InvalidArgumentException`.
+The file extension picks the format: `html` (or `htm`), `json` for the Vega-Lite specification, `svg`, `png`, `jpg` (or `jpeg`), or `pdf`.
 
-- **HTML is drawn by the browser.** The page holds the Vega-Lite specification and loads vega, vega-lite, and vega-embed from the jsDelivr CDN, so it needs a network connection to display. Tooltips and other interaction work there. For a page that works offline, write `$plot->html(assets: Assets::inline(...))` to a file ([HTML](../rendering.qmd#html)).
-- **Images are rendered by vl-convert.** SVG, PNG, JPG, and PDF need the vl-convert binary, which renders without a browser. Without it, `save()` throws `Phiz\Exceptions\VlConvertNotFound` with installation instructions ([Installing vl-convert](../rendering.qmd#installing-vl-convert)). Images are static, so interaction is lost.
-- **`scale: 2`** doubles the pixel dimensions of PNG and JPG files. It is also the default.
-- **`json`** writes the Vega-Lite specification.
-- **Reproducibility.** With the same vl-convert version, the same specification produces the same SVG bytes on every run, except for unseeded jitter ([Reproducible SVG](../rendering.qmd#reproducible-svg)).
+- **HTML needs a network connection.** The page loads vega, vega-lite, and vega-embed from the jsDelivr CDN and draws the chart in the browser. [`Assets::inline()`](../rendering.qmd#html) embeds the libraries for offline use.
+- **Images need vl-convert.** The vl-convert binary renders SVG, PNG, JPG, and PDF without a browser. Without it, `save()` throws `VlConvertNotFound` ([Installing vl-convert](../rendering.qmd#installing-vl-convert)).
+- **Images are static.** Tooltips and other interaction work only in the HTML file.
+- **Image size.** An image has no page width to fill, so `size(640, 360)` sets its plot area in pixels. Without it, Vega-Lite's default size applies.
+- **Reproducible SVG.** With the same vl-convert version, the same specification gives the same SVG bytes on every run, except for unseeded jitter ([Reproducible SVG](../rendering.qmd#reproducible-svg)).
 
-**See also:** [`save()`](../reference-output.qmd#save) · [`html()`](../reference-output.qmd#html) · [`svg()`](../reference-output.qmd#svg) · [`png()`](../reference-output.qmd#png) · [`pdf()`](../reference-output.qmd#pdf) · [Rendering](../rendering.qmd)
+**See also:** [`save()`](../reference-output.qmd#save) · [`size()`](../reference-themes.qmd#size) · [`html()`](../reference-output.qmd#html) · [`svg()`](../reference-output.qmd#svg) · [`png()`](../reference-output.qmd#png) · [`pdf()`](../reference-output.qmd#pdf) · [Rendering](../rendering.qmd)

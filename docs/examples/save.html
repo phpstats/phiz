@@ -567,46 +567,58 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div id="tabset-1-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-1-1-tab">
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode php code-with-copy"><code class="sourceCode php"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="kw">use</span> Phiz\Datasets<span class="ot">;</span></span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="kw">use</span> <span class="kw">function</span> Phiz\{aes<span class="ot">,</span> geom_point<span class="ot">,</span> ggplot<span class="ot">,</span> labs}<span class="ot">;</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="kw">use</span> <span class="kw">function</span> Phiz\{aes<span class="ot">,</span> geom_point<span class="ot">,</span> ggplot<span class="ot">,</span> labs<span class="ot">,</span> size}<span class="ot">;</span></span>
 <span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="va">$plot</span> <span class="op">=</span> ggplot(Datasets::mtcars()<span class="ot">,</span> aes(x<span class="ot">:</span> <span class="st">'wt'</span><span class="ot">,</span> y<span class="ot">:</span> <span class="st">'mpg'</span>)) <span class="op">|&gt;</span></span>
-<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>    geom_point() <span class="op">|&gt;</span></span>
-<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>    labs(x<span class="ot">:</span> <span class="st">'Weight (1,000 lb)'</span><span class="ot">,</span> y<span class="ot">:</span> <span class="st">'Miles per gallon'</span>)<span class="ot">;</span></span>
-<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="va">$plot</span>-&gt;save(<span class="st">'chart.html'</span>)<span class="ot">;</span>            <span class="co">// drawn by the browser</span></span>
-<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a><span class="va">$plot</span>-&gt;save(<span class="st">'chart.svg'</span>)<span class="ot">;</span>             <span class="co">// rendered by vl-convert</span></span>
-<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a><span class="va">$plot</span>-&gt;save(<span class="st">'chart.png'</span><span class="ot">,</span> scale<span class="ot">:</span> <span class="dv">2</span>)<span class="ot">;</span>   <span class="co">// rendered by vl-convert</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="va">$mtcars</span> <span class="op">=</span> Datasets::mtcars()<span class="ot">;</span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="va">$plot</span> <span class="op">=</span> ggplot(<span class="va">$mtcars</span><span class="ot">,</span> aes(x<span class="ot">:</span> <span class="st">'wt'</span><span class="ot">,</span> y<span class="ot">:</span> <span class="st">'mpg'</span>)) <span class="op">|&gt;</span></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>    geom_point() <span class="op">|&gt;</span></span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>    labs(x<span class="ot">:</span> <span class="st">'Weight (1,000 lb)'</span><span class="ot">,</span> y<span class="ot">:</span> <span class="st">'Miles per gallon'</span>) <span class="op">|&gt;</span></span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>    size(<span class="dv">640</span><span class="ot">,</span> <span class="dv">360</span>)<span class="ot">;</span></span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a><span class="co">// Drawn in the browser.</span></span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a><span class="va">$plot</span>-&gt;save(<span class="st">'chart.html'</span>)<span class="ot">;</span></span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a><span class="co">// Rendered by vl-convert.</span></span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a><span class="va">$plot</span>-&gt;save(<span class="st">'chart.svg'</span>)<span class="ot">;</span></span>
+<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a><span class="va">$plot</span>-&gt;save(<span class="st">'chart.png'</span><span class="ot">,</span> scale<span class="ot">:</span> <span class="dv">2</span>)<span class="ot">;</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <div id="tabset-1-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-1-2-tab">
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode php code-with-copy"><code class="sourceCode php"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="kw">use</span> Phiz\Datasets<span class="ot">;</span></span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="kw">use</span> Phiz\Plot<span class="ot">;</span></span>
 <span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="va">$plot</span> <span class="op">=</span> Plot::of(Datasets::mtcars())</span>
-<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>    -&gt;aes(x<span class="ot">:</span> <span class="st">'wt'</span><span class="ot">,</span> y<span class="ot">:</span> <span class="st">'mpg'</span>)</span>
-<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>    -&gt;point()</span>
-<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>    -&gt;labs(x<span class="ot">:</span> <span class="st">'Weight (1,000 lb)'</span><span class="ot">,</span> y<span class="ot">:</span> <span class="st">'Miles per gallon'</span>)<span class="ot">;</span></span>
-<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a><span class="va">$plot</span>-&gt;save(<span class="st">'chart.html'</span>)<span class="ot">;</span>            <span class="co">// drawn by the browser</span></span>
-<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a><span class="va">$plot</span>-&gt;save(<span class="st">'chart.svg'</span>)<span class="ot">;</span>             <span class="co">// rendered by vl-convert</span></span>
-<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a><span class="va">$plot</span>-&gt;save(<span class="st">'chart.png'</span><span class="ot">,</span> scale<span class="ot">:</span> <span class="dv">2</span>)<span class="ot">;</span>   <span class="co">// rendered by vl-convert</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="va">$mtcars</span> <span class="op">=</span> Datasets::mtcars()<span class="ot">;</span></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a><span class="va">$plot</span> <span class="op">=</span> Plot::of(<span class="va">$mtcars</span>)</span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>    -&gt;aes(x<span class="ot">:</span> <span class="st">'wt'</span><span class="ot">,</span> y<span class="ot">:</span> <span class="st">'mpg'</span>)</span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>    -&gt;point()</span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>    -&gt;labs(x<span class="ot">:</span> <span class="st">'Weight (1,000 lb)'</span><span class="ot">,</span> y<span class="ot">:</span> <span class="st">'Miles per gallon'</span>)</span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>    -&gt;size(<span class="dv">640</span><span class="ot">,</span> <span class="dv">360</span>)<span class="ot">;</span></span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a><span class="co">// Drawn in the browser.</span></span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a><span class="va">$plot</span>-&gt;save(<span class="st">'chart.html'</span>)<span class="ot">;</span></span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a><span class="co">// Rendered by vl-convert.</span></span>
+<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a><span class="va">$plot</span>-&gt;save(<span class="st">'chart.svg'</span>)<span class="ot">;</span></span>
+<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a><span class="va">$plot</span>-&gt;save(<span class="st">'chart.png'</span><span class="ot">,</span> scale<span class="ot">:</span> <span class="dv">2</span>)<span class="ot">;</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 </div>
 </div>
-<p>Runnable scripts: <a href="https://github.com/phpstats/phiz/blob/main/docs/examples/scripts/save.php"><code>save.php</code></a> (PHP 8.5+) and <a href="https://github.com/phpstats/phiz/blob/main/docs/examples/scripts/save.chain.php"><code>save.chain.php</code></a> (PHP 8.3–8.4).</p>
+<p>Runnable script: <a href="https://github.com/phpstats/phiz/blob/main/docs/examples/scripts/save.php"><code>save.php</code></a> (PHP 8.5+) or <a href="https://github.com/phpstats/phiz/blob/main/docs/examples/scripts/save.chain.php"><code>save.chain.php</code></a> (PHP 8.3–8.4).</p>
 </section>
 <section id="result" class="level2">
 <h2 class="anchored" data-anchor-id="result">Result</h2>
 <p>The SVG file:</p>
-<div class="phiz-figure"><img src="charts/save.svg" alt="Save a chart to a file" loading="lazy"></div>
-<p><code>save()</code> picks the format from the file extension: <code>html</code> (or <code>htm</code>), <code>json</code>, <code>svg</code>, <code>png</code>, <code>jpg</code> (or <code>jpeg</code>), or <code>pdf</code>. Any other extension throws an <code>InvalidArgumentException</code>.</p>
+<div class="phiz-figure"><img src="charts/save.svg" alt="Save a chart to a file" loading="lazy" style="max-width:100%;height:auto"></div>
+<p>The file extension picks the format: <code>html</code> (or <code>htm</code>), <code>json</code> for the Vega-Lite specification, <code>svg</code>, <code>png</code>, <code>jpg</code> (or <code>jpeg</code>), or <code>pdf</code>.</p>
 <ul>
-<li><strong>HTML is drawn by the browser.</strong> The page holds the Vega-Lite specification and loads vega, vega-lite, and vega-embed from the jsDelivr CDN, so it needs a network connection to display. Tooltips and other interaction work there. For a page that works offline, write <code>$plot-&gt;html(assets: Assets::inline(...))</code> to a file (<a href="../rendering.html#html">HTML</a>).</li>
-<li><strong>Images are rendered by vl-convert.</strong> SVG, PNG, JPG, and PDF need the vl-convert binary, which renders without a browser. Without it, <code>save()</code> throws <code>Phiz\Exceptions\VlConvertNotFound</code> with installation instructions (<a href="../rendering.html#installing-vl-convert">Installing vl-convert</a>). Images are static, so interaction is lost.</li>
-<li><strong><code>scale: 2</code></strong> doubles the pixel dimensions of PNG and JPG files. It is also the default.</li>
-<li><strong><code>json</code></strong> writes the Vega-Lite specification.</li>
-<li><strong>Reproducibility.</strong> With the same vl-convert version, the same specification produces the same SVG bytes on every run, except for unseeded jitter (<a href="../rendering.html#reproducible-svg">Reproducible SVG</a>).</li>
+<li><strong>HTML needs a network connection.</strong> The page loads vega, vega-lite, and vega-embed from the jsDelivr CDN and draws the chart in the browser. <a href="../rendering.html#html"><code>Assets::inline()</code></a> embeds the libraries for offline use.</li>
+<li><strong>Images need vl-convert.</strong> The vl-convert binary renders SVG, PNG, JPG, and PDF without a browser. Without it, <code>save()</code> throws <code>VlConvertNotFound</code> (<a href="../rendering.html#installing-vl-convert">Installing vl-convert</a>).</li>
+<li><strong>Images are static.</strong> Tooltips and other interaction work only in the HTML file.</li>
+<li><strong>Image size.</strong> An image has no page width to fill, so <code>size(640, 360)</code> sets its plot area in pixels. Without it, Vega-Lite’s default size applies.</li>
+<li><strong>Reproducible SVG.</strong> With the same vl-convert version, the same specification gives the same SVG bytes on every run, except for unseeded jitter (<a href="../rendering.html#reproducible-svg">Reproducible SVG</a>).</li>
 </ul>
-<p><strong>See also:</strong> <a href="../reference-output.html#save"><code>save()</code></a> · <a href="../reference-output.html#html"><code>html()</code></a> · <a href="../reference-output.html#svg"><code>svg()</code></a> · <a href="../reference-output.html#png"><code>png()</code></a> · <a href="../reference-output.html#pdf"><code>pdf()</code></a> · <a href="../rendering.html">Rendering</a></p>
+<p><strong>See also:</strong> <a href="../reference-output.html#save"><code>save()</code></a> · <a href="../reference-themes.html#size"><code>size()</code></a> · <a href="../reference-output.html#html"><code>html()</code></a> · <a href="../reference-output.html#svg"><code>svg()</code></a> · <a href="../reference-output.html#png"><code>png()</code></a> · <a href="../reference-output.html#pdf"><code>pdf()</code></a> · <a href="../rendering.html">Rendering</a></p>
 
 
 </section>

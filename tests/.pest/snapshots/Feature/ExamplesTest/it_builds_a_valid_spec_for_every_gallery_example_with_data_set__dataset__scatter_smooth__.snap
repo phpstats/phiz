@@ -1,6 +1,5 @@
 {
     "$schema": "https://vega.github.io/schema/vega-lite/v6.json",
-    "title": "Bigger engines, fewer miles",
     "data": {
         "values": [
             {

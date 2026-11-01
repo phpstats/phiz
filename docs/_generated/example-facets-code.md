@@ -5,9 +5,13 @@
 ```php
 use Phiz\Datasets;
 
-use function Phiz\{aes, facet_wrap, geom_point, ggplot, labs};
+use function Phiz\{
+    aes, facet_wrap, geom_point, ggplot, labs,
+};
 
-$plot = ggplot(Datasets::mtcars(), aes(x: 'wt', y: 'mpg')) |>
+$mtcars = Datasets::mtcars();
+
+$plot = ggplot($mtcars, aes(x: 'wt', y: 'mpg')) |>
     geom_point() |>
     facet_wrap('cyl', ncol: 3) |>
     labs(x: 'Weight (1,000 lb)', y: 'Miles per gallon');
@@ -21,7 +25,9 @@ $plot->save('facets.html');
 use Phiz\Datasets;
 use Phiz\Plot;
 
-$plot = Plot::of(Datasets::mtcars())
+$mtcars = Datasets::mtcars();
+
+$plot = Plot::of($mtcars)
     ->aes(x: 'wt', y: 'mpg')
     ->point()
     ->facetWrap('cyl', ncol: 3)

@@ -20,17 +20,18 @@ Plot highway fuel economy against engine displacement, then add a least-squares 
 
 {{< include ../_generated/example-layers-code.md >}}
 
-Runnable scripts: [`layers.php`](https://github.com/phpstats/phiz/blob/main/docs/examples/scripts/layers.php) (PHP 8.5+) and [`layers.chain.php`](https://github.com/phpstats/phiz/blob/main/docs/examples/scripts/layers.chain.php) (PHP 8.3–8.4).
+Runnable script: [`layers.php`](https://github.com/phpstats/phiz/blob/main/docs/examples/scripts/layers.php) (PHP 8.5+) or [`layers.chain.php`](https://github.com/phpstats/phiz/blob/main/docs/examples/scripts/layers.chain.php) (PHP 8.3–8.4).
 
 ## Result
 
 {{< include ../_generated/example-layers-output.md >}}
 
-- **Inheritance.** Both layers use the data and the `x` and `y` mappings given to `ggplot()` and `aes()`. A layer can add its own mappings or data, or set `inheritAes: false` to ignore the plot's mappings.
-- **The band.** `method: 'lm'` fits a straight line by least squares. The shaded band is a 95% confidence interval for the mean highway economy at each displacement, so most individual cars fall outside it. phiz computes the fit and the band in PHP, and they match R's `predict(fit, interval = "confidence")`. `level:` changes the confidence level, and `se: false` hides the band.
-- **The fit.** Cars with larger engines tend to have lower highway economy. At the largest displacements the points rise again, which a straight line cannot follow. The default method, loess, fits a local curve instead ([Fitted curves](../geoms.qmd#fitted-curves)).
-- **Transparency.** `alpha: 0.5` makes overlapping points show as darker points.
+- **Inheritance.** Both layers use the data and the `x` and `y` mappings given to `ggplot()`. A layer's own mappings or data override them.
+- **The band.** The band is a 95% confidence interval for the mean response, not a prediction interval for individual cars.
+- **R parity.** phiz computes the line and the band in PHP. They match R's `predict(fit, interval = "confidence")`.
+- **Straight line.** The points rise again at the largest displacements, which a straight line cannot follow. The default method, loess, fits a local curve ([Fitted curves](../geoms.qmd#fitted-curves)).
+- **Association.** Cars with larger engines tend to have lower highway economy in this data. The line describes that association, not the effect of changing a car's engine.
 
-In R, the same chart is `ggplot(mpg, aes(displ, hwy)) + geom_point(alpha = 0.5) + geom_smooth(method = "lm")`.
+In R: `ggplot(mpg, aes(displ, hwy)) + geom_point(alpha = 0.5) + geom_smooth(method = "lm")`.
 
 **See also:** [`ggplot()`](../reference-plots.qmd#ggplot-function) · [`aes()`](../reference-plots.qmd#aes-function) · [`geom_point()` / `->point()`](../reference-geoms.qmd#point) · [`geom_smooth()` / `->smooth()`](../reference-geoms.qmd#smooth) · [`labs()`](../reference-themes.qmd#labs) · [`save()`](../reference-output.qmd#save)

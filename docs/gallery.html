@@ -627,33 +627,44 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <h2 class="anchored" data-anchor-id="basics">Basics</h2>
 <section id="scatter" class="level3">
 <h3 class="anchored" data-anchor-id="scatter">Scatterplot</h3>
-<p>Points with a color mapping.</p>
 <div class="phiz-figure"><div data-phiz-deferred="" data-phiz-options="{&quot;actions&quot;:false}" aria-label="Scatterplot"><div data-phiz-view="" wire:ignore=""><a data-phiz-spec="" href="gallery/scatter.json">Vega-Lite specification</a></div></div></div>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode php code-with-copy"><code class="sourceCode php"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>Plot::of(<span class="va">$mpg</span>)</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>    -&gt;aes(x<span class="ot">:</span> <span class="st">'displ'</span><span class="ot">,</span> y<span class="ot">:</span> <span class="st">'hwy'</span><span class="ot">,</span> color<span class="ot">:</span> <span class="st">'class'</span>)</span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>    -&gt;point()</span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>    -&gt;labs(x<span class="ot">:</span> <span class="st">'Engine displacement (L)'</span><span class="ot">,</span> y<span class="ot">:</span> <span class="st">'Highway mpg'</span><span class="ot">,</span> color<span class="ot">:</span> <span class="st">'Class'</span>)<span class="ot">;</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>    -&gt;labs(</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>        x<span class="ot">:</span> <span class="st">'Engine displacement (L)'</span><span class="ot">,</span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>        y<span class="ot">:</span> <span class="st">'Highway mpg'</span><span class="ot">,</span></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>        color<span class="ot">:</span> <span class="st">'Class'</span><span class="ot">,</span></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>    )<span class="ot">;</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </section>
 <section id="scatter-smooth" class="level3">
 <h3 class="anchored" data-anchor-id="scatter-smooth">Linear fit with confidence band</h3>
-<p>lm fits are computed in PHP, with a 95% band, per group.</p>
+<p>One least-squares line and 95% confidence band per group, computed in PHP.</p>
 <div class="phiz-figure"><div data-phiz-deferred="" data-phiz-options="{&quot;actions&quot;:false}" aria-label="Linear fit with confidence band"><div data-phiz-view="" wire:ignore=""><a data-phiz-spec="" href="gallery/scatter-smooth.json">Vega-Lite specification</a></div></div></div>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode php code-with-copy"><code class="sourceCode php"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>Plot::of(<span class="va">$mpg</span>)</span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>    -&gt;aes(x<span class="ot">:</span> <span class="st">'displ'</span><span class="ot">,</span> y<span class="ot">:</span> <span class="st">'hwy'</span><span class="ot">,</span> color<span class="ot">:</span> <span class="st">'drv'</span>)</span>
 <span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>    -&gt;point(alpha<span class="ot">:</span> <span class="fl">0.5</span>)</span>
 <span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>    -&gt;smooth(method<span class="ot">:</span> <span class="st">'lm'</span>)</span>
-<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>    -&gt;labs(title<span class="ot">:</span> <span class="st">'Bigger engines, fewer miles'</span><span class="ot">,</span> x<span class="ot">:</span> <span class="st">'Displacement (L)'</span><span class="ot">,</span> y<span class="ot">:</span> <span class="st">'Highway mpg'</span><span class="ot">,</span> color<span class="ot">:</span> <span class="st">'Drive'</span>)<span class="ot">;</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>    -&gt;labs(</span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>        x<span class="ot">:</span> <span class="st">'Displacement (L)'</span><span class="ot">,</span></span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>        y<span class="ot">:</span> <span class="st">'Highway mpg'</span><span class="ot">,</span></span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>        color<span class="ot">:</span> <span class="st">'Drive'</span><span class="ot">,</span></span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>    )<span class="ot">;</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </section>
 <section id="pipe" class="level3">
 <h3 class="anchored" data-anchor-id="pipe">With ggplot2-style functions</h3>
 <p>ggplot2-style functions compose with apply(), or with the pipe operator on PHP 8.5.</p>
 <div class="phiz-figure"><div data-phiz-deferred="" data-phiz-options="{&quot;actions&quot;:false}" aria-label="With ggplot2-style functions"><div data-phiz-view="" wire:ignore=""><a data-phiz-spec="" href="gallery/pipe.json">Vega-Lite specification</a></div></div></div>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode php code-with-copy"><code class="sourceCode php"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>ggplot(<span class="va">$mpg</span><span class="ot">,</span> aes(x<span class="ot">:</span> <span class="st">'displ'</span><span class="ot">,</span> y<span class="ot">:</span> <span class="st">'hwy'</span>))-&gt;apply(</span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>        geom_point(alpha<span class="ot">:</span> <span class="fl">0.4</span>)<span class="ot">,</span></span>
-<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>        geom_smooth(span<span class="ot">:</span> <span class="fl">0.5</span>)<span class="ot">,</span></span>
-<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>        labs(title<span class="ot">:</span> <span class="st">'Loess smooth'</span><span class="ot">,</span> x<span class="ot">:</span> <span class="st">'Displacement (L)'</span><span class="ot">,</span> y<span class="ot">:</span> <span class="st">'Highway mpg'</span>)<span class="ot">,</span></span>
-<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>        theme_minimal()<span class="ot">,</span></span>
-<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>    )<span class="ot">;</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>    geom_point(alpha<span class="ot">:</span> <span class="fl">0.4</span>)<span class="ot">,</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>    geom_smooth(span<span class="ot">:</span> <span class="fl">0.5</span>)<span class="ot">,</span></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>    labs(</span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>        title<span class="ot">:</span> <span class="st">'Loess smooth'</span><span class="ot">,</span></span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>        x<span class="ot">:</span> <span class="st">'Displacement (L)'</span><span class="ot">,</span></span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>        y<span class="ot">:</span> <span class="st">'Highway mpg'</span><span class="ot">,</span></span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>    )<span class="ot">,</span></span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>    theme_minimal()<span class="ot">,</span></span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>)<span class="ot">;</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </section>
 <section id="line" class="level3">
 <h3 class="anchored" data-anchor-id="line">Time series</h3>
@@ -662,23 +673,34 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode php code-with-copy"><code class="sourceCode php"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>Plot::of(<span class="va">$economics</span>)</span>
 <span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>    -&gt;aes(x<span class="ot">:</span> <span class="st">'date'</span><span class="ot">,</span> y<span class="ot">:</span> <span class="st">'unemploy'</span>)</span>
 <span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>    -&gt;line(color<span class="ot">:</span> <span class="st">'#1F77B4'</span>)</span>
-<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>    -&gt;labs(title<span class="ot">:</span> <span class="st">'US unemployment'</span><span class="ot">,</span> x<span class="ot">:</span> <span class="kw">null</span><span class="ot">,</span> y<span class="ot">:</span> <span class="st">'Unemployed (thousands)'</span>)<span class="ot">;</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>    -&gt;labs(</span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>        title<span class="ot">:</span> <span class="st">'US unemployment'</span><span class="ot">,</span></span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>        x<span class="ot">:</span> <span class="kw">null</span><span class="ot">,</span></span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>        y<span class="ot">:</span> <span class="st">'Unemployed (thousands)'</span><span class="ot">,</span></span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>    )<span class="ot">;</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </section>
 <section id="area" class="level3">
 <h3 class="anchored" data-anchor-id="area">Stacked area</h3>
-<p>Areas stack by fill.</p>
+<p>Made-up monthly orders by channel. Areas stack by fill, so the top edge is the total.</p>
 <div class="phiz-figure"><div data-phiz-deferred="" data-phiz-options="{&quot;actions&quot;:false}" aria-label="Stacked area"><div data-phiz-view="" wire:ignore=""><a data-phiz-spec="" href="gallery/area.json">Vega-Lite specification</a></div></div></div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="sourceCode php code-with-copy"><code class="sourceCode php"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>Plot::of(<span class="fu">array_merge</span>(...<span class="fu">array_map</span>(<span class="kw">fn</span> (<span class="va">$r</span>) =&gt; [</span>
-<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>        [<span class="st">'date'</span> =&gt; <span class="va">$r</span>[<span class="st">'date'</span>]<span class="ot">,</span> <span class="st">'series'</span> =&gt; <span class="st">'Unemployed'</span><span class="ot">,</span> <span class="st">'value'</span> =&gt; <span class="va">$r</span>[<span class="st">'unemploy'</span>]]<span class="ot">,</span></span>
-<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>        [<span class="st">'date'</span> =&gt; <span class="va">$r</span>[<span class="st">'date'</span>]<span class="ot">,</span> <span class="st">'series'</span> =&gt; <span class="st">'Median weeks unemployed (x1000)'</span><span class="ot">,</span> <span class="st">'value'</span> =&gt; <span class="va">$r</span>[<span class="st">'uempmed'</span>] <span class="op">*</span> <span class="dv">1000</span>]<span class="ot">,</span></span>
-<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>    ]<span class="ot">,</span> <span class="fu">array_slice</span>(<span class="va">$economics</span><span class="ot">,</span> <span class="op">-</span><span class="dv">120</span>))))</span>
-<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>        -&gt;aes(x<span class="ot">:</span> <span class="st">'date'</span><span class="ot">,</span> y<span class="ot">:</span> <span class="st">'value'</span><span class="ot">,</span> fill<span class="ot">:</span> <span class="st">'series'</span>)</span>
-<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>        -&gt;area(alpha<span class="ot">:</span> <span class="fl">0.8</span>)</span>
-<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>        -&gt;theme(legendPosition<span class="ot">:</span> <span class="st">'bottom'</span>)<span class="ot">;</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="sourceCode php code-with-copy"><code class="sourceCode php"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>Plot::of(<span class="fu">array_merge</span>(...<span class="fu">array_map</span>(</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>    <span class="kw">fn</span> (<span class="va">$month</span>) =&gt; [</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>        [<span class="st">'month'</span> =&gt; <span class="va">$month</span><span class="ot">,</span> <span class="st">'channel'</span> =&gt; <span class="st">'Web'</span><span class="ot">,</span></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>            <span class="st">'orders'</span> =&gt; <span class="dv">400</span> <span class="op">+</span> <span class="dv">12</span> <span class="op">*</span> <span class="va">$month</span>]<span class="ot">,</span></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>        [<span class="st">'month'</span> =&gt; <span class="va">$month</span><span class="ot">,</span> <span class="st">'channel'</span> =&gt; <span class="st">'App'</span><span class="ot">,</span></span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>            <span class="st">'orders'</span> =&gt; <span class="dv">150</span> <span class="op">+</span> <span class="dv">20</span> <span class="op">*</span> <span class="va">$month</span>]<span class="ot">,</span></span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>        [<span class="st">'month'</span> =&gt; <span class="va">$month</span><span class="ot">,</span> <span class="st">'channel'</span> =&gt; <span class="st">'Store'</span><span class="ot">,</span></span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>            <span class="st">'orders'</span> =&gt; <span class="dv">300</span> <span class="op">-</span> <span class="dv">6</span> <span class="op">*</span> <span class="va">$month</span>]<span class="ot">,</span></span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>    ]<span class="ot">,</span></span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a>    <span class="fu">range</span>(<span class="dv">1</span><span class="ot">,</span> <span class="dv">24</span>)<span class="ot">,</span></span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a>)))</span>
+<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a>    -&gt;aes(x<span class="ot">:</span> <span class="st">'month'</span><span class="ot">,</span> y<span class="ot">:</span> <span class="st">'orders'</span><span class="ot">,</span> fill<span class="ot">:</span> <span class="st">'channel'</span>)</span>
+<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a>    -&gt;area(alpha<span class="ot">:</span> <span class="fl">0.8</span>)</span>
+<span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a>    -&gt;labs(x<span class="ot">:</span> <span class="st">'Month'</span><span class="ot">,</span> y<span class="ot">:</span> <span class="st">'Orders'</span><span class="ot">,</span> fill<span class="ot">:</span> <span class="st">'Channel'</span>)<span class="ot">;</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </section>
 <section id="text" class="level3">
 <h3 class="anchored" data-anchor-id="text">Labels</h3>
-<p>Text labels with nudges.</p>
+<p>nudgeY moves each label above its point.</p>
 <div class="phiz-figure"><div data-phiz-deferred="" data-phiz-options="{&quot;actions&quot;:false}" aria-label="Labels"><div data-phiz-view="" wire:ignore=""><a data-phiz-spec="" href="gallery/text.json">Vega-Lite specification</a></div></div></div>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb6"><pre class="sourceCode php code-with-copy"><code class="sourceCode php"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>Plot::of(<span class="fu">array_slice</span>(<span class="va">$mtcars</span><span class="ot">,</span> <span class="dv">0</span><span class="ot">,</span> <span class="dv">12</span>))</span>
 <span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>    -&gt;aes(x<span class="ot">:</span> <span class="st">'wt'</span><span class="ot">,</span> y<span class="ot">:</span> <span class="st">'mpg'</span><span class="ot">,</span> label<span class="ot">:</span> <span class="st">'model'</span>)</span>
@@ -691,7 +713,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <h2 class="anchored" data-anchor-id="distributions">Distributions</h2>
 <section id="histogram" class="level3">
 <h3 class="anchored" data-anchor-id="histogram">Histogram</h3>
-<p>Binned counts; bins sets the maximum number of bins.</p>
+<p>bins sets the maximum number of bins.</p>
 <div class="phiz-figure"><div data-phiz-deferred="" data-phiz-options="{&quot;actions&quot;:false}" aria-label="Histogram"><div data-phiz-view="" wire:ignore=""><a data-phiz-spec="" href="gallery/histogram.json">Vega-Lite specification</a></div></div></div>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb7"><pre class="sourceCode php code-with-copy"><code class="sourceCode php"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>Plot::of(<span class="va">$faithful</span>)</span>
 <span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>    -&gt;aes(x<span class="ot">:</span> <span class="st">'waiting'</span>)</span>
@@ -700,17 +722,22 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="histogram-density" class="level3">
 <h3 class="anchored" data-anchor-id="histogram-density">Histogram with density</h3>
-<p>density: true scales bars to unit area, so a KDE overlays.</p>
+<p>density: true scales the bars to unit area, so a density curve can overlay them.</p>
 <div class="phiz-figure"><div data-phiz-deferred="" data-phiz-options="{&quot;actions&quot;:false}" aria-label="Histogram with density"><div data-phiz-view="" wire:ignore=""><a data-phiz-spec="" href="gallery/histogram-density.json">Vega-Lite specification</a></div></div></div>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb8"><pre class="sourceCode php code-with-copy"><code class="sourceCode php"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>Plot::of(<span class="va">$faithful</span>)</span>
 <span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>    -&gt;aes(x<span class="ot">:</span> <span class="st">'eruptions'</span>)</span>
-<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>    -&gt;histogram(binwidth<span class="ot">:</span> <span class="fl">0.25</span><span class="ot">,</span> density<span class="ot">:</span> <span class="kw">true</span><span class="ot">,</span> fill<span class="ot">:</span> <span class="st">'#DDDDDD'</span><span class="ot">,</span> color<span class="ot">:</span> <span class="st">'#999999'</span>)</span>
-<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>    -&gt;density(color<span class="ot">:</span> <span class="st">'#D62728'</span><span class="ot">,</span> linewidth<span class="ot">:</span> <span class="dv">2</span>)</span>
-<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>    -&gt;labs(x<span class="ot">:</span> <span class="st">'Eruption length (minutes)'</span>)<span class="ot">;</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>    -&gt;histogram(</span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>        binwidth<span class="ot">:</span> <span class="fl">0.25</span><span class="ot">,</span></span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>        density<span class="ot">:</span> <span class="kw">true</span><span class="ot">,</span></span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>        fill<span class="ot">:</span> <span class="st">'#DDDDDD'</span><span class="ot">,</span></span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>        color<span class="ot">:</span> <span class="st">'#999999'</span><span class="ot">,</span></span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a>    -&gt;density(color<span class="ot">:</span> <span class="st">'#D62728'</span><span class="ot">,</span> linewidth<span class="ot">:</span> <span class="dv">2</span>)</span>
+<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a>    -&gt;labs(x<span class="ot">:</span> <span class="st">'Eruption length (minutes)'</span>)<span class="ot">;</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </section>
 <section id="density" class="level3">
 <h3 class="anchored" data-anchor-id="density">Density by group</h3>
-<p>Kernel densities per group with Vega-Lite’s density transform.</p>
+<p>Computed in the browser by Vega-Lite’s density transform.</p>
 <div class="phiz-figure"><div data-phiz-deferred="" data-phiz-options="{&quot;actions&quot;:false}" aria-label="Density by group"><div data-phiz-view="" wire:ignore=""><a data-phiz-spec="" href="gallery/density.json">Vega-Lite specification</a></div></div></div>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb9"><pre class="sourceCode php code-with-copy"><code class="sourceCode php"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>Plot::of(<span class="va">$mpg</span>)</span>
 <span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>    -&gt;aes(x<span class="ot">:</span> <span class="st">'hwy'</span><span class="ot">,</span> fill<span class="ot">:</span> <span class="st">'drv'</span>)</span>
@@ -730,7 +757,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="violin" class="level3">
 <h3 class="anchored" data-anchor-id="violin">Violins with boxplots</h3>
-<p>Densities per level, layered with boxplots, in ggplot2’s gray theme and hue palette.</p>
+<p>In ggplot2’s gray theme and hue palette.</p>
 <div class="phiz-figure"><div data-phiz-deferred="" data-phiz-options="{&quot;actions&quot;:false}" aria-label="Violins with boxplots"><div data-phiz-view="" wire:ignore=""><a data-phiz-spec="" href="gallery/violin.json">Vega-Lite specification</a></div></div></div>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb11"><pre class="sourceCode php code-with-copy"><code class="sourceCode php"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>Plot::of(<span class="va">$mpg</span>)</span>
 <span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>    -&gt;aes(x<span class="ot">:</span> <span class="st">'class'</span><span class="ot">,</span> y<span class="ot">:</span> <span class="st">'hwy'</span><span class="ot">,</span> fill<span class="ot">:</span> <span class="st">'class'</span>)</span>
@@ -742,7 +769,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="jitter" class="level3">
 <h3 class="anchored" data-anchor-id="jitter">Jittered strip plot</h3>
-<p>Points spread within each band.</p>
+<p>Each point moves randomly by up to 0.3 of a band.</p>
 <div class="phiz-figure"><div data-phiz-deferred="" data-phiz-options="{&quot;actions&quot;:false}" aria-label="Jittered strip plot"><div data-phiz-view="" wire:ignore=""><a data-phiz-spec="" href="gallery/jitter.json">Vega-Lite specification</a></div></div></div>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb12"><pre class="sourceCode php code-with-copy"><code class="sourceCode php"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>Plot::of(<span class="va">$mpg</span>)</span>
 <span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>    -&gt;aes(x<span class="ot">:</span> factor(<span class="st">'cyl'</span>)<span class="ot">,</span> y<span class="ot">:</span> <span class="st">'hwy'</span><span class="ot">,</span> color<span class="ot">:</span> factor(<span class="st">'cyl'</span>))</span>
@@ -752,16 +779,19 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="ecdf" class="level3">
 <h3 class="anchored" data-anchor-id="ecdf">Empirical CDF</h3>
-<p>Cumulative distributions per group.</p>
 <div class="phiz-figure"><div data-phiz-deferred="" data-phiz-options="{&quot;actions&quot;:false}" aria-label="Empirical CDF"><div data-phiz-view="" wire:ignore=""><a data-phiz-spec="" href="gallery/ecdf.json">Vega-Lite specification</a></div></div></div>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb13"><pre class="sourceCode php code-with-copy"><code class="sourceCode php"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>Plot::of(<span class="va">$mpg</span>)</span>
 <span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>    -&gt;aes(x<span class="ot">:</span> <span class="st">'cty'</span><span class="ot">,</span> color<span class="ot">:</span> <span class="st">'drv'</span>)</span>
 <span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>    -&gt;ecdf()</span>
-<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>    -&gt;labs(x<span class="ot">:</span> <span class="st">'City mpg'</span><span class="ot">,</span> y<span class="ot">:</span> <span class="st">'Proportion ≤ x'</span><span class="ot">,</span> color<span class="ot">:</span> <span class="st">'Drive'</span>)<span class="ot">;</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>    -&gt;labs(</span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>        x<span class="ot">:</span> <span class="st">'City mpg'</span><span class="ot">,</span></span>
+<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a>        y<span class="ot">:</span> <span class="st">'Proportion ≤ x'</span><span class="ot">,</span></span>
+<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a>        color<span class="ot">:</span> <span class="st">'Drive'</span><span class="ot">,</span></span>
+<span id="cb13-8"><a href="#cb13-8" aria-hidden="true" tabindex="-1"></a>    )<span class="ot">;</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </section>
 <section id="qq" class="level3">
 <h3 class="anchored" data-anchor-id="qq">QQ plot</h3>
-<p>Sample quantiles against normal quantiles, with the quartile line.</p>
+<p>Sample quantiles against normal quantiles, with the line through the quartiles.</p>
 <div class="phiz-figure"><div data-phiz-deferred="" data-phiz-options="{&quot;actions&quot;:false}" aria-label="QQ plot"><div data-phiz-view="" wire:ignore=""><a data-phiz-spec="" href="gallery/qq.json">Vega-Lite specification</a></div></div></div>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb14"><pre class="sourceCode php code-with-copy"><code class="sourceCode php"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>Plot::of(<span class="va">$mpg</span>)</span>
 <span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>    -&gt;aes(sample<span class="ot">:</span> <span class="st">'hwy'</span>)</span>
@@ -770,23 +800,31 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="density2d" class="level3">
 <h3 class="anchored" data-anchor-id="density2d">2D density</h3>
-<p>Filled density bands from MASS::kde2d, computed in PHP, with the points on top.</p>
+<p>Density bands computed in PHP as MASS::kde2d does, with the points on top.</p>
 <div class="phiz-figure"><div data-phiz-deferred="" data-phiz-options="{&quot;actions&quot;:false}" aria-label="2D density"><div data-phiz-view="" wire:ignore=""><a data-phiz-spec="" href="gallery/density2d.json">Vega-Lite specification</a></div></div></div>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb15"><pre class="sourceCode php code-with-copy"><code class="sourceCode php"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>Plot::of(<span class="va">$faithful</span>)</span>
 <span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>    -&gt;aes(x<span class="ot">:</span> <span class="st">'eruptions'</span><span class="ot">,</span> y<span class="ot">:</span> <span class="st">'waiting'</span>)</span>
 <span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>    -&gt;density2dFilled()</span>
 <span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>    -&gt;point(size<span class="ot">:</span> <span class="dv">6</span><span class="ot">,</span> color<span class="ot">:</span> <span class="st">'white'</span><span class="ot">,</span> alpha<span class="ot">:</span> <span class="fl">0.5</span>)</span>
-<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a>    -&gt;labs(x<span class="ot">:</span> <span class="st">'Eruption (minutes)'</span><span class="ot">,</span> y<span class="ot">:</span> <span class="st">'Waiting (minutes)'</span><span class="ot">,</span> fill<span class="ot">:</span> <span class="st">'density'</span>)<span class="ot">;</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a>    -&gt;labs(</span>
+<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a>        x<span class="ot">:</span> <span class="st">'Eruption (minutes)'</span><span class="ot">,</span></span>
+<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a>        y<span class="ot">:</span> <span class="st">'Waiting (minutes)'</span><span class="ot">,</span></span>
+<span id="cb15-8"><a href="#cb15-8" aria-hidden="true" tabindex="-1"></a>        fill<span class="ot">:</span> <span class="st">'density'</span><span class="ot">,</span></span>
+<span id="cb15-9"><a href="#cb15-9" aria-hidden="true" tabindex="-1"></a>    )<span class="ot">;</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </section>
 <section id="ellipse" class="level3">
 <h3 class="anchored" data-anchor-id="ellipse">Confidence ellipses</h3>
-<p>stat_ellipse: robust t ellipses per group.</p>
+<p>Multivariate t ellipses per group, as stat_ellipse() draws by default.</p>
 <div class="phiz-figure"><div data-phiz-deferred="" data-phiz-options="{&quot;actions&quot;:false}" aria-label="Confidence ellipses"><div data-phiz-view="" wire:ignore=""><a data-phiz-spec="" href="gallery/ellipse.json">Vega-Lite specification</a></div></div></div>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb16"><pre class="sourceCode php code-with-copy"><code class="sourceCode php"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>Plot::of(<span class="va">$mpg</span>)</span>
 <span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>    -&gt;aes(x<span class="ot">:</span> <span class="st">'displ'</span><span class="ot">,</span> y<span class="ot">:</span> <span class="st">'hwy'</span><span class="ot">,</span> color<span class="ot">:</span> <span class="st">'drv'</span>)</span>
 <span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>    -&gt;point(alpha<span class="ot">:</span> <span class="fl">0.5</span>)</span>
 <span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a>    -&gt;ellipse()</span>
-<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a>    -&gt;labs(x<span class="ot">:</span> <span class="st">'Displacement (L)'</span><span class="ot">,</span> y<span class="ot">:</span> <span class="st">'Highway mpg'</span><span class="ot">,</span> color<span class="ot">:</span> <span class="st">'Drive'</span>)<span class="ot">;</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a>    -&gt;labs(</span>
+<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a>        x<span class="ot">:</span> <span class="st">'Displacement (L)'</span><span class="ot">,</span></span>
+<span id="cb16-7"><a href="#cb16-7" aria-hidden="true" tabindex="-1"></a>        y<span class="ot">:</span> <span class="st">'Highway mpg'</span><span class="ot">,</span></span>
+<span id="cb16-8"><a href="#cb16-8" aria-hidden="true" tabindex="-1"></a>        color<span class="ot">:</span> <span class="st">'Drive'</span><span class="ot">,</span></span>
+<span id="cb16-9"><a href="#cb16-9" aria-hidden="true" tabindex="-1"></a>    )<span class="ot">;</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </section>
 </section>
 <section id="counts" class="level2">
@@ -802,7 +840,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="bar-dodge" class="level3">
 <h3 class="anchored" data-anchor-id="bar-dodge">Dodged bars</h3>
-<p>Groups side by side.</p>
 <div class="phiz-figure"><div data-phiz-deferred="" data-phiz-options="{&quot;actions&quot;:false}" aria-label="Dodged bars"><div data-phiz-view="" wire:ignore=""><a data-phiz-spec="" href="gallery/bar-dodge.json">Vega-Lite specification</a></div></div></div>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb18"><pre class="sourceCode php code-with-copy"><code class="sourceCode php"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>Plot::of(<span class="va">$mpg</span>)</span>
 <span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>    -&gt;aes(x<span class="ot">:</span> <span class="st">'class'</span><span class="ot">,</span> fill<span class="ot">:</span> <span class="st">'drv'</span>)</span>
@@ -811,7 +848,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="bar-fill" class="level3">
 <h3 class="anchored" data-anchor-id="bar-fill">Proportions</h3>
-<p>position: fill stacks to 100%.</p>
+<p>position: fill stacks each bar to 100%.</p>
 <div class="phiz-figure"><div data-phiz-deferred="" data-phiz-options="{&quot;actions&quot;:false}" aria-label="Proportions"><div data-phiz-view="" wire:ignore=""><a data-phiz-spec="" href="gallery/bar-fill.json">Vega-Lite specification</a></div></div></div>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb19"><pre class="sourceCode php code-with-copy"><code class="sourceCode php"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>Plot::of(<span class="va">$mpg</span>)</span>
 <span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>    -&gt;aes(x<span class="ot">:</span> <span class="st">'class'</span><span class="ot">,</span> fill<span class="ot">:</span> <span class="st">'drv'</span>)</span>
@@ -831,7 +868,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="tile" class="level3">
 <h3 class="anchored" data-anchor-id="tile">Heatmap</h3>
-<p>Tiles filled by an aggregate.</p>
+<p>Each tile is filled by the mean of its rows.</p>
 <div class="phiz-figure"><div data-phiz-deferred="" data-phiz-options="{&quot;actions&quot;:false}" aria-label="Heatmap"><div data-phiz-view="" wire:ignore=""><a data-phiz-spec="" href="gallery/tile.json">Vega-Lite specification</a></div></div></div>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb21"><pre class="sourceCode php code-with-copy"><code class="sourceCode php"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>Plot::of(<span class="va">$mpg</span>)</span>
 <span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>    -&gt;aes(x<span class="ot">:</span> <span class="st">'class'</span><span class="ot">,</span> y<span class="ot">:</span> factor(<span class="st">'cyl'</span>)<span class="ot">,</span> fill<span class="ot">:</span> <span class="st">'mean(hwy)'</span>)</span>
@@ -841,7 +878,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="bin2d" class="level3">
 <h3 class="anchored" data-anchor-id="bin2d">2D histogram</h3>
-<p>Counts in x-by-y bins.</p>
 <div class="phiz-figure"><div data-phiz-deferred="" data-phiz-options="{&quot;actions&quot;:false}" aria-label="2D histogram"><div data-phiz-view="" wire:ignore=""><a data-phiz-spec="" href="gallery/bin2d.json">Vega-Lite specification</a></div></div></div>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb22"><pre class="sourceCode php code-with-copy"><code class="sourceCode php"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>Plot::of(<span class="va">$faithful</span>)</span>
 <span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a>    -&gt;aes(x<span class="ot">:</span> <span class="st">'eruptions'</span><span class="ot">,</span> y<span class="ot">:</span> <span class="st">'waiting'</span>)</span>
@@ -850,7 +886,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="pie" class="level3">
 <h3 class="anchored" data-anchor-id="pie">Donut</h3>
-<p>Arcs sized by counts.</p>
+<p>innerRadius cuts out the center of a pie.</p>
 <div class="phiz-figure"><div data-phiz-deferred="" data-phiz-options="{&quot;actions&quot;:false}" aria-label="Donut"><div data-phiz-view="" wire:ignore=""><a data-phiz-spec="" href="gallery/pie.json">Vega-Lite specification</a></div></div></div>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb23"><pre class="sourceCode php code-with-copy"><code class="sourceCode php"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>Plot::of(<span class="va">$mpg</span>)</span>
 <span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a>    -&gt;aes(fill<span class="ot">:</span> <span class="st">'drv'</span>)</span>
@@ -873,17 +909,25 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div class="phiz-figure"><div data-phiz-deferred="" data-phiz-options="{&quot;actions&quot;:false}" aria-label="Annotations"><div data-phiz-view="" wire:ignore=""><a data-phiz-spec="" href="gallery/annotate.json">Vega-Lite specification</a></div></div></div>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb25"><pre class="sourceCode php code-with-copy"><code class="sourceCode php"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a>Plot::of(<span class="va">$mpg</span>)</span>
 <span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a>    -&gt;aes(x<span class="ot">:</span> <span class="st">'cty'</span><span class="ot">,</span> y<span class="ot">:</span> <span class="st">'hwy'</span>)</span>
-<span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a>    -&gt;annotate(<span class="st">'rect'</span><span class="ot">,</span> xmin<span class="ot">:</span> <span class="dv">15</span><span class="ot">,</span> xmax<span class="ot">:</span> <span class="dv">20</span><span class="ot">,</span> ymin<span class="ot">:</span> <span class="op">-</span><span class="cn">INF</span><span class="ot">,</span> ymax<span class="ot">:</span> <span class="cn">INF</span><span class="ot">,</span> fill<span class="ot">:</span> <span class="st">'orange'</span><span class="ot">,</span> alpha<span class="ot">:</span> <span class="fl">0.2</span>)</span>
-<span id="cb25-4"><a href="#cb25-4" aria-hidden="true" tabindex="-1"></a>    -&gt;<span class="fu">count</span>(alpha<span class="ot">:</span> <span class="fl">0.6</span>)</span>
-<span id="cb25-5"><a href="#cb25-5" aria-hidden="true" tabindex="-1"></a>    -&gt;annotate(<span class="st">'text'</span><span class="ot">,</span> x<span class="ot">:</span> <span class="dv">30</span><span class="ot">,</span> y<span class="ot">:</span> <span class="dv">23</span><span class="ot">,</span> label<span class="ot">:</span> <span class="st">'Most efficient'</span><span class="ot">,</span> color<span class="ot">:</span> <span class="st">'#D62728'</span>)</span>
-<span id="cb25-6"><a href="#cb25-6" aria-hidden="true" tabindex="-1"></a>    -&gt;labs(x<span class="ot">:</span> <span class="st">'City mpg'</span><span class="ot">,</span> y<span class="ot">:</span> <span class="st">'Highway mpg'</span>)<span class="ot">;</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a>    -&gt;annotate(</span>
+<span id="cb25-4"><a href="#cb25-4" aria-hidden="true" tabindex="-1"></a>        <span class="st">'rect'</span><span class="ot">,</span></span>
+<span id="cb25-5"><a href="#cb25-5" aria-hidden="true" tabindex="-1"></a>        xmin<span class="ot">:</span> <span class="dv">15</span><span class="ot">,</span> xmax<span class="ot">:</span> <span class="dv">20</span><span class="ot">,</span> ymin<span class="ot">:</span> <span class="op">-</span><span class="cn">INF</span><span class="ot">,</span> ymax<span class="ot">:</span> <span class="cn">INF</span><span class="ot">,</span></span>
+<span id="cb25-6"><a href="#cb25-6" aria-hidden="true" tabindex="-1"></a>        fill<span class="ot">:</span> <span class="st">'orange'</span><span class="ot">,</span> alpha<span class="ot">:</span> <span class="fl">0.2</span><span class="ot">,</span></span>
+<span id="cb25-7"><a href="#cb25-7" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb25-8"><a href="#cb25-8" aria-hidden="true" tabindex="-1"></a>    -&gt;<span class="fu">count</span>(alpha<span class="ot">:</span> <span class="fl">0.6</span>)</span>
+<span id="cb25-9"><a href="#cb25-9" aria-hidden="true" tabindex="-1"></a>    -&gt;annotate(</span>
+<span id="cb25-10"><a href="#cb25-10" aria-hidden="true" tabindex="-1"></a>        <span class="st">'text'</span><span class="ot">,</span></span>
+<span id="cb25-11"><a href="#cb25-11" aria-hidden="true" tabindex="-1"></a>        x<span class="ot">:</span> <span class="dv">30</span><span class="ot">,</span> y<span class="ot">:</span> <span class="dv">23</span><span class="ot">,</span> label<span class="ot">:</span> <span class="st">'Most efficient'</span><span class="ot">,</span></span>
+<span id="cb25-12"><a href="#cb25-12" aria-hidden="true" tabindex="-1"></a>        color<span class="ot">:</span> <span class="st">'#D62728'</span><span class="ot">,</span></span>
+<span id="cb25-13"><a href="#cb25-13" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb25-14"><a href="#cb25-14" aria-hidden="true" tabindex="-1"></a>    -&gt;labs(x<span class="ot">:</span> <span class="st">'City mpg'</span><span class="ot">,</span> y<span class="ot">:</span> <span class="st">'Highway mpg'</span>)<span class="ot">;</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </section>
 </section>
 <section id="facets" class="level2">
 <h2 class="anchored" data-anchor-id="facets">Facets</h2>
 <section id="facet-wrap" class="level3">
 <h3 class="anchored" data-anchor-id="facet-wrap">Small multiples</h3>
-<p>facetWrap with a fitted line in every panel.</p>
+<p>facetWrap() with a fitted line in every panel.</p>
 <div class="phiz-figure"><div data-phiz-deferred="" data-phiz-options="{&quot;actions&quot;:false}" aria-label="Small multiples"><div data-phiz-view="" wire:ignore=""><a data-phiz-spec="" href="gallery/facet-wrap.json">Vega-Lite specification</a></div></div></div>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb26"><pre class="sourceCode php code-with-copy"><code class="sourceCode php"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a>Plot::of(<span class="va">$mpg</span>)</span>
 <span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a>    -&gt;aes(x<span class="ot">:</span> <span class="st">'displ'</span><span class="ot">,</span> y<span class="ot">:</span> <span class="st">'hwy'</span>)</span>
@@ -901,38 +945,56 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb27-3"><a href="#cb27-3" aria-hidden="true" tabindex="-1"></a>    -&gt;point(alpha<span class="ot">:</span> <span class="fl">0.5</span>)</span>
 <span id="cb27-4"><a href="#cb27-4" aria-hidden="true" tabindex="-1"></a>    -&gt;abline(<span class="dv">0</span><span class="ot">,</span> <span class="dv">1</span><span class="ot">,</span> linetype<span class="ot">:</span> <span class="st">'dashed'</span><span class="ot">,</span> color<span class="ot">:</span> <span class="st">'#888888'</span>)</span>
 <span id="cb27-5"><a href="#cb27-5" aria-hidden="true" tabindex="-1"></a>    -&gt;facetGrid(rows<span class="ot">:</span> <span class="st">'drv'</span><span class="ot">,</span> cols<span class="ot">:</span> <span class="st">'year'</span>)</span>
-<span id="cb27-6"><a href="#cb27-6" aria-hidden="true" tabindex="-1"></a>    -&gt;size(<span class="dv">200</span><span class="ot">,</span> <span class="dv">120</span>)<span class="ot">;</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb27-6"><a href="#cb27-6" aria-hidden="true" tabindex="-1"></a>    -&gt;size(<span class="dv">270</span><span class="ot">,</span> <span class="dv">140</span>)<span class="ot">;</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </section>
 <section id="compose" class="level3">
 <h3 class="anchored" data-anchor-id="compose">Side by side</h3>
-<p>Compose::beside lays plots out like patchwork.</p>
+<p>Compose::beside() lays plots out like patchwork.</p>
 <div class="phiz-figure"><div data-phiz-deferred="" data-phiz-options="{&quot;actions&quot;:false}" aria-label="Side by side"><div data-phiz-view="" wire:ignore=""><a data-phiz-spec="" href="gallery/compose.json">Vega-Lite specification</a></div></div></div>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb28"><pre class="sourceCode php code-with-copy"><code class="sourceCode php"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a>Compose::beside(</span>
-<span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a>        Plot::of(<span class="va">$faithful</span>)-&gt;aes(x<span class="ot">:</span> <span class="st">'eruptions'</span><span class="ot">,</span> y<span class="ot">:</span> <span class="st">'waiting'</span>)-&gt;point(alpha<span class="ot">:</span> <span class="fl">0.5</span>)-&gt;size(<span class="dv">260</span><span class="ot">,</span> <span class="dv">220</span>)<span class="ot">,</span></span>
-<span id="cb28-3"><a href="#cb28-3" aria-hidden="true" tabindex="-1"></a>        Plot::of(<span class="va">$faithful</span>)-&gt;aes(x<span class="ot">:</span> <span class="st">'waiting'</span>)-&gt;histogram(bins<span class="ot">:</span> <span class="dv">20</span>)-&gt;coordFlip()-&gt;size(<span class="dv">120</span><span class="ot">,</span> <span class="dv">220</span>)<span class="ot">,</span></span>
-<span id="cb28-4"><a href="#cb28-4" aria-hidden="true" tabindex="-1"></a>    )-&gt;title(<span class="st">'Old Faithful'</span>)<span class="ot">;</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a>    Plot::of(<span class="va">$faithful</span>)</span>
+<span id="cb28-3"><a href="#cb28-3" aria-hidden="true" tabindex="-1"></a>        -&gt;aes(x<span class="ot">:</span> <span class="st">'eruptions'</span><span class="ot">,</span> y<span class="ot">:</span> <span class="st">'waiting'</span>)</span>
+<span id="cb28-4"><a href="#cb28-4" aria-hidden="true" tabindex="-1"></a>        -&gt;point(alpha<span class="ot">:</span> <span class="fl">0.5</span>)</span>
+<span id="cb28-5"><a href="#cb28-5" aria-hidden="true" tabindex="-1"></a>        -&gt;size(<span class="dv">420</span><span class="ot">,</span> <span class="dv">260</span>)<span class="ot">,</span></span>
+<span id="cb28-6"><a href="#cb28-6" aria-hidden="true" tabindex="-1"></a>    Plot::of(<span class="va">$faithful</span>)</span>
+<span id="cb28-7"><a href="#cb28-7" aria-hidden="true" tabindex="-1"></a>        -&gt;aes(x<span class="ot">:</span> <span class="st">'waiting'</span>)</span>
+<span id="cb28-8"><a href="#cb28-8" aria-hidden="true" tabindex="-1"></a>        -&gt;histogram(bins<span class="ot">:</span> <span class="dv">20</span>)</span>
+<span id="cb28-9"><a href="#cb28-9" aria-hidden="true" tabindex="-1"></a>        -&gt;coordFlip()</span>
+<span id="cb28-10"><a href="#cb28-10" aria-hidden="true" tabindex="-1"></a>        -&gt;size(<span class="dv">180</span><span class="ot">,</span> <span class="dv">260</span>)<span class="ot">,</span></span>
+<span id="cb28-11"><a href="#cb28-11" aria-hidden="true" tabindex="-1"></a>)-&gt;title(<span class="st">'Old Faithful'</span>)<span class="ot">;</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </section>
 </section>
 <section id="scales-and-themes" class="level2">
 <h2 class="anchored" data-anchor-id="scales-and-themes">Scales and themes</h2>
 <section id="log-scale" class="level3">
 <h3 class="anchored" data-anchor-id="log-scale">Log scale</h3>
-<p>scaleX(type: log) with chosen breaks.</p>
+<p>scaleX(type: ‘log’) with chosen breaks.</p>
 <div class="phiz-figure"><div data-phiz-deferred="" data-phiz-options="{&quot;actions&quot;:false}" aria-label="Log scale"><div data-phiz-view="" wire:ignore=""><a data-phiz-spec="" href="gallery/log-scale.json">Vega-Lite specification</a></div></div></div>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb29"><pre class="sourceCode php code-with-copy"><code class="sourceCode php"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a>Plot::of(<span class="va">$economics</span>)</span>
 <span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a>    -&gt;aes(x<span class="ot">:</span> <span class="st">'pce'</span><span class="ot">,</span> y<span class="ot">:</span> <span class="st">'psavert'</span>)</span>
 <span id="cb29-3"><a href="#cb29-3" aria-hidden="true" tabindex="-1"></a>    -&gt;point(alpha<span class="ot">:</span> <span class="fl">0.4</span>)</span>
-<span id="cb29-4"><a href="#cb29-4" aria-hidden="true" tabindex="-1"></a>    -&gt;scaleX(type<span class="ot">:</span> <span class="st">'log'</span><span class="ot">,</span> breaks<span class="ot">:</span> [<span class="dv">500</span><span class="ot">,</span> <span class="dv">1000</span><span class="ot">,</span> <span class="dv">2000</span><span class="ot">,</span> <span class="dv">5000</span><span class="ot">,</span> <span class="dv">10000</span>]<span class="ot">,</span> name<span class="ot">:</span> <span class="st">'Personal consumption ($bn, log)'</span>)</span>
-<span id="cb29-5"><a href="#cb29-5" aria-hidden="true" tabindex="-1"></a>    -&gt;labs(y<span class="ot">:</span> <span class="st">'Savings rate (%)'</span>)<span class="ot">;</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb29-4"><a href="#cb29-4" aria-hidden="true" tabindex="-1"></a>    -&gt;scaleX(</span>
+<span id="cb29-5"><a href="#cb29-5" aria-hidden="true" tabindex="-1"></a>        type<span class="ot">:</span> <span class="st">'log'</span><span class="ot">,</span></span>
+<span id="cb29-6"><a href="#cb29-6" aria-hidden="true" tabindex="-1"></a>        breaks<span class="ot">:</span> [<span class="dv">500</span><span class="ot">,</span> <span class="dv">1000</span><span class="ot">,</span> <span class="dv">2000</span><span class="ot">,</span> <span class="dv">5000</span><span class="ot">,</span> <span class="dv">10000</span>]<span class="ot">,</span></span>
+<span id="cb29-7"><a href="#cb29-7" aria-hidden="true" tabindex="-1"></a>        name<span class="ot">:</span> <span class="st">'Personal consumption ($bn, log)'</span><span class="ot">,</span></span>
+<span id="cb29-8"><a href="#cb29-8" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb29-9"><a href="#cb29-9" aria-hidden="true" tabindex="-1"></a>    -&gt;labs(y<span class="ot">:</span> <span class="st">'Savings rate (%)'</span>)<span class="ot">;</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </section>
 <section id="manual-colors" class="level3">
 <h3 class="anchored" data-anchor-id="manual-colors">Manual colors</h3>
-<p>A level =&gt; color map.</p>
+<p>A map from each level to its color.</p>
 <div class="phiz-figure"><div data-phiz-deferred="" data-phiz-options="{&quot;actions&quot;:false}" aria-label="Manual colors"><div data-phiz-view="" wire:ignore=""><a data-phiz-spec="" href="gallery/manual-colors.json">Vega-Lite specification</a></div></div></div>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb30"><pre class="sourceCode php code-with-copy"><code class="sourceCode php"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a>Plot::of(<span class="va">$mpg</span>)</span>
 <span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a>    -&gt;aes(x<span class="ot">:</span> <span class="st">'displ'</span><span class="ot">,</span> y<span class="ot">:</span> <span class="st">'hwy'</span><span class="ot">,</span> color<span class="ot">:</span> <span class="st">'drv'</span>)</span>
 <span id="cb30-3"><a href="#cb30-3" aria-hidden="true" tabindex="-1"></a>    -&gt;point()</span>
-<span id="cb30-4"><a href="#cb30-4" aria-hidden="true" tabindex="-1"></a>    -&gt;scaleColor(values<span class="ot">:</span> [<span class="st">'4'</span> =&gt; <span class="st">'#D95F02'</span><span class="ot">,</span> <span class="st">'f'</span> =&gt; <span class="st">'#1B9E77'</span><span class="ot">,</span> <span class="st">'r'</span> =&gt; <span class="st">'#7570B3'</span>]<span class="ot">,</span> name<span class="ot">:</span> <span class="st">'Drive'</span>)<span class="ot">;</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb30-4"><a href="#cb30-4" aria-hidden="true" tabindex="-1"></a>    -&gt;scaleColor(</span>
+<span id="cb30-5"><a href="#cb30-5" aria-hidden="true" tabindex="-1"></a>        values<span class="ot">:</span> [</span>
+<span id="cb30-6"><a href="#cb30-6" aria-hidden="true" tabindex="-1"></a>            <span class="st">'4'</span> =&gt; <span class="st">'#D95F02'</span><span class="ot">,</span></span>
+<span id="cb30-7"><a href="#cb30-7" aria-hidden="true" tabindex="-1"></a>            <span class="st">'f'</span> =&gt; <span class="st">'#1B9E77'</span><span class="ot">,</span></span>
+<span id="cb30-8"><a href="#cb30-8" aria-hidden="true" tabindex="-1"></a>            <span class="st">'r'</span> =&gt; <span class="st">'#7570B3'</span><span class="ot">,</span></span>
+<span id="cb30-9"><a href="#cb30-9" aria-hidden="true" tabindex="-1"></a>        ]<span class="ot">,</span></span>
+<span id="cb30-10"><a href="#cb30-10" aria-hidden="true" tabindex="-1"></a>        name<span class="ot">:</span> <span class="st">'Drive'</span><span class="ot">,</span></span>
+<span id="cb30-11"><a href="#cb30-11" aria-hidden="true" tabindex="-1"></a>    )<span class="ot">;</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </section>
 <section id="gradient" class="level3">
 <h3 class="anchored" data-anchor-id="gradient">Continuous color</h3>
@@ -963,7 +1025,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="theme-dark" class="level3">
 <h3 class="anchored" data-anchor-id="theme-dark">theme(“dark”)</h3>
-<p>A dark preset.</p>
 <div class="phiz-figure"><div data-phiz-deferred="" data-phiz-options="{&quot;actions&quot;:false}" aria-label="theme(&quot;dark&quot;)"><div data-phiz-view="" wire:ignore=""><a data-phiz-spec="" href="gallery/theme-dark.json">Vega-Lite specification</a></div></div></div>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb34"><pre class="sourceCode php code-with-copy"><code class="sourceCode php"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a>Plot::of(<span class="va">$economics</span>)</span>
 <span id="cb34-2"><a href="#cb34-2" aria-hidden="true" tabindex="-1"></a>    -&gt;aes(x<span class="ot">:</span> <span class="st">'date'</span><span class="ot">,</span> y<span class="ot">:</span> <span class="st">'psavert'</span>)</span>
@@ -975,26 +1036,35 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <h2 class="anchored" data-anchor-id="interaction">Interaction</h2>
 <section id="tooltip-zoom" class="level3">
 <h3 class="anchored" data-anchor-id="tooltip-zoom">Tooltips, pan and zoom</h3>
-<p>Hover for values; drag and scroll to explore.</p>
+<p>Hover for values. Drag to pan and scroll to zoom.</p>
 <div class="phiz-figure"><div data-phiz-deferred="" data-phiz-options="{&quot;actions&quot;:false}" aria-label="Tooltips, pan and zoom"><div data-phiz-view="" wire:ignore=""><a data-phiz-spec="" href="gallery/tooltip-zoom.json">Vega-Lite specification</a></div></div></div>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb35"><pre class="sourceCode php code-with-copy"><code class="sourceCode php"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a>Plot::of(<span class="va">$mpg</span>)</span>
 <span id="cb35-2"><a href="#cb35-2" aria-hidden="true" tabindex="-1"></a>    -&gt;aes(x<span class="ot">:</span> <span class="st">'displ'</span><span class="ot">,</span> y<span class="ot">:</span> <span class="st">'hwy'</span><span class="ot">,</span> color<span class="ot">:</span> <span class="st">'class'</span>)</span>
 <span id="cb35-3"><a href="#cb35-3" aria-hidden="true" tabindex="-1"></a>    -&gt;point()</span>
-<span id="cb35-4"><a href="#cb35-4" aria-hidden="true" tabindex="-1"></a>    -&gt;tooltip([<span class="st">'manufacturer'</span><span class="ot">,</span> <span class="st">'model'</span><span class="ot">,</span> <span class="st">'year'</span><span class="ot">,</span> <span class="st">'displ'</span><span class="ot">,</span> <span class="st">'hwy'</span>])</span>
-<span id="cb35-5"><a href="#cb35-5" aria-hidden="true" tabindex="-1"></a>    -&gt;interactive()<span class="ot">;</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb35-4"><a href="#cb35-4" aria-hidden="true" tabindex="-1"></a>    -&gt;tooltip([</span>
+<span id="cb35-5"><a href="#cb35-5" aria-hidden="true" tabindex="-1"></a>        <span class="st">'manufacturer'</span><span class="ot">,</span> <span class="st">'model'</span><span class="ot">,</span> <span class="st">'year'</span><span class="ot">,</span> <span class="st">'displ'</span><span class="ot">,</span> <span class="st">'hwy'</span><span class="ot">,</span></span>
+<span id="cb35-6"><a href="#cb35-6" aria-hidden="true" tabindex="-1"></a>    ])</span>
+<span id="cb35-7"><a href="#cb35-7" aria-hidden="true" tabindex="-1"></a>    -&gt;interactive()<span class="ot">;</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </section>
 <section id="brush-linked" class="level3">
 <h3 class="anchored" data-anchor-id="brush-linked">Linked brushing</h3>
 <p>Brush the scatterplot to filter the bars.</p>
 <div class="phiz-figure"><div data-phiz-deferred="" data-phiz-options="{&quot;actions&quot;:false}" aria-label="Linked brushing"><div data-phiz-view="" wire:ignore=""><a data-phiz-spec="" href="gallery/brush-linked.json">Vega-Lite specification</a></div></div></div>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb36"><pre class="sourceCode php code-with-copy"><code class="sourceCode php"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a>Compose::stack(</span>
-<span id="cb36-2"><a href="#cb36-2" aria-hidden="true" tabindex="-1"></a>        Plot::of(<span class="va">$mpg</span>)-&gt;aes(x<span class="ot">:</span> <span class="st">'displ'</span><span class="ot">,</span> y<span class="ot">:</span> <span class="st">'hwy'</span><span class="ot">,</span> color<span class="ot">:</span> <span class="st">'drv'</span>)-&gt;point()-&gt;brush(encodings<span class="ot">:</span> [<span class="st">'x'</span><span class="ot">,</span> <span class="st">'y'</span>])-&gt;size(<span class="dv">420</span><span class="ot">,</span> <span class="dv">220</span>)<span class="ot">,</span></span>
-<span id="cb36-3"><a href="#cb36-3" aria-hidden="true" tabindex="-1"></a>        Plot::of(<span class="va">$mpg</span>)-&gt;aes(x<span class="ot">:</span> <span class="st">'class'</span>)-&gt;bar(filter<span class="ot">:</span> [<span class="st">'param'</span> =&gt; <span class="st">'brush'</span>])-&gt;size(<span class="dv">420</span><span class="ot">,</span> <span class="dv">140</span>)<span class="ot">,</span></span>
-<span id="cb36-4"><a href="#cb36-4" aria-hidden="true" tabindex="-1"></a>    )<span class="ot">;</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb36-2"><a href="#cb36-2" aria-hidden="true" tabindex="-1"></a>    Plot::of(<span class="va">$mpg</span>)</span>
+<span id="cb36-3"><a href="#cb36-3" aria-hidden="true" tabindex="-1"></a>        -&gt;aes(x<span class="ot">:</span> <span class="st">'displ'</span><span class="ot">,</span> y<span class="ot">:</span> <span class="st">'hwy'</span><span class="ot">,</span> color<span class="ot">:</span> <span class="st">'drv'</span>)</span>
+<span id="cb36-4"><a href="#cb36-4" aria-hidden="true" tabindex="-1"></a>        -&gt;point()</span>
+<span id="cb36-5"><a href="#cb36-5" aria-hidden="true" tabindex="-1"></a>        -&gt;brush(encodings<span class="ot">:</span> [<span class="st">'x'</span><span class="ot">,</span> <span class="st">'y'</span>])</span>
+<span id="cb36-6"><a href="#cb36-6" aria-hidden="true" tabindex="-1"></a>        -&gt;size(<span class="dv">600</span><span class="ot">,</span> <span class="dv">240</span>)<span class="ot">,</span></span>
+<span id="cb36-7"><a href="#cb36-7" aria-hidden="true" tabindex="-1"></a>    Plot::of(<span class="va">$mpg</span>)</span>
+<span id="cb36-8"><a href="#cb36-8" aria-hidden="true" tabindex="-1"></a>        -&gt;aes(x<span class="ot">:</span> <span class="st">'class'</span>)</span>
+<span id="cb36-9"><a href="#cb36-9" aria-hidden="true" tabindex="-1"></a>        -&gt;bar(filter<span class="ot">:</span> [<span class="st">'param'</span> =&gt; <span class="st">'brush'</span>])</span>
+<span id="cb36-10"><a href="#cb36-10" aria-hidden="true" tabindex="-1"></a>        -&gt;size(<span class="dv">600</span><span class="ot">,</span> <span class="dv">140</span>)<span class="ot">,</span></span>
+<span id="cb36-11"><a href="#cb36-11" aria-hidden="true" tabindex="-1"></a>)<span class="ot">;</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </section>
 <section id="highlight" class="level3">
 <h3 class="anchored" data-anchor-id="highlight">Legend highlight</h3>
-<p>Click a legend entry.</p>
+<p>Click a legend entry. Shift-click selects several.</p>
 <div class="phiz-figure"><div data-phiz-deferred="" data-phiz-options="{&quot;actions&quot;:false}" aria-label="Legend highlight"><div data-phiz-view="" wire:ignore=""><a data-phiz-spec="" href="gallery/highlight.json">Vega-Lite specification</a></div></div></div>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb37"><pre class="sourceCode php code-with-copy"><code class="sourceCode php"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a>Plot::of(<span class="va">$mpg</span>)</span>
 <span id="cb37-2"><a href="#cb37-2" aria-hidden="true" tabindex="-1"></a>    -&gt;aes(x<span class="ot">:</span> <span class="st">'displ'</span><span class="ot">,</span> y<span class="ot">:</span> <span class="st">'hwy'</span><span class="ot">,</span> color<span class="ot">:</span> <span class="st">'drv'</span>)</span>
@@ -1003,7 +1073,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="slider" class="level3">
 <h3 class="anchored" data-anchor-id="slider">Slider-driven reference line</h3>
-<p>A parameter bound to a slider moves the rule and filters points.</p>
+<p>The slider moves the rule and recolors the points.</p>
 <div class="phiz-figure"><div data-phiz-deferred="" data-phiz-options="{&quot;actions&quot;:false}" aria-label="Slider-driven reference line"><div data-phiz-view="" wire:ignore=""><a data-phiz-spec="" href="gallery/slider.json">Vega-Lite specification</a></div></div></div>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb38"><pre class="sourceCode php code-with-copy"><code class="sourceCode php"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a>Plot::of(<span class="va">$mpg</span>)</span>
 <span id="cb38-2"><a href="#cb38-2" aria-hidden="true" tabindex="-1"></a>    -&gt;aes(x<span class="ot">:</span> <span class="st">'displ'</span><span class="ot">,</span> y<span class="ot">:</span> <span class="st">'hwy'</span>)</span>
@@ -1017,7 +1087,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <h2 class="anchored" data-anchor-id="statistics">Statistics</h2>
 <section id="coefplot" class="level3">
 <h3 class="anchored" data-anchor-id="coefplot">Coefficient plot</h3>
-<p>Straight from a phit fit (fit_lm, fit_glm, …).</p>
+<p>From a fit in the shape phit’s fit_lm() returns.</p>
 <div class="phiz-figure"><div data-phiz-deferred="" data-phiz-options="{&quot;actions&quot;:false}" aria-label="Coefficient plot"><div data-phiz-view="" wire:ignore=""><a data-phiz-spec="" href="gallery/coefplot.json">Vega-Lite specification</a></div></div></div>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb39"><pre class="sourceCode php code-with-copy"><code class="sourceCode php"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true" tabindex="-1"></a>coefplot(<span class="va">$fit</span>)</span>
 <span id="cb39-2"><a href="#cb39-2" aria-hidden="true" tabindex="-1"></a>    -&gt;labs(title<span class="ot">:</span> <span class="st">'mpg ~ wt + hp + am'</span>)<span class="ot">;</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
@@ -1026,47 +1096,77 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <h3 class="anchored" data-anchor-id="coefplot-compare">Comparing models</h3>
 <p>Several fits, dodged.</p>
 <div class="phiz-figure"><div data-phiz-deferred="" data-phiz-options="{&quot;actions&quot;:false}" aria-label="Comparing models"><div data-phiz-view="" wire:ignore=""><a data-phiz-spec="" href="gallery/coefplot-compare.json">Vega-Lite specification</a></div></div></div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb40"><pre class="sourceCode php code-with-copy"><code class="sourceCode php"><span id="cb40-1"><a href="#cb40-1" aria-hidden="true" tabindex="-1"></a>coefplot([<span class="st">'Full'</span> =&gt; <span class="va">$fit</span><span class="ot">,</span> <span class="st">'Without am'</span> =&gt; <span class="va">$reduced</span>])<span class="ot">;</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb40"><pre class="sourceCode php code-with-copy"><code class="sourceCode php"><span id="cb40-1"><a href="#cb40-1" aria-hidden="true" tabindex="-1"></a>coefplot([</span>
+<span id="cb40-2"><a href="#cb40-2" aria-hidden="true" tabindex="-1"></a>    <span class="st">'Full'</span> =&gt; <span class="va">$fit</span><span class="ot">,</span></span>
+<span id="cb40-3"><a href="#cb40-3" aria-hidden="true" tabindex="-1"></a>    <span class="st">'Without am'</span> =&gt; <span class="va">$reduced</span><span class="ot">,</span></span>
+<span id="cb40-4"><a href="#cb40-4" aria-hidden="true" tabindex="-1"></a>])<span class="ot">;</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </section>
 <section id="diagnostics" class="level3">
 <h3 class="anchored" data-anchor-id="diagnostics">Regression diagnostics</h3>
-<p>Residuals, QQ, scale-location, observed vs fitted.</p>
+<p>Residuals, QQ, scale-location, and observed against fitted.</p>
 <div class="phiz-figure"><div data-phiz-deferred="" data-phiz-options="{&quot;actions&quot;:false}" aria-label="Regression diagnostics"><div data-phiz-view="" wire:ignore=""><a data-phiz-spec="" href="gallery/diagnostics.json">Vega-Lite specification</a></div></div></div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb41"><pre class="sourceCode php code-with-copy"><code class="sourceCode php"><span id="cb41-1"><a href="#cb41-1" aria-hidden="true" tabindex="-1"></a>diagnostic_plots(<span class="va">$fit</span><span class="ot">,</span> width<span class="ot">:</span> <span class="dv">230</span><span class="ot">,</span> height<span class="ot">:</span> <span class="dv">170</span>)<span class="ot">;</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb41"><pre class="sourceCode php code-with-copy"><code class="sourceCode php"><span id="cb41-1"><a href="#cb41-1" aria-hidden="true" tabindex="-1"></a>diagnostic_plots(<span class="va">$fit</span><span class="ot">,</span> width<span class="ot">:</span> <span class="dv">290</span><span class="ot">,</span> height<span class="ot">:</span> <span class="dv">190</span>)<span class="ot">;</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </section>
 <section id="effects" class="level3">
 <h3 class="anchored" data-anchor-id="effects">Predicted values</h3>
-<p>Predictions with 95% bands as weight varies, by transmission.</p>
+<p>Predicted mpg with 95% confidence bands as weight varies, by transmission.</p>
 <div class="phiz-figure"><div data-phiz-deferred="" data-phiz-options="{&quot;actions&quot;:false}" aria-label="Predicted values"><div data-phiz-view="" wire:ignore=""><a data-phiz-spec="" href="gallery/effects.json">Vega-Lite specification</a></div></div></div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb42"><pre class="sourceCode php code-with-copy"><code class="sourceCode php"><span id="cb42-1"><a href="#cb42-1" aria-hidden="true" tabindex="-1"></a>effect_plot(<span class="va">$fit</span><span class="ot">,</span> <span class="va">$mtcars</span><span class="ot">,</span> <span class="st">'wt'</span><span class="ot">,</span> by<span class="ot">:</span> <span class="st">'am'</span><span class="ot">,</span> design<span class="ot">:</span> <span class="kw">fn</span> (<span class="va">$r</span>) =&gt; [<span class="dv">1</span><span class="ot">,</span> <span class="va">$r</span>[<span class="st">'wt'</span>]<span class="ot">,</span> <span class="va">$r</span>[<span class="st">'hp'</span>]<span class="ot">,</span> <span class="va">$r</span>[<span class="st">'am'</span>]])</span>
-<span id="cb42-2"><a href="#cb42-2" aria-hidden="true" tabindex="-1"></a>    -&gt;labs(x<span class="ot">:</span> <span class="st">'Weight (1000 lbs)'</span><span class="ot">,</span> y<span class="ot">:</span> <span class="st">'mpg'</span><span class="ot">,</span> color<span class="ot">:</span> <span class="st">'Manual'</span><span class="ot">,</span> fill<span class="ot">:</span> <span class="st">'Manual'</span>)<span class="ot">;</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb42"><pre class="sourceCode php code-with-copy"><code class="sourceCode php"><span id="cb42-1"><a href="#cb42-1" aria-hidden="true" tabindex="-1"></a>effect_plot(</span>
+<span id="cb42-2"><a href="#cb42-2" aria-hidden="true" tabindex="-1"></a>    <span class="va">$fit</span><span class="ot">,</span></span>
+<span id="cb42-3"><a href="#cb42-3" aria-hidden="true" tabindex="-1"></a>    <span class="va">$mtcars</span><span class="ot">,</span></span>
+<span id="cb42-4"><a href="#cb42-4" aria-hidden="true" tabindex="-1"></a>    <span class="st">'wt'</span><span class="ot">,</span></span>
+<span id="cb42-5"><a href="#cb42-5" aria-hidden="true" tabindex="-1"></a>    by<span class="ot">:</span> <span class="st">'am'</span><span class="ot">,</span></span>
+<span id="cb42-6"><a href="#cb42-6" aria-hidden="true" tabindex="-1"></a>    design<span class="ot">:</span> <span class="kw">fn</span> (<span class="va">$r</span>) =&gt; [<span class="dv">1</span><span class="ot">,</span> <span class="va">$r</span>[<span class="st">'wt'</span>]<span class="ot">,</span> <span class="va">$r</span>[<span class="st">'hp'</span>]<span class="ot">,</span> <span class="va">$r</span>[<span class="st">'am'</span>]]<span class="ot">,</span></span>
+<span id="cb42-7"><a href="#cb42-7" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb42-8"><a href="#cb42-8" aria-hidden="true" tabindex="-1"></a>    -&gt;labs(</span>
+<span id="cb42-9"><a href="#cb42-9" aria-hidden="true" tabindex="-1"></a>        x<span class="ot">:</span> <span class="st">'Weight (1000 lbs)'</span><span class="ot">,</span></span>
+<span id="cb42-10"><a href="#cb42-10" aria-hidden="true" tabindex="-1"></a>        y<span class="ot">:</span> <span class="st">'mpg'</span><span class="ot">,</span></span>
+<span id="cb42-11"><a href="#cb42-11" aria-hidden="true" tabindex="-1"></a>        color<span class="ot">:</span> <span class="st">'Manual'</span><span class="ot">,</span></span>
+<span id="cb42-12"><a href="#cb42-12" aria-hidden="true" tabindex="-1"></a>        fill<span class="ot">:</span> <span class="st">'Manual'</span><span class="ot">,</span></span>
+<span id="cb42-13"><a href="#cb42-13" aria-hidden="true" tabindex="-1"></a>    )<span class="ot">;</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </section>
 <section id="posterior-intervals" class="level3">
 <h3 class="anchored" data-anchor-id="posterior-intervals">Posterior intervals</h3>
-<p>From CmdStanPHP draws_columns(), as bayesplot’s mcmc_intervals.</p>
+<p>From CmdStanPHP draws_columns(), as bayesplot’s mcmc_intervals() draws them.</p>
 <div class="phiz-figure"><div data-phiz-deferred="" data-phiz-options="{&quot;actions&quot;:false}" aria-label="Posterior intervals"><div data-phiz-view="" wire:ignore=""><a data-phiz-spec="" href="gallery/posterior-intervals.json">Vega-Lite specification</a></div></div></div>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb43"><pre class="sourceCode php code-with-copy"><code class="sourceCode php"><span id="cb43-1"><a href="#cb43-1" aria-hidden="true" tabindex="-1"></a>interval_plot(<span class="va">$draws</span>)<span class="ot">;</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </section>
 <section id="errorbars" class="level3">
 <h3 class="anchored" data-anchor-id="errorbars">Means with error bars</h3>
-<p>Precomputed summaries with errorbar and point.</p>
+<p>Precomputed means with normal-approximation 95% intervals.</p>
 <div class="phiz-figure"><div data-phiz-deferred="" data-phiz-options="{&quot;actions&quot;:false}" aria-label="Means with error bars"><div data-phiz-view="" wire:ignore=""><a data-phiz-spec="" href="gallery/errorbars.json">Vega-Lite specification</a></div></div></div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb44"><pre class="sourceCode php code-with-copy"><code class="sourceCode php"><span id="cb44-1"><a href="#cb44-1" aria-hidden="true" tabindex="-1"></a>Plot::of(<span class="fu">array_map</span>(<span class="kw">function</span> (<span class="va">$class</span>) <span class="kw">use</span> (<span class="va">$mpg</span>) {</span>
-<span id="cb44-2"><a href="#cb44-2" aria-hidden="true" tabindex="-1"></a>        <span class="va">$values</span> <span class="op">=</span> <span class="fu">array_column</span>(<span class="fu">array_filter</span>(<span class="va">$mpg</span><span class="ot">,</span> <span class="kw">fn</span> (<span class="va">$r</span>) =&gt; <span class="va">$r</span>[<span class="st">'class'</span>] <span class="op">===</span> <span class="va">$class</span>)<span class="ot">,</span> <span class="st">'hwy'</span>)<span class="ot">;</span></span>
-<span id="cb44-3"><a href="#cb44-3" aria-hidden="true" tabindex="-1"></a>        <span class="va">$mean</span> <span class="op">=</span> <span class="fu">array_sum</span>(<span class="va">$values</span>) <span class="op">/</span> <span class="fu">count</span>(<span class="va">$values</span>)<span class="ot">;</span></span>
-<span id="cb44-4"><a href="#cb44-4" aria-hidden="true" tabindex="-1"></a>        <span class="va">$sd</span> <span class="op">=</span> <span class="fu">sqrt</span>(<span class="fu">array_sum</span>(<span class="fu">array_map</span>(<span class="kw">fn</span> (<span class="va">$v</span>) =&gt; (<span class="va">$v</span> <span class="op">-</span> <span class="va">$mean</span>) <span class="op">**</span> <span class="dv">2</span><span class="ot">,</span> <span class="va">$values</span>)) <span class="op">/</span> (<span class="fu">count</span>(<span class="va">$values</span>) <span class="op">-</span> <span class="dv">1</span>))<span class="ot">;</span></span>
-<span id="cb44-5"><a href="#cb44-5" aria-hidden="true" tabindex="-1"></a>        <span class="va">$se</span> <span class="op">=</span> <span class="va">$sd</span> <span class="op">/</span> <span class="fu">sqrt</span>(<span class="fu">count</span>(<span class="va">$values</span>))<span class="ot">;</span></span>
-<span id="cb44-6"><a href="#cb44-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb44-7"><a href="#cb44-7" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> [<span class="st">'class'</span> =&gt; <span class="va">$class</span><span class="ot">,</span> <span class="st">'mean'</span> =&gt; <span class="va">$mean</span><span class="ot">,</span> <span class="st">'lower'</span> =&gt; <span class="va">$mean</span> <span class="op">-</span> <span class="fl">1.96</span> <span class="op">*</span> <span class="va">$se</span><span class="ot">,</span> <span class="st">'upper'</span> =&gt; <span class="va">$mean</span> <span class="op">+</span> <span class="fl">1.96</span> <span class="op">*</span> <span class="va">$se</span>]<span class="ot">;</span></span>
-<span id="cb44-8"><a href="#cb44-8" aria-hidden="true" tabindex="-1"></a>    }<span class="ot">,</span> <span class="fu">array_values</span>(<span class="fu">array_unique</span>(<span class="fu">array_column</span>(<span class="va">$mpg</span><span class="ot">,</span> <span class="st">'class'</span>)))))</span>
-<span id="cb44-9"><a href="#cb44-9" aria-hidden="true" tabindex="-1"></a>        -&gt;aes(x<span class="ot">:</span> <span class="st">'class'</span><span class="ot">,</span> y<span class="ot">:</span> <span class="st">'mean'</span><span class="ot">,</span> ymin<span class="ot">:</span> <span class="st">'lower'</span><span class="ot">,</span> ymax<span class="ot">:</span> <span class="st">'upper'</span>)</span>
-<span id="cb44-10"><a href="#cb44-10" aria-hidden="true" tabindex="-1"></a>        -&gt;errorbar(width<span class="ot">:</span> <span class="dv">8</span>)</span>
-<span id="cb44-11"><a href="#cb44-11" aria-hidden="true" tabindex="-1"></a>        -&gt;point(size<span class="ot">:</span> <span class="dv">50</span>)</span>
-<span id="cb44-12"><a href="#cb44-12" aria-hidden="true" tabindex="-1"></a>        -&gt;labs(x<span class="ot">:</span> <span class="kw">null</span><span class="ot">,</span> y<span class="ot">:</span> <span class="st">'Mean highway mpg (95% CI)'</span>)<span class="ot">;</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb44"><pre class="sourceCode php code-with-copy"><code class="sourceCode php"><span id="cb44-1"><a href="#cb44-1" aria-hidden="true" tabindex="-1"></a>Plot::of(<span class="fu">array_map</span>(</span>
+<span id="cb44-2"><a href="#cb44-2" aria-hidden="true" tabindex="-1"></a>    <span class="kw">function</span> (<span class="va">$class</span>) <span class="kw">use</span> (<span class="va">$mpg</span>) {</span>
+<span id="cb44-3"><a href="#cb44-3" aria-hidden="true" tabindex="-1"></a>        <span class="va">$rows</span> <span class="op">=</span> <span class="fu">array_filter</span>(</span>
+<span id="cb44-4"><a href="#cb44-4" aria-hidden="true" tabindex="-1"></a>            <span class="va">$mpg</span><span class="ot">,</span></span>
+<span id="cb44-5"><a href="#cb44-5" aria-hidden="true" tabindex="-1"></a>            <span class="kw">fn</span> (<span class="va">$r</span>) =&gt; <span class="va">$r</span>[<span class="st">'class'</span>] <span class="op">===</span> <span class="va">$class</span><span class="ot">,</span></span>
+<span id="cb44-6"><a href="#cb44-6" aria-hidden="true" tabindex="-1"></a>        )<span class="ot">;</span></span>
+<span id="cb44-7"><a href="#cb44-7" aria-hidden="true" tabindex="-1"></a>        <span class="va">$values</span> <span class="op">=</span> <span class="fu">array_column</span>(<span class="va">$rows</span><span class="ot">,</span> <span class="st">'hwy'</span>)<span class="ot">;</span></span>
+<span id="cb44-8"><a href="#cb44-8" aria-hidden="true" tabindex="-1"></a>        <span class="va">$n</span> <span class="op">=</span> <span class="fu">count</span>(<span class="va">$values</span>)<span class="ot">;</span></span>
+<span id="cb44-9"><a href="#cb44-9" aria-hidden="true" tabindex="-1"></a>        <span class="va">$mean</span> <span class="op">=</span> <span class="fu">array_sum</span>(<span class="va">$values</span>) <span class="op">/</span> <span class="va">$n</span><span class="ot">;</span></span>
+<span id="cb44-10"><a href="#cb44-10" aria-hidden="true" tabindex="-1"></a>        <span class="va">$squares</span> <span class="op">=</span> <span class="fu">array_map</span>(</span>
+<span id="cb44-11"><a href="#cb44-11" aria-hidden="true" tabindex="-1"></a>            <span class="kw">fn</span> (<span class="va">$v</span>) =&gt; (<span class="va">$v</span> <span class="op">-</span> <span class="va">$mean</span>) <span class="op">**</span> <span class="dv">2</span><span class="ot">,</span></span>
+<span id="cb44-12"><a href="#cb44-12" aria-hidden="true" tabindex="-1"></a>            <span class="va">$values</span><span class="ot">,</span></span>
+<span id="cb44-13"><a href="#cb44-13" aria-hidden="true" tabindex="-1"></a>        )<span class="ot">;</span></span>
+<span id="cb44-14"><a href="#cb44-14" aria-hidden="true" tabindex="-1"></a>        <span class="va">$se</span> <span class="op">=</span> <span class="fu">sqrt</span>(<span class="fu">array_sum</span>(<span class="va">$squares</span>) <span class="op">/</span> (<span class="va">$n</span> <span class="op">-</span> <span class="dv">1</span>) <span class="op">/</span> <span class="va">$n</span>)<span class="ot">;</span></span>
+<span id="cb44-15"><a href="#cb44-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb44-16"><a href="#cb44-16" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> [</span>
+<span id="cb44-17"><a href="#cb44-17" aria-hidden="true" tabindex="-1"></a>            <span class="st">'class'</span> =&gt; <span class="va">$class</span><span class="ot">,</span></span>
+<span id="cb44-18"><a href="#cb44-18" aria-hidden="true" tabindex="-1"></a>            <span class="st">'mean'</span> =&gt; <span class="va">$mean</span><span class="ot">,</span></span>
+<span id="cb44-19"><a href="#cb44-19" aria-hidden="true" tabindex="-1"></a>            <span class="st">'lower'</span> =&gt; <span class="va">$mean</span> <span class="op">-</span> <span class="fl">1.96</span> <span class="op">*</span> <span class="va">$se</span><span class="ot">,</span></span>
+<span id="cb44-20"><a href="#cb44-20" aria-hidden="true" tabindex="-1"></a>            <span class="st">'upper'</span> =&gt; <span class="va">$mean</span> <span class="op">+</span> <span class="fl">1.96</span> <span class="op">*</span> <span class="va">$se</span><span class="ot">,</span></span>
+<span id="cb44-21"><a href="#cb44-21" aria-hidden="true" tabindex="-1"></a>        ]<span class="ot">;</span></span>
+<span id="cb44-22"><a href="#cb44-22" aria-hidden="true" tabindex="-1"></a>    }<span class="ot">,</span></span>
+<span id="cb44-23"><a href="#cb44-23" aria-hidden="true" tabindex="-1"></a>    <span class="fu">array_values</span>(<span class="fu">array_unique</span>(<span class="fu">array_column</span>(<span class="va">$mpg</span><span class="ot">,</span> <span class="st">'class'</span>)))<span class="ot">,</span></span>
+<span id="cb44-24"><a href="#cb44-24" aria-hidden="true" tabindex="-1"></a>))</span>
+<span id="cb44-25"><a href="#cb44-25" aria-hidden="true" tabindex="-1"></a>    -&gt;aes(x<span class="ot">:</span> <span class="st">'class'</span><span class="ot">,</span> y<span class="ot">:</span> <span class="st">'mean'</span><span class="ot">,</span> ymin<span class="ot">:</span> <span class="st">'lower'</span><span class="ot">,</span> ymax<span class="ot">:</span> <span class="st">'upper'</span>)</span>
+<span id="cb44-26"><a href="#cb44-26" aria-hidden="true" tabindex="-1"></a>    -&gt;errorbar(width<span class="ot">:</span> <span class="dv">8</span>)</span>
+<span id="cb44-27"><a href="#cb44-27" aria-hidden="true" tabindex="-1"></a>    -&gt;point(size<span class="ot">:</span> <span class="dv">50</span>)</span>
+<span id="cb44-28"><a href="#cb44-28" aria-hidden="true" tabindex="-1"></a>    -&gt;labs(x<span class="ot">:</span> <span class="kw">null</span><span class="ot">,</span> y<span class="ot">:</span> <span class="st">'Mean highway mpg (95% CI)'</span>)<span class="ot">;</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </section>
 <section id="summary" class="level3">
 <h3 class="anchored" data-anchor-id="summary">Summaries</h3>
-<p>stat_summary: means with t intervals over the raw data.</p>
+<p>mean_cl_normal draws means with t-based 95% intervals over the raw data.</p>
 <div class="phiz-figure"><div data-phiz-deferred="" data-phiz-options="{&quot;actions&quot;:false}" aria-label="Summaries"><div data-phiz-view="" wire:ignore=""><a data-phiz-spec="" href="gallery/summary.json">Vega-Lite specification</a></div></div></div>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb45"><pre class="sourceCode php code-with-copy"><code class="sourceCode php"><span id="cb45-1"><a href="#cb45-1" aria-hidden="true" tabindex="-1"></a>Plot::of(<span class="va">$mpg</span>)</span>
 <span id="cb45-2"><a href="#cb45-2" aria-hidden="true" tabindex="-1"></a>    -&gt;aes(x<span class="ot">:</span> <span class="st">'class'</span><span class="ot">,</span> y<span class="ot">:</span> <span class="st">'hwy'</span>)</span>
@@ -1078,10 +1178,26 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <h3 class="anchored" data-anchor-id="curve">Functions</h3>
 <p>curve() draws a PHP function, here the normal density over a histogram.</p>
 <div class="phiz-figure"><div data-phiz-deferred="" data-phiz-options="{&quot;actions&quot;:false}" aria-label="Functions"><div data-phiz-view="" wire:ignore=""><a data-phiz-spec="" href="gallery/curve.json">Vega-Lite specification</a></div></div></div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb46"><pre class="sourceCode php code-with-copy"><code class="sourceCode php"><span id="cb46-1"><a href="#cb46-1" aria-hidden="true" tabindex="-1"></a>Plot::of(<span class="fu">array_map</span>(<span class="kw">fn</span> (<span class="va">$i</span>) =&gt; [<span class="st">'z'</span> =&gt; Fit::normalQuantile((<span class="va">$i</span> <span class="op">+</span> <span class="fl">0.5</span>) <span class="op">/</span> <span class="dv">500</span>)]<span class="ot">,</span> <span class="fu">range</span>(<span class="dv">0</span><span class="ot">,</span> <span class="dv">499</span>)))</span>
-<span id="cb46-2"><a href="#cb46-2" aria-hidden="true" tabindex="-1"></a>    -&gt;aes(x<span class="ot">:</span> <span class="st">'z'</span>)</span>
-<span id="cb46-3"><a href="#cb46-3" aria-hidden="true" tabindex="-1"></a>    -&gt;histogram(binwidth<span class="ot">:</span> <span class="fl">0.25</span><span class="ot">,</span> density<span class="ot">:</span> <span class="kw">true</span><span class="ot">,</span> fill<span class="ot">:</span> <span class="st">'#DDDDDD'</span>)</span>
-<span id="cb46-4"><a href="#cb46-4" aria-hidden="true" tabindex="-1"></a>    -&gt;curve(<span class="kw">fn</span> (<span class="dt">float</span> <span class="va">$x</span>) =&gt; <span class="fu">exp</span>(<span class="op">-</span><span class="va">$x</span> <span class="op">*</span> <span class="va">$x</span> <span class="op">/</span> <span class="dv">2</span>) <span class="op">/</span> <span class="fu">sqrt</span>(<span class="dv">2</span> <span class="op">*</span> <span class="cn">M_PI</span>)<span class="ot">,</span> <span class="op">-</span><span class="fl">3.5</span><span class="ot">,</span> <span class="fl">3.5</span><span class="ot">,</span> aes<span class="ot">:</span> aes(x<span class="ot">:</span> <span class="st">'z'</span><span class="ot">,</span> y<span class="ot">:</span> <span class="st">'density'</span>)<span class="ot">,</span> color<span class="ot">:</span> <span class="st">'#D62728'</span><span class="ot">,</span> linewidth<span class="ot">:</span> <span class="dv">2</span>)<span class="ot">;</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb46"><pre class="sourceCode php code-with-copy"><code class="sourceCode php"><span id="cb46-1"><a href="#cb46-1" aria-hidden="true" tabindex="-1"></a>Plot::of(<span class="fu">array_map</span>(</span>
+<span id="cb46-2"><a href="#cb46-2" aria-hidden="true" tabindex="-1"></a>    <span class="kw">fn</span> (<span class="va">$i</span>) =&gt; [</span>
+<span id="cb46-3"><a href="#cb46-3" aria-hidden="true" tabindex="-1"></a>        <span class="st">'z'</span> =&gt; Fit::normalQuantile((<span class="va">$i</span> <span class="op">+</span> <span class="fl">0.5</span>) <span class="op">/</span> <span class="dv">500</span>)<span class="ot">,</span></span>
+<span id="cb46-4"><a href="#cb46-4" aria-hidden="true" tabindex="-1"></a>    ]<span class="ot">,</span></span>
+<span id="cb46-5"><a href="#cb46-5" aria-hidden="true" tabindex="-1"></a>    <span class="fu">range</span>(<span class="dv">0</span><span class="ot">,</span> <span class="dv">499</span>)<span class="ot">,</span></span>
+<span id="cb46-6"><a href="#cb46-6" aria-hidden="true" tabindex="-1"></a>))</span>
+<span id="cb46-7"><a href="#cb46-7" aria-hidden="true" tabindex="-1"></a>    -&gt;aes(x<span class="ot">:</span> <span class="st">'z'</span>)</span>
+<span id="cb46-8"><a href="#cb46-8" aria-hidden="true" tabindex="-1"></a>    -&gt;histogram(</span>
+<span id="cb46-9"><a href="#cb46-9" aria-hidden="true" tabindex="-1"></a>        binwidth<span class="ot">:</span> <span class="fl">0.25</span><span class="ot">,</span></span>
+<span id="cb46-10"><a href="#cb46-10" aria-hidden="true" tabindex="-1"></a>        density<span class="ot">:</span> <span class="kw">true</span><span class="ot">,</span></span>
+<span id="cb46-11"><a href="#cb46-11" aria-hidden="true" tabindex="-1"></a>        fill<span class="ot">:</span> <span class="st">'#DDDDDD'</span><span class="ot">,</span></span>
+<span id="cb46-12"><a href="#cb46-12" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb46-13"><a href="#cb46-13" aria-hidden="true" tabindex="-1"></a>    -&gt;curve(</span>
+<span id="cb46-14"><a href="#cb46-14" aria-hidden="true" tabindex="-1"></a>        <span class="kw">fn</span> (<span class="dt">float</span> <span class="va">$x</span>) =&gt; <span class="fu">exp</span>(<span class="op">-</span><span class="va">$x</span> <span class="op">*</span> <span class="va">$x</span> <span class="op">/</span> <span class="dv">2</span>) <span class="op">/</span> <span class="fu">sqrt</span>(<span class="dv">2</span> <span class="op">*</span> <span class="cn">M_PI</span>)<span class="ot">,</span></span>
+<span id="cb46-15"><a href="#cb46-15" aria-hidden="true" tabindex="-1"></a>        <span class="op">-</span><span class="fl">3.5</span><span class="ot">,</span></span>
+<span id="cb46-16"><a href="#cb46-16" aria-hidden="true" tabindex="-1"></a>        <span class="fl">3.5</span><span class="ot">,</span></span>
+<span id="cb46-17"><a href="#cb46-17" aria-hidden="true" tabindex="-1"></a>        aes<span class="ot">:</span> aes(x<span class="ot">:</span> <span class="st">'z'</span><span class="ot">,</span> y<span class="ot">:</span> <span class="st">'density'</span>)<span class="ot">,</span></span>
+<span id="cb46-18"><a href="#cb46-18" aria-hidden="true" tabindex="-1"></a>        color<span class="ot">:</span> <span class="st">'#D62728'</span><span class="ot">,</span></span>
+<span id="cb46-19"><a href="#cb46-19" aria-hidden="true" tabindex="-1"></a>        linewidth<span class="ot">:</span> <span class="dv">2</span><span class="ot">,</span></span>
+<span id="cb46-20"><a href="#cb46-20" aria-hidden="true" tabindex="-1"></a>    )<span class="ot">;</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 
 
 </section>

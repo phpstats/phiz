@@ -2,28 +2,27 @@
 title: "Dashboards with Livewire"
 ---
 
-This page builds a small dashboard of linked charts. A Livewire component holds the filters, phplyr summarizes a phibble table on the server, and phiz renders three charts that all follow the same state. Changing a filter re-renders the component, and each chart re-embeds in place.
+Build Livewire components whose phiz charts follow the component's state: first one chart with one filter, then a dashboard of three linked charts.
 
-## Prerequisites
+**Requirements:** a Laravel application with Livewire 3, and `composer require phpstats/phiz phpstats/phibble phpstats/phplyr`.
 
-- a Laravel application with Livewire 3, which provides the `#[Url]` attribute used below
-- phiz, phibble, and phplyr: `composer require phpstats/phiz phpstats/phibble phpstats/phplyr`
+## A minimal component
 
-The chart code is [`examples/dashboard.php`](https://github.com/phpstats/phiz/blob/main/examples/dashboard.php), with a method-chain version in [`examples/dashboard.chain.php`](https://github.com/phpstats/phiz/blob/main/examples/dashboard.chain.php). The test suite checks that both build the same charts.
+One chart of monthly revenue per customer from an `orders` table, filtered by sales channel.
 
-## A small component
-
-This component draws monthly revenue per customer from an `orders` table, filtered by sales channel. When a property changes, Livewire reruns `render()`, which rebuilds the pipeline, and `<x-phiz>` redraws the chart.
+`app/Livewire/RevenueByMonth.php`:
 
 ```php
-<?php
-
 namespace App\Livewire;
 
 use App\Models\Order;
 use Livewire\Component;
+use Phibble\DataFrame;
+use Phiz\Plot;
 
-use function Phplyr\{col, floor_date, group_by, mutate, sum, summarise};
+use function Phplyr\{
+    col, floor_date, group_by, mutate, sum, summarize,
+};
 
 class RevenueByMonth extends Component
 {
@@ -31,21 +30,28 @@ class RevenueByMonth extends Component
 
     public function render()
     {
-        $orders = Order::query()
-            ->when($this->channel !== 'All', fn ($query) => $query->where('channel', $this->channel));
+        $orders = Order::query()->when(
+            $this->channel !== 'All',
+            fn ($q) => $q->where('channel', $this->channel),
+        );
 
-        $monthly = \Phibble\DataFrame::fromQuery($orders) |>
-            mutate(month: floor_date(col('placed_on'), 'month')) |>
+        $monthly = DataFrame::fromQuery($orders) |>
+            mutate(
+                month: floor_date(col('placed_on'), 'month'),
+            ) |>
             group_by('month', 'customer') |>
-            summarise(revenue: sum('total'));
+            summarize(revenue: sum('total'));
 
-        $chart = \Phiz\Plot::of($monthly)
+        $chart = Plot::of($monthly)
             ->aes(x: 'month', y: 'revenue', color: 'customer')
             ->line()
             ->point()
-            ->labs(x: null, y: 'Revenue ($)', color: null);
+            ->labs(x: null, y: 'Revenue ($)', color: null)
+            ->size('container', 260);
 
-        return view('livewire.revenue-by-month', ['chart' => $chart]);
+        return view('livewire.revenue-by-month', [
+            'chart' => $chart,
+        ]);
     }
 }
 ```
@@ -61,27 +67,35 @@ class RevenueByMonth extends Component
         <option>Marketplace</option>
     </select>
 
-    <x-phiz :plot="$chart->width('container')->height(260)" />
+    <x-phiz :plot="$chart" />
 </div>
 ```
 
-## The charts
+- **Redrawing.** Livewire reruns `render()` after each property change. `<x-phiz>` redraws the chart when its specification changes.
+- **Server-side data.** The query, the monthly summary, and the chart are built in PHP. The page receives only the summarized rows.
+- **Width.** `size('container', 260)` makes the chart fill its element's width at a fixed height.
 
-`fuel_dashboard()` takes the cars table and the filter state and returns three plots and the class summary behind the bar chart. The Livewire component below calls it from `render()`.
+## A linked dashboard
 
-- The bar chart shows mean highway mpg by class, from phplyr's `group_by()` and `summarize()`. The selected class is highlighted with a computed field.
-- The scatterplot shows the filtered cars, with one linear fit across all of them.
-- The trend chart compares each manufacturer's mean in 1999 and 2008. It ignores the year filter, so the comparison stays visible.
+Three charts follow the same filters: a drive and a year selected in the page, and a vehicle class selected from a list. A shared function builds the charts, a component holds the state, and a view lays them out.
+
+### The shared function
+
+`fuel_dashboard()` takes the cars table and the filter state. It returns three plots and the class summary behind the bar chart. The file is [`examples/dashboard.php`](https://github.com/phpstats/phiz/blob/main/examples/dashboard.php), and [`examples/dashboard.chain.php`](https://github.com/phpstats/phiz/blob/main/examples/dashboard.chain.php) is the method-chain version.
 
 {{< include _generated/source-dashboard.md >}}
 
-With the drive filter on front-wheel drive, the year on 2008, and the compact class selected, the charts look like this:
+- **Selection.** A computed `selected` field colors the selected class in the bar chart.
+- **One fit.** The scatterplot's linear fit sets `inheritAes: false`, so it fits all filtered cars together instead of one line per class.
+- **Trend.** The trend chart ignores the year filter, so both years stay visible.
 
-{{< include _generated/dashboard-state.md >}}
+With front-wheel drive, 2008, and the compact class selected, the charts look like this:
 
-## The Livewire component
+{{< include _generated/dashboard-preview.md >}}
 
-The component keeps the filters as public properties. `render()` passes them to `fuel_dashboard()`. Livewire calls `render()` after every update, so a new selection produces new specifications, and the phiz loader re-embeds each chart whose specification changed.
+### The component
+
+`app/Livewire/FuelDashboard.php`:
 
 ```php
 namespace App\Livewire;
@@ -103,20 +117,32 @@ class FuelDashboard extends Component
 
     public function select(string $class): void
     {
-        $this->selected = $this->selected === $class ? null : $class;
+        $this->selected = $this->selected === $class
+            ? null
+            : $class;
     }
 
     public function render()
     {
-        // In an application this would be DataFrame::fromQuery(Car::query()) or a cached table.
         $cars = DataFrame::fromRows(Datasets::mpg());
 
-        return view('livewire.fuel-dashboard', fuel_dashboard($cars, $this->drive, $this->year, $this->selected));
+        return view('livewire.fuel-dashboard', fuel_dashboard(
+            $cars,
+            $this->drive,
+            $this->year,
+            $this->selected,
+        ));
     }
 }
 ```
 
-The view puts the filters and the three charts side by side. Each `<x-phiz>` has a `wire:key`, so Livewire matches each chart to its element across renders.
+- **Shareable state.** `#[Url]` keeps the drive and year in the query string, so a filtered view can be bookmarked.
+- **Data source.** The example reads the bundled `mpg` data. An application would use `DataFrame::fromQuery()` or a cached table.
+- **Toggle.** Selecting the selected class again clears the selection.
+
+### The view
+
+`resources/views/livewire/fuel-dashboard.blade.php`:
 
 ```blade
 <div class="space-y-4">
@@ -142,35 +168,42 @@ The view puts the filters and the three charts side by side. Each `<x-phiz>` has
 
     <ul class="flex gap-2 text-sm">
         @foreach ($summary->toRows() as $row)
-            <li><button wire:click="select('{{ $row['class'] }}')">{{ $row['class'] }} ({{ $row['cars'] }})</button></li>
+            <li><button wire:click="select('{{ $row['class'] }}')">
+                {{ $row['class'] }} ({{ $row['cars'] }})
+            </button></li>
         @endforeach
     </ul>
 </div>
 ```
 
-A click on a chart can also drive the component. The loader dispatches a `phiz:rendered` event with the Vega view, and a small Alpine handler can forward selections with `$wire`:
+- **`wire:key`.** Each chart keeps its element across renders, and only charts whose specification changed are redrawn.
+- **Grid cells.** The charts have container width, so each fills its grid cell.
+
+### Clicks on a chart
+
+The loader dispatches a `phiz:rendered` event with the Vega view. An Alpine handler can forward a click on a bar to the component:
 
 ```blade
-<div x-on:phiz:rendered="$event.detail.view.addEventListener('click', (e, item) => item?.datum?.class && $wire.select(item.datum.class))">
+<div x-on:phiz:rendered="
+    $event.detail.view.addEventListener('click', (e, item) =>
+        item?.datum?.class && $wire.select(item.datum.class))
+">
     <x-phiz :plot="$bars" wire:key="bars" />
 </div>
 ```
 
 ## Linking in the browser
 
-When the data is small enough to send to the page, a composition links charts without a request to the server. A brush on the scatterplot filters the bar chart, and Vega-Lite recomputes the means in the browser.
+When the data is small enough to send to the page, a composition can link charts with no server request. Brushing the scatterplot filters the bar chart, and Vega-Lite recomputes the means in the browser.
 
 {{< include _generated/dashboard-client.md >}}
 
 ## Choosing where to compute
 
-The two approaches suit different data:
-
-- **Server-side summaries** send only the summarized rows to the page. They suit large tables, database queries, and statistics that need PHP, such as model fits. Each interaction costs a Livewire round trip.
-- **Browser-side linking** sends the raw rows once and responds to every interaction immediately. It suits up to a few thousand rows. [Large data](large-data.qmd) covers what to do beyond that.
-
-Both approaches can share a page. For example, a Livewire filter can choose the rows, and a brush can explore them in the browser.
+- **Server-side summaries** send only summarized rows. They suit large tables, database queries, and statistics computed in PHP, such as model fits. Each interaction is a Livewire request.
+- **Browser-side linking** sends the raw rows once and responds without a request. It suits up to a few thousand rows ([Large data](large-data.qmd)).
+- **Both** can share a page: a Livewire filter chooses the rows, and a brush explores them in the browser.
 
 ## A complete dashboard
 
-[A complete dashboard](https://phiz.phpstats.org/vignettes/rent-dashboard) on phpstats.org is the advanced example. It is a live Livewire page with filters, a phplyr summary, two phiz charts, a logistic model fitted with phit, and what-if predictions.
+[A complete dashboard](https://phiz.phpstats.org/vignettes/rent-dashboard) on phpstats.org adds a logistic model fitted with phit and what-if predictions to a Livewire page with filters, a phplyr summary, and two phiz charts.

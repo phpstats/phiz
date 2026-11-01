@@ -62,8 +62,8 @@
         }
     },
     "spec": {
-        "width": 200,
-        "height": 120,
+        "width": 270,
+        "height": 140,
         "layer": [
             {
                 "mark": {
