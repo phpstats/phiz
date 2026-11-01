@@ -1,0 +1,145 @@
+{
+    "title": "Small plots: building a specification in PHP",
+    "label": "Small plots",
+    "description": "Build an ordinary plot from a bundled dataset and encode its specification as JSON, as a page does for each chart it serves.",
+    "workload": "Plots of 234 to 574 inline rows",
+    "implementations": {
+        "phiz": "phiz v0.5.2-9-g760c476, plain PHP"
+    },
+    "measure": "Elapsed time per plot",
+    "unit": "ms",
+    "statistic": "median",
+    "method": "Each run builds the plot and encodes its specification 100 times; the time is the run's mean per plot. The bundled dataset is loaded and cached before timing, and one run is a warmup. Starting PHP is excluded.",
+    "time_spent_in": "the PHP process (building the specification only; no browser rendering or vl-convert)",
+    "memory_measure": "peak anonymous memory",
+    "memory_method": "RssAnon of the whole PHP process, sampled every millisecond by peakmem (phpolars bench/csv-pipeline/peakmem.c). php_peak_mib is memory_get_peak_usage(true).",
+    "environment": {
+        "cpu": "AMD Ryzen 9 9955HX 16-Core Processor",
+        "cores": 2,
+        "memory_gb": 7.8,
+        "os": "Linux, Ubuntu 24.04.5 LTS (x86_64)",
+        "php": "8.5.12",
+        "threads": 1,
+        "cache": "warm",
+        "repeats": 7,
+        "warmups": 1,
+        "date": "2026-11-01",
+        "commit": "760c476"
+    },
+    "rows": [
+        {
+            "case": "scatter, 234 rows",
+            "implementation": "phiz",
+            "value": 0.367,
+            "reps": [
+                0.367,
+                0.367,
+                0.366,
+                0.367,
+                0.368,
+                0.365,
+                0.366
+            ],
+            "peak_memory_mib": 12.6,
+            "peak_rss_mib": 35.6,
+            "php_peak_mib": 8,
+            "note": "Specification: 35.1 KB."
+        },
+        {
+            "case": "scatter with lm band, 234 rows",
+            "implementation": "phiz",
+            "value": 0.881,
+            "reps": [
+                0.882,
+                0.881,
+                0.881,
+                0.882,
+                0.88,
+                0.88,
+                0.881
+            ],
+            "peak_memory_mib": 12.6,
+            "peak_rss_mib": 35.6,
+            "php_peak_mib": 8,
+            "note": "Specification: 52.4 KB."
+        },
+        {
+            "case": "scatter with loess band, 234 rows",
+            "implementation": "phiz",
+            "value": 66.5,
+            "reps": [
+                66.5,
+                66.5,
+                66.5,
+                66.5,
+                66.5,
+                66.5,
+                66.6
+            ],
+            "peak_memory_mib": 16.6,
+            "peak_rss_mib": 39.8,
+            "php_peak_mib": 12,
+            "note": "Specification: 52.4 KB."
+        },
+        {
+            "case": "histogram, 272 rows",
+            "implementation": "phiz",
+            "value": 0.123,
+            "reps": [
+                0.124,
+                0.123,
+                0.123,
+                0.123,
+                0.123,
+                0.122,
+                0.122
+            ],
+            "peak_memory_mib": 12.4,
+            "peak_rss_mib": 35.2,
+            "php_peak_mib": 6,
+            "note": "Specification: 8.8 KB."
+        },
+        {
+            "case": "time series, 574 rows",
+            "implementation": "phiz",
+            "value": 0.631,
+            "reps": [
+                0.632,
+                0.631,
+                0.63,
+                0.632,
+                0.631,
+                0.631,
+                0.631
+            ],
+            "peak_memory_mib": 12.9,
+            "peak_rss_mib": 35.8,
+            "php_peak_mib": 8,
+            "note": "Specification: 52.1 KB."
+        },
+        {
+            "case": "facets, 7 panels, 234 rows",
+            "implementation": "phiz",
+            "value": 0.41,
+            "reps": [
+                0.411,
+                0.41,
+                0.41,
+                0.41,
+                0.409,
+                0.409,
+                0.409
+            ],
+            "peak_memory_mib": 12.6,
+            "peak_rss_mib": 35.4,
+            "php_peak_mib": 8,
+            "note": "Specification: 35.1 KB."
+        }
+    ],
+    "reproduce": [
+        "composer install",
+        "php scripts/bench-build.php"
+    ],
+    "source": "scripts/bench-build.php",
+    "group": "phiz in PHP"
+}

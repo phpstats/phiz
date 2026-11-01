@@ -768,7 +768,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <ul>
 <li><strong>Polynomials.</strong> <code>method: 'lm'</code>, <code>'quad'</code>, and <code>'poly'</code> (with <code>order:</code>) fit by least squares in PHP, with bands from R’s <code>predict(fit, interval = "confidence")</code> formula.</li>
 <li><strong>In the browser.</strong> <code>se: false</code> and the methods <code>log</code>, <code>exp</code>, and <code>pow</code> use Vega-Lite’s regression and loess transforms, without a band.</li>
-<li><strong>Large data.</strong> Above 3,000 rows, loess defaults to the browser, because the band costs O(n²) in PHP. <code>se: true</code> computes it anyway.</li>
+<li><strong>Cost of a loess band.</strong> The band costs O(n²) in PHP. For the 234 points of <code>mpg</code> it takes about 66 ms to build on the benchmark machine, against under 1 ms for an lm band (<a href="https://phiz.phpstats.org/benchmarks/small-plot-build">Small plots</a>). <code>se: false</code> leaves the curve to Vega-Lite’s transform in the browser.</li>
+<li><strong>Large data.</strong> Above 3,000 rows, loess defaults to the browser. <code>se: true</code> computes the band anyway.</li>
 </ul>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb12"><pre class="sourceCode php code-with-copy"><code class="sourceCode php"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="kw">use</span> Phiz\Datasets<span class="ot">;</span></span>
 <span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a><span class="kw">use</span> Phiz\Plot<span class="ot">;</span></span>

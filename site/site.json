@@ -182,7 +182,9 @@
         ]
     },
     "benchmarks": [
-        "site/benchmarks/large-data-binning.json"
+        "site/benchmarks/large-data-binning.json",
+        "site/benchmarks/small-plot-build.json",
+        "site/benchmarks/vl-convert-export.json"
     ],
     "verifications": [
         "site/verifications/r-smoothing.json",

@@ -1,0 +1,151 @@
+{
+    "title": "Static export: SVG, PNG, and PDF through vl-convert",
+    "label": "Static export",
+    "description": "Export a plot with svg(), png(scale: 2), or pdf(): phiz builds the specification and runs vl-convert, which renders it without a browser.",
+    "workload": "A 234-point scatterplot with a least-squares band, and a 20,000-point scatterplot",
+    "dataset": {
+        "detail": "ggplot2's mpg (234 rows); 20,000 uniform points from mt_rand seeded with 1"
+    },
+    "implementations": {
+        "phiz + vl-convert": "phiz v0.5.2-9-g760c476, running vl-convert 1.9.0 once per export"
+    },
+    "measure": "Elapsed time per export",
+    "unit": "ms",
+    "statistic": "median",
+    "method": "From the export call to holding the image bytes: building the specification in PHP, starting vl-convert, rendering, and reading its output. One export is a warmup. Building the plot's data and starting PHP are excluded.",
+    "time_spent_in": "vl-convert's executable, launched by phiz, plus building the specification in the PHP process (shown in each row's note)",
+    "memory_measure": "peak anonymous memory",
+    "memory_method": "peak_memory_mib is RssAnon of the PHP process alone, sampled every millisecond by peakmem (phpolars bench/csv-pipeline/peakmem.c). child_peak_rss_mib is the largest peak resident set size of the vl-convert processes, from getrusage(RUSAGE_CHILDREN) in the PHP process. php_peak_mib is memory_get_peak_usage(true).",
+    "environment": {
+        "cpu": "AMD Ryzen 9 9955HX 16-Core Processor",
+        "cores": 2,
+        "memory_gb": 7.8,
+        "os": "Linux, Ubuntu 24.04.5 LTS (x86_64)",
+        "php": "8.5.12",
+        "threads": 1,
+        "cache": "warm",
+        "repeats": 7,
+        "warmups": 1,
+        "date": "2026-11-01",
+        "commit": "760c476",
+        "versions": {
+            "vl-convert": "1.9.0"
+        }
+    },
+    "rows": [
+        {
+            "case": "234 points with lm band: SVG",
+            "implementation": "phiz + vl-convert",
+            "value": 314.0,
+            "reps": [
+                326.0,
+                314.0,
+                303.0,
+                314.0,
+                315.0,
+                314.0,
+                314.0
+            ],
+            "peak_memory_mib": 13.1,
+            "php_peak_mib": 8,
+            "child_peak_rss_mib": 77.9,
+            "note": "Output: 71 KB. Building the 52 KB specification in PHP: 0.609 ms of the total."
+        },
+        {
+            "case": "234 points with lm band: PNG, scale 2",
+            "implementation": "phiz + vl-convert",
+            "value": 334.0,
+            "reps": [
+                325.0,
+                335.0,
+                334.0,
+                334.0,
+                334.0,
+                326.0,
+                324.0
+            ],
+            "peak_memory_mib": 13.2,
+            "php_peak_mib": 8,
+            "child_peak_rss_mib": 80.8,
+            "note": "Output: 149 KB. Building the 52 KB specification in PHP: 0.606 ms of the total."
+        },
+        {
+            "case": "234 points with lm band: PDF",
+            "implementation": "phiz + vl-convert",
+            "value": 315.0,
+            "reps": [
+                325.0,
+                315.0,
+                315.0,
+                326.0,
+                314.0,
+                314.0,
+                313.0
+            ],
+            "peak_memory_mib": 13.1,
+            "php_peak_mib": 8,
+            "child_peak_rss_mib": 79.3,
+            "note": "Output: 173 KB. Building the 52 KB specification in PHP: 0.61 ms of the total."
+        },
+        {
+            "case": "20,000 points: SVG",
+            "implementation": "phiz + vl-convert",
+            "value": 523.0,
+            "reps": [
+                523.0,
+                520.0,
+                523.0,
+                524.0,
+                532.0,
+                515.0,
+                511.0
+            ],
+            "peak_memory_mib": 33.4,
+            "php_peak_mib": 27.4,
+            "child_peak_rss_mib": 177.2,
+            "note": "Output: 5498 KB. Building the 948 KB specification in PHP: 12.3 ms of the total."
+        },
+        {
+            "case": "20,000 points: PNG, scale 2",
+            "implementation": "phiz + vl-convert",
+            "value": 1086.0,
+            "reps": [
+                1083.0,
+                1093.0,
+                1085.0,
+                1084.0,
+                1098.0,
+                1086.0,
+                1093.0
+            ],
+            "peak_memory_mib": 28.1,
+            "php_peak_mib": 22,
+            "child_peak_rss_mib": 197.7,
+            "note": "Output: 834 KB. Building the 948 KB specification in PHP: 12.3 ms of the total."
+        },
+        {
+            "case": "20,000 points: PDF",
+            "implementation": "phiz + vl-convert",
+            "value": 896.0,
+            "reps": [
+                890.0,
+                888.0,
+                898.0,
+                899.0,
+                896.0,
+                898.0,
+                877.0
+            ],
+            "peak_memory_mib": 41.5,
+            "php_peak_mib": 35.5,
+            "child_peak_rss_mib": 211.7,
+            "note": "Output: 13780 KB. Building the 948 KB specification in PHP: 12.3 ms of the total."
+        }
+    ],
+    "reproduce": [
+        "composer install",
+        "PHIZ_VL_CONVERT=/path/to/vl-convert php scripts/bench-export.php"
+    ],
+    "source": "scripts/bench-export.php",
+    "group": "Static export"
+}

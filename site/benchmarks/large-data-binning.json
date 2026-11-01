@@ -9,7 +9,7 @@
         "detail": "correlated standard normal pairs from mt_rand seeded with 1, built in the measured process"
     },
     "implementations": {
-        "phiz": "phiz v0.5.2-4-geb39d93, plain PHP, reading a phibble v0.6.1 table"
+        "phiz": "phiz v0.5.2-9-g760c476, plain PHP, reading a phibble v0.6.1 table"
     },
     "measure": "Elapsed time",
     "unit": "s",
@@ -17,70 +17,76 @@
     "method": "From building the Plot to holding the JSON specification: compiling, reading the table column by column, binning, and encoding. Building the table and starting PHP are excluded.",
     "time_spent_in": "the PHP process (building the specification only; no browser rendering or vl-convert)",
     "memory_measure": "peak anonymous memory",
-    "memory_method": "RssAnon of the whole PHP process, including the generated table, sampled every millisecond by peakmem (phpolars bench/csv-pipeline/peakmem.c).",
+    "memory_method": "RssAnon of the whole PHP process, including the generated table, sampled every millisecond by peakmem (phpolars bench/csv-pipeline/peakmem.c). php_peak_mib is memory_get_peak_usage(true).",
     "environment": {
         "cpu": "AMD Ryzen 9 9955HX 16-Core Processor",
         "cores": 2,
         "memory_gb": 7.8,
         "os": "Linux, Ubuntu 24.04.5 LTS (x86_64)",
         "php": "8.5.12",
-        "versions": {
-            "phibble": "v0.6.1"
-        },
         "threads": 1,
         "cache": "warm",
         "repeats": 7,
         "warmups": 0,
         "date": "2026-11-01",
-        "commit": "eb39d93"
+        "commit": "760c476",
+        "versions": {
+            "phibble": "v0.6.1"
+        }
     },
     "rows": [
         {
             "case": "hex(bins: 40)",
             "implementation": "phiz",
-            "value": 1.66,
+            "value": 1.67,
             "reps": [
-                1.66,
-                1.65,
-                1.65,
-                1.66,
-                1.66,
-                1.66,
-                1.68
+                1.68,
+                1.67,
+                1.67,
+                1.67,
+                1.67,
+                1.67,
+                1.67
             ],
-            "peak_memory_mib": 60,
+            "peak_memory_mib": 59.8,
+            "peak_rss_mib": 82.9,
+            "php_peak_mib": 56,
             "note": "Specification: 61 KB."
         },
         {
             "case": "bin2d(bins: 50)",
             "implementation": "phiz",
-            "value": 1.29,
+            "value": 1.31,
             "reps": [
-                1.3,
-                1.29,
-                1.29,
-                1.29,
-                1.3,
-                1.29,
-                1.29
+                1.31,
+                1.31,
+                1.31,
+                1.31,
+                1.31,
+                1.31,
+                1.31
             ],
-            "peak_memory_mib": 60,
+            "peak_memory_mib": 60.4,
+            "peak_rss_mib": 83.4,
+            "php_peak_mib": 56,
             "note": "Specification: 168 KB."
         },
         {
             "case": "histogram(bins: 60)",
             "implementation": "phiz",
-            "value": 0.8,
+            "value": 0.804,
             "reps": [
-                0.81,
-                0.8,
-                0.8,
-                0.8,
-                0.8,
-                0.8,
-                0.8
+                0.807,
+                0.804,
+                0.806,
+                0.803,
+                0.803,
+                0.803,
+                0.804
             ],
-            "peak_memory_mib": 59,
+            "peak_memory_mib": 58.9,
+            "peak_rss_mib": 81.9,
+            "php_peak_mib": 56,
             "note": "Specification: 6 KB."
         }
     ],
