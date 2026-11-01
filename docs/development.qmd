@@ -22,7 +22,7 @@ CI runs the suite on PHP 8.3, 8.4, and 8.5. The tests in `tests/Pipes/` use the 
 
 ## Benchmarks
 
-`php -d memory_limit=-1 scripts/bench-large-data.php` times the PHP binning geoms on a million-row phibble table and prints the environment and a Markdown table. Timings in the documentation come from the Linux benchmark machine.
+`php scripts/bench-large-data.php` times the PHP binning geoms on a million-row phibble table. Each case runs in its own process under `peakmem -l` (from phpolars' `bench/csv-pipeline/peakmem.c`), and the script prints the machine, the median and all seven runs, the spec size, and the peak anonymous memory. Timings in the documentation come from the Linux benchmark machine.
 
 ## Gallery
 
