@@ -1,18 +1,19 @@
 {
-    "title": "Palettes: agreement with scales",
+    "title": "Palettes",
     "label": "Palettes",
     "kind": "reference",
-    "checked": "The hue and grey palettes that theme(\"gray\"), scale_color_hue(), and scale_color_grey() compute, against the scales package.",
-    "reference": "scales 1.4.0 hue_pal() and grey_pal()",
+    "checked": "Hue and grey palette colors, as used by theme(\"gray\"), scale_color_hue(), and scale_color_grey().",
+    "description": "scripts/evidence/r-references.R computes the palettes with the scales package. scripts/evidence/parity.php computes them with phiz and compares the hex colors.",
+    "reference": "R 4.6.1, scales 1.4.0: hue_pal(), grey_pal()",
     "versions": {
         "R": "4.6.1",
         "scales": "1.4.0"
     },
-    "inputs": "Palette sizes of 3, 4, 5, and 8 levels.",
+    "inputs": "Palettes of 3, 4, 5, and 8 levels.",
     "comparison": [
         {
             "id": "exact",
-            "applies_to": "counts, levels, piece sizes, and colors",
+            "applies_to": "Counts, levels, piece sizes, and colors",
             "kind": "exact"
         }
     ],
@@ -54,9 +55,9 @@
     "data": "tests/fixtures/r-references.json",
     "environment": {
         "date": "2026-11-01",
-        "commit": "d9a30f4",
+        "commit": "ca0fb12",
         "php": "8.5.11",
         "os": "Linux, Debian GNU/Linux 13 (trixie) (aarch64)"
     },
-    "group": "Agreement with R"
+    "group": "Reference comparisons"
 }

@@ -1,10 +1,11 @@
 {
-    "title": "Export checks with vl-convert",
+    "title": "Export",
     "group": "Export",
     "label": "Export",
     "kind": "integration",
-    "checked": "vl-convert renders every gallery example to SVG, writes SVG, PNG, and PDF files with the right signatures, reports conversion errors, and renders 21 plots as PNG images that match their baselines.",
-    "reference": "vl-convert 1.9.0, and the PNG baselines in tests/Visual/baselines",
+    "checked": "SVG output for every gallery example; SVG, PNG, PDF, and Vega output signatures; conversion errors; PNG renderings of 21 plots against baselines.",
+    "description": "scripts/evidence-tests.php runs the Pest suite with vl-convert and records each export test. Without vl-convert or the GD extension, the cases are recorded as skipped.",
+    "reference": "vl-convert 1.9.0; PNG baselines in tests/Visual/baselines",
     "versions": {
         "vl-convert": "1.9.0",
         "Vega-Lite (vl-convert)": "6.1"
@@ -24,17 +25,17 @@
     "comparison": [
         {
             "id": "smoke",
-            "applies_to": "SVG output: starts with <svg and contains a mark group (role-mark)",
+            "applies_to": "SVG output; starts with <svg and contains a mark group",
             "kind": "exact"
         },
         {
             "id": "signature",
-            "applies_to": "file signatures: <svg, the PNG magic bytes, %PDF-, and a Vega spec with marks; conversion errors raise ExportFailed",
+            "applies_to": "Output signatures; <svg, PNG magic bytes, %PDF-, Vega marks, and ExportFailed on conversion errors",
             "kind": "exact"
         },
         {
             "id": "pixels",
-            "applies_to": "PNG renderings: at most 0.2% of pixels may differ from the baseline by more than 40 of 255 in their largest channel; a size change fails",
+            "applies_to": "PNG renderings; at most 0.2% of pixels differ by more than 40/255 in the largest channel, and sizes match",
             "kind": "exact"
         }
     ],
@@ -69,8 +70,8 @@
         }
     ],
     "exclusions": [
-        "PNG and PDF output are checked by signature and by the visual baselines, not byte for byte.",
-        "The visual plots use Liberation Sans, which vl-convert bundles, and no jitter, so they render the same on every platform."
+        "PNG and PDF output are compared by signature and against the visual baselines, not byte for byte.",
+        "The visual plots use Liberation Sans, which vl-convert bundles, and no jitter."
     ],
     "reproduce": [
         "composer install",
@@ -79,7 +80,7 @@
     "source": "scripts/evidence-tests.php",
     "environment": {
         "date": "2026-11-01",
-        "commit": "d9a30f4",
+        "commit": "ca0fb12",
         "php": "8.5.11",
         "os": "Linux, Debian GNU/Linux 13 (trixie) (aarch64)"
     }

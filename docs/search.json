@@ -649,7 +649,7 @@
     "href": "design.html#vega-lite-versions",
     "title": "Design and compatibility",
     "section": "Vega-Lite versions",
-    "text": "Vega-Lite versions\nphiz emits Vega-Lite 6 specifications. Vega-Lite schema validity lists the pinned versions and the schema the tests validate against.",
+    "text": "Vega-Lite versions\nphiz emits Vega-Lite 6 specifications. Schema validity lists the pinned versions and the schema the tests validate against.",
     "crumbs": [
       "Compatibility and limitations",
       "Design and compatibility"
@@ -1056,7 +1056,7 @@
     "href": "geoms.html#agreement-with-r",
     "title": "Geoms",
     "section": "Agreement with R",
-    "text": "Agreement with R\nThe smoothing, density, contour, ellipse, and summary computations are compared with R on the bundled datasets: see Smoothing and Distributions and contours for each comparison, its tolerance, and its result.",
+    "text": "Agreement with R\nThe smoothing, density, contour, ellipse, and summary computations are compared with R on the bundled datasets: see Smoothing and Distributions for each comparison, its tolerance, and its result.",
     "crumbs": [
       "Guides",
       "Geoms"
@@ -1221,7 +1221,7 @@
     "href": "large-data.html#tables-stay-columnar",
     "title": "Large data",
     "section": "Tables stay columnar",
-    "text": "Tables stay columnar\nA phibble table or an array of columns is kept as given. The binning geoms read it column by column, and rows are built only if the specification embeds them.\nLarge data lists the time and memory to bin a million-row phibble table with hex(), bin2d(), and histogram(), with the machine and method.",
+    "text": "Tables stay columnar\nA phibble table or an array of columns is kept as given. The binning geoms read it column by column, and rows are built only if the specification embeds them.\nLarge-data binning lists the time and memory to bin a million-row phibble table with hex(), bin2d(), and histogram(), with the machine and method.",
     "crumbs": [
       "Guides",
       "Large data"
@@ -1441,7 +1441,7 @@
     "href": "rendering.html#static-export",
     "title": "Rendering",
     "section": "Static export",
-    "text": "Static export\nsvg(), png(), pdf(), and save() with an image extension run the vl-convert binary, which renders without a browser.\n$plot-&gt;save('figure.svg');\n$plot-&gt;save('figure.png', scale: 3);\nfile_put_contents('figure.pdf', $plot-&gt;pdf());\n\nFinding the binary. phiz checks the PHIZ_VL_CONVERT and VL_CONVERT environment variables, then PATH. A missing binary throws Phiz\\Exceptions\\VlConvertNotFound with installation instructions.\nOptions. new Export(binary:, timeout:, fontDir:) sets the binary path, the timeout, and an extra font directory.\n\n\nInstalling vl-convert\nvl-convert has no Homebrew formula or apt package. Each release ships a self-contained binary for macOS (osx-arm64, osx-64) and Linux (linux-64, linux-aarch64). The Linux binaries link only against glibc and zlib, so they run on a bare Ubuntu image with no fonts or other packages installed. On Ubuntu the install is:\ncurl -sSLo /tmp/vl-convert.zip https://github.com/vega/vl-convert/releases/download/v1.9.0/vl-convert_linux-64.zip\nsudo unzip -j -o /tmp/vl-convert.zip bin/vl-convert -d /usr/local/bin\nvl-convert --version\nOn macOS, download vl-convert_osx-arm64.zip from the same release and unzip it the same way. The macOS binary has only an ad hoc signature. A copy fetched with curl or gh release download is not quarantined and runs directly. If a browser download is quarantined, xattr -d com.apple.quarantine vl-convert clears the flag. Put the binary in a directory on PATH, or point PHIZ_VL_CONVERT at it.\n\n\nReproducible SVG\n\nRepeated runs. With the same vl-convert version, the same specification gives the same SVG bytes on every run. Unseeded jitter is the exception: without seed:, jitter() uses Vega’s random(). With seed:, the offsets are part of the specification.\nFonts. vl-convert measures sans-serif text with its bundled Liberation Sans, so the layout does not depend on the fonts installed on the machine. The SVG keeps its text as &lt;text font-family=\"sans-serif\"&gt;, so the viewer’s browser chooses the displayed font. A theme that names another font, or an export with fontDir:, makes the layout depend on the fonts vl-convert can find.\nAcross machines. The visual tests compare PNG renderings with shared baselines within a pixel tolerance (Export checks). SVG output is not compared byte for byte across machines.\nCommitted figures change when the specification, the vl-convert version, or its Vega-Lite version changes. Pin the vl-convert version wherever figures are generated.",
+    "text": "Static export\nsvg(), png(), pdf(), and save() with an image extension run the vl-convert binary, which renders without a browser.\n$plot-&gt;save('figure.svg');\n$plot-&gt;save('figure.png', scale: 3);\nfile_put_contents('figure.pdf', $plot-&gt;pdf());\n\nFinding the binary. phiz checks the PHIZ_VL_CONVERT and VL_CONVERT environment variables, then PATH. A missing binary throws Phiz\\Exceptions\\VlConvertNotFound with installation instructions.\nOptions. new Export(binary:, timeout:, fontDir:) sets the binary path, the timeout, and an extra font directory.\n\n\nInstalling vl-convert\nvl-convert has no Homebrew formula or apt package. Each release ships a self-contained binary for macOS (osx-arm64, osx-64) and Linux (linux-64, linux-aarch64). The Linux binaries link only against glibc and zlib, so they run on a bare Ubuntu image with no fonts or other packages installed. On Ubuntu the install is:\ncurl -sSLo /tmp/vl-convert.zip https://github.com/vega/vl-convert/releases/download/v1.9.0/vl-convert_linux-64.zip\nsudo unzip -j -o /tmp/vl-convert.zip bin/vl-convert -d /usr/local/bin\nvl-convert --version\nOn macOS, download vl-convert_osx-arm64.zip from the same release and unzip it the same way. The macOS binary has only an ad hoc signature. A copy fetched with curl or gh release download is not quarantined and runs directly. If a browser download is quarantined, xattr -d com.apple.quarantine vl-convert clears the flag. Put the binary in a directory on PATH, or point PHIZ_VL_CONVERT at it.\n\n\nReproducible SVG\n\nRepeated runs. With the same vl-convert version, the same specification gives the same SVG bytes on every run. Unseeded jitter is the exception: without seed:, jitter() uses Vega’s random(). With seed:, the offsets are part of the specification.\nFonts. vl-convert measures sans-serif text with its bundled Liberation Sans, so the layout does not depend on the fonts installed on the machine. The SVG keeps its text as &lt;text font-family=\"sans-serif\"&gt;, so the viewer’s browser chooses the displayed font. A theme that names another font, or an export with fontDir:, makes the layout depend on the fonts vl-convert can find.\nAcross machines. The visual tests compare PNG renderings with shared baselines within a pixel tolerance (Export). SVG output is not compared byte for byte across machines.\nCommitted figures change when the specification, the vl-convert version, or its Vega-Lite version changes. Pin the vl-convert version wherever figures are generated.",
     "crumbs": [
       "Guides",
       "Rendering"
@@ -1452,7 +1452,7 @@
     "href": "rendering.html#versions",
     "title": "Rendering",
     "section": "Versions",
-    "text": "Versions\nVega-Lite schema validity lists the pinned browser libraries (vega, vega-lite, and vega-embed), the tested vl-convert version, and the schema every specification is validated against.",
+    "text": "Versions\nSchema validity lists the pinned browser libraries (vega, vega-lite, and vega-embed), the tested vl-convert version, and the schema every specification is validated against.",
     "crumbs": [
       "Guides",
       "Rendering"
@@ -1551,7 +1551,7 @@
     "href": "statistics.html#agreement-with-r",
     "title": "Statistics",
     "section": "Agreement with R",
-    "text": "Agreement with R\nThe prediction, marginal-mean, and random-effect helpers are compared with R and lme4 on phit fits: see Statistics helpers for each comparison, its tolerance, and its result.",
+    "text": "Agreement with R\nThe prediction, marginal-mean, and random-effect helpers are compared with R and lme4 on phit fits: see Statistics for each comparison, its tolerance, and its result.",
     "crumbs": [
       "Guides",
       "Statistics"

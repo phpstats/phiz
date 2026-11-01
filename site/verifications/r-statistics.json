@@ -1,9 +1,10 @@
 {
-    "title": "Statistics helpers: agreement with R",
-    "label": "Statistics helpers",
+    "title": "Statistics",
+    "label": "Statistics",
     "kind": "reference",
-    "checked": "predictions(), marginal_means(), and random_effects_plot() on fits from phit, against R's predict(), an emmeans-style computation in R, and lme4's ranef(condVar = TRUE).",
-    "reference": "R 4.6.1 lm() and predict(); lme4 2.0.6 lmer() and ranef()",
+    "checked": "Predictions with confidence intervals, marginal means with confidence intervals, and random-effect conditional modes and standard deviations. Identical model formulas and data across implementations.",
+    "description": "scripts/evidence/r-references.R fits the models in R and lme4 and writes tests/fixtures/r-references.json. scripts/evidence/parity.php fits the same models with phit, passes the fits to predictions(), marginal_means(), and random_effects_plot(), and compares the results value by value.",
+    "reference": "R 4.6.1: lm(), predict(); lme4 2.0.6: lmer(), ranef(condVar = TRUE)",
     "versions": {
         "R": "4.6.1",
         "lme4": "2.0.6",
@@ -22,7 +23,7 @@
     "comparison": [
         {
             "id": "tight",
-            "applies_to": "fits, quantiles, intervals, and polygon points",
+            "applies_to": "Numerical results; fits, quantiles, intervals, and polygon points",
             "kind": "tolerance",
             "atol": 1.0e-9,
             "rtol": 1.0e-9,
@@ -30,7 +31,7 @@
         },
         {
             "id": "mixed",
-            "applies_to": "mixed-model conditional modes and standard deviations, which follow the REML optimum",
+            "applies_to": "Mixed-model conditional modes and standard deviations; dependent on the REML optimum",
             "kind": "tolerance",
             "atol": 1.0e-6,
             "rtol": 1.0e-6,
@@ -76,8 +77,8 @@
         }
     ],
     "exclusions": [
-        "The fits come from phit (phit-polyfill), so these cases test phiz's helpers together with phit's fits. phit's own agreement with R is in phit's verification.",
-        "Marginal means are compared with the emmeans formula computed directly in R; emmeans itself was not installed."
+        "The fits come from phit-polyfill; the cases test phiz's helpers together with phit's fits. phit's fits are verified separately.",
+        "Marginal means are compared with the emmeans formula computed directly in R; the emmeans package is not used."
     ],
     "reproduce": [
         "Rscript scripts/evidence/r-references.R",
@@ -87,9 +88,9 @@
     "data": "tests/fixtures/r-references.json",
     "environment": {
         "date": "2026-11-01",
-        "commit": "d9a30f4",
+        "commit": "ca0fb12",
         "php": "8.5.11",
         "os": "Linux, Debian GNU/Linux 13 (trixie) (aarch64)"
     },
-    "group": "Agreement with R"
+    "group": "Reference comparisons"
 }

@@ -35,7 +35,7 @@ Histograms computed in PHP use exactly `bins` equal-width bins, or `binwidth` an
 
 A phibble table or an array of columns is kept as given. The binning geoms read it column by column, and rows are built only if the specification embeds them.
 
-[Large data](https://phiz.phpstats.org/benchmarks/large-data-binning) lists the time and memory to bin a million-row phibble table with `hex()`, `bin2d()`, and `histogram()`, with the machine and method.
+[Large-data binning](https://phiz.phpstats.org/benchmarks/large-data-binning) lists the time and memory to bin a million-row phibble table with `hex()`, `bin2d()`, and `histogram()`, with the machine and method.
 
 ## Downsampling lines
 

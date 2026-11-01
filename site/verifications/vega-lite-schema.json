@@ -1,10 +1,11 @@
 {
-    "title": "Vega-Lite schema validity",
+    "title": "Schema validity",
     "group": "Specifications",
-    "label": "Vega-Lite schema",
+    "label": "Schema validity",
     "kind": "contract",
-    "checked": "Every specification the tests build, for each geom, feature, statistics helper, documentation example, and gallery example, validates against the Vega-Lite JSON schema.",
-    "reference": "Vega-Lite 6.1.0 JSON schema, validated with opis/json-schema",
+    "checked": "Specifications for every geom, feature, statistics helper, documentation example, and gallery example, against the Vega-Lite JSON schema.",
+    "description": "scripts/evidence-tests.php runs the Pest suite and records each test that validates a specification with opis/json-schema. A case is one test; its count is the number of data sets.",
+    "reference": "Vega-Lite 6.1.0 JSON schema; opis/json-schema validator",
     "versions": {
         "Vega-Lite schema": "6.1.0",
         "vega-lite (browser)": "6.4.3",
@@ -23,7 +24,7 @@
     "comparison": [
         {
             "id": "schema",
-            "applies_to": "each specification against the schema",
+            "applies_to": "Schema errors; none permitted",
             "kind": "exact"
         }
     ],
@@ -156,7 +157,7 @@
         }
     ],
     "known_differences": [
-        "Browsers load vega-lite 6.4.3, but specifications are validated against the 6.1.0 schema, the version vl-convert 1.9.0 renders with. No check validates against a 6.4 schema."
+        "Browsers load vega-lite 6.4.3; specifications are validated against the 6.1.0 schema, the version vl-convert 1.9.0 renders with. No check validates against a 6.4 schema."
     ],
     "reproduce": [
         "composer install",
@@ -165,7 +166,7 @@
     "source": "scripts/evidence-tests.php",
     "environment": {
         "date": "2026-11-01",
-        "commit": "d9a30f4",
+        "commit": "ca0fb12",
         "php": "8.5.11",
         "os": "Linux, Debian GNU/Linux 13 (trixie) (aarch64)"
     }

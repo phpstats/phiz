@@ -1,9 +1,10 @@
 {
-    "title": "Smoothing: agreement with R",
+    "title": "Smoothing",
     "label": "Smoothing",
     "kind": "reference",
-    "checked": "The least-squares and loess fits, standard errors, and confidence bands behind smooth(), computed in PHP, against R's lm(), predict(), and loess().",
-    "reference": "R 4.6.1 lm(), predict(), and loess(surface = \"direct\", statistics = \"exact\")",
+    "checked": "Least-squares coefficients, standard errors, and confidence bands; loess fits, standard errors, degrees of freedom, residual standard errors, and confidence bands. Identical inputs and evaluation points across implementations.",
+    "description": "scripts/evidence/r-references.R computes the reference values in R and writes tests/fixtures/r-references.json. scripts/evidence/parity.php computes the same quantities with phiz's PHP implementations behind smooth() and compares them value by value.",
+    "reference": "R 4.6.1: lm(), predict(), loess(surface = \"direct\", statistics = \"exact\")",
     "versions": {
         "R": "4.6.1"
     },
@@ -20,7 +21,7 @@
     "comparison": [
         {
             "id": "tight",
-            "applies_to": "fits, quantiles, intervals, and polygon points",
+            "applies_to": "Numerical results; fits, quantiles, intervals, and polygon points",
             "kind": "tolerance",
             "atol": 1.0e-9,
             "rtol": 1.0e-9,
@@ -28,7 +29,7 @@
         },
         {
             "id": "exact",
-            "applies_to": "counts, levels, piece sizes, and colors",
+            "applies_to": "Counts, levels, piece sizes, and colors",
             "kind": "exact"
         }
     ],
@@ -160,7 +161,7 @@
         }
     ],
     "known_differences": [
-        "ggplot2's geom_smooth() interpolates the loess surface; phiz computes it directly, as loess(surface = \"direct\"), so ggplot2's curve can differ slightly."
+        "ggplot2's geom_smooth() interpolates the loess surface; phiz computes it directly, as loess(surface = \"direct\") does. ggplot2's curve can therefore differ slightly."
     ],
     "reproduce": [
         "Rscript scripts/evidence/r-references.R",
@@ -170,9 +171,9 @@
     "data": "tests/fixtures/r-references.json",
     "environment": {
         "date": "2026-11-01",
-        "commit": "d9a30f4",
+        "commit": "ca0fb12",
         "php": "8.5.11",
         "os": "Linux, Debian GNU/Linux 13 (trixie) (aarch64)"
     },
-    "group": "Agreement with R"
+    "group": "Reference comparisons"
 }

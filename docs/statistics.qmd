@@ -104,4 +104,4 @@ The model's variables come from its formula: names inside `factor()` and non-num
 
 ## Agreement with R
 
-The prediction, marginal-mean, and random-effect helpers are compared with R and lme4 on phit fits: see [Statistics helpers](https://phiz.phpstats.org/verification/r-statistics) for each comparison, its tolerance, and its result.
+The prediction, marginal-mean, and random-effect helpers are compared with R and lme4 on phit fits: see [Statistics](https://phiz.phpstats.org/verification/r-statistics) for each comparison, its tolerance, and its result.

@@ -1,9 +1,10 @@
 {
-    "title": "Distributions and contours: agreement with R",
-    "label": "Distributions and contours",
+    "title": "Distributions",
+    "label": "Distributions",
     "kind": "reference",
-    "checked": "Quantiles, bandwidths, 2D densities, contour levels and pieces, ellipses, stat_summary intervals, and violin densities computed in PHP, against R, MASS, and ggplot2 on the same data.",
-    "reference": "R 4.6.1 with MASS 7.3.65 and ggplot2 4.0.3",
+    "checked": "Normal and t quantiles, sample quantiles, bandwidths, two-dimensional density grids, contour levels and pieces, confidence ellipses, mean_cl_normal intervals, and violin densities. Identical data across implementations.",
+    "description": "scripts/evidence/r-references.R computes the reference values with R, MASS, and ggplot2 and writes tests/fixtures/r-references.json. scripts/evidence/parity.php computes the same quantities with phiz and compares them value by value.",
+    "reference": "R 4.6.1, MASS 7.3.65, ggplot2 4.0.3",
     "versions": {
         "R": "4.6.1",
         "MASS": "7.3.65",
@@ -26,7 +27,7 @@
     "comparison": [
         {
             "id": "tight",
-            "applies_to": "fits, quantiles, intervals, and polygon points",
+            "applies_to": "Numerical results; fits, quantiles, intervals, and polygon points",
             "kind": "tolerance",
             "atol": 1.0e-9,
             "rtol": 1.0e-9,
@@ -34,7 +35,7 @@
         },
         {
             "id": "grid",
-            "applies_to": "the 100 × 100 density grid, whose tails reach 1e-30",
+            "applies_to": "Density grid; tails reach 1e-30",
             "kind": "tolerance",
             "atol": 1.0e-12,
             "rtol": 1.0e-9,
@@ -42,14 +43,14 @@
         },
         {
             "id": "shape",
-            "applies_to": "relative density heights at five points",
+            "applies_to": "Relative density heights",
             "kind": "tolerance",
             "atol": 0.001,
             "rel_floor": 1.0e-12
         },
         {
             "id": "exact",
-            "applies_to": "counts, levels, piece sizes, and colors",
+            "applies_to": "Counts, levels, piece sizes, and colors",
             "kind": "exact"
         }
     ],
@@ -182,10 +183,10 @@
         }
     ],
     "exclusions": [
-        "Violin widths are compared as relative heights: phiz scales each violin to its band, so absolute densities are not part of the output."
+        "Violin widths are compared as relative heights. phiz scales each violin to its band, so absolute densities are not part of the output."
     ],
     "known_differences": [
-        "R's density() approximates the kernel sum with an FFT over a binned grid; phiz evaluates the kernel sum exactly, so relative heights differ by about 1e-4."
+        "R's density() approximates the kernel sum with an FFT over a binned grid; phiz evaluates the kernel sum exactly. Relative heights differ by about 1e-4."
     ],
     "reproduce": [
         "Rscript scripts/evidence/r-references.R",
@@ -195,9 +196,9 @@
     "data": "tests/fixtures/r-references.json",
     "environment": {
         "date": "2026-11-01",
-        "commit": "d9a30f4",
+        "commit": "ca0fb12",
         "php": "8.5.11",
         "os": "Linux, Debian GNU/Linux 13 (trixie) (aarch64)"
     },
-    "group": "Agreement with R"
+    "group": "Reference comparisons"
 }

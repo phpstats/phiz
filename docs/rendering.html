@@ -647,14 +647,14 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <ul>
 <li><strong>Repeated runs.</strong> With the same vl-convert version, the same specification gives the same SVG bytes on every run. Unseeded jitter is the exception: without <code>seed:</code>, <code>jitter()</code> uses Vega’s <code>random()</code>. With <code>seed:</code>, the offsets are part of the specification.</li>
 <li><strong>Fonts.</strong> vl-convert measures <code>sans-serif</code> text with its bundled Liberation Sans, so the layout does not depend on the fonts installed on the machine. The SVG keeps its text as <code>&lt;text font-family="sans-serif"&gt;</code>, so the viewer’s browser chooses the displayed font. A theme that names another font, or an export with <code>fontDir:</code>, makes the layout depend on the fonts vl-convert can find.</li>
-<li><strong>Across machines.</strong> The visual tests compare PNG renderings with shared baselines within a pixel tolerance (<a href="https://phiz.phpstats.org/verification/export-checks">Export checks</a>). SVG output is not compared byte for byte across machines.</li>
+<li><strong>Across machines.</strong> The visual tests compare PNG renderings with shared baselines within a pixel tolerance (<a href="https://phiz.phpstats.org/verification/export-checks">Export</a>). SVG output is not compared byte for byte across machines.</li>
 <li><strong>Committed figures</strong> change when the specification, the vl-convert version, or its Vega-Lite version changes. Pin the vl-convert version wherever figures are generated.</li>
 </ul>
 </section>
 </section>
 <section id="versions" class="level2">
 <h2 class="anchored" data-anchor-id="versions">Versions</h2>
-<p><a href="https://phiz.phpstats.org/verification/vega-lite-schema">Vega-Lite schema validity</a> lists the pinned browser libraries (vega, vega-lite, and vega-embed), the tested vl-convert version, and the schema every specification is validated against.</p>
+<p><a href="https://phiz.phpstats.org/verification/vega-lite-schema">Schema validity</a> lists the pinned browser libraries (vega, vega-lite, and vega-embed), the tested vl-convert version, and the schema every specification is validated against.</p>
 
 
 </section>

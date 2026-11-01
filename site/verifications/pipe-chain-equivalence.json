@@ -1,15 +1,16 @@
 {
-    "title": "Pipe and method-chain equivalence",
+    "title": "Pipe and chain",
     "group": "Specifications",
-    "label": "Pipe and method chain",
+    "label": "Pipe and chain",
     "kind": "contract",
-    "checked": "Every documentation example written with the pipe operator and its method-chain version build the same specification, and the dashboard's two versions build the same charts.",
-    "reference": "The method-chain versions, run on the same PHP version",
+    "checked": "Specifications, and files written, from the pipe-operator and method-chain versions of every documentation example, example-page script, and the dashboard.",
+    "description": "scripts/evidence-tests.php runs the Pest suite and records each test that builds both versions and compares them. Example-page scripts run in an empty directory, and their written files are compared byte for byte.",
+    "reference": "Method-chain versions, on the same PHP version",
     "inputs": "docs/examples/*.chain.php, docs/examples/scripts/*.chain.php, and examples/dashboard.chain.php.",
     "comparison": [
         {
             "id": "same",
-            "applies_to": "the two specifications, compared as PHP arrays",
+            "applies_to": "Specifications and written files",
             "kind": "exact"
         }
     ],
@@ -72,7 +73,7 @@
         }
     ],
     "exclusions": [
-        "The pipe operator needs PHP 8.5, so tests/Pipes runs only on PHP 8.5."
+        "The pipe operator requires PHP 8.5; tests/Pipes runs only on PHP 8.5."
     ],
     "reproduce": [
         "composer install",
@@ -81,7 +82,7 @@
     "source": "scripts/evidence-tests.php",
     "environment": {
         "date": "2026-11-01",
-        "commit": "d9a30f4",
+        "commit": "ca0fb12",
         "php": "8.5.11",
         "os": "Linux, Debian GNU/Linux 13 (trixie) (aarch64)"
     }

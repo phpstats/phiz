@@ -1,15 +1,16 @@
 {
-    "title": "Specification snapshots",
+    "title": "Spec snapshots",
     "group": "Specifications",
     "label": "Spec snapshots",
     "kind": "contract",
-    "checked": "Each compiled specification matches its committed snapshot exactly. A change to the output fails until the snapshot is reviewed and updated.",
-    "reference": "The committed snapshots in tests/.pest/snapshots (222 files)",
-    "inputs": "The bundled mpg, mtcars, economics, and faithful datasets, and the gallery catalog in examples/catalog.php.",
+    "checked": "Compiled specifications for every geom, feature, statistics helper, and gallery example, against committed snapshots.",
+    "description": "scripts/evidence-tests.php runs the Pest suite and records each test that compares a specification with its snapshot. A changed specification fails until its snapshot is reviewed and updated.",
+    "reference": "Committed snapshots in tests/.pest/snapshots (222 files)",
+    "inputs": "Bundled mpg, mtcars, economics, and faithful datasets; the gallery catalog in examples/catalog.php.",
     "comparison": [
         {
             "id": "snapshot",
-            "applies_to": "the specification JSON, with inline data cut to its first three rows and a count of the rest",
+            "applies_to": "Specification JSON; inline data cut to three rows and a count",
             "kind": "exact"
         }
     ],
@@ -57,7 +58,7 @@
     "source": "scripts/evidence-tests.php",
     "environment": {
         "date": "2026-11-01",
-        "commit": "d9a30f4",
+        "commit": "ca0fb12",
         "php": "8.5.11",
         "os": "Linux, Debian GNU/Linux 13 (trixie) (aarch64)"
     }

@@ -151,4 +151,4 @@ Each geom adds a layer. Every geom method accepts these arguments, and the [Geom
 
 ## Agreement with R
 
-The smoothing, density, contour, ellipse, and summary computations are compared with R on the bundled datasets: see [Smoothing](https://phiz.phpstats.org/verification/r-smoothing) and [Distributions and contours](https://phiz.phpstats.org/verification/r-distributions) for each comparison, its tolerance, and its result.
+The smoothing, density, contour, ellipse, and summary computations are compared with R on the bundled datasets: see [Smoothing](https://phiz.phpstats.org/verification/r-smoothing) and [Distributions](https://phiz.phpstats.org/verification/r-distributions) for each comparison, its tolerance, and its result.
