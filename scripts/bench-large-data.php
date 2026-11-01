@@ -3,12 +3,9 @@
 declare(strict_types=1);
 
 /*
- * Times the PHP binning geoms on a million-row phibble table, for the timing table in docs/large-data.qmd.
- *
- * Each case runs in its own PHP process, wrapped in `peakmem -l` (phpolars' bench/csv-pipeline/peakmem.c) on Linux or
- * `/usr/bin/time -l` on macOS. The process builds the table, then times seven runs of building the plot and encoding
- * its spec. The script prints the machine, the median and every run, the spec size, and the process's peak anonymous
- * memory, which includes building the table. Needs phibble (a development dependency).
+ * Times the PHP binning geoms on a million-row phibble table and writes site/benchmarks/large-data-binning.json. Each
+ * case runs in its own process under peakmem; the process builds the table, then times seven runs of building the
+ * plot and encoding its specification. Needs phibble (a development dependency).
  *
  *     php scripts/bench-large-data.php
  */
@@ -18,11 +15,12 @@ use Phibble\DataFrame;
 use Phiz\Plot;
 
 require __DIR__.'/../vendor/autoload.php';
+require __DIR__.'/evidence/bench.php';
 
-const RUNS = 7;
+const REPEATS = 7;
 
 /** @return array<string, Closure(DataFrame): Plot> */
-function bench_cases(): array
+function large_data_cases(): array
 {
     return [
         'hex(bins: 40)' => fn ($table) => Plot::of($table)->aes(x: 'x', y: 'y')->hex(bins: 40),
@@ -32,7 +30,7 @@ function bench_cases(): array
 }
 
 /** One million correlated normal pairs from a seeded generator, so every process bins the same table. */
-function bench_table(): DataFrame
+function large_data_table(): DataFrame
 {
     mt_srand(1);
     $x = [];
@@ -47,77 +45,51 @@ function bench_table(): DataFrame
     return DataFrame::fromColumns(['x' => $x, 'y' => $y]);
 }
 
-/** A file's contents, or '' when it cannot be read. */
-function bench_read(string $path): string
-{
-    return is_readable($path) ? (string) file_get_contents($path) : '';
-}
-
-/** The operating system, CPU, core count, and memory, from /proc and /etc/os-release on Linux. */
-function bench_machine(): string
-{
-    if (PHP_OS_FAMILY === 'Linux') {
-        preg_match('/^PRETTY_NAME="?([^"\n]*)/m', bench_read('/etc/os-release'), $os);
-        $cpuinfo = bench_read('/proc/cpuinfo');
-        preg_match('/^model name\s*:\s*(.+)$/m', $cpuinfo, $cpu);
-        preg_match('/^MemTotal:\s*(\d+)/m', bench_read('/proc/meminfo'), $memory);
-
-        return sprintf('%s, kernel %s, %s, %d logical CPUs, %.1f GiB memory', $os[1] ?? 'Linux', php_uname('r'), trim($cpu[1] ?? php_uname('m')), preg_match_all('/^processor\s*:/m', $cpuinfo), ($memory[1] ?? 0) / 1048576);
-    }
-
-    return sprintf('%s %s, %s, %.1f GiB memory', PHP_OS_FAMILY, php_uname('r'), trim((string) shell_exec('sysctl -n machdep.cpu.brand_string')), (int) shell_exec('sysctl -n hw.memsize') / 1073741824);
-}
-
-/** The middle value of a list, or the mean of the two middle values. */
-function bench_median(array $values): float
-{
-    sort($values);
-    $middle = intdiv(count($values), 2);
-
-    return count($values) % 2 === 1 ? $values[$middle] : ($values[$middle - 1] + $values[$middle]) / 2;
-}
-
-// A child process: time one case and print its runs as JSON.
+// A case's process: time it and print its runs as JSON.
 if (isset($argv[1]) && str_starts_with($argv[1], '--case=')) {
-    $build = bench_cases()[substr($argv[1], 7)];
-    $table = bench_table();
-    $runs = [];
-    for ($run = 0; $run < RUNS; $run++) {
-        $start = hrtime(true);
+    $build = large_data_cases()[substr($argv[1], 7)];
+    $table = large_data_table();
+    $json = '';
+    $runs = bench_time(function () use ($build, $table, &$json) {
         $json = $build($table)->toJson();
-        $runs[] = (hrtime(true) - $start) / 1e9;
-    }
-    echo json_encode(['runs' => $runs, 'bytes' => strlen($json)]);
+    }, REPEATS, 0, 's');
+    echo json_encode(['runs' => $runs, 'bytes' => strlen($json), 'php_peak_mib' => round(memory_get_peak_usage(true) / 1048576, 1)]);
     exit(0);
 }
 
-$wrapper = PHP_OS_FAMILY === 'Linux' ? trim((string) shell_exec('command -v peakmem')) : '/usr/bin/time';
-if ($wrapper === '' || ! is_executable($wrapper)) {
-    fwrite(STDERR, "peakmem is not on PATH; build it from phpolars' bench/csv-pipeline/peakmem.c\n");
-    exit(1);
+$rows = [];
+foreach (array_keys(large_data_cases()) as $case) {
+    $result = bench_run(__FILE__, $case);
+    $rows[] = [
+        'case' => $case,
+        'implementation' => 'phiz',
+        'value' => bench_round(bench_median($result['runs'])),
+        'reps' => array_map(bench_round(...), $result['runs']),
+        'peak_memory_mib' => $result['peak_memory_mib'],
+        'peak_rss_mib' => $result['peak_rss_mib'],
+        'php_peak_mib' => $result['php_peak_mib'],
+        'note' => sprintf('Specification: %d KB.', round($result['bytes'] / 1024)),
+    ];
 }
 
-printf("Machine: %s\n", bench_machine());
-printf("Software: PHP %s, phiz %s, phibble %s\n", PHP_VERSION, trim((string) shell_exec('git -C '.escapeshellarg(dirname(__DIR__)).' describe --tags --always')), InstalledVersions::getPrettyVersion('phpstats/phibble'));
-printf("Method: %d runs per case in one process; median shown; memory is the process's peak anonymous memory (%s)\n\n", RUNS, basename($wrapper));
-
-echo "| Plot | Median | Runs (s) | Spec size | Peak memory |\n| --- | --- | --- | --- | --- |\n";
-foreach (array_keys(bench_cases()) as $case) {
-    $command = array_map(escapeshellarg(...), [$wrapper, '-l', PHP_BINARY, '-d', 'memory_limit=-1', __FILE__, "--case={$case}"]);
-    $process = proc_open(implode(' ', $command), [1 => ['pipe', 'w'], 2 => ['pipe', 'w']], $pipes);
-    $stdout = stream_get_contents($pipes[1]);
-    $stderr = stream_get_contents($pipes[2]);
-    if (proc_close($process) !== 0 || ! preg_match('/(\d+)\s+peak memory footprint/', $stderr, $peak)) {
-        fwrite(STDERR, "{$case} failed:\n{$stderr}");
-        exit(1);
-    }
-    $result = json_decode($stdout, true, flags: JSON_THROW_ON_ERROR);
-    printf(
-        "| `%s` | %.2f s | %s | %d KB | %d MB |\n",
-        $case,
-        bench_median($result['runs']),
-        implode(', ', array_map(fn ($t) => sprintf('%.2f', $t), $result['runs'])),
-        round($result['bytes'] / 1024),
-        round($peak[1] / 1048576),
-    );
-}
+$phiz = trim((string) shell_exec('git -C '.escapeshellarg(dirname(__DIR__)).' describe --tags --always'));
+bench_write('large-data-binning', [
+    'title' => 'Large data: binning a million-row table in PHP',
+    'label' => 'Large data',
+    'description' => 'Bin one million (x, y) points from a phibble table into hexagons, rectangles, or a histogram, and encode the specification as JSON. Only the bins are embedded.',
+    'workload' => '1,000,000 rows, 2 numeric columns',
+    'dataset' => ['rows' => 1_000_000, 'columns' => 2, 'detail' => 'correlated standard normal pairs from mt_rand seeded with 1, built in the measured process'],
+    'implementations' => ['phiz' => "phiz {$phiz}, plain PHP, reading a phibble ".InstalledVersions::getPrettyVersion('phpstats/phibble').' table'],
+    'measure' => 'Elapsed time',
+    'unit' => 's',
+    'statistic' => 'median',
+    'method' => 'From building the Plot to holding the JSON specification: compiling, reading the table column by column, binning, and encoding. Building the table and starting PHP are excluded.',
+    'time_spent_in' => 'the PHP process (building the specification only; no browser rendering or vl-convert)',
+    'memory_measure' => 'peak anonymous memory',
+    'memory_method' => 'RssAnon of the whole PHP process, including the generated table, sampled every millisecond by peakmem (phpolars bench/csv-pipeline/peakmem.c). php_peak_mib is memory_get_peak_usage(true).',
+    'environment' => bench_environment(REPEATS, 0) + ['versions' => ['phibble' => InstalledVersions::getPrettyVersion('phpstats/phibble')]],
+    'rows' => $rows,
+    'reproduce' => ['composer install', 'php scripts/bench-large-data.php'],
+    'source' => 'scripts/bench-large-data.php',
+    'group' => 'phiz in PHP',
+]);

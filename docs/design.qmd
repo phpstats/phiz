@@ -41,4 +41,4 @@ composer.json allows PHP `>=8.3 <8.6`: PHP 8.3, 8.4, and 8.5. CI runs the test s
 
 ## Vega-Lite versions
 
-phiz emits Vega-Lite 6 specifications. The pinned browser libraries are vega 6.4.0, vega-lite 6.4.3, and vega-embed 7.3.0. Static export uses vl-convert with Vega-Lite 6.1, and the tests validate every specification against the Vega-Lite 6.1.0 JSON schema, the version both renderers support.
+phiz emits Vega-Lite 6 specifications. [Vega-Lite schema validity](https://phiz.phpstats.org/verification/vega-lite-schema) lists the pinned versions and the schema the tests validate against.

@@ -938,48 +938,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="agreement-with-r" class="level2">
 <h2 class="anchored" data-anchor-id="agreement-with-r">Agreement with R</h2>
-<p>The test suite compares these computations with R on the bundled datasets. The agreement holds for the tested cases.</p>
-<table class="caption-top table">
-<colgroup>
-<col style="width: 33%">
-<col style="width: 33%">
-<col style="width: 33%">
-</colgroup>
-<thead>
-<tr class="header">
-<th>Computation</th>
-<th>Compared with</th>
-<th>Tolerance</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td>loess fit and standard errors</td>
-<td><code>loess(surface = "direct", statistics = "exact")</code> on <code>mpg</code></td>
-<td>1e-9 (bands 1e-8)</td>
-</tr>
-<tr class="even">
-<td>least-squares bands</td>
-<td><code>predict(lm(), interval = "confidence")</code> on <code>mtcars</code></td>
-<td>1e-9</td>
-</tr>
-<tr class="odd">
-<td>ellipses, <code>type: 't'</code> and <code>'norm'</code></td>
-<td><code>stat_ellipse()</code> on <code>faithful</code></td>
-<td>1e-9</td>
-</tr>
-<tr class="even">
-<td>2D density grid</td>
-<td><code>MASS::kde2d()</code> on <code>faithful</code></td>
-<td>1e-12</td>
-</tr>
-<tr class="odd">
-<td>density contour levels and pieces</td>
-<td><code>geom_density_2d()</code> on <code>faithful</code></td>
-<td>exact</td>
-</tr>
-</tbody>
-</table>
+<p>The smoothing, density, contour, ellipse, and summary computations are compared with R on the bundled datasets: see <a href="https://phiz.phpstats.org/verification/r-smoothing">Smoothing</a> and <a href="https://phiz.phpstats.org/verification/r-distributions">Distributions and contours</a> for each comparison, its tolerance, and its result.</p>
 
 
 </section>

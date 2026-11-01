@@ -150,12 +150,4 @@ Each geom adds a layer. Every geom method accepts these arguments, and the [Geom
 
 ## Agreement with R
 
-The test suite compares these computations with R on the bundled datasets. The agreement holds for the tested cases.
-
-| Computation | Compared with | Tolerance |
-| --- | --- | --- |
-| loess fit and standard errors | `loess(surface = "direct", statistics = "exact")` on `mpg` | 1e-9 (bands 1e-8) |
-| least-squares bands | `predict(lm(), interval = "confidence")` on `mtcars` | 1e-9 |
-| ellipses, `type: 't'` and `'norm'` | `stat_ellipse()` on `faithful` | 1e-9 |
-| 2D density grid | `MASS::kde2d()` on `faithful` | 1e-12 |
-| density contour levels and pieces | `geom_density_2d()` on `faithful` | exact |
+The smoothing, density, contour, ellipse, and summary computations are compared with R on the bundled datasets: see [Smoothing](https://phiz.phpstats.org/verification/r-smoothing) and [Distributions and contours](https://phiz.phpstats.org/verification/r-distributions) for each comparison, its tolerance, and its result.

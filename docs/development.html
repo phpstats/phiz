@@ -532,7 +532,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
    
   <ul>
   <li><a href="#tests" id="toc-tests" class="nav-link active" data-scroll-target="#tests">Tests</a></li>
-  <li><a href="#benchmarks" id="toc-benchmarks" class="nav-link" data-scroll-target="#benchmarks">Benchmarks</a></li>
+  <li><a href="#evidence-records" id="toc-evidence-records" class="nav-link" data-scroll-target="#evidence-records">Evidence records</a></li>
   <li><a href="#gallery" id="toc-gallery" class="nav-link" data-scroll-target="#gallery">Gallery</a></li>
   <li><a href="#documentation" id="toc-documentation" class="nav-link" data-scroll-target="#documentation">Documentation</a></li>
   </ul>
@@ -574,9 +574,48 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p>The statistics tests build model designs with <code>Phit\model_matrix()</code>. They run on the phit extension when it is loaded and on <code>phpstats/phit-polyfill</code>, a development dependency, when it is not. The saved fits in <code>tests/fixtures/fits.json</code> let them check results against R.</p>
 <p>CI runs the suite on PHP 8.3, 8.4, and 8.5. The tests in <code>tests/Pipes/</code> use the pipe operator, so <code>phpunit.xml</code> runs them only on PHP 8.5. Code in <code>src/</code> must parse on PHP 8.3.</p>
 </section>
-<section id="benchmarks" class="level2">
-<h2 class="anchored" data-anchor-id="benchmarks">Benchmarks</h2>
-<p><code>php scripts/bench-large-data.php</code> times the PHP binning geoms on a million-row phibble table. Each case runs in its own process under <code>peakmem -l</code> (from phpolars’ <code>bench/csv-pipeline/peakmem.c</code>), and the script prints the machine, the median and all seven runs, the spec size, and the peak anonymous memory. Timings in the documentation come from the Linux benchmark machine.</p>
+<section id="evidence-records" class="level2">
+<h2 class="anchored" data-anchor-id="evidence-records">Evidence records</h2>
+<p>The Benchmarks and Verification pages on phpstats.org render JSON records from <code>site/benchmarks/</code> and <code>site/verifications/</code>, listed in <code>site/site.json</code>. Generate them from a run, never by hand:</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 50%">
+<col style="width: 50%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Command</th>
+<th>Writes</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>Rscript scripts/evidence/r-references.R</code></td>
+<td><code>tests/fixtures/r-references.json</code>, the R reference values with the R and package versions</td>
+</tr>
+<tr class="even">
+<td><code>php scripts/evidence-parity.php</code></td>
+<td>the agreement-with-R records, comparing phiz with those references (<code>tests/Spec/EvidenceParityTest.php</code> runs the same checks in CI)</td>
+</tr>
+<tr class="odd">
+<td><code>php scripts/evidence-tests.php</code></td>
+<td>the schema, snapshot, pipe and method-chain, and export records, from a Pest run</td>
+</tr>
+<tr class="even">
+<td><code>php scripts/bench-large-data.php</code></td>
+<td>the large-data binning benchmark</td>
+</tr>
+<tr class="odd">
+<td><code>php scripts/bench-build.php</code></td>
+<td>the small-plot build benchmark</td>
+</tr>
+<tr class="even">
+<td><code>php scripts/bench-export.php</code></td>
+<td>the vl-convert export benchmark</td>
+</tr>
+</tbody>
+</table>
+<p>The benchmarks run each case in its own process under <code>peakmem -l</code> (from phpolars’ <code>bench/csv-pipeline/peakmem.c</code>). Published benchmark records come from the Linux benchmark machine.</p>
 </section>
 <section id="gallery" class="level2">
 <h2 class="anchored" data-anchor-id="gallery">Gallery</h2>

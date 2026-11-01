@@ -104,13 +104,4 @@ The model's variables come from its formula: names inside `factor()` and non-num
 
 ## Agreement with R
 
-The test suite compares the helpers with R on the documentation fits. The agreement holds for these fits.
-
-| Computation | Compared with | Tolerance |
-| --- | --- | --- |
-| documentation fits refitted with phit | the saved coefficients and covariance matrices (polyfill 0.4.1) | 1e-9 |
-| predictions and bands | `predict(lm(), interval = "confidence")` | 1e-7 |
-| linear-model marginal means and intervals | a direct computation in R | 1e-8 |
-| random-intercept conditional standard deviations | lme4's `ranef(fit, condVar = TRUE)` | 1e-6 |
-
-GLM marginal means were compared with R by hand, outside the test suite. Their intervals differ from R's by about 1e-5 because of the covariance matrix: for `am ~ wt + hp`, phit's coefficients agree with R's `glm()` to 12 digits, while the variance of the `wt` coefficient is 9.4167679 in phit and 9.4167669 in R's `vcov()`.
+The prediction, marginal-mean, and random-effect helpers are compared with R and lme4 on phit fits: see [Statistics helpers](https://phiz.phpstats.org/verification/r-statistics) for each comparison, its tolerance, and its result.

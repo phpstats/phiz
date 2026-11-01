@@ -649,7 +649,7 @@
     "href": "design.html#vega-lite-versions",
     "title": "Design and compatibility",
     "section": "Vega-Lite versions",
-    "text": "Vega-Lite versions\nphiz emits Vega-Lite 6 specifications. The pinned browser libraries are vega 6.4.0, vega-lite 6.4.3, and vega-embed 7.3.0. Static export uses vl-convert with Vega-Lite 6.1, and the tests validate every specification against the Vega-Lite 6.1.0 JSON schema, the version both renderers support.",
+    "text": "Vega-Lite versions\nphiz emits Vega-Lite 6 specifications. Vega-Lite schema validity lists the pinned versions and the schema the tests validate against.",
     "crumbs": [
       "Compatibility and limitations",
       "Design and compatibility"
@@ -810,11 +810,11 @@
     ]
   },
   {
-    "objectID": "development.html#benchmarks",
-    "href": "development.html#benchmarks",
+    "objectID": "development.html#evidence-records",
+    "href": "development.html#evidence-records",
     "title": "Development",
-    "section": "Benchmarks",
-    "text": "Benchmarks\nphp scripts/bench-large-data.php times the PHP binning geoms on a million-row phibble table. Each case runs in its own process under peakmem -l (from phpolars’ bench/csv-pipeline/peakmem.c), and the script prints the machine, the median and all seven runs, the spec size, and the peak anonymous memory. Timings in the documentation come from the Linux benchmark machine.",
+    "section": "Evidence records",
+    "text": "Evidence records\nThe Benchmarks and Verification pages on phpstats.org render JSON records from site/benchmarks/ and site/verifications/, listed in site/site.json. Generate them from a run, never by hand:\n\n\n\n\n\n\n\nCommand\nWrites\n\n\n\n\nRscript scripts/evidence/r-references.R\ntests/fixtures/r-references.json, the R reference values with the R and package versions\n\n\nphp scripts/evidence-parity.php\nthe agreement-with-R records, comparing phiz with those references (tests/Spec/EvidenceParityTest.php runs the same checks in CI)\n\n\nphp scripts/evidence-tests.php\nthe schema, snapshot, pipe and method-chain, and export records, from a Pest run\n\n\nphp scripts/bench-large-data.php\nthe large-data binning benchmark\n\n\nphp scripts/bench-build.php\nthe small-plot build benchmark\n\n\nphp scripts/bench-export.php\nthe vl-convert export benchmark\n\n\n\nThe benchmarks run each case in its own process under peakmem -l (from phpolars’ bench/csv-pipeline/peakmem.c). Published benchmark records come from the Linux benchmark machine.",
     "crumbs": [
       "Contributing",
       "Development"
@@ -1056,7 +1056,7 @@
     "href": "geoms.html#agreement-with-r",
     "title": "Geoms",
     "section": "Agreement with R",
-    "text": "Agreement with R\nThe test suite compares these computations with R on the bundled datasets. The agreement holds for the tested cases.\n\n\n\n\n\n\n\n\nComputation\nCompared with\nTolerance\n\n\n\n\nloess fit and standard errors\nloess(surface = \"direct\", statistics = \"exact\") on mpg\n1e-9 (bands 1e-8)\n\n\nleast-squares bands\npredict(lm(), interval = \"confidence\") on mtcars\n1e-9\n\n\nellipses, type: 't' and 'norm'\nstat_ellipse() on faithful\n1e-9\n\n\n2D density grid\nMASS::kde2d() on faithful\n1e-12\n\n\ndensity contour levels and pieces\ngeom_density_2d() on faithful\nexact",
+    "text": "Agreement with R\nThe smoothing, density, contour, ellipse, and summary computations are compared with R on the bundled datasets: see Smoothing and Distributions and contours for each comparison, its tolerance, and its result.",
     "crumbs": [
       "Guides",
       "Geoms"
@@ -1221,7 +1221,7 @@
     "href": "large-data.html#tables-stay-columnar",
     "title": "Large data",
     "section": "Tables stay columnar",
-    "text": "Tables stay columnar\nA phibble table or an array of columns is kept as given. The binning geoms read it column by column, and rows are built only if the specification embeds them.\nBinning a phibble table of one million rows and two numeric columns:\n\n\n\n\n\n\n\n\n\n\nPlot\nMedian\nRuns (s)\nSpec size\nPeak memory\n\n\n\n\nhex(bins: 40)\n1.66 s\n1.66, 1.65, 1.65, 1.66, 1.66, 1.66, 1.68\n61 KB\n60 MB\n\n\nbin2d(bins: 50)\n1.29 s\n1.30, 1.29, 1.29, 1.29, 1.30, 1.29, 1.29\n168 KB\n60 MB\n\n\nhistogram(bins: 60)\n0.80 s\n0.81, 0.80, 0.80, 0.80, 0.80, 0.80, 0.80\n6 KB\n59 MB\n\n\n\n\nMachine. Ubuntu 24.04.5 LTS, kernel 6.8.0-90-generic, an AMD Ryzen 9 9955HX with 2 dedicated logical CPUs, and 7.8 GiB of usable memory. PHP 8.5.12, phiz 0.5.2, and phibble 0.6.1.\nMethod. Each plot runs in its own process: seven runs of building the plot and encoding its specification, with the median shown. Peak memory is the process’s peak anonymous memory, measured with peakmem, and includes building the table. scripts/bench-large-data.php reproduces the table.\nScope. The times apply to this machine and data. Other hardware, data, and options give different numbers.",
+    "text": "Tables stay columnar\nA phibble table or an array of columns is kept as given. The binning geoms read it column by column, and rows are built only if the specification embeds them.\nLarge data lists the time and memory to bin a million-row phibble table with hex(), bin2d(), and histogram(), with the machine and method.",
     "crumbs": [
       "Guides",
       "Large data"
@@ -1441,7 +1441,7 @@
     "href": "rendering.html#static-export",
     "title": "Rendering",
     "section": "Static export",
-    "text": "Static export\nsvg(), png(), pdf(), and save() with an image extension run the vl-convert binary, which renders without a browser.\n$plot-&gt;save('figure.svg');\n$plot-&gt;save('figure.png', scale: 3);\nfile_put_contents('figure.pdf', $plot-&gt;pdf());\n\nFinding the binary. phiz checks the PHIZ_VL_CONVERT and VL_CONVERT environment variables, then PATH. A missing binary throws Phiz\\Exceptions\\VlConvertNotFound with installation instructions.\nOptions. new Export(binary:, timeout:, fontDir:) sets the binary path, the timeout, and an extra font directory.\n\n\nInstalling vl-convert\nvl-convert has no Homebrew formula or apt package. Each release ships a self-contained binary for macOS (osx-arm64, osx-64) and Linux (linux-64, linux-aarch64). The Linux binaries link only against glibc and zlib, so they run on a bare Ubuntu image with no fonts or other packages installed. On Ubuntu the install is:\ncurl -sSLo /tmp/vl-convert.zip https://github.com/vega/vl-convert/releases/download/v1.9.0/vl-convert_linux-64.zip\nsudo unzip -j -o /tmp/vl-convert.zip bin/vl-convert -d /usr/local/bin\nvl-convert --version\nOn macOS, download vl-convert_osx-arm64.zip from the same release and unzip it the same way. The macOS binary has only an ad hoc signature. A copy fetched with curl or gh release download is not quarantined and runs directly. If a browser download is quarantined, xattr -d com.apple.quarantine vl-convert clears the flag. Put the binary in a directory on PATH, or point PHIZ_VL_CONVERT at it.\n\n\nReproducible SVG\n\nRepeated runs. With the same vl-convert version, the same specification gives the same SVG bytes on every run. Unseeded jitter is the exception: without seed:, jitter() uses Vega’s random(). With seed:, the offsets are part of the specification.\nFonts. vl-convert measures sans-serif text with its bundled Liberation Sans, so the layout does not depend on the fonts installed on the machine. The SVG keeps its text as &lt;text font-family=\"sans-serif\"&gt;, so the viewer’s browser chooses the displayed font. A theme that names another font, or an export with fontDir:, makes the layout depend on the fonts vl-convert can find.\nAcross machines. The visual tests render on macOS and on Linux in CI and compare both with the same PNG baselines, within a pixel tolerance.\nCommitted figures change when the specification, the vl-convert version, or its Vega-Lite version changes. Pin the vl-convert version wherever figures are generated.",
+    "text": "Static export\nsvg(), png(), pdf(), and save() with an image extension run the vl-convert binary, which renders without a browser.\n$plot-&gt;save('figure.svg');\n$plot-&gt;save('figure.png', scale: 3);\nfile_put_contents('figure.pdf', $plot-&gt;pdf());\n\nFinding the binary. phiz checks the PHIZ_VL_CONVERT and VL_CONVERT environment variables, then PATH. A missing binary throws Phiz\\Exceptions\\VlConvertNotFound with installation instructions.\nOptions. new Export(binary:, timeout:, fontDir:) sets the binary path, the timeout, and an extra font directory.\n\n\nInstalling vl-convert\nvl-convert has no Homebrew formula or apt package. Each release ships a self-contained binary for macOS (osx-arm64, osx-64) and Linux (linux-64, linux-aarch64). The Linux binaries link only against glibc and zlib, so they run on a bare Ubuntu image with no fonts or other packages installed. On Ubuntu the install is:\ncurl -sSLo /tmp/vl-convert.zip https://github.com/vega/vl-convert/releases/download/v1.9.0/vl-convert_linux-64.zip\nsudo unzip -j -o /tmp/vl-convert.zip bin/vl-convert -d /usr/local/bin\nvl-convert --version\nOn macOS, download vl-convert_osx-arm64.zip from the same release and unzip it the same way. The macOS binary has only an ad hoc signature. A copy fetched with curl or gh release download is not quarantined and runs directly. If a browser download is quarantined, xattr -d com.apple.quarantine vl-convert clears the flag. Put the binary in a directory on PATH, or point PHIZ_VL_CONVERT at it.\n\n\nReproducible SVG\n\nRepeated runs. With the same vl-convert version, the same specification gives the same SVG bytes on every run. Unseeded jitter is the exception: without seed:, jitter() uses Vega’s random(). With seed:, the offsets are part of the specification.\nFonts. vl-convert measures sans-serif text with its bundled Liberation Sans, so the layout does not depend on the fonts installed on the machine. The SVG keeps its text as &lt;text font-family=\"sans-serif\"&gt;, so the viewer’s browser chooses the displayed font. A theme that names another font, or an export with fontDir:, makes the layout depend on the fonts vl-convert can find.\nAcross machines. The visual tests compare PNG renderings with shared baselines within a pixel tolerance (Export checks). SVG output is not compared byte for byte across machines.\nCommitted figures change when the specification, the vl-convert version, or its Vega-Lite version changes. Pin the vl-convert version wherever figures are generated.",
     "crumbs": [
       "Guides",
       "Rendering"
@@ -1452,7 +1452,7 @@
     "href": "rendering.html#versions",
     "title": "Rendering",
     "section": "Versions",
-    "text": "Versions\n\n\n\nComponent\nVersion\nNotes\n\n\n\n\nvega\n6.4.0\npinned for the browser\n\n\nvega-lite\n6.4.3\npinned for the browser\n\n\nvega-embed\n7.3.0\npinned for the browser\n\n\nvl-convert\n1.9.0\ntested; bundles its own Vega-Lite, run as 6.1\n\n\n\nThe tests validate every specification against the Vega-Lite 6.1 schema, so the same specification renders in the browser and in vl-convert.",
+    "text": "Versions\nVega-Lite schema validity lists the pinned browser libraries (vega, vega-lite, and vega-embed), the tested vl-convert version, and the schema every specification is validated against.",
     "crumbs": [
       "Guides",
       "Rendering"
@@ -1551,7 +1551,7 @@
     "href": "statistics.html#agreement-with-r",
     "title": "Statistics",
     "section": "Agreement with R",
-    "text": "Agreement with R\nThe test suite compares the helpers with R on the documentation fits. The agreement holds for these fits.\n\n\n\n\n\n\n\n\nComputation\nCompared with\nTolerance\n\n\n\n\ndocumentation fits refitted with phit\nthe saved coefficients and covariance matrices (polyfill 0.4.1)\n1e-9\n\n\npredictions and bands\npredict(lm(), interval = \"confidence\")\n1e-7\n\n\nlinear-model marginal means and intervals\na direct computation in R\n1e-8\n\n\nrandom-intercept conditional standard deviations\nlme4’s ranef(fit, condVar = TRUE)\n1e-6\n\n\n\nGLM marginal means were compared with R by hand, outside the test suite. Their intervals differ from R’s by about 1e-5 because of the covariance matrix: for am ~ wt + hp, phit’s coefficients agree with R’s glm() to 12 digits, while the variance of the wt coefficient is 9.4167679 in phit and 9.4167669 in R’s vcov().",
+    "text": "Agreement with R\nThe prediction, marginal-mean, and random-effect helpers are compared with R and lme4 on phit fits: see Statistics helpers for each comparison, its tolerance, and its result.",
     "crumbs": [
       "Guides",
       "Statistics"

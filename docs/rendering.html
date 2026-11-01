@@ -647,45 +647,14 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <ul>
 <li><strong>Repeated runs.</strong> With the same vl-convert version, the same specification gives the same SVG bytes on every run. Unseeded jitter is the exception: without <code>seed:</code>, <code>jitter()</code> uses Vega’s <code>random()</code>. With <code>seed:</code>, the offsets are part of the specification.</li>
 <li><strong>Fonts.</strong> vl-convert measures <code>sans-serif</code> text with its bundled Liberation Sans, so the layout does not depend on the fonts installed on the machine. The SVG keeps its text as <code>&lt;text font-family="sans-serif"&gt;</code>, so the viewer’s browser chooses the displayed font. A theme that names another font, or an export with <code>fontDir:</code>, makes the layout depend on the fonts vl-convert can find.</li>
-<li><strong>Across machines.</strong> The visual tests render on macOS and on Linux in CI and compare both with the same PNG baselines, within a pixel tolerance.</li>
+<li><strong>Across machines.</strong> The visual tests compare PNG renderings with shared baselines within a pixel tolerance (<a href="https://phiz.phpstats.org/verification/export-checks">Export checks</a>). SVG output is not compared byte for byte across machines.</li>
 <li><strong>Committed figures</strong> change when the specification, the vl-convert version, or its Vega-Lite version changes. Pin the vl-convert version wherever figures are generated.</li>
 </ul>
 </section>
 </section>
 <section id="versions" class="level2">
 <h2 class="anchored" data-anchor-id="versions">Versions</h2>
-<table class="caption-top table">
-<thead>
-<tr class="header">
-<th>Component</th>
-<th>Version</th>
-<th>Notes</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td>vega</td>
-<td>6.4.0</td>
-<td>pinned for the browser</td>
-</tr>
-<tr class="even">
-<td>vega-lite</td>
-<td>6.4.3</td>
-<td>pinned for the browser</td>
-</tr>
-<tr class="odd">
-<td>vega-embed</td>
-<td>7.3.0</td>
-<td>pinned for the browser</td>
-</tr>
-<tr class="even">
-<td>vl-convert</td>
-<td>1.9.0</td>
-<td>tested; bundles its own Vega-Lite, run as 6.1</td>
-</tr>
-</tbody>
-</table>
-<p>The tests validate every specification against the Vega-Lite 6.1 schema, so the same specification renders in the browser and in vl-convert.</p>
+<p><a href="https://phiz.phpstats.org/verification/vega-lite-schema">Vega-Lite schema validity</a> lists the pinned browser libraries (vega, vega-lite, and vega-embed), the tested vl-convert version, and the schema every specification is validated against.</p>
 
 
 </section>

@@ -31,3 +31,45 @@ it('builds the same documentation examples with pipes and with method chains', f
         expect((static fn () => require $chain)()->toArray())->toBe($pipe->toArray());
     }
 });
+
+/**
+ * Runs an example-page script in an empty directory beside the vendor directory, as a reader would.
+ *
+ * @return array{0: array<string, mixed>, 1: array<string, string>} The script's spec, and the files it wrote by name.
+ */
+function runExampleScript(string $file): array
+{
+    $dir = sys_get_temp_dir().'/phiz-script-'.bin2hex(random_bytes(6));
+    mkdir($dir);
+    symlink(dirname(__DIR__, 2).'/vendor', "{$dir}/vendor");
+    $cwd = getcwd();
+    chdir($dir);
+    try {
+        $spec = (static function (string $exampleScript) {
+            require $exampleScript;
+
+            return $plot->toArray();
+        })($file);
+    } finally {
+        chdir($cwd);
+        $files = [];
+        foreach (array_diff(scandir($dir), ['.', '..', 'vendor']) as $path) {
+            $files[$path] = (string) file_get_contents("{$dir}/{$path}");
+            unlink("{$dir}/{$path}");
+        }
+        unlink("{$dir}/vendor");
+        rmdir($dir);
+    }
+    ksort($files);
+
+    return [$spec, $files];
+}
+
+it('runs each example-page script and its method-chain version to the same chart and files', function (string $chain) {
+    $pipe = str_replace('.chain.php', '.php', $chain);
+    if (str_contains((string) file_get_contents($pipe), '.svg') && ! Phiz\Export::available()) {
+        $this->markTestSkipped('This script writes images, which need vl-convert.');
+    }
+
+    expect(runExampleScript($chain))->toBe(runExampleScript($pipe));
+})->with(array_map(fn ($file) => [$file], glob(__DIR__.'/../../docs/examples/scripts/*.chain.php')));

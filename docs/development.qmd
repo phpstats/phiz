@@ -20,9 +20,20 @@ The statistics tests build model designs with `Phit\model_matrix()`. They run on
 
 CI runs the suite on PHP 8.3, 8.4, and 8.5. The tests in `tests/Pipes/` use the pipe operator, so `phpunit.xml` runs them only on PHP 8.5. Code in `src/` must parse on PHP 8.3.
 
-## Benchmarks
+## Evidence records
 
-`php scripts/bench-large-data.php` times the PHP binning geoms on a million-row phibble table. Each case runs in its own process under `peakmem -l` (from phpolars' `bench/csv-pipeline/peakmem.c`), and the script prints the machine, the median and all seven runs, the spec size, and the peak anonymous memory. Timings in the documentation come from the Linux benchmark machine.
+The Benchmarks and Verification pages on phpstats.org render JSON records from `site/benchmarks/` and `site/verifications/`, listed in `site/site.json`. Generate them from a run, never by hand:
+
+| Command | Writes |
+| --- | --- |
+| `Rscript scripts/evidence/r-references.R` | `tests/fixtures/r-references.json`, the R reference values with the R and package versions |
+| `php scripts/evidence-parity.php` | the agreement-with-R records, comparing phiz with those references (`tests/Spec/EvidenceParityTest.php` runs the same checks in CI) |
+| `php scripts/evidence-tests.php` | the schema, snapshot, pipe and method-chain, and export records, from a Pest run |
+| `php scripts/bench-large-data.php` | the large-data binning benchmark |
+| `php scripts/bench-build.php` | the small-plot build benchmark |
+| `php scripts/bench-export.php` | the vl-convert export benchmark |
+
+The benchmarks run each case in its own process under `peakmem -l` (from phpolars' `bench/csv-pipeline/peakmem.c`). Published benchmark records come from the Linux benchmark machine.
 
 ## Gallery
 

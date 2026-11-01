@@ -69,16 +69,9 @@ On macOS, download `vl-convert_osx-arm64.zip` from the same release and unzip it
 
 - **Repeated runs.** With the same vl-convert version, the same specification gives the same SVG bytes on every run. Unseeded jitter is the exception: without `seed:`, `jitter()` uses Vega's `random()`. With `seed:`, the offsets are part of the specification.
 - **Fonts.** vl-convert measures `sans-serif` text with its bundled Liberation Sans, so the layout does not depend on the fonts installed on the machine. The SVG keeps its text as `<text font-family="sans-serif">`, so the viewer's browser chooses the displayed font. A theme that names another font, or an export with `fontDir:`, makes the layout depend on the fonts vl-convert can find.
-- **Across machines.** The visual tests render on macOS and on Linux in CI and compare both with the same PNG baselines, within a pixel tolerance.
+- **Across machines.** The visual tests compare PNG renderings with shared baselines within a pixel tolerance ([Export checks](https://phiz.phpstats.org/verification/export-checks)). SVG output is not compared byte for byte across machines.
 - **Committed figures** change when the specification, the vl-convert version, or its Vega-Lite version changes. Pin the vl-convert version wherever figures are generated.
 
 ## Versions
 
-| Component | Version | Notes |
-| --- | --- | --- |
-| vega | 6.4.0 | pinned for the browser |
-| vega-lite | 6.4.3 | pinned for the browser |
-| vega-embed | 7.3.0 | pinned for the browser |
-| vl-convert | 1.9.0 | tested; bundles its own Vega-Lite, run as 6.1 |
-
-The tests validate every specification against the Vega-Lite 6.1 schema, so the same specification renders in the browser and in vl-convert.
+[Vega-Lite schema validity](https://phiz.phpstats.org/verification/vega-lite-schema) lists the pinned browser libraries (vega, vega-lite, and vega-embed), the tested vl-convert version, and the schema every specification is validated against.

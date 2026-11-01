@@ -802,44 +802,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="agreement-with-r" class="level2">
 <h2 class="anchored" data-anchor-id="agreement-with-r">Agreement with R</h2>
-<p>The test suite compares the helpers with R on the documentation fits. The agreement holds for these fits.</p>
-<table class="caption-top table">
-<colgroup>
-<col style="width: 33%">
-<col style="width: 33%">
-<col style="width: 33%">
-</colgroup>
-<thead>
-<tr class="header">
-<th>Computation</th>
-<th>Compared with</th>
-<th>Tolerance</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td>documentation fits refitted with phit</td>
-<td>the saved coefficients and covariance matrices (polyfill 0.4.1)</td>
-<td>1e-9</td>
-</tr>
-<tr class="even">
-<td>predictions and bands</td>
-<td><code>predict(lm(), interval = "confidence")</code></td>
-<td>1e-7</td>
-</tr>
-<tr class="odd">
-<td>linear-model marginal means and intervals</td>
-<td>a direct computation in R</td>
-<td>1e-8</td>
-</tr>
-<tr class="even">
-<td>random-intercept conditional standard deviations</td>
-<td>lme4’s <code>ranef(fit, condVar = TRUE)</code></td>
-<td>1e-6</td>
-</tr>
-</tbody>
-</table>
-<p>GLM marginal means were compared with R by hand, outside the test suite. Their intervals differ from R’s by about 1e-5 because of the covariance matrix: for <code>am ~ wt + hp</code>, phit’s coefficients agree with R’s <code>glm()</code> to 12 digits, while the variance of the <code>wt</code> coefficient is 9.4167679 in phit and 9.4167669 in R’s <code>vcov()</code>.</p>
+<p>The prediction, marginal-mean, and random-effect helpers are compared with R and lme4 on phit fits: see <a href="https://phiz.phpstats.org/verification/r-statistics">Statistics helpers</a> for each comparison, its tolerance, and its result.</p>
 
 
 </section>
