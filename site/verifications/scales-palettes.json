@@ -1,0 +1,62 @@
+{
+    "title": "Palettes: agreement with scales",
+    "label": "Palettes",
+    "kind": "reference",
+    "checked": "The hue and grey palettes that theme(\"gray\"), scale_color_hue(), and scale_color_grey() compute, against the scales package.",
+    "reference": "scales 1.4.0 hue_pal() and grey_pal()",
+    "versions": {
+        "R": "4.6.1",
+        "scales": "1.4.0"
+    },
+    "inputs": "Palette sizes of 3, 4, 5, and 8 levels.",
+    "comparison": [
+        {
+            "id": "exact",
+            "applies_to": "counts, levels, piece sizes, and colors",
+            "kind": "exact"
+        }
+    ],
+    "cases": [
+        {
+            "name": "3 levels",
+            "quantity": "hue_pal() colors",
+            "rule": "exact",
+            "n_compared": 3,
+            "status": "pass"
+        },
+        {
+            "name": "5 levels",
+            "quantity": "hue_pal() colors",
+            "rule": "exact",
+            "n_compared": 5,
+            "status": "pass"
+        },
+        {
+            "name": "8 levels",
+            "quantity": "hue_pal() colors",
+            "rule": "exact",
+            "n_compared": 8,
+            "status": "pass"
+        },
+        {
+            "name": "4 levels",
+            "quantity": "grey_pal() colors",
+            "rule": "exact",
+            "n_compared": 4,
+            "status": "pass"
+        }
+    ],
+    "reproduce": [
+        "Rscript scripts/evidence/r-references.R",
+        "php scripts/evidence-parity.php"
+    ],
+    "source": "site/verifications/scales-palettes.json",
+    "data": "tests/fixtures/r-references.json",
+    "environment": {
+        "date": "2026-11-01",
+        "commit": "d9a30f4",
+        "php": "8.5.11",
+        "os": "Linux, Debian GNU/Linux 13 (trixie) (aarch64)"
+    },
+    "group": "Agreement with R"
+}

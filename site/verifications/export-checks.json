@@ -1,0 +1,86 @@
+{
+    "title": "Export checks with vl-convert",
+    "group": "Export",
+    "label": "Export",
+    "kind": "integration",
+    "checked": "vl-convert renders every gallery example to SVG, writes SVG, PNG, and PDF files with the right signatures, reports conversion errors, and renders 21 plots as PNG images that match their baselines.",
+    "reference": "vl-convert 1.9.0, and the PNG baselines in tests/Visual/baselines",
+    "versions": {
+        "vl-convert": "1.9.0",
+        "Vega-Lite (vl-convert)": "6.1"
+    },
+    "inputs": [
+        {
+            "name": "gallery",
+            "detail": "46 examples in examples/catalog.php",
+            "url": "examples/catalog.php"
+        },
+        {
+            "name": "baselines",
+            "detail": "21 PNG images",
+            "url": "tests/Visual/baselines"
+        }
+    ],
+    "comparison": [
+        {
+            "id": "smoke",
+            "applies_to": "SVG output: starts with <svg and contains a mark group (role-mark)",
+            "kind": "exact"
+        },
+        {
+            "id": "signature",
+            "applies_to": "file signatures: <svg, the PNG magic bytes, %PDF-, and a Vega spec with marks; conversion errors raise ExportFailed",
+            "kind": "exact"
+        },
+        {
+            "id": "pixels",
+            "applies_to": "PNG renderings: at most 0.2% of pixels may differ from the baseline by more than 40 of 255 in their largest channel; a size change fails",
+            "kind": "exact"
+        }
+    ],
+    "cases": [
+        {
+            "name": "ExamplesTest",
+            "quantity": "renders every gallery example to SVG with vl-convert",
+            "status": "pass",
+            "rule": "smoke",
+            "n_compared": 46
+        },
+        {
+            "name": "RenderTest",
+            "quantity": "renders SVG, PNG, PDF, and Vega",
+            "status": "pass",
+            "rule": "signature",
+            "n_compared": 1
+        },
+        {
+            "name": "RenderTest",
+            "quantity": "reports conversion errors",
+            "status": "pass",
+            "rule": "signature",
+            "n_compared": 1
+        },
+        {
+            "name": "VisualTest",
+            "quantity": "renders as its baseline",
+            "status": "pass",
+            "rule": "pixels",
+            "n_compared": 21
+        }
+    ],
+    "exclusions": [
+        "PNG and PDF output are checked by signature and by the visual baselines, not byte for byte.",
+        "The visual plots use Liberation Sans, which vl-convert bundles, and no jitter, so they render the same on every platform."
+    ],
+    "reproduce": [
+        "composer install",
+        "php scripts/evidence-tests.php"
+    ],
+    "source": "scripts/evidence-tests.php",
+    "environment": {
+        "date": "2026-11-01",
+        "commit": "d9a30f4",
+        "php": "8.5.11",
+        "os": "Linux, Debian GNU/Linux 13 (trixie) (aarch64)"
+    }
+}

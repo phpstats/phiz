@@ -1,0 +1,88 @@
+{
+    "title": "Pipe and method-chain equivalence",
+    "group": "Specifications",
+    "label": "Pipe and method chain",
+    "kind": "contract",
+    "checked": "Every documentation example written with the pipe operator and its method-chain version build the same specification, and the dashboard's two versions build the same charts.",
+    "reference": "The method-chain versions, run on the same PHP version",
+    "inputs": "docs/examples/*.chain.php, docs/examples/scripts/*.chain.php, and examples/dashboard.chain.php.",
+    "comparison": [
+        {
+            "id": "same",
+            "applies_to": "the two specifications, compared as PHP arrays",
+            "kind": "exact"
+        }
+    ],
+    "cases": [
+        {
+            "name": "ChainExamplesTest",
+            "quantity": "builds a valid spec for every method-chain documentation example",
+            "status": "pass",
+            "rule": "same",
+            "n_compared": 1
+        },
+        {
+            "name": "ChainExamplesTest",
+            "quantity": "builds the dashboard with method chains",
+            "status": "pass",
+            "rule": "same",
+            "n_compared": 1
+        },
+        {
+            "name": "DashboardTest",
+            "quantity": "builds the dashboard charts from phplyr summaries of a phibble table",
+            "status": "pass",
+            "rule": "same",
+            "n_compared": 1
+        },
+        {
+            "name": "DashboardTest",
+            "quantity": "builds the same dashboard with pipes and with method chains",
+            "status": "pass",
+            "rule": "same",
+            "n_compared": 1
+        },
+        {
+            "name": "DashboardTest",
+            "quantity": "builds the same documentation examples with pipes and with method chains",
+            "status": "pass",
+            "rule": "same",
+            "n_compared": 1
+        },
+        {
+            "name": "DashboardTest",
+            "quantity": "runs each example-page script and its method-chain version to the same chart and files",
+            "status": "pass",
+            "rule": "same",
+            "n_compared": 3
+        },
+        {
+            "name": "PipeTest",
+            "quantity": "composes with the pipe operator",
+            "status": "pass",
+            "rule": "same",
+            "n_compared": 1
+        },
+        {
+            "name": "PipeTest",
+            "quantity": "starts a piped plot with ggplot() and aes()",
+            "status": "pass",
+            "rule": "same",
+            "n_compared": 1
+        }
+    ],
+    "exclusions": [
+        "The pipe operator needs PHP 8.5, so tests/Pipes runs only on PHP 8.5."
+    ],
+    "reproduce": [
+        "composer install",
+        "php scripts/evidence-tests.php"
+    ],
+    "source": "scripts/evidence-tests.php",
+    "environment": {
+        "date": "2026-11-01",
+        "commit": "d9a30f4",
+        "php": "8.5.11",
+        "os": "Linux, Debian GNU/Linux 13 (trixie) (aarch64)"
+    }
+}

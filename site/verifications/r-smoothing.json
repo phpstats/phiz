@@ -1,0 +1,178 @@
+{
+    "title": "Smoothing: agreement with R",
+    "label": "Smoothing",
+    "kind": "reference",
+    "checked": "The least-squares and loess fits, standard errors, and confidence bands behind smooth(), computed in PHP, against R's lm(), predict(), and loess().",
+    "reference": "R 4.6.1 lm(), predict(), and loess(surface = \"direct\", statistics = \"exact\")",
+    "versions": {
+        "R": "4.6.1"
+    },
+    "inputs": [
+        {
+            "name": "mtcars",
+            "detail": "32 rows, R's datasets package"
+        },
+        {
+            "name": "mpg",
+            "detail": "234 rows, ggplot2 4.0.3"
+        }
+    ],
+    "comparison": [
+        {
+            "id": "tight",
+            "applies_to": "fits, quantiles, intervals, and polygon points",
+            "kind": "tolerance",
+            "atol": 1.0e-9,
+            "rtol": 1.0e-9,
+            "rel_floor": 1.0e-12
+        },
+        {
+            "id": "exact",
+            "applies_to": "counts, levels, piece sizes, and colors",
+            "kind": "exact"
+        }
+    ],
+    "cases": [
+        {
+            "name": "mtcars, mpg ~ wt",
+            "quantity": "lm coefficients",
+            "rule": "tight",
+            "n_compared": 2,
+            "status": "pass",
+            "max_abs_error": 2.1316282072803006e-13,
+            "max_rel_error": 9.804996817601473e-15
+        },
+        {
+            "name": "mtcars, mpg ~ wt",
+            "quantity": "lm standard errors",
+            "rule": "tight",
+            "n_compared": 2,
+            "status": "pass",
+            "max_abs_error": 6.661338147750939e-15,
+            "max_rel_error": 3.772884642726903e-15
+        },
+        {
+            "name": "mtcars, mpg ~ wt",
+            "quantity": "residual degrees of freedom",
+            "rule": "exact",
+            "n_compared": 1,
+            "status": "pass",
+            "actual": 30,
+            "expected": 30
+        },
+        {
+            "name": "mtcars, mpg ~ wt",
+            "quantity": "90% band at the ends of wt: fit, lower, upper",
+            "rule": "tight",
+            "n_compared": 6,
+            "status": "pass",
+            "max_abs_error": 7.105427357601002e-15,
+            "max_rel_error": 6.714944674358385e-16
+        },
+        {
+            "name": "mpg, hwy ~ displ, loess span 0.75 degree 2",
+            "quantity": "fit at 5 points",
+            "rule": "tight",
+            "n_compared": 5,
+            "status": "pass",
+            "max_abs_error": 8.313350008393172e-13,
+            "max_rel_error": 2.5264830477315152e-14
+        },
+        {
+            "name": "mpg, hwy ~ displ, loess span 0.75 degree 2",
+            "quantity": "standard errors at 5 points",
+            "rule": "tight",
+            "n_compared": 5,
+            "status": "pass",
+            "max_abs_error": 1.2922996006636822e-13,
+            "max_rel_error": 6.484227742065599e-14
+        },
+        {
+            "name": "mpg, hwy ~ displ, loess span 0.75 degree 2",
+            "quantity": "degrees of freedom of the t interval",
+            "rule": "tight",
+            "n_compared": 1,
+            "status": "pass",
+            "max_abs_error": 1.5717205315013416e-11,
+            "max_rel_error": 6.866764971614117e-14,
+            "actual": 228.88806271929204,
+            "expected": 228.88806271927632
+        },
+        {
+            "name": "mpg, hwy ~ displ, loess span 0.75 degree 2",
+            "quantity": "residual standard error",
+            "rule": "tight",
+            "n_compared": 1,
+            "status": "pass",
+            "max_abs_error": 2.220446049250313e-14,
+            "max_rel_error": 6.5847358656617105e-15,
+            "actual": 3.3721110376341,
+            "expected": 3.3721110376341223
+        },
+        {
+            "name": "mpg, hwy ~ displ, loess span 0.75 degree 2",
+            "quantity": "95% band at the ends of displ: lower, upper",
+            "rule": "tight",
+            "n_compared": 4,
+            "status": "pass",
+            "max_abs_error": 1.0160761121369433e-12,
+            "max_rel_error": 3.578407339494566e-14
+        },
+        {
+            "name": "mpg, hwy ~ displ, loess span 1.5 degree 1",
+            "quantity": "fit at 5 points",
+            "rule": "tight",
+            "n_compared": 5,
+            "status": "pass",
+            "max_abs_error": 1.1368683772161603e-13,
+            "max_rel_error": 8.951309492511713e-15
+        },
+        {
+            "name": "mpg, hwy ~ displ, loess span 1.5 degree 1",
+            "quantity": "standard errors at 5 points",
+            "rule": "tight",
+            "n_compared": 5,
+            "status": "pass",
+            "max_abs_error": 1.3766765505351941e-14,
+            "max_rel_error": 1.8296866160373968e-14
+        },
+        {
+            "name": "mpg, hwy ~ displ, loess span 1.5 degree 1",
+            "quantity": "degrees of freedom of the t interval",
+            "rule": "tight",
+            "n_compared": 1,
+            "status": "pass",
+            "max_abs_error": 3.836930773104541e-12,
+            "max_rel_error": 1.6548428987229192e-14,
+            "actual": 231.86072684395154,
+            "expected": 231.86072684395538
+        },
+        {
+            "name": "mpg, hwy ~ displ, loess span 1.5 degree 1",
+            "quantity": "residual standard error",
+            "rule": "tight",
+            "n_compared": 1,
+            "status": "pass",
+            "max_abs_error": 4.440892098500626e-15,
+            "max_rel_error": 1.202696589971993e-15,
+            "actual": 3.6924459049177436,
+            "expected": 3.692445904917748
+        }
+    ],
+    "known_differences": [
+        "ggplot2's geom_smooth() interpolates the loess surface; phiz computes it directly, as loess(surface = \"direct\"), so ggplot2's curve can differ slightly."
+    ],
+    "reproduce": [
+        "Rscript scripts/evidence/r-references.R",
+        "php scripts/evidence-parity.php"
+    ],
+    "source": "site/verifications/r-smoothing.json",
+    "data": "tests/fixtures/r-references.json",
+    "environment": {
+        "date": "2026-11-01",
+        "commit": "d9a30f4",
+        "php": "8.5.11",
+        "os": "Linux, Debian GNU/Linux 13 (trixie) (aarch64)"
+    },
+    "group": "Agreement with R"
+}

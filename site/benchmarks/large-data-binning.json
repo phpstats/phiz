@@ -1,0 +1,93 @@
+{
+    "title": "Large data: binning a million-row table in PHP",
+    "label": "Large data",
+    "description": "Bin one million (x, y) points from a phibble table into hexagons, rectangles, or a histogram, and encode the specification as JSON. Only the bins are embedded.",
+    "workload": "1,000,000 rows, 2 numeric columns",
+    "dataset": {
+        "rows": 1000000,
+        "columns": 2,
+        "detail": "correlated standard normal pairs from mt_rand seeded with 1, built in the measured process"
+    },
+    "implementations": {
+        "phiz": "phiz v0.5.2-4-geb39d93, plain PHP, reading a phibble v0.6.1 table"
+    },
+    "measure": "Elapsed time",
+    "unit": "s",
+    "statistic": "median",
+    "method": "From building the Plot to holding the JSON specification: compiling, reading the table column by column, binning, and encoding. Building the table and starting PHP are excluded.",
+    "time_spent_in": "the PHP process (building the specification only; no browser rendering or vl-convert)",
+    "memory_measure": "peak anonymous memory",
+    "memory_method": "RssAnon of the whole PHP process, including the generated table, sampled every millisecond by peakmem (phpolars bench/csv-pipeline/peakmem.c).",
+    "environment": {
+        "cpu": "AMD Ryzen 9 9955HX 16-Core Processor",
+        "cores": 2,
+        "memory_gb": 7.8,
+        "os": "Linux, Ubuntu 24.04.5 LTS (x86_64)",
+        "php": "8.5.12",
+        "versions": {
+            "phibble": "v0.6.1"
+        },
+        "threads": 1,
+        "cache": "warm",
+        "repeats": 7,
+        "warmups": 0,
+        "date": "2026-11-01",
+        "commit": "eb39d93"
+    },
+    "rows": [
+        {
+            "case": "hex(bins: 40)",
+            "implementation": "phiz",
+            "value": 1.66,
+            "reps": [
+                1.66,
+                1.65,
+                1.65,
+                1.66,
+                1.66,
+                1.66,
+                1.68
+            ],
+            "peak_memory_mib": 60,
+            "note": "Specification: 61 KB."
+        },
+        {
+            "case": "bin2d(bins: 50)",
+            "implementation": "phiz",
+            "value": 1.29,
+            "reps": [
+                1.3,
+                1.29,
+                1.29,
+                1.29,
+                1.3,
+                1.29,
+                1.29
+            ],
+            "peak_memory_mib": 60,
+            "note": "Specification: 168 KB."
+        },
+        {
+            "case": "histogram(bins: 60)",
+            "implementation": "phiz",
+            "value": 0.8,
+            "reps": [
+                0.81,
+                0.8,
+                0.8,
+                0.8,
+                0.8,
+                0.8,
+                0.8
+            ],
+            "peak_memory_mib": 59,
+            "note": "Specification: 6 KB."
+        }
+    ],
+    "reproduce": [
+        "composer install",
+        "php scripts/bench-large-data.php"
+    ],
+    "source": "scripts/bench-large-data.php",
+    "group": "phiz in PHP"
+}

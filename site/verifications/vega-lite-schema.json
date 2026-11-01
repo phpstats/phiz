@@ -1,0 +1,172 @@
+{
+    "title": "Vega-Lite schema validity",
+    "group": "Specifications",
+    "label": "Vega-Lite schema",
+    "kind": "contract",
+    "checked": "Every specification the tests build, for each geom, feature, statistics helper, documentation example, and gallery example, validates against the Vega-Lite JSON schema.",
+    "reference": "Vega-Lite 6.1.0 JSON schema, validated with opis/json-schema",
+    "versions": {
+        "Vega-Lite schema": "6.1.0",
+        "vega-lite (browser)": "6.4.3",
+        "vega (browser)": "6.4.0",
+        "vega-embed (browser)": "7.3.0",
+        "vl-convert (tested)": "1.9.0",
+        "opis/json-schema": "2.6.0"
+    },
+    "inputs": [
+        {
+            "name": "schema",
+            "detail": "tests/fixtures/vega-lite-v6.1.0.schema.json",
+            "url": "tests/fixtures/vega-lite-v6.1.0.schema.json"
+        }
+    ],
+    "comparison": [
+        {
+            "id": "schema",
+            "applies_to": "each specification against the schema",
+            "kind": "exact"
+        }
+    ],
+    "cases": [
+        {
+            "name": "ChainExamplesTest",
+            "quantity": "builds a valid spec for every method-chain documentation example",
+            "status": "pass",
+            "rule": "schema",
+            "n_compared": 1
+        },
+        {
+            "name": "ChainExamplesTest",
+            "quantity": "builds the dashboard with method chains",
+            "status": "pass",
+            "rule": "schema",
+            "n_compared": 1
+        },
+        {
+            "name": "ExamplesTest",
+            "quantity": "builds a valid spec for every gallery example",
+            "status": "pass",
+            "rule": "schema",
+            "n_compared": 46
+        },
+        {
+            "name": "DashboardTest",
+            "quantity": "builds the dashboard charts from phplyr summaries of a phibble table",
+            "status": "pass",
+            "rule": "schema",
+            "n_compared": 1
+        },
+        {
+            "name": "FeaturesTest",
+            "quantity": "compiles each feature to a valid Vega-Lite spec",
+            "status": "pass",
+            "rule": "schema",
+            "n_compared": 65
+        },
+        {
+            "name": "FeaturesTest",
+            "quantity": "draws seeded jitter in PHP so every render is the same",
+            "status": "pass",
+            "rule": "schema",
+            "n_compared": 1
+        },
+        {
+            "name": "FeaturesTest",
+            "quantity": "plots phibble times as seconds on a continuous axis labeled as hms",
+            "status": "pass",
+            "rule": "schema",
+            "n_compared": 1
+        },
+        {
+            "name": "GeomsTest",
+            "quantity": "compiles each geom to a valid Vega-Lite spec",
+            "status": "pass",
+            "rule": "schema",
+            "n_compared": 52
+        },
+        {
+            "name": "ParityTest",
+            "quantity": "compiles each ggplot2 feature to a valid Vega-Lite spec",
+            "status": "pass",
+            "rule": "schema",
+            "n_compared": 40
+        },
+        {
+            "name": "RegressionsTest",
+            "quantity": "adds tooltips to raw layers with string marks",
+            "status": "pass",
+            "rule": "schema",
+            "n_compared": 1
+        },
+        {
+            "name": "RegressionsTest",
+            "quantity": "fits PHP-computed smooths per multi-field facet panel",
+            "status": "pass",
+            "rule": "schema",
+            "n_compared": 1
+        },
+        {
+            "name": "RegressionsTest",
+            "quantity": "lifts sliders to the top of a composition",
+            "status": "pass",
+            "rule": "schema",
+            "n_compared": 1
+        },
+        {
+            "name": "RegressionsTest",
+            "quantity": "bins multi-field facet panels in PHP from columns",
+            "status": "pass",
+            "rule": "schema",
+            "n_compared": 1
+        },
+        {
+            "name": "StatsTest",
+            "quantity": "builds valid statistics charts",
+            "status": "pass",
+            "rule": "schema",
+            "n_compared": 19
+        },
+        {
+            "name": "StatsTest",
+            "quantity": "draws random slopes in panels from their formula design",
+            "status": "pass",
+            "rule": "schema",
+            "n_compared": 1
+        },
+        {
+            "name": "StatsTest",
+            "quantity": "notes singular mixed-model fits",
+            "status": "pass",
+            "rule": "schema",
+            "n_compared": 1
+        },
+        {
+            "name": "BinTest",
+            "quantity": "bins in PHP above the server threshold and embeds only the bins",
+            "status": "pass",
+            "rule": "schema",
+            "n_compared": 1
+        },
+        {
+            "name": "BinTest",
+            "quantity": "draws hexagons sized to tile the panel",
+            "status": "pass",
+            "rule": "schema",
+            "n_compared": 1
+        }
+    ],
+    "known_differences": [
+        "Browsers load vega-lite 6.4.3, but specifications are validated against the 6.1.0 schema, the version vl-convert 1.9.0 renders with. No check validates against a 6.4 schema."
+    ],
+    "reproduce": [
+        "composer install",
+        "php scripts/evidence-tests.php"
+    ],
+    "source": "scripts/evidence-tests.php",
+    "environment": {
+        "date": "2026-11-01",
+        "commit": "d9a30f4",
+        "php": "8.5.11",
+        "os": "Linux, Debian GNU/Linux 13 (trixie) (aarch64)"
+    }
+}

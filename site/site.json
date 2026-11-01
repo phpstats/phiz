@@ -180,5 +180,22 @@
                 "path": "development.qmd"
             }
         ]
+    },
+    "benchmarks": [
+        "site/benchmarks/large-data-binning.json"
+    ],
+    "verifications": [
+        "site/verifications/r-smoothing.json",
+        "site/verifications/r-distributions.json",
+        "site/verifications/r-statistics.json",
+        "site/verifications/scales-palettes.json",
+        "site/verifications/vega-lite-schema.json",
+        "site/verifications/spec-snapshots.json",
+        "site/verifications/pipe-chain-equivalence.json",
+        "site/verifications/export-checks.json"
+    ],
+    "evidence_gaps": {
+        "benchmarks": "No benchmark measures how long the browser takes to draw a chart with vega-embed.",
+        "verification": "No check compares SVG output byte for byte across runs or machines."
     }
 }

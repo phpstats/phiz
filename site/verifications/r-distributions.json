@@ -1,0 +1,203 @@
+{
+    "title": "Distributions and contours: agreement with R",
+    "label": "Distributions and contours",
+    "kind": "reference",
+    "checked": "Quantiles, bandwidths, 2D densities, contour levels and pieces, ellipses, stat_summary intervals, and violin densities computed in PHP, against R, MASS, and ggplot2 on the same data.",
+    "reference": "R 4.6.1 with MASS 7.3.65 and ggplot2 4.0.3",
+    "versions": {
+        "R": "4.6.1",
+        "MASS": "7.3.65",
+        "ggplot2": "4.0.3"
+    },
+    "inputs": [
+        {
+            "name": "faithful",
+            "detail": "272 rows, R's datasets package"
+        },
+        {
+            "name": "mtcars",
+            "detail": "32 rows, R's datasets package"
+        },
+        {
+            "name": "mpg",
+            "detail": "234 rows, ggplot2 4.0.3"
+        }
+    ],
+    "comparison": [
+        {
+            "id": "tight",
+            "applies_to": "fits, quantiles, intervals, and polygon points",
+            "kind": "tolerance",
+            "atol": 1.0e-9,
+            "rtol": 1.0e-9,
+            "rel_floor": 1.0e-12
+        },
+        {
+            "id": "grid",
+            "applies_to": "the 100 × 100 density grid, whose tails reach 1e-30",
+            "kind": "tolerance",
+            "atol": 1.0e-12,
+            "rtol": 1.0e-9,
+            "rel_floor": 1.0e-12
+        },
+        {
+            "id": "shape",
+            "applies_to": "relative density heights at five points",
+            "kind": "tolerance",
+            "atol": 0.001,
+            "rel_floor": 1.0e-12
+        },
+        {
+            "id": "exact",
+            "applies_to": "counts, levels, piece sizes, and colors",
+            "kind": "exact"
+        }
+    ],
+    "cases": [
+        {
+            "name": "fixed probabilities",
+            "quantity": "qnorm() at 3 probabilities",
+            "rule": "tight",
+            "n_compared": 3,
+            "status": "pass",
+            "max_abs_error": 8.881784197001252e-16,
+            "max_rel_error": 2.874147739402648e-16
+        },
+        {
+            "name": "fixed probabilities",
+            "quantity": "qt() at 4 probabilities and degrees of freedom",
+            "rule": "tight",
+            "n_compared": 4,
+            "status": "pass",
+            "max_abs_error": 2.842170943040401e-14,
+            "max_rel_error": 2.2368370430461517e-15
+        },
+        {
+            "name": "fixed probabilities",
+            "quantity": "pnorm()",
+            "rule": "tight",
+            "n_compared": 1,
+            "status": "pass",
+            "max_abs_error": 0.0,
+            "max_rel_error": 0.0,
+            "actual": 0.975,
+            "expected": 0.975
+        },
+        {
+            "name": "mtcars wt",
+            "quantity": "type 7 quantiles at 0.05, 0.25, 0.9",
+            "rule": "tight",
+            "n_compared": 3,
+            "status": "pass",
+            "max_abs_error": 0.0,
+            "max_rel_error": 0.0
+        },
+        {
+            "name": "mtcars wt",
+            "quantity": "bw.nrd0 bandwidth",
+            "rule": "tight",
+            "n_compared": 1,
+            "status": "pass",
+            "max_abs_error": 0.0,
+            "max_rel_error": 0.0,
+            "actual": 0.34547574626865674,
+            "expected": 0.34547574626865674
+        },
+        {
+            "name": "faithful",
+            "quantity": "kde2d grid coordinates",
+            "rule": "tight",
+            "n_compared": 200,
+            "status": "pass",
+            "max_abs_error": 1.4210854715202004e-14,
+            "max_rel_error": 2.1561957712190384e-16
+        },
+        {
+            "name": "faithful",
+            "quantity": "kde2d density on the 100 × 100 grid",
+            "rule": "grid",
+            "n_compared": 10000,
+            "status": "pass",
+            "max_abs_error": 5.551115123125783e-17,
+            "max_rel_error": 1.0925625920065167e-14
+        },
+        {
+            "name": "faithful",
+            "quantity": "density contour levels",
+            "rule": "exact",
+            "n_compared": 12,
+            "status": "pass"
+        },
+        {
+            "name": "faithful",
+            "quantity": "points in each contour piece at level 0.002",
+            "rule": "exact",
+            "n_compared": 3,
+            "status": "pass"
+        },
+        {
+            "name": "faithful",
+            "quantity": "stat_ellipse(type = \"t\") polygon x and y",
+            "rule": "tight",
+            "n_compared": 104,
+            "status": "pass",
+            "max_abs_error": 6.394884621840902e-14,
+            "max_rel_error": 1.4760243158532052e-15
+        },
+        {
+            "name": "faithful",
+            "quantity": "stat_ellipse(type = \"norm\") polygon x and y",
+            "rule": "tight",
+            "n_compared": 104,
+            "status": "pass",
+            "max_abs_error": 2.7000623958883807e-13,
+            "max_rel_error": 8.442632076775425e-15
+        },
+        {
+            "name": "mpg hwy by class",
+            "quantity": "mean_cl_normal mean, lower, and upper for 7 classes",
+            "rule": "tight",
+            "n_compared": 21,
+            "status": "pass",
+            "max_abs_error": 7.105427357601002e-15,
+            "max_rel_error": 2.540659181523901e-16
+        },
+        {
+            "name": "faithful eruptions",
+            "quantity": "violin evaluation points",
+            "rule": "tight",
+            "n_compared": 5,
+            "status": "pass",
+            "max_abs_error": 0.0,
+            "max_rel_error": 0.0
+        },
+        {
+            "name": "faithful eruptions",
+            "quantity": "violin widths against density() heights, relative to the largest",
+            "rule": "shape",
+            "n_compared": 5,
+            "status": "pass",
+            "max_abs_error": 6.848688918953405e-5,
+            "max_rel_error": 0.00024785741926604504
+        }
+    ],
+    "exclusions": [
+        "Violin widths are compared as relative heights: phiz scales each violin to its band, so absolute densities are not part of the output."
+    ],
+    "known_differences": [
+        "R's density() approximates the kernel sum with an FFT over a binned grid; phiz evaluates the kernel sum exactly, so relative heights differ by about 1e-4."
+    ],
+    "reproduce": [
+        "Rscript scripts/evidence/r-references.R",
+        "php scripts/evidence-parity.php"
+    ],
+    "source": "site/verifications/r-distributions.json",
+    "data": "tests/fixtures/r-references.json",
+    "environment": {
+        "date": "2026-11-01",
+        "commit": "d9a30f4",
+        "php": "8.5.11",
+        "os": "Linux, Debian GNU/Linux 13 (trixie) (aarch64)"
+    },
+    "group": "Agreement with R"
+}

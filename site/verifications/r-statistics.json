@@ -1,0 +1,95 @@
+{
+    "title": "Statistics helpers: agreement with R",
+    "label": "Statistics helpers",
+    "kind": "reference",
+    "checked": "predictions(), marginal_means(), and random_effects_plot() on fits from phit, against R's predict(), an emmeans-style computation in R, and lme4's ranef(condVar = TRUE).",
+    "reference": "R 4.6.1 lm() and predict(); lme4 2.0.6 lmer() and ranef()",
+    "versions": {
+        "R": "4.6.1",
+        "lme4": "2.0.6",
+        "phit-polyfill": "v0.4.1"
+    },
+    "inputs": [
+        {
+            "name": "mtcars",
+            "detail": "32 rows, R's datasets package"
+        },
+        {
+            "name": "mpg",
+            "detail": "234 rows, ggplot2 4.0.3"
+        }
+    ],
+    "comparison": [
+        {
+            "id": "tight",
+            "applies_to": "fits, quantiles, intervals, and polygon points",
+            "kind": "tolerance",
+            "atol": 1.0e-9,
+            "rtol": 1.0e-9,
+            "rel_floor": 1.0e-12
+        },
+        {
+            "id": "mixed",
+            "applies_to": "mixed-model conditional modes and standard deviations, which follow the REML optimum",
+            "kind": "tolerance",
+            "atol": 1.0e-6,
+            "rtol": 1.0e-6,
+            "rel_floor": 1.0e-12
+        }
+    ],
+    "cases": [
+        {
+            "name": "mtcars, mpg ~ wt + hp + factor(cyl)",
+            "quantity": "predictions on a 9-row grid: estimate, lower, upper",
+            "rule": "tight",
+            "n_compared": 27,
+            "status": "pass",
+            "max_abs_error": 3.907985046680551e-14,
+            "max_rel_error": 1.9097062741680017e-15
+        },
+        {
+            "name": "mtcars, mpg ~ factor(cyl) + factor(am) + wt",
+            "quantity": "marginal means of cyl: estimate, lower, upper",
+            "rule": "tight",
+            "n_compared": 9,
+            "status": "pass",
+            "max_abs_error": 3.197442310920451e-14,
+            "max_rel_error": 1.4882938674092103e-15
+        },
+        {
+            "name": "mpg, hwy ~ displ + (1 | manufacturer)",
+            "quantity": "conditional modes of 15 manufacturers",
+            "rule": "mixed",
+            "n_compared": 15,
+            "status": "pass",
+            "max_abs_error": 2.02536881044324e-7,
+            "max_rel_error": 2.2170836422693385e-7
+        },
+        {
+            "name": "mpg, hwy ~ displ + (1 | manufacturer)",
+            "quantity": "conditional standard deviations of 15 manufacturers",
+            "rule": "mixed",
+            "n_compared": 15,
+            "status": "pass",
+            "max_abs_error": 5.836578376161583e-8,
+            "max_rel_error": 4.1098957770748484e-8
+        }
+    ],
+    "exclusions": [
+        "The fits come from phit (phit-polyfill), so these cases test phiz's helpers together with phit's fits. phit's own agreement with R is in phit's verification.",
+        "Marginal means are compared with the emmeans formula computed directly in R; emmeans itself was not installed."
+    ],
+    "reproduce": [
+        "Rscript scripts/evidence/r-references.R",
+        "php scripts/evidence-parity.php"
+    ],
+    "source": "site/verifications/r-statistics.json",
+    "data": "tests/fixtures/r-references.json",
+    "environment": {
+        "date": "2026-11-01",
+        "commit": "d9a30f4",
+        "php": "8.5.11",
+        "os": "Linux, Debian GNU/Linux 13 (trixie) (aarch64)"
+    },
+    "group": "Agreement with R"
+}
