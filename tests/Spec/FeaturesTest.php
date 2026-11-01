@@ -10,6 +10,7 @@ use function Phiz\aes;
 use function Phiz\calc;
 use function Phiz\factor;
 use function Phiz\field;
+use function Phiz\label_number;
 
 $base = fn () => Plot::of(sample())->aes(x: 'x', y: 'y', color: 'g')->point();
 
@@ -212,3 +213,29 @@ it('keeps unseeded jitter in the browser', function () {
 it('refuses seeded jitter on URL data', function () {
     Plot::of(Data::url('cars.json'))->aes(x: 'a:Q', y: 'b:Q')->jitter(seed: 1)->toArray();
 })->throws(InvalidArgumentException::class, 'inline data');
+
+it('plots phibble times as seconds on a continuous axis labeled as hms', function () {
+    $times = [Phibble\Time::of(8, 30), Phibble\Time::of(9, 15), Phibble\Time::of(13, 5, 30), null];
+    $minutes = [25, 40, 15, 30];
+    $table = Phibble\DataFrame::fromColumns(['start' => $times, 'minutes' => $minutes]);
+
+    foreach ([$table, $table->toRows(), ['start' => $times, 'minutes' => $minutes]] as $data) {
+        $spec = Plot::of($data)->aes(x: 'start', y: 'minutes')->point()->toArray();
+
+        expect($spec)->toBeValidVegaLite()
+            ->and(array_column($spec['data']['values'], 'start'))->toBe([30600, 33300, 47130, null])
+            ->and($spec['encoding']['x']['type'])->toBe('quantitative')
+            ->and($spec['encoding']['x']['axis']['values'])->toBe([32400, 36000, 39600, 43200, 46800])
+            ->and($spec['encoding']['x']['axis']['labelExpr'])->toContain("format(floor(abs(datum.value) / 3600), '02d')")
+            ->and($spec['encoding']['y'])->not->toHaveKey('axis');
+    }
+})->skip(! class_exists(Phibble\Time::class), 'needs phibble 0.6');
+
+it('keeps time axis labels and breaks set through a scale', function () {
+    $table = Phibble\DataFrame::fromColumns(['start' => [Phibble\Time::of(8), Phibble\Time::of(9, 30)], 'n' => [1, 2]]);
+    $axis = fn (Plot $plot) => $plot->toArray()['encoding']['x']['axis'];
+    $plot = Plot::of($table)->aes(x: 'start', y: 'n')->point();
+
+    expect($axis($plot->scaleX(labels: label_number())))->toBe(['labelExpr' => "format(datum.value, ',~f')"])
+        ->and($axis($plot->scaleX(breaks: [28800, 34200]))['values'])->toBe([28800, 34200]);
+})->skip(! class_exists(Phibble\Time::class), 'needs phibble 0.6');

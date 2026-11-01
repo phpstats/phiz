@@ -2,7 +2,7 @@
 
 **Mappings and data:** [`aes()`](#aes) · [`data()`](#data)
 
-**Data:** [`Data::from()`](#data-from) · [`Data::url()`](#data-url) · [`Data::named()`](#data-named) · [`$data->isInline()`](#data-is-inline) · [`$data->isEmpty()`](#data-is-empty) · [`$data->count()`](#data-count) · [`$data->source()`](#data-source) · [`$data->toSpec()`](#data-to-spec) · [`$data->fields()`](#data-fields) · [`$data->has()`](#data-has) · [`$data->column()`](#data-column) · [`$data->type()`](#data-type) · [`$data->levels()`](#data-levels) · [`$data->withRows()`](#data-with-rows) · [`Data::value()`](#data-value)
+**Data:** [`Data::from()`](#data-from) · [`Data::url()`](#data-url) · [`Data::named()`](#data-named) · [`$data->isInline()`](#data-is-inline) · [`$data->isEmpty()`](#data-is-empty) · [`$data->count()`](#data-count) · [`$data->source()`](#data-source) · [`$data->toSpec()`](#data-to-spec) · [`$data->fields()`](#data-fields) · [`$data->has()`](#data-has) · [`$data->column()`](#data-column) · [`$data->type()`](#data-type) · [`$data->isTime()`](#data-is-time) · [`$data->levels()`](#data-levels) · [`$data->withRows()`](#data-with-rows) · [`Data::value()`](#data-value)
 
 **Datasets:** [`Datasets::mpg()`](#datasets-mpg) · [`Datasets::mtcars()`](#datasets-mtcars) · [`Datasets::economics()`](#datasets-economics) · [`Datasets::faithful()`](#datasets-faithful) · [`Datasets::load()`](#datasets-load)
 
@@ -121,6 +121,14 @@ A field's values, JSON-safe, read from the table or columns without building row
 ```
 
 The Vega-Lite measurement type of a field: quantitative when every non-null value is a number, temporal when every value is an ISO date string, nominal otherwise. Null for non-inline data or an all-null column.
+
+### `$data->isTime()` {#data-is-time}
+
+```php
+->isTime(string $field): bool
+```
+
+Whether a field held phibble times, which are plotted as seconds on a continuous scale, as ggplot2 plots hms.
 
 ### `$data->levels()` {#data-levels}
 

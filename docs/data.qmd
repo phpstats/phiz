@@ -14,7 +14,7 @@ title: "Data and fields"
 - `Data::url('cars.csv')`, which Vega-Lite fetches in the browser
 - `Data::named('live')`, a data source the page supplies at runtime
 
-Inline data is embedded in the specification. Values are made safe for JSON: `DateTimeInterface` values become ISO 8601 strings, enums become their values, and `NAN` and `INF` become null, which Vega-Lite treats as missing.
+Inline data is embedded in the specification. Values are made safe for JSON: `DateTimeInterface` values become ISO 8601 strings, enums become their values, and `NAN` and `INF` become null, which Vega-Lite treats as missing. A phibble `Time` (phibble 0.6 and later, like R's hms) becomes its number of seconds, so a time column is quantitative. As with ggplot2's `scale_x_time()`, its x or y axis is labeled the way hms prints times, such as `08:30:00`, or `-01:15:00` and `27:00:00` for durations, with breaks on whole seconds, minutes, hours, or days. Labels set with `scaleX(labels:)` or `scaleY(labels:)` replace that formatting. Tooltips show the seconds.
 
 {{< include _generated/data-columns.md >}}
 

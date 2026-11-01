@@ -17,7 +17,8 @@ use BackedEnum;
  *
  * Inline data accepts a list of row arrays, a column-oriented array of equal-length lists, a phibble Table (anything
  * with toRows() or toColumns()), a Laravel Collection (toArray()), or any iterable of rows. Rows may be arrays or
- * objects. Values are made JSON-safe: dates become ISO 8601 strings, enums their values, and NAN or INF null.
+ * objects. Values are made JSON-safe: dates become ISO 8601 strings, phibble times (R's hms) seconds, enums their
+ * values, and NAN or INF null.
  *
  * @property-read list<array<string, mixed>>|null $rows Inline rows. A phibble table or an array of columns is kept
  *     as given and turned into rows only when the spec embeds it, so binning geoms (bin2d, hex, histogram) can read
@@ -27,6 +28,9 @@ final class Data
 {
     /** @var array<string, string|null> Cached inferred Vega-Lite types by field. */
     private array $types = [];
+
+    /** @var array<string, true> Fields of inline rows that held phibble times. */
+    private array $times = [];
 
     /** @var list<array<string, mixed>>|null Rows built on first use from a table or columns. */
     private ?array $built = null;
@@ -69,8 +73,17 @@ final class Data
             $data === null => new self([]),
             is_object($data) && method_exists($data, 'column') && method_exists($data, 'nrow') => new self(null, table: $data),
             is_array($data) && $data !== [] && ! array_is_list($data) && self::isColumns($data) => new self(null, columns: array_map(array_values(...), $data)),
-            default => new self(self::rows($data)),
+            default => self::fromRows($data),
         };
+    }
+
+    private static function fromRows(mixed $data): self
+    {
+        $times = [];
+        $self = new self(self::rows($data, $times));
+        $self->times = $times;
+
+        return $self;
     }
 
     /** Data that Vega-Lite fetches from a URL (CSV, TSV, JSON); types can't be inferred, so use 'field:Q' shorthand. */
@@ -213,6 +226,37 @@ final class Data
         return $this->types[$field] = $type;
     }
 
+    /** Whether a field held phibble times, which are plotted as seconds on a continuous scale, as ggplot2 plots hms. */
+    public function isTime(string $field): bool
+    {
+        $raw = match (true) {
+            $this->table !== null => (function () use ($field) {
+                try {
+                    return $this->table->column($field);
+                } catch (\Throwable) {
+                    return [];
+                }
+            })(),
+            $this->columns !== null => $this->columns[$field] ?? [],
+            default => null,
+        };
+        if ($raw === null) {
+            return isset($this->times[$field]);
+        }
+        foreach ($raw as $value) {
+            if ($value !== null) {
+                return self::isTimeValue($value);
+            }
+        }
+
+        return false;
+    }
+
+    private static function isTimeValue(mixed $value): bool
+    {
+        return $value instanceof \Phibble\Time;
+    }
+
     /** Distinct non-null values of a field in first-seen order. */
     public function levels(string $field): array
     {
@@ -245,8 +289,11 @@ final class Data
         return (bool) preg_match('/^\d{4}-\d{2}-\d{2}([ T]\d{2}:\d{2}(:\d{2}(\.\d+)?)?(Z|[+-]\d{2}:?\d{2})?)?$/', $value);
     }
 
-    /** @return list<array<string, mixed>> */
-    private static function rows(mixed $data): array
+    /**
+     * @param array<string, true> $times Set to the fields that held phibble times.
+     * @return list<array<string, mixed>>
+     */
+    private static function rows(mixed $data, array &$times = []): array
     {
         if (is_object($data)) {
             $data = match (true) {
@@ -268,6 +315,17 @@ final class Data
             return [];
         }
         if (! array_is_list($data) && self::isColumns($data)) {
+            foreach ($data as $name => $column) {
+                foreach ($column as $value) {
+                    if ($value !== null) {
+                        if (self::isTimeValue($value)) {
+                            $times[(string) $name] = true;
+                        }
+                        break;
+                    }
+                }
+            }
+
             return self::transpose($data);
         }
         if (! array_is_list($data)) {
@@ -284,6 +342,9 @@ final class Data
             }
             $clean = [];
             foreach ($row as $key => $value) {
+                if (self::isTimeValue($value)) {
+                    $times[(string) $key] = true;
+                }
                 $clean[(string) $key] = self::value($value);
             }
             $rows[] = $clean;
@@ -330,6 +391,7 @@ final class Data
         return match (true) {
             is_float($value) && ! is_finite($value) => null,
             $value instanceof DateTimeInterface => $value->format(DateTimeInterface::ATOM),
+            self::isTimeValue($value) => fmod($value->seconds(), 1.0) === 0.0 ? (int) $value->seconds() : $value->seconds(),
             $value instanceof BackedEnum => $value->value,
             $value instanceof UnitEnum => $value->name,
             $value instanceof \Stringable => (string) $value,

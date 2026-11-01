@@ -75,6 +75,7 @@ final class Compiler
                 }
                 $spec['encoding'] = self::label($spec['encoding'], $unit['channels'], $plot->labels);
                 $spec['encoding'] = self::scale($spec['encoding'], $unit['channels'], $plot->scales, $unit['context']->computed === null ? $unit['context']->data : Data::from($unit['context']->computed));
+                $spec['encoding'] = self::timeAxes($spec['encoding'], $unit['context']->data);
                 if ($zeroFree) {
                     $spec['encoding'] = self::unzero($spec['encoding']);
                 }
@@ -306,6 +307,56 @@ final class Compiler
      * Continuous position scales fit the data, as in ggplot2, rather than Vega-Lite's default of including zero.
      * Plots with bars or areas keep zero, which their lengths are measured from.
      */
+    /**
+     * Axes of phibble time fields, which hold seconds: labeled as hms prints times (08:30:00, or -01:15:00 and
+     * 27:00:00 for durations), with breaks on whole seconds, minutes, or hours, as ggplot2's scale_x_time() does.
+     * An axis whose labels were set through a scale is left alone, and breaks set through a scale are kept.
+     */
+    private static function timeAxes(array $encoding, Data $data): array
+    {
+        foreach (self::AXIS_CHANNELS as $channel) {
+            $def = $encoding[$channel] ?? null;
+            if (! is_array($def) || array_is_list($def) || ! isset($def['field']) || ! is_string($def['field'])
+                || ($def['type'] ?? null) !== 'quantitative' || isset($def['aggregate']) || isset($def['bin'])
+                || (array_key_exists('axis', $def) && $def['axis'] === null) || ! $data->isTime(stripslashes($def['field']))) {
+                continue;
+            }
+            $axis = $def['axis'] ?? [];
+            if (isset($axis['labelExpr']) || isset($axis['format'])) {
+                continue;
+            }
+            $part = fn (string $value) => "format(floor({$value}), '02d')";
+            $axis['labelExpr'] = "(datum.value < 0 ? '-' : '') + ".$part('abs(datum.value) / 3600')." + ':' + "
+                .$part('abs(datum.value) % 3600 / 60')." + ':' + ".$part('abs(datum.value) % 60');
+            if (! isset($axis['values']) && ! isset($def['scale']['domain'])) {
+                $axis += self::timeBreaks($data->column(stripslashes($def['field'])));
+            }
+            $def['axis'] = $axis;
+            $encoding[$channel] = $def;
+        }
+
+        return $encoding;
+    }
+
+    /** @return array{values?: list<int>} Breaks at a whole number of seconds, minutes, hours, or days. */
+    private static function timeBreaks(array $seconds): array
+    {
+        $seconds = array_filter($seconds, fn ($v) => is_int($v) || is_float($v));
+        if (count($seconds) < 2 || ($span = max($seconds) - min($seconds)) <= 0) {
+            return [];
+        }
+        $step = 86400 * (int) ceil($span / 86400 / 6);
+        foreach ([1, 2, 5, 10, 15, 30, 60, 120, 300, 600, 900, 1800, 3600, 7200, 10800, 21600, 43200] as $candidate) {
+            if ($span / $candidate <= 6) {
+                $step = $candidate;
+                break;
+            }
+        }
+        $values = range((int) ceil(min($seconds) / $step) * $step, (int) floor(max($seconds) / $step) * $step, $step);
+
+        return count($values) < 2 ? [] : ['values' => $values];
+    }
+
     private static function unzero(array $encoding): array
     {
         foreach (['x', 'y'] as $channel) {
