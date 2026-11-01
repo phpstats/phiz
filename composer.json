@@ -24,7 +24,7 @@
         "opis/json-schema": "^2.4",
         "orchestra/testbench": "^10.0",
         "pestphp/pest": "^4.0",
-        "phpstats/phibble": "^0.5 || ^0.6",
+        "phpstats/phibble": "^0.5 || ^0.6 || ^0.7",
         "phpstats/phit-polyfill": "^0.4",
         "phpstats/phplyr": "^0.4",
         "squizlabs/php_codesniffer": "^3.13"
