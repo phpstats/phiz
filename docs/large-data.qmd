@@ -2,17 +2,17 @@
 title: "Large data"
 ---
 
-phiz embeds inline data in the specification, and the browser keeps every row in memory to draw it. A few thousand rows render immediately. Hundreds of thousands of rows make the page heavy and slow, so large data should be summarized before it is sent. phiz does that summarizing in PHP.
+phiz embeds inline data in the specification, and the browser keeps every row in memory to draw it. Summarize large data in PHP before it reaches the page.
 
 ## Sizes to expect
 
-The thresholds below are rough guidance. The limits in practice depend on the mark type, the number of layers and interactions, the browser, and the device. Only the warning threshold is fixed by phiz.
+These ranges are rough guidance, not measurements. The limits depend on the mark type, the number of layers and interactions, the browser, and the device. Only the warning threshold is set by phiz.
 
-| Rows embedded | Effect |
+| Rows embedded | Typical effect |
 | --- | --- |
-| up to about 5,000 | renders immediately, and interaction stays smooth |
-| 5,000 to 20,000 | renders, but brushing and tooltips slow down |
-| above 20,000 | phiz raises a warning; the page grows by several megabytes |
+| up to a few thousand | draws quickly, with responsive interaction |
+| 5,000 to 20,000 | draws, but brushing and tooltips can lag |
+| above 20,000 | phiz raises a warning, and the page grows by megabytes |
 | millions | summarize in PHP or in the database |
 
 `Config::$warnRows` sets the warning threshold (20,000 by default, or `null` to turn it off). In Laravel it is `config('phiz.warn_rows')`. The warning is an `E_USER_WARNING` that names the alternatives below.
@@ -33,19 +33,14 @@ Histograms computed in PHP use exactly `bins` equal-width bins, or `binwidth` an
 
 ## Tables stay columnar
 
-A phibble table or an array of columns is kept as given. The binning geoms read it column by column, and rows are built only if the specification embeds them. These timings were measured on a laptop on 2026-10-16, with phiz 0.3.0 and a million-row phibble table:
-
-| Plot | Time | Spec size |
-| --- | --- | --- |
-| `hex(bins: 40)` | 0.9 s | 49 KB |
-| `bin2d(bins: 50)` | 0.6 s | 132 KB |
-| `histogram(bins: 60)` | 0.4 s | 6 KB |
-
-Peak memory was about 100 MB, of which the table took 51 MB.
+A phibble table or an array of columns is kept as given. The binning geoms read it column by column, and rows are built only if the specification embeds them.
 
 ## Downsampling lines
 
-`line(downsample: n)` keeps about `n` points per group with Largest-Triangle-Three-Buckets (LTTB). LTTB picks the points that preserve the line's visible shape, including its peaks.
+`line(downsample: n)` keeps about `n` points per group with Largest-Triangle-Three-Buckets (LTTB). LTTB splits the line into buckets and keeps the point in each bucket that best preserves the shape around it.
+
+- **Peaks.** Large peaks usually survive. A bucket keeps one point, so a narrow spike next to a deeper dip in the same bucket can be dropped.
+- **Exact values.** Use the full data, or a server-side summary such as a per-interval maximum, when every extreme matters.
 
 {{< include _generated/large-lttb.md >}}
 
@@ -53,20 +48,34 @@ Peak memory was about 100 MB, of which the table took 51 MB.
 
 The `Bin` class exposes the same computations for data you summarize yourself. Each helper returns a short list of rows. The helpers read phibble tables, column arrays, row lists, or any iterable of rows. A generator streams in one pass when the limits are given.
 
+| Helper | Returns rows of |
+| --- | --- |
+| `Bin::histogram($source, 'price', bins: 50)` | `price_start`, `price_end`, `count`, `density` |
+| `Bin::grid($source, 'x', 'y', bins: [40, 30])` | `x_start`, `x_end`, `y_start`, `y_end`, `count` |
+| `Bin::hex($source, 'x', 'y', bins: 30, aspect: 0.75)` | hexagon centers and `count` |
+| `Bin::lttb($rows, 'time', 'value', threshold: 1000)` | the rows LTTB keeps |
+| `Bin::sample($source, 5000, seed: 1)` | a reproducible uniform sample |
+
 ```php
 use Phiz\Bin;
 
-Bin::histogram($source, 'price', bins: 50);          // price_start, price_end, count, density
-Bin::grid($source, 'x', 'y', bins: [40, 30]);         // x_start, x_end, y_start, y_end, count
-Bin::hex($source, 'x', 'y', bins: 30, aspect: 0.75);  // hexagon centers and count
-Bin::lttb($rows, 'time', 'value', threshold: 1000);   // the rows LTTB keeps
-Bin::sample($source, 5000, seed: 1);                  // a reproducible uniform sample
-
 // One pass over a database cursor, with known limits:
-$bins = Bin::grid(Car::query()->cursor(), 'weight', 'mpg', bins: 40, xlim: [1500, 5500], ylim: [5, 50]);
+$bins = Bin::grid(
+    Car::query()->cursor(),
+    'weight',
+    'mpg',
+    bins: 40,
+    xlim: [1500, 5500],
+    ylim: [5, 50],
+);
 
-Plot::of($bins)
-    ->rect(aes(xmin: 'weight_start', xmax: 'weight_end', ymin: 'mpg_start', ymax: 'mpg_end', fill: 'count'));
+Plot::of($bins)->rect(aes(
+    xmin: 'weight_start',
+    xmax: 'weight_end',
+    ymin: 'mpg_start',
+    ymax: 'mpg_end',
+    fill: 'count',
+));
 ```
 
 ## Other approaches

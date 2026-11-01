@@ -2,7 +2,7 @@
 
 use function Phiz\coefplot;
 
-// Phit\fit_glm('am ~ wt + hp', $mtcars, 'binomial')
+// Phit\fit_generalized_linear('am ~ wt + hp', $mtcars, 'binomial')
 $glm = json_decode(file_get_contents(__DIR__.'/fits/mtcars-glm.json'), true);
 
 return coefplot($glm, exponentiate: true)->labs(x: 'Odds ratio (95% CI)');

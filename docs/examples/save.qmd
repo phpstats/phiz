@@ -20,7 +20,7 @@ The SVG file:
 
 The file extension picks the format: `html` (or `htm`), `json` for the Vega-Lite specification, `svg`, `png`, `jpg` (or `jpeg`), or `pdf`.
 
-- **HTML needs a network connection.** The page loads vega, vega-lite, and vega-embed from the jsDelivr CDN and draws the chart in the browser. [`Assets::inline()`](../rendering.qmd#html) embeds the libraries for offline use.
+- **HTML needs a network connection.** The page loads vega, vega-lite, and vega-embed from the jsDelivr CDN and draws the chart in the browser. [`Assets::inline()`](../rendering.qmd#library-sources-and-offline-pages) embeds the libraries for offline use.
 - **Images need vl-convert.** The vl-convert binary renders SVG, PNG, JPG, and PDF without a browser. Without it, `save()` throws `VlConvertNotFound` ([Installing vl-convert](../rendering.qmd#installing-vl-convert)).
 - **Images are static.** Tooltips and other interaction work only in the HTML file.
 - **Image size.** An image has no page width to fill, so `size(640, 360)` sets its plot area in pixels. Without it, Vega-Lite's default size applies.

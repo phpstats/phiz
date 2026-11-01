@@ -92,11 +92,15 @@ Function: [`facet_grid()`]{#facet_grid}.
 Compose::beside(Chart ...$charts): Compose
 ```
 
+Charts side by side in one row, as patchwork's p1 + p2 (a Vega-Lite hconcat).
+
 ### `Compose::stack()` {#compose-stack}
 
 ```php
 Compose::stack(Chart ...$charts): Compose
 ```
+
+Charts stacked in one column, as patchwork's p1 / p2 (a Vega-Lite vconcat).
 
 ### `Compose::grid()` {#compose-grid}
 
@@ -111,6 +115,8 @@ A grid filled row by row with the given number of columns.
 ```php
 ->title(string $title, ?string $subtitle = null): Compose
 ```
+
+A title and subtitle over the whole composition.
 
 ### `$compose->theme()` {#compose-theme}
 
@@ -134,11 +140,15 @@ Shares or separates scales, axes, and legends across the plots, e.g. ['scale' =>
 ->raw(array $spec): Compose
 ```
 
+Deep-merges raw Vega-Lite into the composition's top level, as Plot::raw() does.
+
 ### `$compose->toArray()` {#compose-to-array}
 
 ```php
 ->toArray(): array
 ```
+
+The composition's Vega-Lite specification.
 
 ### `$compose->toSpec()` {#compose-to-spec}
 
@@ -154,15 +164,21 @@ Shares or separates scales, axes, and legends across the plots, e.g. ['scale' =>
 coord_flip(): Closure
 ```
 
+The pipe form of [`->coordFlip()`](#coord-flip).
+
 ### `coord_fixed()` {#coord_fixed}
 
 ```php
 coord_fixed(int|float $ratio = 1): Closure
 ```
 
+The pipe form of [`->coordFixed()`](#coord-fixed).
+
 ### `coord_equal()` {#coord_equal}
 
 ```php
 coord_equal(int|float $ratio = 1): Closure
 ```
+
+The pipe form of [`->coordFixed()`](#coord-fixed).
 

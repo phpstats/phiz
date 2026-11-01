@@ -244,6 +244,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 })();</script>
 
 
+<link rel="stylesheet" href="docs.css">
 </head>
 
 <body class="nav-sidebar docked quarto-light">
@@ -531,12 +532,14 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
    
   <ul>
   <li><a href="#specifications" id="toc-specifications" class="nav-link active" data-scroll-target="#specifications">Specifications</a></li>
-  <li><a href="#html" id="toc-html" class="nav-link" data-scroll-target="#html">HTML</a></li>
+  <li><a href="#in-the-browser" id="toc-in-the-browser" class="nav-link" data-scroll-target="#in-the-browser">In the browser</a></li>
+  <li><a href="#library-sources-and-offline-pages" id="toc-library-sources-and-offline-pages" class="nav-link" data-scroll-target="#library-sources-and-offline-pages">Library sources and offline pages</a></li>
   <li><a href="#static-export" id="toc-static-export" class="nav-link" data-scroll-target="#static-export">Static export</a>
   <ul class="collapse">
   <li><a href="#installing-vl-convert" id="toc-installing-vl-convert" class="nav-link" data-scroll-target="#installing-vl-convert">Installing vl-convert</a></li>
   <li><a href="#reproducible-svg" id="toc-reproducible-svg" class="nav-link" data-scroll-target="#reproducible-svg">Reproducible SVG</a></li>
   </ul></li>
+  <li><a href="#versions" id="toc-versions" class="nav-link" data-scroll-target="#versions">Versions</a></li>
   </ul>
 <div class="toc-actions"><ul><li><a href="https://github.com/phpstats/phiz/blob/main/rendering.qmd" class="toc-action"><i class="bi bi-github"></i>View source</a></li><li><a href="https://github.com/phpstats/phiz/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></nav>
     </div>
@@ -565,7 +568,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="specifications" class="level2">
 <h2 class="anchored" data-anchor-id="specifications">Specifications</h2>
 <p><code>toArray()</code> returns the Vega-Lite specification and <code>toJson()</code> encodes it. Plots also implement <code>JsonSerializable</code>. The specification declares the Vega-Lite 6 schema.</p>
-<p>Four escape hatches reach the parts of Vega-Lite that phiz does not wrap:</p>
+<p>These escape hatches reach the parts of Vega-Lite that phiz does not wrap:</p>
 <ul>
 <li><code>raw([...])</code> deep-merges arbitrary Vega-Lite into the top level. Nested objects merge, and lists and scalars replace.</li>
 <li><code>transform(...)</code> adds Vega-Lite transforms that run before every layer.</li>
@@ -573,49 +576,64 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <li><code>param()</code> and <code>select()</code> add raw parameters.</li>
 </ul>
 </section>
-<section id="html" class="level2">
-<h2 class="anchored" data-anchor-id="html">HTML</h2>
-<p><code>embed()</code> returns a container element followed by the script tags, and <code>html()</code> returns a standalone page. Both pass vega-embed options, such as <code>['actions' =&gt; false]</code> or <code>['renderer' =&gt; 'svg']</code>.</p>
-<p>The container carries the specification in a <code>data-phiz</code> attribute. A small loader script, about 100 lines, renders every such element with vega-embed. It renders them again when the attribute changes. The same markup therefore works in static pages, Blade views, and Livewire components.</p>
-<p>The browser libraries are pinned:</p>
+<section id="in-the-browser" class="level2">
+<h2 class="anchored" data-anchor-id="in-the-browser">In the browser</h2>
+<p><code>embed()</code> returns a chart container followed by the script tags, and <code>html()</code> returns a complete page. Both take vega-embed options, such as <code>['actions' =&gt; false]</code> or <code>['renderer' =&gt; 'svg']</code>.</p>
+<p>The container holds the specification in a <code>data-phiz</code> attribute. phiz’s loader script draws every such container with vega-embed and redraws it when the attribute changes, so the same markup works in static pages, Blade views, and Livewire components.</p>
+</section>
+<section id="library-sources-and-offline-pages" class="level2">
+<h2 class="anchored" data-anchor-id="library-sources-and-offline-pages">Library sources and offline pages</h2>
+<p>By default the page loads vega, vega-lite, and vega-embed from the jsDelivr CDN, with subresource integrity, so it needs a network connection. <code>Assets</code> chooses another source:</p>
 <table class="caption-top table">
+<colgroup>
+<col style="width: 50%">
+<col style="width: 50%">
+</colgroup>
 <thead>
 <tr class="header">
-<th>Library</th>
-<th>Version</th>
+<th>Source</th>
+<th>Use</th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
-<td>vega</td>
-<td>6.4.0</td>
+<td><code>Assets::cdn()</code></td>
+<td>jsDelivr (the default)</td>
 </tr>
 <tr class="even">
-<td>vega-lite</td>
-<td>6.4.3</td>
+<td><code>Assets::local('/js/vega')</code></td>
+<td>copies you serve: <code>vega.min.js</code>, <code>vega-lite.min.js</code>, <code>vega-embed.min.js</code></td>
 </tr>
 <tr class="odd">
-<td>vega-embed</td>
-<td>7.3.0</td>
+<td><code>Assets::inline('/path/to/js')</code></td>
+<td>the libraries embedded in the page, for files that work offline</td>
+</tr>
+<tr class="even">
+<td><code>Assets::none()</code></td>
+<td>none; your bundle already sets <code>window.vegaEmbed</code></td>
+</tr>
+<tr class="odd">
+<td><code>false</code></td>
+<td>the container alone, without scripts</td>
 </tr>
 </tbody>
 </table>
-<p><code>Assets</code> chooses where they come from:</p>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode php code-with-copy"><code class="sourceCode php"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="kw">use</span> Phiz\Assets<span class="ot">;</span></span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="va">$plot</span>-&gt;embed(assets<span class="ot">:</span> Assets::cdn())<span class="ot">;</span>                 <span class="co">// jsDelivr, with subresource integrity (the default)</span></span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="va">$plot</span>-&gt;embed(assets<span class="ot">:</span> Assets::local(<span class="st">'/js/vega'</span>))<span class="ot">;</span>     <span class="co">// copies you serve: vega.min.js, vega-lite.min.js, vega-embed.min.js</span></span>
-<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="va">$plot</span>-&gt;html(assets<span class="ot">:</span> Assets::inline(<span class="st">'/path/to/js'</span>))<span class="ot">;</span>  <span class="co">// embedded in the page, for offline files</span></span>
-<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="va">$plot</span>-&gt;embed(assets<span class="ot">:</span> Assets::none())<span class="ot">;</span>                <span class="co">// your bundle already sets window.vegaEmbed</span></span>
-<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="va">$plot</span>-&gt;embed(assets<span class="ot">:</span> <span class="kw">false</span>)<span class="ot">;</span>                         <span class="co">// just the container</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="va">$page</span> <span class="op">=</span> <span class="va">$plot</span>-&gt;html(assets<span class="ot">:</span> Assets::inline(<span class="st">'/path/to/js'</span>))<span class="ot">;</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="fu">file_put_contents</span>(<span class="st">'chart.html'</span><span class="ot">,</span> <span class="va">$page</span>)<span class="ot">;</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p><code>save('chart.html')</code> always uses the CDN.</p>
 </section>
 <section id="static-export" class="level2">
 <h2 class="anchored" data-anchor-id="static-export">Static export</h2>
-<p><code>svg()</code>, <code>png()</code>, <code>pdf()</code>, and <code>save()</code> run the <a href="https://github.com/vega/vl-convert">vl-convert</a> command-line tool. It renders without a browser, which suits reports, email, and print. vl-convert bundles its own Vega-Lite, and phiz runs it with Vega-Lite 6.1. The test suite validates every specification against the Vega-Lite 6.1 schema, so the same specification renders in both places.</p>
+<p><code>svg()</code>, <code>png()</code>, <code>pdf()</code>, and <code>save()</code> with an image extension run the <a href="https://github.com/vega/vl-convert">vl-convert</a> binary, which renders without a browser.</p>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode php code-with-copy"><code class="sourceCode php"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="va">$plot</span>-&gt;save(<span class="st">'figure.svg'</span>)<span class="ot">;</span></span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="va">$plot</span>-&gt;save(<span class="st">'figure.png'</span><span class="ot">,</span> scale<span class="ot">:</span> <span class="dv">3</span>)<span class="ot">;</span></span>
 <span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="fu">file_put_contents</span>(<span class="st">'figure.pdf'</span><span class="ot">,</span> <span class="va">$plot</span>-&gt;pdf())<span class="ot">;</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>phiz finds the binary through the <code>PHIZ_VL_CONVERT</code> or <code>VL_CONVERT</code> environment variable, then <code>PATH</code>. Download it from the <a href="https://github.com/vega/vl-convert/releases">vl-convert releases</a>. Version 1.9.0 is tested. If the binary is missing, phiz throws <code>Phiz\Exceptions\VlConvertNotFound</code> with these instructions. <code>new Export(binary: ..., timeout: ..., fontDir: ...)</code> sets the binary path, the timeout, and an extra font directory explicitly.</p>
+<ul>
+<li><strong>Finding the binary.</strong> phiz checks the <code>PHIZ_VL_CONVERT</code> and <code>VL_CONVERT</code> environment variables, then <code>PATH</code>. A missing binary throws <code>Phiz\Exceptions\VlConvertNotFound</code> with installation instructions.</li>
+<li><strong>Options.</strong> <code>new Export(binary:, timeout:, fontDir:)</code> sets the binary path, the timeout, and an extra font directory.</li>
+</ul>
 <section id="installing-vl-convert" class="level3">
 <h3 class="anchored" data-anchor-id="installing-vl-convert">Installing vl-convert</h3>
 <p>vl-convert has no Homebrew formula or apt package. Each release ships a self-contained binary for macOS (<code>osx-arm64</code>, <code>osx-64</code>) and Linux (<code>linux-64</code>, <code>linux-aarch64</code>). The Linux binaries link only against glibc and zlib, so they run on a bare Ubuntu image with no fonts or other packages installed. On Ubuntu the install is:</p>
@@ -626,11 +644,50 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="reproducible-svg" class="level3">
 <h3 class="anchored" data-anchor-id="reproducible-svg">Reproducible SVG</h3>
-<p>SVG output from a given specification is byte-for-byte identical between runs, except for charts with unseeded jitter. Without <code>seed:</code>, <code>jitter()</code> uses Vega’s unseeded <code>random()</code>, so a jittered chart changes on every render. With <code>seed:</code>, the offsets are part of the specification and the output is stable. It is also identical between macOS and Linux, between ARM and x86, and with or without system fonts installed. vl-convert measures <code>sans-serif</code> text with its bundled Liberation Sans, so the layout does not depend on the machine’s fonts. The SVG keeps its text as <code>&lt;text font-family="sans-serif"&gt;</code> elements, so the viewer’s browser chooses the font that is displayed.</p>
-<p>Committed SVG files therefore change only when the specification, the vl-convert version, or the pinned Vega-Lite version changes. A theme that names a font other than <code>sans-serif</code>, or an export with <code>fontDir:</code>, makes text measurement depend on the fonts available to vl-convert. Pin the vl-convert version wherever committed figures are generated.</p>
-
-
+<ul>
+<li><strong>Repeated runs.</strong> With the same vl-convert version, the same specification gives the same SVG bytes on every run. Unseeded jitter is the exception: without <code>seed:</code>, <code>jitter()</code> uses Vega’s <code>random()</code>. With <code>seed:</code>, the offsets are part of the specification.</li>
+<li><strong>Fonts.</strong> vl-convert measures <code>sans-serif</code> text with its bundled Liberation Sans, so the layout does not depend on the fonts installed on the machine. The SVG keeps its text as <code>&lt;text font-family="sans-serif"&gt;</code>, so the viewer’s browser chooses the displayed font. A theme that names another font, or an export with <code>fontDir:</code>, makes the layout depend on the fonts vl-convert can find.</li>
+<li><strong>Across machines.</strong> The visual tests render on macOS and on Linux in CI and compare both with the same PNG baselines, within a pixel tolerance.</li>
+<li><strong>Committed figures</strong> change when the specification, the vl-convert version, or its Vega-Lite version changes. Pin the vl-convert version wherever figures are generated.</li>
+</ul>
 </section>
+</section>
+<section id="versions" class="level2">
+<h2 class="anchored" data-anchor-id="versions">Versions</h2>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Component</th>
+<th>Version</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>vega</td>
+<td>6.4.0</td>
+<td>pinned for the browser</td>
+</tr>
+<tr class="even">
+<td>vega-lite</td>
+<td>6.4.3</td>
+<td>pinned for the browser</td>
+</tr>
+<tr class="odd">
+<td>vega-embed</td>
+<td>7.3.0</td>
+<td>pinned for the browser</td>
+</tr>
+<tr class="even">
+<td>vl-convert</td>
+<td>1.9.0</td>
+<td>tested; bundles its own Vega-Lite, run as 6.1</td>
+</tr>
+</tbody>
+</table>
+<p>The tests validate every specification against the Vega-Lite 6.1 schema, so the same specification renders in the browser and in vl-convert.</p>
+
+
 </section>
 
 </main> <!-- /main -->

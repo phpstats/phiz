@@ -13,12 +13,16 @@ abstract class Chart implements JsonSerializable
 {
     public const JSON_FLAGS = JSON_THROW_ON_ERROR | JSON_PRESERVE_ZERO_FRACTION | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE;
 
-    /** @return array<string, mixed> The Vega-Lite spec. */
+    /**
+     * The Vega-Lite specification as a PHP array, with $schema and config.
+     *
+     * @return array<string, mixed> The Vega-Lite spec. */
     abstract public function toArray(): array;
 
     /** The spec for nesting inside a composition: no $schema, no config. */
     abstract public function toSpec(): array;
 
+    /** The specification as JSON; pretty adds indentation. */
     public function toJson(bool $pretty = false): string
     {
         return json_encode($this->toArray(), self::JSON_FLAGS | ($pretty ? JSON_PRETTY_PRINT : 0));
@@ -45,16 +49,19 @@ abstract class Chart implements JsonSerializable
         return Html::page($this, $title, $options, $assets);
     }
 
+    /** An SVG image rendered by vl-convert. */
     public function svg(?Export $export = null): string
     {
         return ($export ?? new Export)->svg($this);
     }
 
+    /** A PNG image rendered by vl-convert; scale multiplies the pixel dimensions. */
     public function png(float $scale = 2.0, ?Export $export = null): string
     {
         return ($export ?? new Export)->png($this, $scale);
     }
 
+    /** A PDF document rendered by vl-convert. */
     public function pdf(?Export $export = null): string
     {
         return ($export ?? new Export)->pdf($this);

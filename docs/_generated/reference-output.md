@@ -28,6 +28,8 @@
 ->toJson(bool $pretty = false): string
 ```
 
+The specification as JSON; pretty adds indentation.
+
 ### `embed()` {#embed}
 
 ```php
@@ -54,17 +56,23 @@ A standalone HTML page.
 ->svg(?Export $export = null): string
 ```
 
+An SVG image rendered by vl-convert.
+
 ### `png()` {#png}
 
 ```php
 ->png(float $scale = 2.0, ?Export $export = null): string
 ```
 
+A PNG image rendered by vl-convert; scale multiplies the pixel dimensions.
+
 ### `pdf()` {#pdf}
 
 ```php
 ->pdf(?Export $export = null): string
 ```
+
+A PDF document rendered by vl-convert.
 
 ### `save()` {#save}
 
@@ -152,6 +160,8 @@ Html::page(
 ): string
 ```
 
+A complete HTML page that draws the chart, or holds body when chart is null; assets defaults to the CDN.
+
 ### `Html::attributes()` {#html-attributes}
 
 ```php
@@ -165,6 +175,8 @@ Html::attributes(array $attributes): string
 ```php
 Assets::cdn(string $base = 'https://cdn.jsdelivr.net/npm'): Assets
 ```
+
+The pinned libraries from jsDelivr, with subresource integrity; base replaces the CDN address.
 
 ### `Assets::local()` {#assets-local}
 
@@ -230,11 +242,15 @@ The vl-convert binary path, or null when none is found.
 Export::available(): bool
 ```
 
+Whether the vl-convert binary can be found.
+
 ### `$export->svg()` {#export-svg}
 
 ```php
 ->svg(Chart|array $chart): string
 ```
+
+The chart rendered to SVG.
 
 ### `$export->png()` {#export-png}
 
@@ -250,11 +266,15 @@ PNG bytes; scale multiplies the pixel size (2 for high-DPI screens), ppi sets th
 ->jpeg(Chart|array $chart, float $scale = 2.0, ?int $quality = null): string
 ```
 
+The chart rendered to JPEG; scale multiplies the pixel dimensions, and quality runs from 0 to 100.
+
 ### `$export->pdf()` {#export-pdf}
 
 ```php
 ->pdf(Chart|array $chart): string
 ```
+
+The chart rendered to PDF.
 
 ### `$export->vega()` {#export-vega}
 

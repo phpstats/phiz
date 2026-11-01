@@ -90,6 +90,31 @@ function reference_summary(ReflectionFunctionAbstract $f): string
     return trim(preg_replace('/\s+/', ' ', implode(' ', $text)));
 }
 
+/**
+ * A function's description when it has no docblock of its own: a fill or y twin points to its color or x original, an
+ * alias to the function it calls, and a pipe wrapper to the method it wraps.
+ *
+ * @param array<string, string> $wraps Function names => the Plot methods they wrap.
+ */
+function reference_fallback(ReflectionFunction $f, array $wraps): string
+{
+    $name = $f->getShortName();
+    foreach (['scale_fill_' => ['scale_color_', 'the fill aesthetic'], 'scale_y_' => ['scale_x_', 'the y axis']] as $prefix => [$original, $for]) {
+        if (str_starts_with($name, $prefix) && function_exists('Phiz\\'.($twin = $original.substr($name, strlen($prefix))))) {
+            return "The [`{$twin}()`](#".reference_function_anchor($twin).") scale for {$for}.";
+        }
+    }
+    $body = implode('', array_slice(file($f->getFileName()), $f->getStartLine() - 1, $f->getEndLine() - $f->getStartLine() + 1));
+    if (preg_match('/return (\w+)\(\.\.\.\$args\);/', $body, $m) && function_exists('Phiz\\'.$m[1])) {
+        return "An alias of [`{$m[1]}()`](#".reference_function_anchor($m[1]).').';
+    }
+    if (isset($wraps[$name])) {
+        return "The pipe form of [`->{$wraps[$name]}()`](#".reference_anchor($wraps[$name]).').';
+    }
+
+    return '';
+}
+
 /** An anchor from a method name: scaleX becomes scale-x. */
 function reference_anchor(string $name): string
 {
@@ -103,9 +128,9 @@ function reference_function_anchor(string $name): string
 }
 
 /** One entry: a heading with its anchor, the signature, the description, and any functions that wrap it. */
-function reference_entry(string $heading, string $anchor, ReflectionFunctionAbstract $f, string $prefix, array $functions = []): string
+function reference_entry(string $heading, string $anchor, ReflectionFunctionAbstract $f, string $prefix, array $functions = [], string $fallback = ''): string
 {
-    $summary = reference_summary($f);
+    $summary = reference_summary($f) ?: $fallback;
     $out = "### `{$heading}` {#{$anchor}}\n\n```php\n".reference_signature($f, $prefix)."\n```\n\n";
     $out .= $summary === '' ? '' : "{$summary}\n\n";
     if ($functions !== []) {
@@ -168,6 +193,7 @@ unset($methods['Escape hatches']['toArray'], $methods['Escape hatches']['toSpec'
 
 // The functions, each with the Plot method it wraps, if any.
 $wrappers = [];
+$wraps = [];
 $standalone = [];
 foreach (get_defined_functions()['user'] as $name) {
     if (! str_starts_with($name, 'phiz\\')) {
@@ -183,6 +209,7 @@ foreach (get_defined_functions()['user'] as $name) {
         // A function that only forwards its arguments needs no entry of its own.
         $plain = reference_summary($function) === '' && $function->getNumberOfParameters() === 1 && $function->isVariadic();
         $wrappers[$m[1]][$function->getStartLine()] = ['name' => $short, 'entry' => $plain ? null : $function];
+        $wraps[$short] = $m[1];
     } else {
         $standalone[$function->getStartLine()] = $function;
     }
@@ -247,7 +274,7 @@ foreach ($pages as $page => $spec) {
             $anchor = reference_function_anchor($name);
             $links[] = "[`{$name}()`](#{$anchor})";
             if (! is_string($function)) {
-                $entries .= reference_entry("{$name}()", $anchor, $function, '');
+                $entries .= reference_entry("{$name}()", $anchor, $function, '', fallback: reference_fallback($function, $wraps));
             }
         }
         $index .= reference_index('Functions', $links);

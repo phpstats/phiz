@@ -244,6 +244,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 })();</script>
 
 
+<link rel="stylesheet" href="../docs.css">
 </head>
 
 <body class="nav-sidebar docked quarto-light">
@@ -612,7 +613,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div class="phiz-figure"><img src="charts/save.svg" alt="Save a chart to a file" loading="lazy" style="max-width:100%;height:auto"></div>
 <p>The file extension picks the format: <code>html</code> (or <code>htm</code>), <code>json</code> for the Vega-Lite specification, <code>svg</code>, <code>png</code>, <code>jpg</code> (or <code>jpeg</code>), or <code>pdf</code>.</p>
 <ul>
-<li><strong>HTML needs a network connection.</strong> The page loads vega, vega-lite, and vega-embed from the jsDelivr CDN and draws the chart in the browser. <a href="../rendering.html#html"><code>Assets::inline()</code></a> embeds the libraries for offline use.</li>
+<li><strong>HTML needs a network connection.</strong> The page loads vega, vega-lite, and vega-embed from the jsDelivr CDN and draws the chart in the browser. <a href="../rendering.html#library-sources-and-offline-pages"><code>Assets::inline()</code></a> embeds the libraries for offline use.</li>
 <li><strong>Images need vl-convert.</strong> The vl-convert binary renders SVG, PNG, JPG, and PDF without a browser. Without it, <code>save()</code> throws <code>VlConvertNotFound</code> (<a href="../rendering.html#installing-vl-convert">Installing vl-convert</a>).</li>
 <li><strong>Images are static.</strong> Tooltips and other interaction work only in the HTML file.</li>
 <li><strong>Image size.</strong> An image has no page width to fill, so <code>size(640, 360)</code> sets its plot area in pixels. Without it, Vega-Lite’s default size applies.</li>

@@ -109,3 +109,5 @@ A raw selection parameter, attached to the first layer.
 tooltip(array|string|bool $fields = true): Closure
 ```
 
+The pipe form of [`->tooltip()`](#tooltip).
+

@@ -3,13 +3,11 @@ title: "phiz"
 subtitle: "A ggplot2-flavored grammar of graphics for PHP that emits Vega-Lite"
 ---
 
-phiz draws charts from PHP data. A chart is described in parts: the data, a mapping from columns to visual properties such as position, color, and size, and one or more layers of marks such as points, lines, or bars. Scales, facets, labels, and themes adjust the result. This way of describing charts comes from R's ggplot2, but the pages here do not assume you know it.
-
-phiz compiles the description to a [Vega-Lite](https://vega.github.io/vega-lite/) specification, a JSON document that describes the chart. The browser draws the specification with vega-embed, and the [vl-convert](https://github.com/vega/vl-convert) command-line tool renders it to SVG, PNG, or PDF. No JavaScript is written by hand.
+Build charts in PHP with data, mappings, and layers. Render interactive charts with Vega-Lite or export static images.
 
 {{< include _generated/index-hero.md >}}
 
-Each chart in these pages is drawn from the code shown with it.
+phiz compiles each plot to a [Vega-Lite](https://vega.github.io/vega-lite/) specification, a JSON description of the chart. The browser draws it with vega-embed, and the [vl-convert](https://github.com/vega/vl-convert) binary renders it to SVG, PNG, or PDF. No JavaScript is written by hand.
 
 ## Install
 
@@ -17,19 +15,25 @@ Each chart in these pages is drawn from the code shown with it.
 composer require phpstats/phiz
 ```
 
-phiz supports PHP 8.3, 8.4, and 8.5. Examples written with the pipe operator `|>` need PHP 8.5. Each one also has a method-chain version for PHP 8.3 and 8.4. phiz has no required dependencies beyond PHP. vl-convert (static export), Laravel (the Blade component), and phit (formula predictions in the statistics helpers) are optional. [Installation](get-started.qmd#installation) gives the details for each.
-
-[Get started](get-started.qmd) builds a first chart and saves it.
+phiz supports PHP 8.3, 8.4, and 8.5 and has no required dependencies. Examples that use the pipe operator `|>` need PHP 8.5 and have a method-chain version for PHP 8.3 and 8.4. [Installation](get-started.qmd#installation) lists the optional pieces.
 
 ## What phiz covers
 
-- An immutable `Plot` builder with fluent methods, and ggplot2-style functions for PHP's pipe operator.
-- More than 40 geoms, including points, lines, areas, bars, histograms, densities, boxplots, violins, intervals, reference lines, text, heatmaps, hexagonal bins, smoothers, 2D densities and contours, QQ plots, and arcs.
-- Scales, label formatters, guides, coordinate flips, limits, polar and fixed coordinates, facets, compositions, labels, captions, and themes modeled on ggplot2's complete themes.
-- Tooltips, pan and zoom, brushing, legend highlighting, sliders, and linked views, expressed as Vega-Lite parameters.
-- Statistical plots from phit model results and CmdStanPHP draws: coefficient plots, regression diagnostics, predicted values with confidence bands, marginal means, random effects, and posterior intervals.
-- HTML output, static export, and the `<x-phiz>` Blade component, which redraws when a Livewire component updates.
+| Area | Guide |
+| --- | --- |
+| Data, field types, and aggregates | [Data and fields](data.qmd) |
+| Layers: points, lines, bars, distributions, intervals, fits, and contours | [Geoms](geoms.qmd) |
+| Scales, label formatters, guides, and coordinates | [Scales, coordinates, and labels](scales.qmd) |
+| Facets and compositions | [Facets and composition](facets.qmd) |
+| Themes modeled on ggplot2's complete themes | [Themes](themes.qmd) |
+| Tooltips, zoom, brushing, highlighting, and sliders | [Interaction](interaction.qmd) |
+| Plots of model results and posterior draws | [Statistics](statistics.qmd) |
+| HTML, offline assets, and static export | [Rendering](rendering.qmd) |
+| The `<x-phiz>` Blade component and Livewire | [Laravel and Livewire](laravel.qmd) |
+| Data too large to embed | [Large data](large-data.qmd) |
+
+[Get started](get-started.qmd) builds a first chart, and [Coming from ggplot2](ggplot2.qmd) translates ggplot2 code.
 
 ## The phpstats family
 
-phiz is the visualization package of the phpstats family. [phit](https://github.com/phpstats/phit) fits models, [phibble](https://github.com/phpstats/phibble) provides data frames, [phplyr](https://github.com/phpstats/phplyr) provides dplyr-style functions, and [CmdStanPHP](https://github.com/phpstats/CmdStanPHP) runs Stan. phiz depends on none of them, and plots their tables and results directly.
+phiz plots the tables and results of the other phpstats packages: [phibble](https://github.com/phpstats/phibble) data frames, [phplyr](https://github.com/phpstats/phplyr) summaries, [phit](https://github.com/phpstats/phit) model fits, and [CmdStanPHP](https://github.com/phpstats/CmdStanPHP) draws. It depends on none of them.

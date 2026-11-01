@@ -66,6 +66,7 @@ final class Data
         return $name === 'rows' && $this->rows !== null;
     }
 
+    /** Wraps any supported input: rows, columns, a table, a collection, an iterable, or a Data object as given. */
     public static function from(mixed $data): self
     {
         return match (true) {
@@ -100,11 +101,13 @@ final class Data
         return new self(null, name: $name);
     }
 
+    /** Whether the data is embedded, rather than a URL or a named source. */
     public function isInline(): bool
     {
         return $this->url === null && $this->name === null;
     }
 
+    /** Whether inline data has no rows. URL and named data count as empty. */
     public function isEmpty(): bool
     {
         return $this->count() === 0;
@@ -131,7 +134,10 @@ final class Data
         return $this->table ?? $this->columns ?? $this->eager;
     }
 
-    /** @return array<string, mixed> The Vega-Lite data definition. */
+    /**
+     * The Vega-Lite data definition: values, a url, or a name.
+     *
+     * @return array<string, mixed> The Vega-Lite data definition. */
     public function toSpec(): array
     {
         if ($this->url !== null) {
@@ -144,7 +150,10 @@ final class Data
         return ['values' => $this->rows];
     }
 
-    /** @return list<string> */
+    /**
+     * The field names of inline data, in first-seen order.
+     *
+     * @return list<string> */
     public function fields(): array
     {
         return match (true) {
@@ -154,6 +163,7 @@ final class Data
         };
     }
 
+    /** Whether inline data has the field. */
     public function has(string $field): bool
     {
         if (! $this->isInline() || $this->count() === 0) {
@@ -270,7 +280,10 @@ final class Data
         return array_values($seen);
     }
 
-    /** @param list<array<string, mixed>> $rows */
+    /**
+     * New inline data holding the given rows.
+     *
+     * @param list<array<string, mixed>> $rows */
     public function withRows(array $rows): self
     {
         return new self($rows);

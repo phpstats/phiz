@@ -56,6 +56,7 @@ final class Html
         return $assets === false ? $html : $html."\n".($assets ?? Assets::cdn())->scripts();
     }
 
+    /** A complete HTML page that draws the chart, or holds body when chart is null; assets defaults to the CDN. */
     public static function page(Chart|array|null $chart, ?string $title = null, array $options = [], ?Assets $assets = null, string $body = ''): string
     {
         $spec = $chart instanceof Chart ? $chart->toArray() : $chart;

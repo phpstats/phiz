@@ -244,6 +244,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 })();</script>
 
 
+<link rel="stylesheet" href="docs.css">
 </head>
 
 <body class="nav-sidebar docked quarto-light">
@@ -560,22 +561,27 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="residual_plot" class="level3">
 <h3 class="anchored" data-anchor-id="residual_plot"><code>residual_plot()</code></h3>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode php code-with-copy"><code class="sourceCode php"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>residual_plot(<span class="dt">array</span> <span class="va">$fit</span>)<span class="ot">:</span> Plot</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Residuals against fitted values, with a reference line at zero.</p>
 </section>
 <section id="qq_plot" class="level3">
 <h3 class="anchored" data-anchor-id="qq_plot"><code>qq_plot()</code></h3>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode php code-with-copy"><code class="sourceCode php"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>qq_plot(<span class="dt">array</span> <span class="va">$fitOrValues</span><span class="ot">,</span> <span class="dt">bool</span> <span class="va">$standardize</span> <span class="op">=</span> <span class="kw">false</span>)<span class="ot">:</span> Plot</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>A normal QQ plot of a fit’s residuals, or of a list of values; standardize scales them first.</p>
 </section>
 <section id="fitted_plot" class="level3">
 <h3 class="anchored" data-anchor-id="fitted_plot"><code>fitted_plot()</code></h3>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode php code-with-copy"><code class="sourceCode php"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>fitted_plot(<span class="dt">array</span> <span class="va">$fit</span><span class="ot">,</span> <span class="ot">?</span><span class="dt">array</span> <span class="va">$observed</span> <span class="op">=</span> <span class="kw">null</span>)<span class="ot">:</span> Plot</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Observed against fitted values, with the identity line; observed defaults to fitted plus residuals.</p>
 </section>
 <section id="scale_location_plot" class="level3">
 <h3 class="anchored" data-anchor-id="scale_location_plot"><code>scale_location_plot()</code></h3>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="sourceCode php code-with-copy"><code class="sourceCode php"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>scale_location_plot(<span class="dt">array</span> <span class="va">$fit</span>)<span class="ot">:</span> Plot</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>The square root of the absolute residuals divided by sigma, against fitted values, as R’s plot(fit, 3).</p>
 </section>
 <section id="diagnostic_plots" class="level3">
 <h3 class="anchored" data-anchor-id="diagnostic_plots"><code>diagnostic_plots()</code></h3>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb6"><pre class="sourceCode php code-with-copy"><code class="sourceCode php"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>diagnostic_plots(<span class="dt">array</span> <span class="va">$fit</span><span class="ot">,</span> <span class="dt">mixed</span> ...<span class="va">$options</span>)<span class="ot">:</span> Compose</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>residual_plot(), qq_plot(), scale_location_plot(), and fitted_plot() in a two-by-two grid.</p>
 </section>
 <section id="effect_plot" class="level3">
 <h3 class="anchored" data-anchor-id="effect_plot"><code>effect_plot()</code></h3>
@@ -585,6 +591,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="predictions-function" class="level3">
 <h3 class="anchored" data-anchor-id="predictions-function"><code>predictions()</code></h3>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb8"><pre class="sourceCode php code-with-copy"><code class="sourceCode php"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>predictions(<span class="dt">array</span> <span class="va">$fit</span><span class="ot">,</span> <span class="dt">array</span> <span class="va">$grid</span><span class="ot">,</span> <span class="dt">mixed</span> ...<span class="va">$options</span>)<span class="ot">:</span> <span class="dt">array</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>The predicted rows behind effect_plot() for a grid of rows, without plotting them: each row with estimate, lower, upper, and std_error.</p>
 </section>
 <section id="interval_plot" class="level3">
 <h3 class="anchored" data-anchor-id="interval_plot"><code>interval_plot()</code></h3>

@@ -14,8 +14,9 @@ use function Phiz\aes;
 /**
  * Plots of fitted models and posterior draws, built from ordinary Plot layers so they can be restyled and extended.
  *
- * Fits are the arrays phit returns: Phit\fit_lm, fit_glm, fit_lmer and fit_glmer (which name their coefficients
- * in 'columns'), or fit_ols and fit_logistic (pass names:). Each needs 'coefficients', and
+ * Fits are the arrays phit returns: formula fits from Phit\fit_ols, fit_generalized_linear, fit_mixed_gaussian, and
+ * fit_mixed_logistic name their coefficients in 'columns'; matrix fits from fit_ols_matrix and fit_logistic_matrix
+ * need names:. Each needs 'coefficients', and
  * 'std_errors' or 'conf_int'; the residual plots need 'fitted' and 'residuals'.
  */
 final class Charts
@@ -168,8 +169,9 @@ final class Charts
      * Predicted values with confidence bands over a grid: x varies across its observed range (n points), $by takes
      * each of its levels, and every other column is held at its mean (numbers) or most common value.
      *
-     * Formula fits (fit_lm, fit_glm) build the grid's design with Phit\model_matrix, so pass the data they were
-     * fitted on; for matrix fits (fit_ols, fit_logistic) pass design: fn (array $row) => [1, $row['x'], ...].
+     * Formula fits (fit_ols, fit_generalized_linear) build the grid's design with Phit\model_matrix, so pass the data
+     * they were fitted on; for matrix fits (fit_ols_matrix, fit_logistic_matrix) pass design: fn (array $row) =>
+     * [1, $row['x'], ...].
      * GLM predictions are on the response scale, with the interval computed on the link scale.
      */
     public static function effects(array $fit, mixed $data, string $x, ?string $by = null, int $n = 50, float $level = 0.95, ?callable $design = null, bool $points = true, string $scale = 'response'): Plot
@@ -290,14 +292,15 @@ final class Charts
     }
 
     /**
-     * A caterpillar plot of a mixed model's random effects (fit_lmer, fit_glmer): each group's conditional mode
-     * with an interval from its conditional variance, one panel per effect, groups sorted by the first effect.
+     * A caterpillar plot of a mixed model's random effects (fit_mixed_gaussian, fit_mixed_logistic): each group's
+     * conditional mode with an interval from its conditional variance, one panel per effect, groups sorted by the
+     * first effect.
      * The conditional covariance is (Z_j'W_j Z_j / sigma^2 + G^-1)^-1 for group j, treating the fixed effects and
      * variance components as known, as lme4's ranef(condVar = TRUE) does; W holds GLMM working weights.
      */
     public static function randomEffects(array $fit, mixed $data = null, ?string $group = null, float $level = 0.95): Plot
     {
-        $terms = $fit['random'] ?? throw new InvalidArgumentException('random_effects_plot needs a mixed-model fit (fit_lmer or fit_glmer).');
+        $terms = $fit['random'] ?? throw new InvalidArgumentException('random_effects_plot needs a mixed-model fit (fit_mixed_gaussian or fit_mixed_logistic).');
         $term = null;
         foreach ($terms as $candidate) {
             if ($group === null || ($candidate['group'] ?? null) === $group) {
@@ -314,7 +317,7 @@ final class Charts
         $G = $term['covariance'] ?? (isset($fit['random_intercept_variance']) ? [[(float) $fit['random_intercept_variance']]] : throw new InvalidArgumentException('The random term has no covariance.'));
         $singular = (bool) ($fit['singular'] ?? $fit['diagnostics']['singular'] ?? false);
         // phit reports conditional variances (lme4's condVar): a k x k matrix per group on each term, or one
-        // variance per group for single-term GLMMs. Older fits fall back to rebuilding them from the data.
+        // variance per group for single-term GLMMs. Fits without them fall back to rebuilding them from the data.
         $reported = $term['effects_cond_var'] ?? (count($columns) === 1 && isset($fit['random_effects_cond_var']) ? array_map(fn ($v) => [[(float) $v]], $fit['random_effects_cond_var']) : null);
         $out = $reported !== null
             ? self::effectRows($labels, $columns, $effects, $reported, $level)

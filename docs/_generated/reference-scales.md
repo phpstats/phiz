@@ -26,6 +26,8 @@ Functions: [`scale_x()`]{#scale_x}, [`scale_x_continuous()`]{#scale_x_continuous
 ->scaleY(mixed ...$options): Plot
 ```
 
+Scale and guide options for y, as scaleX() takes them.
+
 Functions: [`scale_y()`]{#scale_y}, [`scale_y_continuous()`]{#scale_y_continuous}, [`scale_y_log10()`]{#scale_y_log10}, [`scale_y_sqrt()`]{#scale_y_sqrt}, [`scale_y_reverse()`]{#scale_y_reverse}, [`scale_y_date()`]{#scale_y_date}, [`scale_y_discrete()`](#scale_y_discrete).
 
 ### `scaleColor()` {#scale-color}
@@ -44,6 +46,8 @@ Functions: [`scale_color()`]{#scale_color}, [`scale_color_manual()`](#scale_colo
 ->scaleFill(mixed ...$options): Plot
 ```
 
+Scale and guide options for fill, as scaleColor() takes them.
+
 Functions: [`scale_fill()`]{#scale_fill}, [`scale_fill_manual()`](#scale_fill_manual), [`scale_fill_scheme()`](#scale_fill_scheme), [`scale_fill_viridis()`](#scale_fill_viridis), [`scale_fill_brewer()`](#scale_fill_brewer), [`scale_fill_gradient()`](#scale_fill_gradient), [`scale_fill_gradient2()`](#scale_fill_gradient2), [`scale_fill_viridis_d()`](#scale_fill_viridis_d), [`scale_fill_viridis_c()`](#scale_fill_viridis_c), [`scale_fill_viridis_b()`](#scale_fill_viridis_b), [`scale_fill_distiller()`](#scale_fill_distiller), [`scale_fill_fermenter()`](#scale_fill_fermenter), [`scale_fill_gradientn()`](#scale_fill_gradientn), [`scale_fill_grey()`](#scale_fill_grey), [`scale_fill_hue()`](#scale_fill_hue), [`scale_fill_identity()`]{#scale_fill_identity}.
 
 ### `scaleSize()` {#scale-size}
@@ -51,6 +55,8 @@ Functions: [`scale_fill()`]{#scale_fill}, [`scale_fill_manual()`](#scale_fill_ma
 ```php
 ->scaleSize(mixed ...$options): Plot
 ```
+
+Scale and guide options for size: range sets the smallest and largest areas in square pixels.
 
 Function: [`scale_size()`]{#scale_size}.
 
@@ -60,6 +66,8 @@ Function: [`scale_size()`]{#scale_size}.
 ->scaleShape(mixed ...$options): Plot
 ```
 
+Scale and guide options for shape: values sets the shapes, by level or in level order.
+
 Function: [`scale_shape()`]{#scale_shape}.
 
 ### `scaleOpacity()` {#scale-opacity}
@@ -68,6 +76,8 @@ Function: [`scale_shape()`]{#scale_shape}.
 ->scaleOpacity(mixed ...$options): Plot
 ```
 
+Scale and guide options for opacity (alpha): range sets the lowest and highest opacity.
+
 Function: [`scale_alpha()`]{#scale_alpha}.
 
 ### `scaleLinetype()` {#scale-linetype}
@@ -75,6 +85,8 @@ Function: [`scale_alpha()`]{#scale_alpha}.
 ```php
 ->scaleLinetype(mixed ...$options): Plot
 ```
+
+Scale and guide options for linetype: values sets the dash patterns, by level or in level order.
 
 Function: [`scale_linetype()`]{#scale_linetype}.
 
@@ -122,6 +134,8 @@ Manual colors: a level => color map, or colors in level order.
 scale_fill_manual(array $values, mixed ...$args): Closure
 ```
 
+The [`scale_color_manual()`](#scale_color_manual) scale for the fill aesthetic.
+
 ### `scale_color_scheme()` {#scale_color_scheme}
 
 ```php
@@ -136,11 +150,15 @@ Vega color schemes by name, such as 'viridis', 'blues', 'set2', 'dark2', 'tablea
 scale_fill_scheme(string $scheme, mixed ...$args): Closure
 ```
 
+The [`scale_color_scheme()`](#scale_color_scheme) scale for the fill aesthetic.
+
 ### `scale_color_viridis()` {#scale_color_viridis}
 
 ```php
 scale_color_viridis(string $option = 'viridis', mixed ...$args): Closure
 ```
+
+A viridisLite palette by Vega scheme name, such as 'viridis', 'magma', or 'cividis'.
 
 ### `scale_fill_viridis()` {#scale_fill_viridis}
 
@@ -148,17 +166,23 @@ scale_color_viridis(string $option = 'viridis', mixed ...$args): Closure
 scale_fill_viridis(string $option = 'viridis', mixed ...$args): Closure
 ```
 
+The [`scale_color_viridis()`](#scale_color_viridis) scale for the fill aesthetic.
+
 ### `scale_color_brewer()` {#scale_color_brewer}
 
 ```php
 scale_color_brewer(string $palette = 'set1', mixed ...$args): Closure
 ```
 
+A ColorBrewer palette for discrete data, as ggplot2's scale_colour_brewer (names are case-insensitive).
+
 ### `scale_fill_brewer()` {#scale_fill_brewer}
 
 ```php
 scale_fill_brewer(string $palette = 'set1', mixed ...$args): Closure
 ```
+
+The [`scale_color_brewer()`](#scale_color_brewer) scale for the fill aesthetic.
 
 ### `scale_color_gradient()` {#scale_color_gradient}
 
@@ -181,6 +205,8 @@ scale_fill_gradient(
     mixed ...$args,
 ): Closure
 ```
+
+The [`scale_color_gradient()`](#scale_color_gradient) scale for the fill aesthetic.
 
 ### `scale_color_gradient2()` {#scale_color_gradient2}
 
@@ -207,6 +233,8 @@ scale_fill_gradient2(
     mixed ...$args,
 ): Closure
 ```
+
+The [`scale_color_gradient2()`](#scale_color_gradient2) scale for the fill aesthetic.
 
 ### `viridis_scheme()` {#viridis_scheme}
 
@@ -255,6 +283,8 @@ scale_fill_viridis_d(
 ): Closure
 ```
 
+The [`scale_color_viridis_d()`](#scale_color_viridis_d) scale for the fill aesthetic.
+
 ### `scale_color_viridis_c()` {#scale_color_viridis_c}
 
 ```php
@@ -266,6 +296,8 @@ scale_color_viridis_c(
     mixed ...$args,
 ): Closure
 ```
+
+The pipe form of [`->scaleColor()`](#scale-color).
 
 ### `scale_fill_viridis_c()` {#scale_fill_viridis_c}
 
@@ -279,6 +311,8 @@ scale_fill_viridis_c(
 ): Closure
 ```
 
+The [`scale_color_viridis_c()`](#scale_color_viridis_c) scale for the fill aesthetic.
+
 ### `scale_color_viridis_b()` {#scale_color_viridis_b}
 
 ```php
@@ -291,6 +325,8 @@ scale_color_viridis_b(
 ): Closure
 ```
 
+The pipe form of [`->scaleColor()`](#scale-color).
+
 ### `scale_fill_viridis_b()` {#scale_fill_viridis_b}
 
 ```php
@@ -302,6 +338,8 @@ scale_fill_viridis_b(
     mixed ...$args,
 ): Closure
 ```
+
+The [`scale_color_viridis_b()`](#scale_color_viridis_b) scale for the fill aesthetic.
 
 ### `scale_color_distiller()` {#scale_color_distiller}
 
@@ -325,6 +363,8 @@ scale_fill_distiller(
 ): Closure
 ```
 
+The [`scale_color_distiller()`](#scale_color_distiller) scale for the fill aesthetic.
+
 ### `scale_color_fermenter()` {#scale_color_fermenter}
 
 ```php
@@ -347,6 +387,8 @@ scale_fill_fermenter(
 ): Closure
 ```
 
+The [`scale_color_fermenter()`](#scale_color_fermenter) scale for the fill aesthetic.
+
 ### `scale_color_gradientn()` {#scale_color_gradientn}
 
 ```php
@@ -361,6 +403,8 @@ A gradient through several colors, as ggplot2's scale_colour_gradientn.
 scale_fill_gradientn(array $colors, mixed ...$args): Closure
 ```
 
+The [`scale_color_gradientn()`](#scale_color_gradientn) scale for the fill aesthetic.
+
 ### `scale_color_grey()` {#scale_color_grey}
 
 ```php
@@ -374,6 +418,8 @@ Grays for discrete data, as ggplot2's scale_colour_grey (computed for the number
 ```php
 scale_fill_grey(float $start = 0.2, float $end = 0.8, mixed ...$args): Closure
 ```
+
+The [`scale_color_grey()`](#scale_color_grey) scale for the fill aesthetic.
 
 ### `scale_color_hue()` {#scale_color_hue}
 
@@ -403,6 +449,8 @@ scale_fill_hue(
 ): Closure
 ```
 
+The [`scale_color_hue()`](#scale_color_hue) scale for the fill aesthetic.
+
 ### `scale_color_identity()` {#scale_color_identity}
 
 ```php
@@ -424,6 +472,8 @@ Discrete position scales: limits orders (and subsets) the levels, labels renames
 ```php
 scale_y_discrete(?array $limits = null, mixed ...$args): Closure
 ```
+
+The [`scale_x_discrete()`](#scale_x_discrete) scale for the y axis.
 
 ### `guides()` {#guides-function}
 
@@ -466,6 +516,8 @@ Color bar options: barwidth and barheight in pixels.
 guide_colourbar(mixed ...$args): array
 ```
 
+An alias of [`guide_colorbar()`](#guide_colorbar).
+
 ### `guide_axis()` {#guide_axis}
 
 ```php
@@ -484,6 +536,8 @@ Axis options: angle turns the labels anticlockwise, as ggplot2's guide_axis(angl
 ```php
 guide_none(): bool
 ```
+
+Hides a guide, as ggplot2's guide_none(): guides(color: guide_none()).
 
 ### `label_number()` {#label_number}
 
@@ -560,9 +614,13 @@ Dates and times with a strftime-style format, as scales::label_date().
 xlim(string|int|float $min, string|int|float $max): Closure
 ```
 
+The pipe form of [`->xlim()`](#xlim).
+
 ### `ylim()` {#ylim-function}
 
 ```php
 ylim(string|int|float $min, string|int|float $max): Closure
 ```
+
+The pipe form of [`->ylim()`](#ylim).
 

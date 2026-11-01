@@ -1,0 +1,14 @@
+/* Long identifiers in inline code break anywhere rather than widen the page. */
+p code, li code, td code, th code {
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+/* On narrow screens, a wide table scrolls inside its own box. */
+@media (max-width: 767.98px) {
+  main table {
+    display: block;
+    max-width: 100%;
+    overflow-x: auto;
+  }
+}

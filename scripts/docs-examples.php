@@ -14,10 +14,10 @@ declare(strict_types=1);
  *   bootstrap, and the chart each one produced when run in an empty directory, in docs/examples/charts/{name}.json
  *   (sized to the page by docs_fit()) or .svg
  *
- * An example file returns a Chart. Its code is shown as written, with `return` shown as `$plot =`; a file named
- * {name}-preview.php shows only its chart. An example that uses the pipe operator has a method-chain twin,
- * {name}.chain.php; the two are shown in tabs labeled "PHP 8.5+" and "PHP 8.3–8.4", and must build the same
- * specification. Pipe examples need PHP 8.5 to run.
+ * An example file returns a Chart, shown sized to the page by docs_fit(). Its code is shown as written, with `return`
+ * shown as `$plot =`; a file named {name}-preview.php shows only its chart, and {name}-hero.php shows the chart first.
+ * An example that uses the pipe operator has a method-chain twin, {name}.chain.php; the two are shown in tabs labeled
+ * "PHP 8.5+" and "PHP 8.3–8.4", and must build the same specification. Pipe examples need PHP 8.5 to run.
  *
  *     php scripts/docs-examples.php [name ...]
  */
@@ -63,9 +63,10 @@ foreach (glob("{$docs}/examples/*.php") as $file) {
         $markdown = "```php\n".display_code($file)."\n```\n";
     }
 
-    $markdown .= "\n```{=html}\n<div class=\"phiz-figure\">"
-        .Html::container($chart, ['actions' => false], ['aria-label' => $chart->toArray()['description'] ?? $name])
+    $figure = "```{=html}\n<div class=\"phiz-figure\">"
+        .Html::container(docs_fit($chart), ['actions' => false], ['aria-label' => $chart->toArray()['description'] ?? $name])
         ."</div>\n```\n";
+    $markdown = str_ends_with($name, '-hero') ? "{$figure}\n{$markdown}" : "{$markdown}\n{$figure}";
     file_put_contents("{$docs}/_generated/{$name}.md", $markdown);
     if ($svg) {
         $chart->save("{$docs}/figures/{$name}.svg");

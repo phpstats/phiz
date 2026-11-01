@@ -485,6 +485,7 @@ final class Plot extends Chart
         return $this->scale('x', ...$options);
     }
 
+    /** Scale and guide options for y, as scaleX() takes them. */
     public function scaleY(mixed ...$options): self
     {
         return $this->scale('y', ...$options);
@@ -496,26 +497,31 @@ final class Plot extends Chart
         return $this->scale('color', ...$options);
     }
 
+    /** Scale and guide options for fill, as scaleColor() takes them. */
     public function scaleFill(mixed ...$options): self
     {
         return $this->scale('fill', ...$options);
     }
 
+    /** Scale and guide options for size: range sets the smallest and largest areas in square pixels. */
     public function scaleSize(mixed ...$options): self
     {
         return $this->scale('size', ...$options);
     }
 
+    /** Scale and guide options for shape: values sets the shapes, by level or in level order. */
     public function scaleShape(mixed ...$options): self
     {
         return $this->scale('shape', ...$options);
     }
 
+    /** Scale and guide options for opacity (alpha): range sets the lowest and highest opacity. */
     public function scaleOpacity(mixed ...$options): self
     {
         return $this->scale('opacity', ...$options);
     }
 
+    /** Scale and guide options for linetype: values sets the dash patterns, by level or in level order. */
     public function scaleLinetype(mixed ...$options): self
     {
         return $this->scale('linetype', ...$options);
@@ -643,6 +649,7 @@ final class Plot extends Chart
         return $this->with(labels: $out);
     }
 
+    /** The title and subtitle, as ggplot2's ggtitle(); null removes the title. */
     public function title(?string $title, ?string $subtitle = null): self
     {
         return $this->labs(...['title' => $title] + ($subtitle === null ? [] : ['subtitle' => $subtitle]));
@@ -672,11 +679,13 @@ final class Plot extends Chart
         return $this->with(width: $width ?? $this->width, height: $height ?? $this->height);
     }
 
+    /** The width in pixels (per panel when faceted), or 'container' to fill the parent element. */
     public function width(int|string $width): self
     {
         return $this->with(width: $width);
     }
 
+    /** The height in pixels (per panel when faceted), or 'container' to fill the parent element. */
     public function height(int|string $height): self
     {
         return $this->with(height: $height);

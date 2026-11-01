@@ -44,11 +44,13 @@ final class Export
         return null;
     }
 
+    /** Whether the vl-convert binary can be found. */
     public static function available(): bool
     {
         return self::find() !== null;
     }
 
+    /** The chart rendered to SVG. */
     public function svg(Chart|array $chart): string
     {
         return $this->run('vl2svg', 'svg', $chart);
@@ -64,11 +66,13 @@ final class Export
         return $this->run('vl2png', 'png', $chart, ['--scale', (string) $scale, ...($ppi === null ? [] : ['--ppi', (string) $ppi])]);
     }
 
+    /** The chart rendered to JPEG; scale multiplies the pixel dimensions, and quality runs from 0 to 100. */
     public function jpeg(Chart|array $chart, float $scale = 2.0, ?int $quality = null): string
     {
         return $this->run('vl2jpeg', 'jpeg', $chart, ['--scale', (string) $scale, ...($quality === null ? [] : ['--quality', (string) $quality])]);
     }
 
+    /** The chart rendered to PDF. */
     public function pdf(Chart|array $chart): string
     {
         return $this->run('vl2pdf', 'pdf', $chart);

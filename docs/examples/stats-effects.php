@@ -4,7 +4,7 @@ use Phiz\Datasets;
 
 use function Phiz\effect_plot;
 
-// The fit as phit returns it: Phit\fit_lm('mpg ~ wt + hp + am', $mtcars).
+// The fit as phit returns it: Phit\fit_ols('mpg ~ wt + hp + am', $mtcars).
 $fit = json_decode(file_get_contents(__DIR__.'/fits/mtcars-lm.json'), true);
 
 // Formula fits build the prediction design with Phit\model_matrix(); here we pass it directly.

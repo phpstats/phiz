@@ -2,15 +2,19 @@
 title: "Geoms"
 ---
 
-Each geom adds a layer. Every geom method accepts these common arguments:
+Each geom adds a layer. Every geom method accepts these arguments, and the [Geoms API](reference-geoms.qmd) lists the rest for each geom.
 
-- `aes:`, mappings for this layer only
-- `data:`, data for this layer only
-- `inheritAes: false`, to ignore the plot's mappings
-- `filter:`, a Vega expression string or a selection predicate such as `['param' => 'brush']`
-- fixed styles by their ggplot2 names (`alpha`, `color`, `fill`, `size`, `linewidth`, `linetype`, `shape`) or as any Vega-Lite mark property (`strokeWidth: 2`, `cursor: 'pointer'`)
+| Argument | Effect |
+| --- | --- |
+| `aes:` | mappings for this layer only |
+| `data:` | data for this layer only |
+| `inheritAes: false` | ignores the plot's mappings |
+| `filter:` | a Vega expression, or a selection such as `['param' => 'brush']` |
+| `alpha`, `color`, `fill`, `size`, `linewidth`, `linetype`, `shape` | fixed styles, by their ggplot2 names |
+| any Vega-Lite mark property | passed through, such as `strokeWidth: 2` |
 
-As in ggplot2, `color` is the outline of bars, areas, and tiles, and `fill` is their interior. For points, lines, and text, `color` is the main color. `linetype` accepts ggplot2's names (`dashed`, `dotted`, `dotdash`, `longdash`, `twodash`), hex dash strings such as `'44'`, or a dash array.
+- **`color` and `fill`.** As in ggplot2, `color` is the outline of bars, areas, and tiles, and `fill` is their interior. For points, lines, and text, `color` is the main color.
+- **`linetype`.** ggplot2's names (`dashed`, `dotted`, `dotdash`, `longdash`, `twodash`), hex dash strings such as `'44'`, or a dash array.
 
 ## Distributions
 
@@ -24,11 +28,18 @@ As in ggplot2, `color` is the outline of bars, areas, and tiles, and `fill` is t
 
 `boxplot()` draws Tukey boxplots with whiskers at `coef:` interquartile ranges. Points layered on top show the raw data, here with `jitter()`.
 
-`jitter()`, or `point(jitter:)`, moves points by a random amount: up to `width:` and `height:` of a band on a discrete axis, or in data units on a continuous one. Without a seed, the browser draws the offsets with Vega's `random()`, so the points move on every render. `seed:` draws them in PHP with a fixed seed and embeds them in the data, so every render and every static export places the points the same way. A seed needs inline data.
+`jitter()`, or `point(jitter:)`, moves points by up to `width:` and `height:`: a share of a band on a discrete axis, or data units on a continuous one.
+
+- **Without a seed,** the browser draws the offsets with Vega's `random()`, so the points move on every render.
+- **With `seed:`,** the offsets are drawn in PHP and embedded, so every render and export places the points the same way. A seed needs inline data.
 
 {{< include _generated/geom-boxplot.md >}}
 
-`violin()` draws a kernel density of y for each level of a discrete x. Every violin has the same maximum width, set by `width:` as a share of the band, and violins layer with boxplots and points on the same axis. For inline data, each violin's density is computed in PHP as ggplot2 computes it: its own bandwidth (`bw:`, or R's `bw.nrd0` times `adjust:`), evaluated at `n:` points (200 by default) across the group's range. `position: 'dodge'` places groups side by side within the band.
+`violin()` draws a kernel density of y for each level of a discrete x, and layers with boxplots and points on the same axis.
+
+- **Width.** Every violin has the same maximum width, `width:` as a share of the band.
+- **Density.** For inline data, each group's density is computed in PHP with its own bandwidth (`bw:`, or R's `bw.nrd0` times `adjust:`) at `n:` points (200 by default) across the group's range.
+- **Groups.** `position: 'dodge'` places groups side by side within the band.
 
 {{< include _generated/geom-violin.md >}}
 
@@ -70,11 +81,13 @@ As in ggplot2, `color` is the outline of bars, areas, and tiles, and `fill` is t
 
 ## Fitted curves
 
-`smooth()` fits a curve per group and, for inline data, draws a pointwise confidence band for the mean at `level:`, as ggplot2's `geom_smooth()` does. The default method is loess: a local quadratic fit over the nearest `span:` share of the points (0.75 by default). phiz fits it in PHP, and the fit, its standard errors, and the t interval match R's `loess(y ~ x, span = 0.75, degree = 2)` with `surface = "direct"` to within 1e-9. ggplot2's own default interpolates the loess surface, so its curve can differ from R's direct fit in the third decimal place.
+`smooth()` fits a curve per group and, for inline data, draws a pointwise confidence band for the mean at `level:`, as ggplot2's `geom_smooth()` does. The band is not a prediction interval for individual points. The default method is loess, a local quadratic fit over the nearest `span:` share of the points (0.75 by default), computed in PHP as R's `loess()` with `surface = "direct"`. ggplot2 interpolates the loess surface instead, so its curve can differ slightly.
 
 {{< include _generated/geom-smooth-loess.md >}}
 
-`method: 'lm'`, `'quad'`, and `'poly'` (with `order:`) fit polynomials by least squares, and their bands match R's `predict(fit, interval = "confidence")`. `se: false` and the other methods (`log`, `exp`, `pow`) use Vega-Lite's regression and loess transforms in the browser, without a band. Above 3,000 rows a loess smooth also defaults to the browser, because the band costs O(n²) in PHP. Pass `se: true` to compute it anyway.
+- **Polynomials.** `method: 'lm'`, `'quad'`, and `'poly'` (with `order:`) fit by least squares in PHP, with bands from R's `predict(fit, interval = "confidence")` formula.
+- **In the browser.** `se: false` and the methods `log`, `exp`, and `pow` use Vega-Lite's regression and loess transforms, without a band.
+- **Large data.** Above 3,000 rows, loess defaults to the browser, because the band costs O(n²) in PHP. `se: true` computes it anyway.
 
 {{< include _generated/geom-smooth.md >}}
 
@@ -86,12 +99,16 @@ As in ggplot2, `color` is the outline of bars, areas, and tiles, and `fill` is t
 
 `summary()` summarizes y at each value of x and draws the result with another geom, as ggplot2's `stat_summary()` does. `funData:` returns the middle and the range together:
 
-- `mean_se` (the default): the mean, plus or minus one standard error (`funArgs: ['mult' => 2]` for two)
-- `mean_cl_normal`: the mean with a t confidence interval (`funArgs: ['conf' => 0.9]`)
-- `mean_sdl`: the mean, plus or minus two standard deviations
-- `median_hilow`: the median with the outer quantiles at `conf` (0.95 by default)
+| `funData:` | Middle | Range | Option |
+| --- | --- | --- | --- |
+| `mean_se` (default) | mean | ± 1 standard error | `funArgs: ['mult' => 2]` |
+| `mean_cl_normal` | mean | t confidence interval | `funArgs: ['conf' => 0.9]` |
+| `mean_sdl` | mean | ± 2 standard deviations | |
+| `median_hilow` | median | outer quantiles at `conf` (0.95) | |
 
-A callable can take the place of any of them, returning `[y, ymin, ymax]`. `fun:`, `funMin:`, and `funMax:` set the parts separately, by name (`mean`, `median`, `min`, `max`, `sum`, `sd`, `n`) or as callables of the group's values. `geom:` chooses how to draw the summaries: `pointrange` (the default), `errorbar`, `linerange`, `crossbar`, `point`, `line`, `col`, `area`, or `ribbon`. With a discrete y and a continuous x, x is summarized at each y instead.
+- **Custom summaries.** A callable returning `[y, ymin, ymax]` replaces `funData:`. `fun:`, `funMin:`, and `funMax:` set the parts separately ([Geoms API](reference-geoms.qmd#summary)).
+- **Drawing.** `geom:` is `pointrange` (default), `errorbar`, `linerange`, `crossbar`, `point`, `line`, `col`, `area`, or `ribbon`.
+- **Orientation.** With a discrete y and a continuous x, x is summarized at each y.
 
 {{< include _generated/geom-summary.md >}}
 
@@ -101,7 +118,7 @@ A callable can take the place of any of them, returning `[y, ymin, ymax]`. `fun:
 
 `count()` draws a point at each distinct x and y, sized by the number of rows there, as `geom_count()` does.
 
-`ellipse()` draws a confidence ellipse per group, as `stat_ellipse()` does. `type: 't'` (the default) fits a multivariate t distribution with MASS's `cov.trob()`, `'norm'` uses the sample covariance, and `'euclid'` draws a circle of radius `level`. The ellipses match ggplot2's to within 1e-9. `geom: 'polygon'` fills them.
+`ellipse()` draws a confidence ellipse per group, as `stat_ellipse()` does. `type: 't'` (the default) fits a multivariate t distribution with MASS's `cov.trob()`, `'norm'` uses the sample covariance, and `'euclid'` draws a circle of radius `level`. `geom: 'polygon'` fills them.
 
 {{< include _generated/geom-ellipse.md >}}
 
@@ -115,7 +132,7 @@ A callable can take the place of any of them, returning `[y, ymin, ymax]`. `fun:
 
 {{< include _generated/geom-density2d-filled.md >}}
 
-`contour()` and `contourFilled()` draw the same lines and bands for a `z` field on a regular grid of `x` and `y`, as `geom_contour()` and `geom_contour_filled()` do. phiz traces the contours in PHP with marching squares. The lines match ggplot2's: the same levels and the same pieces.
+`contour()` and `contourFilled()` draw the same lines and bands for a `z` field on a regular grid of `x` and `y`, as `geom_contour()` and `geom_contour_filled()` do. phiz traces the contours in PHP with marching squares.
 
 {{< include _generated/geom-contour.md >}}
 
@@ -130,3 +147,15 @@ A callable can take the place of any of them, returning `[y, ymin, ymax]`. `fun:
 ## Raw layers
 
 `layer()` adds any Vega-Lite layer as given, and `geom()` adds a geom by name with explicit parameter and style arrays.
+
+## Agreement with R
+
+The test suite compares these computations with R on the bundled datasets. The agreement holds for the tested cases.
+
+| Computation | Compared with | Tolerance |
+| --- | --- | --- |
+| loess fit and standard errors | `loess(surface = "direct", statistics = "exact")` on `mpg` | 1e-9 (bands 1e-8) |
+| least-squares bands | `predict(lm(), interval = "confidence")` on `mtcars` | 1e-9 |
+| ellipses, `type: 't'` and `'norm'` | `stat_ellipse()` on `faithful` | 1e-9 |
+| 2D density grid | `MASS::kde2d()` on `faithful` | 1e-12 |
+| density contour levels and pieces | `geom_density_2d()` on `faithful` | exact |

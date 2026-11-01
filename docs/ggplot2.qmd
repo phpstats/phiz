@@ -2,7 +2,7 @@
 title: "Coming from ggplot2"
 ---
 
-phiz follows ggplot2's grammar: data, aesthetic mappings, layers of geoms, scales, coordinates, facets, labels, and themes. Most ggplot2 code translates line by line. This page lists the translations, then the places where phiz behaves differently because Vega-Lite renders the plot.
+Most ggplot2 code translates line by line. The tables below list the translations, and [Differences](#differences) lists where phiz behaves differently because Vega-Lite draws the plot.
 
 ## Translating a plot
 
@@ -16,7 +16,7 @@ ggplot(mpg, aes(displ, hwy, colour = drv)) +
   theme_minimal()
 ```
 
-In phiz, the pipe form keeps ggplot2's function names. The method chain builds the same plot on PHP 8.3 and 8.4.
+The pipe form keeps ggplot2's function names. The method chain builds the same plot on PHP 8.3 and 8.4.
 
 ::: {.panel-tabset}
 
@@ -82,7 +82,15 @@ Aesthetics are named arguments, so `aes(displ, hwy)` becomes `aes(x: 'displ', y:
 | `stat_qq()`, `stat_qq_line()` | `qq()`, `qqLine()` |
 | `coord_polar()` with bars | `coordPolar()`, or `arc()` and `pie()` |
 
-Geom arguments keep ggplot2's names where they exist: `bins`, `binwidth`, `boundary`, `breaks`, `position`, `method`, `se`, `level`, `span`, `adjust`, `h`, `n`, `coef`, `outliers`, `width`, `hjust`, `vjust`, `angle`, `nudge_x` (as `nudgeX`), `fun.data` (as `funData`), `contour_var` (as `contourVar`), and `inherit.aes` (as `inheritAes`). `position` takes the strings `'stack'`, `'dodge'`, `'fill'`, and `'identity'`.
+Geom arguments keep ggplot2's names, such as `bins`, `binwidth`, `method`, `span`, `coef`, and `width`. These differ:
+
+| ggplot2 | phiz |
+| --- | --- |
+| `nudge_x`, `nudge_y` | `nudgeX`, `nudgeY` (in pixels) |
+| `fun.data`, `fun.min`, `fun.max` | `funData`, `funMin`, `funMax` |
+| `contour_var` | `contourVar` |
+| `inherit.aes` | `inheritAes` |
+| `position = position_dodge()` | `position: 'dodge'` (also `'stack'`, `'fill'`, `'identity'`) |
 
 ## Scales, coordinates, facets, and themes
 
@@ -121,13 +129,11 @@ Geom arguments keep ggplot2's names where they exist: `bins`, `binwidth`, `bound
 
 ## Differences
 
-These differences follow from Vega-Lite rendering the plot.
-
 - **Sizes.** Point `size` is an area in square pixels, as in Vega-Lite, rather than a diameter in millimeters. The default is 30. `linewidth` is in pixels.
 - **Bins.** `bins:` is a maximum, and Vega-Lite rounds the boundaries. Use `binwidth:` and `boundary:` for exact bins.
 - **Limits.** `xlim()` and `ylim()` zoom without removing data. ggplot2 removes the data outside the limits, which changes statistics computed from it.
 - **Densities.** The default bandwidth is Vega-Lite's. `adjust:` multiplies R's `bw.nrd0`, so `adjust: 1` reproduces ggplot2's default.
-- **Smoothers.** Loess, `lm`, `quad`, and `poly` fits and their confidence bands are computed in PHP and match R. Loess matches `loess(surface = "direct")`; ggplot2 interpolates the loess surface, which moves the curve slightly. Above 3,000 rows, loess falls back to Vega-Lite's transform without a band, where ggplot2 switches to a GAM. There is no `gam` method.
+- **Smoothers.** Loess, `lm`, `quad`, and `poly` fits and their bands are computed in PHP. Loess follows R's `loess(surface = "direct")`, while ggplot2 interpolates the loess surface, so its curve can differ slightly. Above 3,000 rows, loess falls back to Vega-Lite's transform without a band, where ggplot2 switches to a GAM. There is no `gam` method.
 - **Colors.** Categorical colors come from Vega-Lite's palette by default. `theme('gray')` switches to ggplot2's `hue_pal()` colors, computed for the number of levels. `scaleColor(values:)` or `scheme:` sets them explicitly.
 - **Panels.** A discrete axis is 300 pixels by default, the same as a continuous axis, and grows by 20 pixels per level beyond 15 levels.
 - **Violins.** `violin()` draws each violin as a Vega-Lite trail, whose ends are rounded. There is no `draw_quantiles` option; layer a `boxplot()` instead.
@@ -136,7 +142,7 @@ These differences follow from Vega-Lite rendering the plot.
 
 ## Additions
 
-phiz adds features that ggplot2 leaves to other packages:
+phiz also has features that ggplot2 leaves to other packages:
 
 - tooltips, pan and zoom, brushing, legend highlighting, and sliders (see [Interaction](interaction.qmd))
 - linked views across compositions

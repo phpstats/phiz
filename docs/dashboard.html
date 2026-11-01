@@ -244,6 +244,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 })();</script>
 
 
+<link rel="stylesheet" href="docs.css">
 </head>
 
 <body class="nav-sidebar docked quarto-light">
@@ -566,7 +567,11 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </header>
 
 
-<p>Build Livewire components whose phiz charts follow the component’s state: first one chart with one filter, then a dashboard of three linked charts.</p>
+<p>Build Livewire components whose phiz charts follow the component’s state. The page has two separate examples:</p>
+<ul>
+<li><strong>A minimal component</strong> charts revenue from an application’s own <code>orders</code> table, with one filter.</li>
+<li><strong>A linked dashboard</strong> charts the bundled <code>mpg</code> car data, so it runs as written, with three charts that share filters.</li>
+</ul>
 <p><strong>Requirements:</strong> a Laravel application with Livewire 3, and <code>composer require phpstats/phiz phpstats/phibble phpstats/phplyr</code>.</p>
 <section id="a-minimal-component" class="level2">
 <h2 class="anchored" data-anchor-id="a-minimal-component">A minimal component</h2>

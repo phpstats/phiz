@@ -20,6 +20,10 @@ The statistics tests build model designs with `Phit\model_matrix()`. They run on
 
 CI runs the suite on PHP 8.3, 8.4, and 8.5. The tests in `tests/Pipes/` use the pipe operator, so `phpunit.xml` runs them only on PHP 8.5. Code in `src/` must parse on PHP 8.3.
 
+## Benchmarks
+
+`php -d memory_limit=-1 scripts/bench-large-data.php` times the PHP binning geoms on a million-row phibble table and prints the environment and a Markdown table. Timings in the documentation come from the Linux benchmark machine.
+
 ## Gallery
 
 ```sh
@@ -32,13 +36,14 @@ The gallery writes an HTML page of every example in `examples/catalog.php`, with
 
 The documentation is a Quarto website in `docs/`. The pages include generated fragments for their examples:
 
-1. Each file in `docs/examples/` returns a chart. An example that uses the pipe operator has a method-chain twin, `{name}.chain.php`, and the page shows the two in tabs labeled "PHP 8.5+" and "PHP 8.3–8.4".
-2. `php scripts/docs-examples.php` runs every example and checks that each twin builds the same specification. For each example it writes the code and the specification to `docs/_generated/`, and an SVG to `docs/figures/` when vl-convert is found. It also writes the gallery fragment from `examples/catalog.php`.
-3. `php scripts/docs-reference.php` writes the API reference fragments from the signatures and docblocks in `src/`.
-4. `quarto render docs` builds the site into `docs/_site/`.
-5. `scripts/render-docs` runs steps 2 to 4, then copies the site into `docs/`.
+1. Each file in `docs/examples/` returns a chart. An example that uses the pipe operator has a method-chain twin, `{name}.chain.php`, and the page shows the two in tabs labeled "PHP 8.5+" and "PHP 8.3–8.4". A `{name}-preview.php` file shows only its chart, and `{name}-hero.php` shows its chart before the code.
+2. The pages under `docs/examples/` show complete scripts from `docs/examples/scripts/`. The generator runs each in an empty directory beside `vendor`, displays it without the opening tag and autoloader, and shows the chart it produced.
+3. `php scripts/docs-examples.php` runs every example and checks that each twin builds the same specification. It writes the code and the chart to `docs/_generated/`, and an SVG to `docs/figures/` when vl-convert is found. It also writes the gallery fragment from `examples/catalog.php`. Charts are sized to the page by `scripts/docs-fit.php`: a plot without a width fills the content column.
+4. `php scripts/docs-reference.php` writes the API reference fragments from the signatures and docblocks in `src/`. A function without a docblock gets a generated description: a fill or y twin points to its color or x original, and a pipe wrapper to its method. Write a docblock for anything else.
+5. `quarto render docs` builds the site into `docs/_site/`.
+6. `scripts/render-docs` runs steps 3 to 5, then copies the site into `docs/`.
 
-phpstats.org imports the committed HTML in `docs/` and publishes it at <https://phiz.phpstats.org/docs>, so commit the rendered pages with their sources. GitHub Pages serves the `gh-pages` branch, which holds only redirects from the old `phpstats.github.io/phiz/` addresses to the same pages on phpstats.org. The pipe examples need PHP 8.5, and the SVGs need vl-convert 1.9.0, the version the committed figures were made with:
+phpstats.org imports the committed HTML in `docs/` and publishes it at <https://phiz.phpstats.org/docs>, so commit the rendered pages with their sources. GitHub Pages serves only redirects: `.github/workflows/pages.yml` generates one for each page in `docs/`, pointing to the same page on phpstats.org. The pipe examples need PHP 8.5, and the SVGs need vl-convert 1.9.0, the version the committed figures were made with:
 
 ```sh
 PHP=php8.5 PHIZ_VL_CONVERT=/path/to/vl-convert scripts/render-docs

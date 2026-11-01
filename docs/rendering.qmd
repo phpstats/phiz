@@ -6,42 +6,43 @@ title: "Rendering"
 
 `toArray()` returns the Vega-Lite specification and `toJson()` encodes it. Plots also implement `JsonSerializable`. The specification declares the Vega-Lite 6 schema.
 
-Four escape hatches reach the parts of Vega-Lite that phiz does not wrap:
+These escape hatches reach the parts of Vega-Lite that phiz does not wrap:
 
 - `raw([...])` deep-merges arbitrary Vega-Lite into the top level. Nested objects merge, and lists and scalars replace.
 - `transform(...)` adds Vega-Lite transforms that run before every layer.
 - `layer([...])` adds a raw Vega-Lite layer.
 - `param()` and `select()` add raw parameters.
 
-## HTML
+## In the browser
 
-`embed()` returns a container element followed by the script tags, and `html()` returns a standalone page. Both pass vega-embed options, such as `['actions' => false]` or `['renderer' => 'svg']`.
+`embed()` returns a chart container followed by the script tags, and `html()` returns a complete page. Both take vega-embed options, such as `['actions' => false]` or `['renderer' => 'svg']`.
 
-The container carries the specification in a `data-phiz` attribute. A small loader script, about 100 lines, renders every such element with vega-embed. It renders them again when the attribute changes. The same markup therefore works in static pages, Blade views, and Livewire components.
+The container holds the specification in a `data-phiz` attribute. phiz's loader script draws every such container with vega-embed and redraws it when the attribute changes, so the same markup works in static pages, Blade views, and Livewire components.
 
-The browser libraries are pinned:
+## Library sources and offline pages
 
-| Library | Version |
+By default the page loads vega, vega-lite, and vega-embed from the jsDelivr CDN, with subresource integrity, so it needs a network connection. `Assets` chooses another source:
+
+| Source | Use |
 | --- | --- |
-| vega | 6.4.0 |
-| vega-lite | 6.4.3 |
-| vega-embed | 7.3.0 |
-
-`Assets` chooses where they come from:
+| `Assets::cdn()` | jsDelivr (the default) |
+| `Assets::local('/js/vega')` | copies you serve: `vega.min.js`, `vega-lite.min.js`, `vega-embed.min.js` |
+| `Assets::inline('/path/to/js')` | the libraries embedded in the page, for files that work offline |
+| `Assets::none()` | none; your bundle already sets `window.vegaEmbed` |
+| `false` | the container alone, without scripts |
 
 ```php
 use Phiz\Assets;
 
-$plot->embed(assets: Assets::cdn());                 // jsDelivr, with subresource integrity (the default)
-$plot->embed(assets: Assets::local('/js/vega'));     // copies you serve: vega.min.js, vega-lite.min.js, vega-embed.min.js
-$plot->html(assets: Assets::inline('/path/to/js'));  // embedded in the page, for offline files
-$plot->embed(assets: Assets::none());                // your bundle already sets window.vegaEmbed
-$plot->embed(assets: false);                         // just the container
+$page = $plot->html(assets: Assets::inline('/path/to/js'));
+file_put_contents('chart.html', $page);
 ```
+
+`save('chart.html')` always uses the CDN.
 
 ## Static export
 
-`svg()`, `png()`, `pdf()`, and `save()` run the [vl-convert](https://github.com/vega/vl-convert) command-line tool. It renders without a browser, which suits reports, email, and print. vl-convert bundles its own Vega-Lite, and phiz runs it with Vega-Lite 6.1. The test suite validates every specification against the Vega-Lite 6.1 schema, so the same specification renders in both places.
+`svg()`, `png()`, `pdf()`, and `save()` with an image extension run the [vl-convert](https://github.com/vega/vl-convert) binary, which renders without a browser.
 
 ```php
 $plot->save('figure.svg');
@@ -49,7 +50,8 @@ $plot->save('figure.png', scale: 3);
 file_put_contents('figure.pdf', $plot->pdf());
 ```
 
-phiz finds the binary through the `PHIZ_VL_CONVERT` or `VL_CONVERT` environment variable, then `PATH`. Download it from the [vl-convert releases](https://github.com/vega/vl-convert/releases). Version 1.9.0 is tested. If the binary is missing, phiz throws `Phiz\Exceptions\VlConvertNotFound` with these instructions. `new Export(binary: ..., timeout: ..., fontDir: ...)` sets the binary path, the timeout, and an extra font directory explicitly.
+- **Finding the binary.** phiz checks the `PHIZ_VL_CONVERT` and `VL_CONVERT` environment variables, then `PATH`. A missing binary throws `Phiz\Exceptions\VlConvertNotFound` with installation instructions.
+- **Options.** `new Export(binary:, timeout:, fontDir:)` sets the binary path, the timeout, and an extra font directory.
 
 ### Installing vl-convert
 
@@ -65,6 +67,18 @@ On macOS, download `vl-convert_osx-arm64.zip` from the same release and unzip it
 
 ### Reproducible SVG
 
-SVG output from a given specification is byte-for-byte identical between runs, except for charts with unseeded jitter. Without `seed:`, `jitter()` uses Vega's unseeded `random()`, so a jittered chart changes on every render. With `seed:`, the offsets are part of the specification and the output is stable. It is also identical between macOS and Linux, between ARM and x86, and with or without system fonts installed. vl-convert measures `sans-serif` text with its bundled Liberation Sans, so the layout does not depend on the machine's fonts. The SVG keeps its text as `<text font-family="sans-serif">` elements, so the viewer's browser chooses the font that is displayed.
+- **Repeated runs.** With the same vl-convert version, the same specification gives the same SVG bytes on every run. Unseeded jitter is the exception: without `seed:`, `jitter()` uses Vega's `random()`. With `seed:`, the offsets are part of the specification.
+- **Fonts.** vl-convert measures `sans-serif` text with its bundled Liberation Sans, so the layout does not depend on the fonts installed on the machine. The SVG keeps its text as `<text font-family="sans-serif">`, so the viewer's browser chooses the displayed font. A theme that names another font, or an export with `fontDir:`, makes the layout depend on the fonts vl-convert can find.
+- **Across machines.** The visual tests render on macOS and on Linux in CI and compare both with the same PNG baselines, within a pixel tolerance.
+- **Committed figures** change when the specification, the vl-convert version, or its Vega-Lite version changes. Pin the vl-convert version wherever figures are generated.
 
-Committed SVG files therefore change only when the specification, the vl-convert version, or the pinned Vega-Lite version changes. A theme that names a font other than `sans-serif`, or an export with `fontDir:`, makes text measurement depend on the fonts available to vl-convert. Pin the vl-convert version wherever committed figures are generated.
+## Versions
+
+| Component | Version | Notes |
+| --- | --- | --- |
+| vega | 6.4.0 | pinned for the browser |
+| vega-lite | 6.4.3 | pinned for the browser |
+| vega-embed | 7.3.0 | pinned for the browser |
+| vl-convert | 1.9.0 | tested; bundles its own Vega-Lite, run as 6.1 |
+
+The tests validate every specification against the Vega-Lite 6.1 schema, so the same specification renders in the browser and in vl-convert.

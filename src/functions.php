@@ -136,8 +136,10 @@ function scale_fill_manual(array $values, mixed ...$args): Closure { return chai
 /** Vega color schemes by name, such as 'viridis', 'blues', 'set2', 'dark2', 'tableau10'. */
 function scale_color_scheme(string $scheme, mixed ...$args): Closure { return chain('scaleColor', ['scheme' => $scheme] + $args); }
 function scale_fill_scheme(string $scheme, mixed ...$args): Closure { return chain('scaleFill', ['scheme' => $scheme] + $args); }
+/** A viridisLite palette by Vega scheme name, such as 'viridis', 'magma', or 'cividis'. */
 function scale_color_viridis(string $option = 'viridis', mixed ...$args): Closure { return chain('scaleColor', ['scheme' => $option] + $args); }
 function scale_fill_viridis(string $option = 'viridis', mixed ...$args): Closure { return chain('scaleFill', ['scheme' => $option] + $args); }
+/** A ColorBrewer palette for discrete data, as ggplot2's scale_colour_brewer (names are case-insensitive). */
 function scale_color_brewer(string $palette = 'set1', mixed ...$args): Closure { return chain('scaleColor', ['scheme' => strtolower($palette)] + $args); }
 function scale_fill_brewer(string $palette = 'set1', mixed ...$args): Closure { return chain('scaleFill', ['scheme' => strtolower($palette)] + $args); }
 
@@ -223,6 +225,7 @@ function guide_axis(?string $title = null, int|float|null $angle = null, ?string
 
     return $out + $properties;
 }
+/** Hides a guide, as ggplot2's guide_none(): guides(color: guide_none()). */
 function guide_none(): bool { return false; }
 
 /** Number labels, as scales::label_number(): accuracy rounds, scale multiplies, prefix and suffix wrap. */
@@ -249,17 +252,28 @@ function facet_wrap(mixed ...$args): Closure { return chain('facetWrap', $args);
 function facet_grid(mixed ...$args): Closure { return chain('facetGrid', $args); }
 function labs(mixed ...$args): Closure { return chain('labs', $args); }
 function ggtitle(?string $title, ?string $subtitle = null): Closure { return chain('title', [$title, $subtitle]); }
+/** The x axis title, as ggplot2's xlab(); null removes it. */
 function xlab(?string $title): Closure { return chain('labs', ['x' => $title]); }
+/** The y axis title, as ggplot2's ylab(); null removes it. */
 function ylab(?string $title): Closure { return chain('labs', ['y' => $title]); }
 function theme(mixed ...$args): Closure { return chain('theme', $args); }
+/** The gray preset, ggplot2's default theme; baseSize sets the base font size in points. */
 function theme_gray(int|float $baseSize = 11): Closure { return chain('theme', ['gray', $baseSize]); }
+/** An alias of theme_gray(). */
 function theme_grey(int|float $baseSize = 11): Closure { return chain('theme', ['gray', $baseSize]); }
+/** The bw preset: a white panel with a dark border and gray grid lines. */
 function theme_bw(int|float $baseSize = 11): Closure { return chain('theme', ['bw', $baseSize]); }
+/** The minimal preset: grid lines only, with no panel background or border. */
 function theme_minimal(int|float $baseSize = 11): Closure { return chain('theme', ['minimal', $baseSize]); }
+/** The classic preset: axis lines and no grid. */
 function theme_classic(int|float $baseSize = 11): Closure { return chain('theme', ['classic', $baseSize]); }
+/** The light preset: light gray grid lines and a light gray border. */
 function theme_light(int|float $baseSize = 11): Closure { return chain('theme', ['light', $baseSize]); }
+/** The dark preset: a dark background and panel, with light text and grid lines. */
 function theme_dark(int|float $baseSize = 11): Closure { return chain('theme', ['dark', $baseSize]); }
+/** The void preset: no axes, grid, or background. */
 function theme_void(int|float $baseSize = 11): Closure { return chain('theme', ['void', $baseSize]); }
+/** The linedraw preset: fine black grid lines and a black border. */
 function theme_linedraw(int|float $baseSize = 11): Closure { return chain('theme', ['linedraw', $baseSize]); }
 function size(int|string|null $width = null, int|string|null $height = null): Closure { return chain('size', [$width, $height]); }
 function tooltip(bool|array|string $fields = true): Closure { return chain('tooltip', [$fields]); }
@@ -271,13 +285,19 @@ function highlight(mixed ...$args): Closure { return chain('highlight', $args); 
 
 /** Coefficient plot of one fit, or of several keyed by label (dodged side by side). */
 function coefplot(array $fits, mixed ...$options): Plot { return Stats\Charts::coefficients($fits, ...$options); }
+/** Residuals against fitted values, with a reference line at zero. */
 function residual_plot(array $fit): Plot { return Stats\Charts::residuals($fit); }
+/** A normal QQ plot of a fit's residuals, or of a list of values; standardize scales them first. */
 function qq_plot(array $fitOrValues, bool $standardize = false): Plot { return Stats\Charts::qq($fitOrValues, $standardize); }
+/** Observed against fitted values, with the identity line; observed defaults to fitted plus residuals. */
 function fitted_plot(array $fit, ?array $observed = null): Plot { return Stats\Charts::fitted($fit, $observed); }
+/** The square root of the absolute residuals divided by sigma, against fitted values, as R's plot(fit, 3). */
 function scale_location_plot(array $fit): Plot { return Stats\Charts::scaleLocation($fit); }
+/** residual_plot(), qq_plot(), scale_location_plot(), and fitted_plot() in a two-by-two grid. */
 function diagnostic_plots(array $fit, mixed ...$options): Compose { return Stats\Charts::diagnostics($fit, ...$options); }
 /** Predicted values with confidence bands as x varies (by levels of $by), other variables held at typical values. */
 function effect_plot(array $fit, mixed $data, string $x, mixed ...$options): Plot { return Stats\Charts::effects($fit, $data, $x, ...$options); }
+/** The predicted rows behind effect_plot() for a grid of rows, without plotting them: each row with estimate, lower, upper, and std_error. */
 function predictions(array $fit, array $grid, mixed ...$options): array { return Stats\Charts::predictions($fit, $grid, ...$options); }
 /** Posterior intervals from draws columns or a summary, as bayesplot's mcmc_intervals. */
 function interval_plot(array $draws, mixed ...$options): Plot { return Stats\Charts::intervals($draws, ...$options); }

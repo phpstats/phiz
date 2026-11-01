@@ -1002,3 +1002,5 @@ Adds a geom by name with options: the generic form behind the geom methods.
 annotate(string $geom, mixed ...$args): Closure
 ```
 
+The pipe form of [`->annotate()`](#annotate).
+

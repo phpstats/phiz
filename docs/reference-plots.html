@@ -244,6 +244,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 })();</script>
 
 
+<link rel="stylesheet" href="docs.css">
 </head>
 
 <body class="nav-sidebar docked quarto-light">
@@ -593,6 +594,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="data-from" class="level3">
 <h3 class="anchored" data-anchor-id="data-from"><code>Data::from()</code></h3>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode php code-with-copy"><code class="sourceCode php"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>Data::from(<span class="dt">mixed</span> <span class="va">$data</span>)<span class="ot">:</span> Data</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Wraps any supported input: rows, columns, a table, a collection, an iterable, or a Data object as given.</p>
 </section>
 <section id="data-url" class="level3">
 <h3 class="anchored" data-anchor-id="data-url"><code>Data::url()</code></h3>
@@ -607,10 +609,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="data-is-inline" class="level3">
 <h3 class="anchored" data-anchor-id="data-is-inline"><code>$data-&gt;isInline()</code></h3>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb7"><pre class="sourceCode php code-with-copy"><code class="sourceCode php"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>-&gt;isInline()<span class="ot">:</span> <span class="dt">bool</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Whether the data is embedded, rather than a URL or a named source.</p>
 </section>
 <section id="data-is-empty" class="level3">
 <h3 class="anchored" data-anchor-id="data-is-empty"><code>$data-&gt;isEmpty()</code></h3>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb8"><pre class="sourceCode php code-with-copy"><code class="sourceCode php"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>-&gt;isEmpty()<span class="ot">:</span> <span class="dt">bool</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Whether inline data has no rows. URL and named data count as empty.</p>
 </section>
 <section id="data-count" class="level3">
 <h3 class="anchored" data-anchor-id="data-count"><code>$data-&gt;count()</code></h3>
@@ -625,14 +629,17 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="data-to-spec" class="level3">
 <h3 class="anchored" data-anchor-id="data-to-spec"><code>$data-&gt;toSpec()</code></h3>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb11"><pre class="sourceCode php code-with-copy"><code class="sourceCode php"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>-&gt;toSpec()<span class="ot">:</span> <span class="dt">array</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>The Vega-Lite data definition: values, a url, or a name.</p>
 </section>
 <section id="data-fields" class="level3">
 <h3 class="anchored" data-anchor-id="data-fields"><code>$data-&gt;fields()</code></h3>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb12"><pre class="sourceCode php code-with-copy"><code class="sourceCode php"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>-&gt;fields()<span class="ot">:</span> <span class="dt">array</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>The field names of inline data, in first-seen order.</p>
 </section>
 <section id="data-has" class="level3">
 <h3 class="anchored" data-anchor-id="data-has"><code>$data-&gt;has()</code></h3>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb13"><pre class="sourceCode php code-with-copy"><code class="sourceCode php"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>-&gt;has(<span class="dt">string</span> <span class="va">$field</span>)<span class="ot">:</span> <span class="dt">bool</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Whether inline data has the field.</p>
 </section>
 <section id="data-column" class="level3">
 <h3 class="anchored" data-anchor-id="data-column"><code>$data-&gt;column()</code></h3>
@@ -657,6 +664,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="data-with-rows" class="level3">
 <h3 class="anchored" data-anchor-id="data-with-rows"><code>$data-&gt;withRows()</code></h3>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb18"><pre class="sourceCode php code-with-copy"><code class="sourceCode php"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>-&gt;withRows(<span class="dt">array</span> <span class="va">$rows</span>)<span class="ot">:</span> Data</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>New inline data holding the given rows.</p>
 </section>
 <section id="data-value" class="level3">
 <h3 class="anchored" data-anchor-id="data-value"><code>Data::value()</code></h3>
@@ -668,18 +676,22 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="datasets-mpg" class="level3">
 <h3 class="anchored" data-anchor-id="datasets-mpg"><code>Datasets::mpg()</code></h3>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb20"><pre class="sourceCode php code-with-copy"><code class="sourceCode php"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>Datasets::mpg()<span class="ot">:</span> <span class="dt">array</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>ggplot2’s mpg: 234 cars from 1999 and 2008 with displacement (displ, liters), city and highway mpg (cty, hwy), drive (drv), and class.</p>
 </section>
 <section id="datasets-mtcars" class="level3">
 <h3 class="anchored" data-anchor-id="datasets-mtcars"><code>Datasets::mtcars()</code></h3>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb21"><pre class="sourceCode php code-with-copy"><code class="sourceCode php"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>Datasets::mtcars()<span class="ot">:</span> <span class="dt">array</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>R’s mtcars: 32 cars with mpg, cylinders (cyl), weight (wt, 1,000 lb), horsepower (hp), transmission (am, 1 manual), and the model name.</p>
 </section>
 <section id="datasets-economics" class="level3">
 <h3 class="anchored" data-anchor-id="datasets-economics"><code>Datasets::economics()</code></h3>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb22"><pre class="sourceCode php code-with-copy"><code class="sourceCode php"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>Datasets::economics()<span class="ot">:</span> <span class="dt">array</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>ggplot2’s economics: 574 monthly US rows from 1967 with date, pce ($bn), pop (thousands), psavert (%), uempmed (weeks), and unemploy (thousands).</p>
 </section>
 <section id="datasets-faithful" class="level3">
 <h3 class="anchored" data-anchor-id="datasets-faithful"><code>Datasets::faithful()</code></h3>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb23"><pre class="sourceCode php code-with-copy"><code class="sourceCode php"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>Datasets::faithful()<span class="ot">:</span> <span class="dt">array</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>R’s faithful: 272 Old Faithful eruptions with their length (eruptions) and the wait before them (waiting), in minutes.</p>
 </section>
 <section id="datasets-load" class="level3">
 <h3 class="anchored" data-anchor-id="datasets-load"><code>Datasets::load()</code></h3>

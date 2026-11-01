@@ -39,6 +39,7 @@ final class Assets
         private readonly bool $inline = false,
     ) {}
 
+    /** The pinned libraries from jsDelivr, with subresource integrity; base replaces the CDN address. */
     public static function cdn(string $base = 'https://cdn.jsdelivr.net/npm'): self
     {
         $base = rtrim($base, '/');

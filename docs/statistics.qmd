@@ -2,26 +2,37 @@
 title: "Statistics"
 ---
 
-The statistics helpers build ordinary plots from model results, so their output can be restyled with any `Plot` method. They read the arrays that [phit](https://github.com/phpstats/phit) returns, from its extension or its PHP polyfill. Formula fits from `Phit\fit_lm`, `fit_glm`, `fit_lmer`, and `fit_glmer` name their coefficients in `columns`. Matrix fits from `fit_ols` and `fit_logistic` take a `names:` argument.
+The statistics helpers turn model results into ordinary plots, which any `Plot` method can restyle. They read the arrays that [phit](https://github.com/phpstats/phit) returns from its extension or its PHP polyfill, and the draws that CmdStanPHP returns. The fits on this page are saved in `docs/examples/fits/`, from the `mtcars` and `mpg` data.
 
-The fits on this page are saved as JSON in `docs/examples/fits/`, from the `mtcars` and `mpg` data. phit's polyfill, version 0.3.0, reproduces each of them to within 1e-13, relative. The test suite refits them and checks the coefficients and covariance matrices to 1e-9.
+## Requirements {#requirements}
 
-## Requirements and fit keys
+Plotting a fit array needs no extension. `Phit\model_matrix()`, from the phit extension or `phpstats/phit-polyfill`, is needed only where noted below. Without it, those calls throw an `InvalidArgumentException`.
 
-The helpers need no extension to plot a fit array. Two operations build design rows from the fit's formula with `Phit\model_matrix()`, which comes from the phit extension or its polyfill:
+Each helper reads these keys of the fit array:
 
-- predictions for formula fits in `effect_plot()`, `predictions()`, and `marginal_means()`, unless `design:` is given
-- random-slope design columns in `random_effects_plot()`, when it rebuilds conditional variances from the data
-
-Without either, these calls throw an `InvalidArgumentException`. Each helper reads these keys of the fit array:
-
-| Helper | Keys |
+| Helper | Fit keys |
 | --- | --- |
-| `coefplot()` | `coefficients`, `conf_int`, `std_errors` and `df_residual` when `level:` recomputes the intervals, `columns` or `names:`, and `link` for the axis label |
-| `residual_plot()`, `qq_plot()`, `fitted_plot()` | `fitted` and `residuals` |
-| `scale_location_plot()` | `fitted`, `residuals`, and `sigma`, or `df_residual` to estimate it |
+| `coefplot()` | `coefficients`, `conf_int`, `columns` (or `names:`), and `link`; `std_errors` and `df_residual` with `level:` |
+| `residual_plot()`, `qq_plot()`, `fitted_plot()` | `fitted`, `residuals` |
+| `scale_location_plot()` | `fitted`, `residuals`, and `sigma` or `df_residual` |
 | `effect_plot()`, `predictions()`, `marginal_means()` | `coefficients`, `covariance`, `formula`, `columns`, `response`, `link`, `df_residual`, and `retained_rows` when rows were dropped |
-| `random_effects_plot()` | `random`, with `effects_cond_var` or `random_effects_cond_var` when present |
+| `random_effects_plot()` | `random`, and `effects_cond_var` or `random_effects_cond_var` |
+| `interval_plot()` | CmdStanPHP draws, or a summary |
+
+The helpers that compute intervals need these inputs:
+
+| Helper | Inputs | Intervals | Scale |
+| --- | --- | --- | --- |
+| `coefplot()` | the fit | the fit's `conf_int`, or t or normal quantiles at `level:` | estimates, or ratios with `exponentiate: true` |
+| `effect_plot()`, `predictions()` | the fitting data with `model_matrix()`, or `design:` | pointwise, for the mean | response, or `scale: 'link'` |
+| `marginal_means()` | as above, plus `variables:` for matrix fits | from the averaged design row | response, or `scale: 'link'` |
+| `random_effects_plot()` | the fitting data, for fits without conditional variances | from each group's conditional variance | the effect's scale |
+| `interval_plot()` | the draws | posterior quantiles, 50% and 90% | the parameter's scale |
+
+- **Link and response scales.** GLM intervals are computed on the link scale and transformed to the response scale, so they can be asymmetric there.
+- **Singular fits.** When a mixed model's variance is estimated at zero, or its random effects are perfectly correlated, `random_effects_plot()` says so in the subtitle. The intervals still follow lme4.
+- **Random slopes.** When `random_effects_plot()` rebuilds conditional variances from the data, random-slope design columns need `model_matrix()`.
+- **Matrix fits.** Fits from a design matrix have no `columns`. Pass `names:` to `coefplot()`, and `design:` to the prediction helpers.
 
 ## Coefficient plots
 
@@ -47,9 +58,12 @@ Several fits keyed by label are compared side by side, with one color per model.
 
 ## Predicted values
 
-`effect_plot()` draws predictions with confidence bands as one variable varies across its observed range. `by:` draws one line per level of a grouping variable. Other variables are held at their mean, or at their most common value when they are categorical.
+`effect_plot()` draws predictions with confidence bands as one variable varies across its observed range. `by:` draws one line per level of a grouping variable. Other variables are held at their mean, or at their most common value when categorical.
 
-For formula fits, phiz builds the prediction design with `Phit\model_matrix()` on the fitting data and the grid together, so factor levels and reference categories match the fit. For matrix fits, pass `design:`, a function from a grid row to a design row. GLM intervals are computed on the link scale and transformed to the response scale. The predictions match R's `predict()` with `interval = "confidence"`.
+- **Formula fits.** phiz builds the prediction design with `Phit\model_matrix()` on the fitting data and the grid together, so factor levels and reference categories match the fit.
+- **Random slopes.** When `random_effects_plot()` rebuilds conditional variances from the data, random-slope design columns need `model_matrix()`.
+- **Matrix fits.** Pass `design:`, a function from a grid row to a design row.
+- **Intervals.** The bands are confidence intervals for the mean response, not prediction intervals for new observations.
 
 {{< include _generated/stats-effects.md >}}
 
@@ -71,11 +85,14 @@ The model's variables come from its formula: names inside `factor()` and non-num
 
 {{< include _generated/stats-marginal-means-glm.md >}}
 
-The linear-model means match a direct computation in R to 10 digits. GLM means match too. Their intervals differ from R's by about 1e-5. The difference comes from the fit's covariance matrix. For `am ~ wt + hp`, phit's coefficients agree with R's `glm()` to 12 digits, while the variance of the `wt` coefficient is 9.4167679 in phit and 9.4167669 in R's `vcov()`.
-
 ## Random effects
 
-`random_effects_plot()` draws a caterpillar plot of a mixed model's random effects. It works with fits from `fit_lmer` and `fit_glmer`. Current phit fits report the conditional variances themselves (`effects_cond_var`, and `random_effects_cond_var` for GLMMs), and the plot uses them directly. For older fits, pass the data the model was fitted on, and phiz rebuilds the variances from it. Each group's conditional mode is shown with an interval from its conditional variance. Groups are sorted by their first effect, and random slopes get their own panels. The conditional covariance for group *j* is (Z<sub>j</sub>'W<sub>j</sub>Z<sub>j</sub> / σ² + G<sup>−1</sup>)<sup>−1</sup>, treating the fixed effects and variance components as known, as lme4's `ranef(fit, condVar = TRUE)` does. W holds the working weights of binomial and Poisson GLMMs. For intercepts, the standard deviations match lme4 to 1e-8. `group:` selects a term when the model has several. When the fit is singular, with a variance estimated at zero or random effects perfectly correlated, the subtitle says so. The intervals still follow lme4, which computes them without inverting G.
+`random_effects_plot()` draws a caterpillar plot of the random effects of a fit from `fit_mixed_gaussian()` or `fit_mixed_logistic()`. Each group's conditional mode is shown with an interval from its conditional variance.
+
+- **Conditional variances.** phit fits report them (`effects_cond_var`, or `random_effects_cond_var` for logistic models), and the plot uses them. For a fit without them, pass the fitting data, and phiz rebuilds them.
+- **Definition.** The conditional covariance for group *j* is (Z<sub>j</sub>'W<sub>j</sub>Z<sub>j</sub> / σ² + G<sup>−1</sup>)<sup>−1</sup>, treating the fixed effects and variance components as known, as lme4's `ranef(fit, condVar = TRUE)` does. W holds a logistic model's working weights.
+- **Layout.** Groups are sorted by their first effect, random slopes get their own panels, and `group:` selects a term when the model has several.
+- **Singular fits.** The subtitle flags a variance estimated at zero or perfectly correlated effects. The intervals still follow lme4, which computes them without inverting G.
 
 {{< include _generated/stats-random-effects.md >}}
 
@@ -84,3 +101,16 @@ The linear-model means match a direct computation in R to 10 digits. GLM means m
 `interval_plot()` draws posterior intervals by variable, as bayesplot's `mcmc_intervals()` does. It shows a thick inner interval (50% by default), a thin outer interval (90%), and the median. It takes draws in the shape CmdStanPHP's `draws_columns()` returns, or a summary from `summary_columns()`. Selecting a base name such as `theta` selects all of its elements. These draws come from the eight schools model, sampled with CmdStanPHP.
 
 {{< include _generated/stats-intervals.md >}}
+
+## Agreement with R
+
+The test suite compares the helpers with R on the documentation fits. The agreement holds for these fits.
+
+| Computation | Compared with | Tolerance |
+| --- | --- | --- |
+| documentation fits refitted with phit | the saved coefficients and covariance matrices (polyfill 0.3.0) | 1e-9 |
+| predictions and bands | `predict(lm(), interval = "confidence")` | 1e-7 |
+| linear-model marginal means and intervals | a direct computation in R | 1e-8 |
+| random-intercept conditional standard deviations | lme4's `ranef(fit, condVar = TRUE)` | 1e-6 |
+
+GLM marginal means were compared with R by hand, outside the test suite. Their intervals differ from R's by about 1e-5 because of the covariance matrix: for `am ~ wt + hp`, phit's coefficients agree with R's `glm()` to 12 digits, while the variance of the `wt` coefficient is 9.4167679 in phit and 9.4167669 in R's `vcov()`.

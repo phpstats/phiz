@@ -244,6 +244,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 })();</script>
 
 
+<link rel="stylesheet" href="docs.css">
 </head>
 
 <body class="nav-sidebar docked quarto-light">
@@ -624,10 +625,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="compose-beside" class="level3">
 <h3 class="anchored" data-anchor-id="compose-beside"><code>Compose::beside()</code></h3>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb7"><pre class="sourceCode php code-with-copy"><code class="sourceCode php"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>Compose::beside(Chart ...<span class="va">$charts</span>)<span class="ot">:</span> Compose</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Charts side by side in one row, as patchwork’s p1 + p2 (a Vega-Lite hconcat).</p>
 </section>
 <section id="compose-stack" class="level3">
 <h3 class="anchored" data-anchor-id="compose-stack"><code>Compose::stack()</code></h3>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb8"><pre class="sourceCode php code-with-copy"><code class="sourceCode php"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>Compose::stack(Chart ...<span class="va">$charts</span>)<span class="ot">:</span> Compose</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Charts stacked in one column, as patchwork’s p1 / p2 (a Vega-Lite vconcat).</p>
 </section>
 <section id="compose-grid" class="level3">
 <h3 class="anchored" data-anchor-id="compose-grid"><code>Compose::grid()</code></h3>
@@ -637,6 +640,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="compose-title" class="level3">
 <h3 class="anchored" data-anchor-id="compose-title"><code>$compose-&gt;title()</code></h3>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb10"><pre class="sourceCode php code-with-copy"><code class="sourceCode php"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>-&gt;title(<span class="dt">string</span> <span class="va">$title</span><span class="ot">,</span> <span class="ot">?</span><span class="dt">string</span> <span class="va">$subtitle</span> <span class="op">=</span> <span class="kw">null</span>)<span class="ot">:</span> Compose</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>A title and subtitle over the whole composition.</p>
 </section>
 <section id="compose-theme" class="level3">
 <h3 class="anchored" data-anchor-id="compose-theme"><code>$compose-&gt;theme()</code></h3>
@@ -651,10 +655,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="compose-raw" class="level3">
 <h3 class="anchored" data-anchor-id="compose-raw"><code>$compose-&gt;raw()</code></h3>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb13"><pre class="sourceCode php code-with-copy"><code class="sourceCode php"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>-&gt;raw(<span class="dt">array</span> <span class="va">$spec</span>)<span class="ot">:</span> Compose</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Deep-merges raw Vega-Lite into the composition’s top level, as Plot::raw() does.</p>
 </section>
 <section id="compose-to-array" class="level3">
 <h3 class="anchored" data-anchor-id="compose-to-array"><code>$compose-&gt;toArray()</code></h3>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb14"><pre class="sourceCode php code-with-copy"><code class="sourceCode php"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>-&gt;toArray()<span class="ot">:</span> <span class="dt">array</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>The composition’s Vega-Lite specification.</p>
 </section>
 <section id="compose-to-spec" class="level3">
 <h3 class="anchored" data-anchor-id="compose-to-spec"><code>$compose-&gt;toSpec()</code></h3>
@@ -666,14 +672,17 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="coord_flip" class="level3">
 <h3 class="anchored" data-anchor-id="coord_flip"><code>coord_flip()</code></h3>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb16"><pre class="sourceCode php code-with-copy"><code class="sourceCode php"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>coord_flip()<span class="ot">:</span> <span class="bu">Closure</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>The pipe form of <a href="#coord-flip"><code>-&gt;coordFlip()</code></a>.</p>
 </section>
 <section id="coord_fixed" class="level3">
 <h3 class="anchored" data-anchor-id="coord_fixed"><code>coord_fixed()</code></h3>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb17"><pre class="sourceCode php code-with-copy"><code class="sourceCode php"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>coord_fixed(<span class="dt">int</span><span class="op">|</span><span class="dt">float</span> <span class="va">$ratio</span> <span class="op">=</span> <span class="dv">1</span>)<span class="ot">:</span> <span class="bu">Closure</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>The pipe form of <a href="#coord-fixed"><code>-&gt;coordFixed()</code></a>.</p>
 </section>
 <section id="coord_equal" class="level3">
 <h3 class="anchored" data-anchor-id="coord_equal"><code>coord_equal()</code></h3>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb18"><pre class="sourceCode php code-with-copy"><code class="sourceCode php"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>coord_equal(<span class="dt">int</span><span class="op">|</span><span class="dt">float</span> <span class="va">$ratio</span> <span class="op">=</span> <span class="dv">1</span>)<span class="ot">:</span> <span class="bu">Closure</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>The pipe form of <a href="#coord-fixed"><code>-&gt;coordFixed()</code></a>.</p>
 
 
 </section>

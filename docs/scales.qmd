@@ -4,23 +4,19 @@ title: "Scales, coordinates, and labels"
 
 ## Scales
 
-`scaleX()`, `scaleY()`, `scaleColor()`, `scaleFill()`, `scaleSize()`, `scaleShape()`, `scaleOpacity()`, and `scaleLinetype()` configure the scale and guide for one aesthetic. Successive calls for the same aesthetic merge.
+`scaleX()`, `scaleY()`, `scaleColor()`, `scaleFill()`, `scaleSize()`, `scaleShape()`, `scaleOpacity()`, and `scaleLinetype()` configure the scale and guide for one aesthetic. Successive calls for the same aesthetic merge. The common options:
 
-Scale options are passed to the Vega-Lite scale:
+| Option | Sets |
+| --- | --- |
+| `type` | the scale type, such as `log`, `sqrt`, `time`, or `quantize` |
+| `domain`, `range` | the input and output ranges |
+| `scheme` | a Vega color scheme, such as `viridis` or `set2` |
+| `values` | a manual palette: a level-to-value map, or a list in level order |
+| `name`, `breaks`, `format` | the guide's title, tick or legend values, and d3 format |
+| `labels` | a label formatter, a value-to-label map, labels for `breaks`, or a Vega expression |
+| `guide: false` | hides the axis or legend |
 
-- `type`: `linear`, `log`, `sqrt`, `pow`, `symlog`, `time`, `ordinal`, `quantile`, `quantize`, or `threshold`
-- `domain` and `range`
-- `scheme`, a Vega color scheme such as `viridis`, `blues`, `set2`, or `tableau10`
-- `values`, a manual palette as a level-to-value map or a list in level order
-- `zero`, `nice`, `reverse`, `clamp`, `base`, `exponent`, `domainMid`, and `padding`
-
-Guide options are passed to the axis or legend:
-
-- `name`, the title
-- `breaks`, the tick or legend values
-- `format`, a d3 number or time format
-- `labels`, a label formatter (below), a map from values to labels, a list of labels for `breaks`, or a Vega label expression
-- `guide: false`, which hides the axis or legend
+The [Scales and guides API](reference-scales.qmd#scale-x) lists every option.
 
 {{< include _generated/scale-log.md >}}
 
@@ -90,7 +86,15 @@ The label functions follow the scales package. Pass one as `labels:`.
 `labs()` sets the title, subtitle, caption, and the title for any aesthetic. A null title removes it. Titles for position aesthetics apply to everything drawn on that axis, including ranges and reference lines. A facet field's name sets its panel header title.
 
 ```php
-$plot->labs(title: 'Fuel economy', subtitle: 'EPA data, 1999 and 2008', x: 'Displacement (L)', y: 'Highway mpg', color: 'Drive');
+$plot->labs(
+    title: 'Fuel economy',
+    subtitle: 'EPA data, 1999 and 2008',
+    x: 'Displacement (L)',
+    y: 'Highway mpg',
+    color: 'Drive',
+);
 ```
 
-The caption is placed below the plot, under the axis titles. By default it is right-aligned and smaller than the axis titles, as in ggplot2. `theme(captionSize:, captionColor:, captionAnchor:)` changes its size, color, and alignment (`start`, `middle`, or `end`). Vega-Lite gives each view one title. A plot with both a title and a caption is therefore emitted as a `vconcat` that holds the single view, with the title on the outside and the caption on the view. Vega-Lite does not apply `autosize` fit to a `vconcat`. In such a plot, `size()` sets the plot area alone, and the titles, axes, and caption are added around it. A caption without a title keeps the exact size under `autosize` fit.
+The caption sits below the plot, right-aligned and smaller than the axis titles, as in ggplot2. `theme(captionSize:, captionColor:, captionAnchor:)` changes its size, color, and alignment (`start`, `middle`, or `end`).
+
+With both a title and a caption, `size()` sets the plot area alone, and the titles, axes, and caption are added around it. (phiz emits such a plot as a Vega-Lite `vconcat`, which `autosize` fit does not apply to.)

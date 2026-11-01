@@ -65,4 +65,5 @@ format:
     theme: cosmo
     toc: true
     code-copy: true
+    css: docs.css
     include-in-header: _phiz-scripts.html

@@ -18,6 +18,8 @@ Functions: [`labs()`]{#labs-function}, [`xlab()`](#xlab-function), [`ylab()`](#y
 ->title(?string $title, ?string $subtitle = null): Plot
 ```
 
+The title and subtitle, as ggplot2's ggtitle(); null removes the title.
+
 Function: [`ggtitle()`](#ggtitle-function).
 
 ### `theme()` {#theme}
@@ -69,11 +71,15 @@ Function: [`size()`](#size-function).
 ->width(string|int $width): Plot
 ```
 
+The width in pixels (per panel when faceted), or 'container' to fill the parent element.
+
 ### `height()` {#height}
 
 ```php
 ->height(string|int $height): Plot
 ```
+
+The height in pixels (per panel when faceted), or 'container' to fill the parent element.
 
 ### `description()` {#description}
 
@@ -89,11 +95,15 @@ Function: [`size()`](#size-function).
 ggtitle(?string $title, ?string $subtitle = null): Closure
 ```
 
+The pipe form of [`->title()`](#title).
+
 ### `xlab()` {#xlab-function}
 
 ```php
 xlab(?string $title): Closure
 ```
+
+The x axis title, as ggplot2's xlab(); null removes it.
 
 ### `ylab()` {#ylab-function}
 
@@ -101,11 +111,15 @@ xlab(?string $title): Closure
 ylab(?string $title): Closure
 ```
 
+The y axis title, as ggplot2's ylab(); null removes it.
+
 ### `theme_gray()` {#theme_gray}
 
 ```php
 theme_gray(int|float $baseSize = 11): Closure
 ```
+
+The gray preset, ggplot2's default theme; baseSize sets the base font size in points.
 
 ### `theme_grey()` {#theme_grey}
 
@@ -113,11 +127,15 @@ theme_gray(int|float $baseSize = 11): Closure
 theme_grey(int|float $baseSize = 11): Closure
 ```
 
+An alias of theme_gray().
+
 ### `theme_bw()` {#theme_bw}
 
 ```php
 theme_bw(int|float $baseSize = 11): Closure
 ```
+
+The bw preset: a white panel with a dark border and gray grid lines.
 
 ### `theme_minimal()` {#theme_minimal}
 
@@ -125,11 +143,15 @@ theme_bw(int|float $baseSize = 11): Closure
 theme_minimal(int|float $baseSize = 11): Closure
 ```
 
+The minimal preset: grid lines only, with no panel background or border.
+
 ### `theme_classic()` {#theme_classic}
 
 ```php
 theme_classic(int|float $baseSize = 11): Closure
 ```
+
+The classic preset: axis lines and no grid.
 
 ### `theme_light()` {#theme_light}
 
@@ -137,11 +159,15 @@ theme_classic(int|float $baseSize = 11): Closure
 theme_light(int|float $baseSize = 11): Closure
 ```
 
+The light preset: light gray grid lines and a light gray border.
+
 ### `theme_dark()` {#theme_dark}
 
 ```php
 theme_dark(int|float $baseSize = 11): Closure
 ```
+
+The dark preset: a dark background and panel, with light text and grid lines.
 
 ### `theme_void()` {#theme_void}
 
@@ -149,15 +175,21 @@ theme_dark(int|float $baseSize = 11): Closure
 theme_void(int|float $baseSize = 11): Closure
 ```
 
+The void preset: no axes, grid, or background.
+
 ### `theme_linedraw()` {#theme_linedraw}
 
 ```php
 theme_linedraw(int|float $baseSize = 11): Closure
 ```
 
+The linedraw preset: fine black grid lines and a black border.
+
 ### `size()` {#size-function}
 
 ```php
 size(string|int|null $width = null, string|int|null $height = null): Closure
 ```
+
+The pipe form of [`->size()`](#size).
 

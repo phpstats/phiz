@@ -44,6 +44,8 @@ Adds plot-wide aesthetic mappings: x, y, color, fill, size, shape, alpha, group,
 Data::from(mixed $data): Data
 ```
 
+Wraps any supported input: rows, columns, a table, a collection, an iterable, or a Data object as given.
+
 ### `Data::url()` {#data-url}
 
 ```php
@@ -66,11 +68,15 @@ A named data source the page supplies at runtime (vega-embed's view.data(name, r
 ->isInline(): bool
 ```
 
+Whether the data is embedded, rather than a URL or a named source.
+
 ### `$data->isEmpty()` {#data-is-empty}
 
 ```php
 ->isEmpty(): bool
 ```
+
+Whether inline data has no rows. URL and named data count as empty.
 
 ### `$data->count()` {#data-count}
 
@@ -94,17 +100,23 @@ What the binning helpers read: the table, the columns, or the rows.
 ->toSpec(): array
 ```
 
+The Vega-Lite data definition: values, a url, or a name.
+
 ### `$data->fields()` {#data-fields}
 
 ```php
 ->fields(): array
 ```
 
+The field names of inline data, in first-seen order.
+
 ### `$data->has()` {#data-has}
 
 ```php
 ->has(string $field): bool
 ```
+
+Whether inline data has the field.
 
 ### `$data->column()` {#data-column}
 
@@ -144,6 +156,8 @@ Distinct non-null values of a field in first-seen order.
 ->withRows(array $rows): Data
 ```
 
+New inline data holding the given rows.
+
 ### `Data::value()` {#data-value}
 
 ```php
@@ -158,11 +172,15 @@ Data::value(mixed $value): mixed
 Datasets::mpg(): array
 ```
 
+ggplot2's mpg: 234 cars from 1999 and 2008 with displacement (displ, liters), city and highway mpg (cty, hwy), drive (drv), and class.
+
 ### `Datasets::mtcars()` {#datasets-mtcars}
 
 ```php
 Datasets::mtcars(): array
 ```
+
+R's mtcars: 32 cars with mpg, cylinders (cyl), weight (wt, 1,000 lb), horsepower (hp), transmission (am, 1 manual), and the model name.
 
 ### `Datasets::economics()` {#datasets-economics}
 
@@ -170,11 +188,15 @@ Datasets::mtcars(): array
 Datasets::economics(): array
 ```
 
+ggplot2's economics: 574 monthly US rows from 1967 with date, pce ($bn), pop (thousands), psavert (%), uempmed (weeks), and unemploy (thousands).
+
 ### `Datasets::faithful()` {#datasets-faithful}
 
 ```php
 Datasets::faithful(): array
 ```
+
+R's faithful: 272 Old Faithful eruptions with their length (eruptions) and the wait before them (waiting), in minutes.
 
 ### `Datasets::load()` {#datasets-load}
 

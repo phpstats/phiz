@@ -244,6 +244,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 })();</script>
 
 
+<link rel="stylesheet" href="docs.css">
 </head>
 
 <body class="nav-sidebar docked quarto-light">
@@ -579,6 +580,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="to-json" class="level3">
 <h3 class="anchored" data-anchor-id="to-json"><code>toJson()</code></h3>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode php code-with-copy"><code class="sourceCode php"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>-&gt;toJson(<span class="dt">bool</span> <span class="va">$pretty</span> <span class="op">=</span> <span class="kw">false</span>)<span class="ot">:</span> <span class="dt">string</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>The specification as JSON; pretty adds indentation.</p>
 </section>
 <section id="embed" class="level3">
 <h3 class="anchored" data-anchor-id="embed"><code>embed()</code></h3>
@@ -597,14 +599,17 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="svg" class="level3">
 <h3 class="anchored" data-anchor-id="svg"><code>svg()</code></h3>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb6"><pre class="sourceCode php code-with-copy"><code class="sourceCode php"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>-&gt;svg(<span class="ot">?</span>Export <span class="va">$export</span> <span class="op">=</span> <span class="kw">null</span>)<span class="ot">:</span> <span class="dt">string</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>An SVG image rendered by vl-convert.</p>
 </section>
 <section id="png" class="level3">
 <h3 class="anchored" data-anchor-id="png"><code>png()</code></h3>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb7"><pre class="sourceCode php code-with-copy"><code class="sourceCode php"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>-&gt;png(<span class="dt">float</span> <span class="va">$scale</span> <span class="op">=</span> <span class="fl">2.0</span><span class="ot">,</span> <span class="ot">?</span>Export <span class="va">$export</span> <span class="op">=</span> <span class="kw">null</span>)<span class="ot">:</span> <span class="dt">string</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>A PNG image rendered by vl-convert; scale multiplies the pixel dimensions.</p>
 </section>
 <section id="pdf" class="level3">
 <h3 class="anchored" data-anchor-id="pdf"><code>pdf()</code></h3>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb8"><pre class="sourceCode php code-with-copy"><code class="sourceCode php"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>-&gt;pdf(<span class="ot">?</span>Export <span class="va">$export</span> <span class="op">=</span> <span class="kw">null</span>)<span class="ot">:</span> <span class="dt">string</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>A PDF document rendered by vl-convert.</p>
 </section>
 <section id="save" class="level3">
 <h3 class="anchored" data-anchor-id="save"><code>save()</code></h3>
@@ -670,6 +675,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a>    <span class="ot">?</span>Assets <span class="va">$assets</span> <span class="op">=</span> <span class="kw">null</span><span class="ot">,</span></span>
 <span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a>    <span class="dt">string</span> <span class="va">$body</span> <span class="op">=</span> <span class="st">''</span><span class="ot">,</span></span>
 <span id="cb16-7"><a href="#cb16-7" aria-hidden="true" tabindex="-1"></a>)<span class="ot">:</span> <span class="dt">string</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>A complete HTML page that draws the chart, or holds body when chart is null; assets defaults to the CDN.</p>
 </section>
 <section id="html-attributes" class="level3">
 <h3 class="anchored" data-anchor-id="html-attributes"><code>Html::attributes()</code></h3>
@@ -681,6 +687,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="assets-cdn" class="level3">
 <h3 class="anchored" data-anchor-id="assets-cdn"><code>Assets::cdn()</code></h3>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb18"><pre class="sourceCode php code-with-copy"><code class="sourceCode php"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>Assets::cdn(<span class="dt">string</span> <span class="va">$base</span> <span class="op">=</span> <span class="st">'https://cdn.jsdelivr.net/npm'</span>)<span class="ot">:</span> Assets</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>The pinned libraries from jsDelivr, with subresource integrity; base replaces the CDN address.</p>
 </section>
 <section id="assets-local" class="level3">
 <h3 class="anchored" data-anchor-id="assets-local"><code>Assets::local()</code></h3>
@@ -723,10 +730,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="export-available" class="level3">
 <h3 class="anchored" data-anchor-id="export-available"><code>Export::available()</code></h3>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb26"><pre class="sourceCode php code-with-copy"><code class="sourceCode php"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a>Export::available()<span class="ot">:</span> <span class="dt">bool</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Whether the vl-convert binary can be found.</p>
 </section>
 <section id="export-svg" class="level3">
 <h3 class="anchored" data-anchor-id="export-svg"><code>$export-&gt;svg()</code></h3>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb27"><pre class="sourceCode php code-with-copy"><code class="sourceCode php"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a>-&gt;svg(Chart<span class="op">|</span><span class="dt">array</span> <span class="va">$chart</span>)<span class="ot">:</span> <span class="dt">string</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>The chart rendered to SVG.</p>
 </section>
 <section id="export-png" class="level3">
 <h3 class="anchored" data-anchor-id="export-png"><code>$export-&gt;png()</code></h3>
@@ -736,10 +745,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="export-jpeg" class="level3">
 <h3 class="anchored" data-anchor-id="export-jpeg"><code>$export-&gt;jpeg()</code></h3>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb29"><pre class="sourceCode php code-with-copy"><code class="sourceCode php"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a>-&gt;jpeg(Chart<span class="op">|</span><span class="dt">array</span> <span class="va">$chart</span><span class="ot">,</span> <span class="dt">float</span> <span class="va">$scale</span> <span class="op">=</span> <span class="fl">2.0</span><span class="ot">,</span> <span class="ot">?</span><span class="dt">int</span> <span class="va">$quality</span> <span class="op">=</span> <span class="kw">null</span>)<span class="ot">:</span> <span class="dt">string</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>The chart rendered to JPEG; scale multiplies the pixel dimensions, and quality runs from 0 to 100.</p>
 </section>
 <section id="export-pdf" class="level3">
 <h3 class="anchored" data-anchor-id="export-pdf"><code>$export-&gt;pdf()</code></h3>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb30"><pre class="sourceCode php code-with-copy"><code class="sourceCode php"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a>-&gt;pdf(Chart<span class="op">|</span><span class="dt">array</span> <span class="va">$chart</span>)<span class="ot">:</span> <span class="dt">string</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>The chart rendered to PDF.</p>
 </section>
 <section id="export-vega" class="level3">
 <h3 class="anchored" data-anchor-id="export-vega"><code>$export-&gt;vega()</code></h3>

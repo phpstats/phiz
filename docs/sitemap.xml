@@ -2,11 +2,11 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
     <loc>https://phiz.phpstats.org/docs/themes</loc>
-    <lastmod>2026-10-31T14:57:59.000Z</lastmod>
+    <lastmod>2026-11-01T19:22:02.000Z</lastmod>
   </url>
   <url>
     <loc>https://phiz.phpstats.org/docs/scales</loc>
-    <lastmod>2026-10-31T14:57:59.000Z</lastmod>
+    <lastmod>2026-11-01T19:22:02.000Z</lastmod>
   </url>
   <url>
     <loc>https://phiz.phpstats.org/docs/reference</loc>
@@ -14,15 +14,15 @@
   </url>
   <url>
     <loc>https://phiz.phpstats.org/docs/laravel</loc>
-    <lastmod>2026-10-31T14:57:59.000Z</lastmod>
+    <lastmod>2026-11-01T19:22:02.000Z</lastmod>
   </url>
   <url>
     <loc>https://phiz.phpstats.org/docs</loc>
-    <lastmod>2026-10-31T19:54:20.000Z</lastmod>
+    <lastmod>2026-11-01T19:22:02.000Z</lastmod>
   </url>
   <url>
     <loc>https://phiz.phpstats.org/docs/get-started</loc>
-    <lastmod>2026-10-31T20:03:49.000Z</lastmod>
+    <lastmod>2026-11-01T19:22:02.000Z</lastmod>
   </url>
   <url>
     <loc>https://phiz.phpstats.org/docs/facets</loc>
@@ -34,39 +34,39 @@
   </url>
   <url>
     <loc>https://phiz.phpstats.org/docs/dashboard</loc>
-    <lastmod>2026-11-01T18:29:21.000Z</lastmod>
+    <lastmod>2026-11-01T19:22:02.000Z</lastmod>
   </url>
   <url>
     <loc>https://phiz.phpstats.org/docs/data</loc>
-    <lastmod>2026-11-01T14:20:27.000Z</lastmod>
+    <lastmod>2026-11-01T19:22:02.000Z</lastmod>
   </url>
   <url>
     <loc>https://phiz.phpstats.org/docs/development</loc>
-    <lastmod>2026-10-31T15:28:28.000Z</lastmod>
+    <lastmod>2026-11-01T19:22:02.000Z</lastmod>
   </url>
   <url>
     <loc>https://phiz.phpstats.org/docs/geoms</loc>
-    <lastmod>2026-10-31T15:10:41.000Z</lastmod>
+    <lastmod>2026-11-01T19:22:02.000Z</lastmod>
   </url>
   <url>
     <loc>https://phiz.phpstats.org/docs/ggplot2</loc>
-    <lastmod>2026-10-31T14:57:59.000Z</lastmod>
+    <lastmod>2026-11-01T19:22:02.000Z</lastmod>
   </url>
   <url>
     <loc>https://phiz.phpstats.org/docs/interaction</loc>
-    <lastmod>2026-10-16T07:53:12.797Z</lastmod>
+    <lastmod>2026-11-01T19:22:02.000Z</lastmod>
   </url>
   <url>
     <loc>https://phiz.phpstats.org/docs/large-data</loc>
-    <lastmod>2026-10-31T14:57:59.000Z</lastmod>
+    <lastmod>2026-11-01T19:22:02.000Z</lastmod>
   </url>
   <url>
     <loc>https://phiz.phpstats.org/docs/rendering</loc>
-    <lastmod>2026-10-31T15:10:41.000Z</lastmod>
+    <lastmod>2026-11-01T19:22:02.000Z</lastmod>
   </url>
   <url>
     <loc>https://phiz.phpstats.org/docs/statistics</loc>
-    <lastmod>2026-10-31T14:57:59.000Z</lastmod>
+    <lastmod>2026-11-01T19:22:02.000Z</lastmod>
   </url>
   <url>
     <loc>https://phiz.phpstats.org/docs/gallery</loc>
@@ -74,35 +74,35 @@
   </url>
   <url>
     <loc>https://phiz.phpstats.org/docs/reference-plots</loc>
-    <lastmod>2026-11-01T14:20:27.000Z</lastmod>
+    <lastmod>2026-11-01T19:22:02.000Z</lastmod>
   </url>
   <url>
     <loc>https://phiz.phpstats.org/docs/reference-geoms</loc>
-    <lastmod>2026-10-31T19:54:20.000Z</lastmod>
+    <lastmod>2026-11-01T19:22:02.000Z</lastmod>
   </url>
   <url>
     <loc>https://phiz.phpstats.org/docs/reference-scales</loc>
-    <lastmod>2026-10-31T19:54:20.000Z</lastmod>
+    <lastmod>2026-11-01T19:22:02.000Z</lastmod>
   </url>
   <url>
     <loc>https://phiz.phpstats.org/docs/reference-facets</loc>
-    <lastmod>2026-10-31T19:54:20.000Z</lastmod>
+    <lastmod>2026-11-01T19:22:02.000Z</lastmod>
   </url>
   <url>
     <loc>https://phiz.phpstats.org/docs/reference-themes</loc>
-    <lastmod>2026-10-31T19:54:20.000Z</lastmod>
+    <lastmod>2026-11-01T19:22:02.000Z</lastmod>
   </url>
   <url>
     <loc>https://phiz.phpstats.org/docs/reference-interaction</loc>
-    <lastmod>2026-10-31T19:54:20.000Z</lastmod>
+    <lastmod>2026-11-01T19:22:02.000Z</lastmod>
   </url>
   <url>
     <loc>https://phiz.phpstats.org/docs/reference-output</loc>
-    <lastmod>2026-10-31T19:54:20.000Z</lastmod>
+    <lastmod>2026-11-01T19:22:02.000Z</lastmod>
   </url>
   <url>
     <loc>https://phiz.phpstats.org/docs/reference-statistics</loc>
-    <lastmod>2026-10-31T19:54:20.000Z</lastmod>
+    <lastmod>2026-11-01T19:22:02.000Z</lastmod>
   </url>
   <url>
     <loc>https://phiz.phpstats.org/docs/examples/layers</loc>
@@ -114,6 +114,6 @@
   </url>
   <url>
     <loc>https://phiz.phpstats.org/docs/examples/save</loc>
-    <lastmod>2026-11-01T18:29:21.000Z</lastmod>
+    <lastmod>2026-11-01T19:22:02.000Z</lastmod>
   </url>
 </urlset>

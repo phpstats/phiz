@@ -244,6 +244,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 })();</script>
 
 
+<link rel="stylesheet" href="docs.css">
 </head>
 
 <body class="nav-sidebar docked quarto-light">
@@ -560,7 +561,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </header>
 
 
-<p>phiz follows ggplot2’s grammar: data, aesthetic mappings, layers of geoms, scales, coordinates, facets, labels, and themes. Most ggplot2 code translates line by line. This page lists the translations, then the places where phiz behaves differently because Vega-Lite renders the plot.</p>
+<p>Most ggplot2 code translates line by line. The tables below list the translations, and <a href="#differences">Differences</a> lists where phiz behaves differently because Vega-Lite draws the plot.</p>
 <section id="translating-a-plot" class="level2">
 <h2 class="anchored" data-anchor-id="translating-a-plot">Translating a plot</h2>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(mpg, <span class="fu">aes</span>(displ, hwy, <span class="at">colour =</span> drv)) <span class="sc">+</span></span>
@@ -570,7 +571,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_y_log10</span>() <span class="sc">+</span></span>
 <span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">"Displacement (L)"</span>, <span class="at">y =</span> <span class="st">"Highway mpg"</span>) <span class="sc">+</span></span>
 <span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>In phiz, the pipe form keeps ggplot2’s function names. The method chain builds the same plot on PHP 8.3 and 8.4.</p>
+<p>The pipe form keeps ggplot2’s function names. The method chain builds the same plot on PHP 8.3 and 8.4.</p>
 <div class="tabset-margin-container"></div><div class="panel-tabset">
 <ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-1-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-1" role="tab" aria-controls="tabset-1-1" aria-selected="true" href="">PHP 8.5+</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-1-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-2" role="tab" aria-controls="tabset-1-2" aria-selected="false" href="">PHP 8.3–8.4</a></li></ul>
 <div class="tab-content">
@@ -725,7 +726,41 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 </tbody>
 </table>
-<p>Geom arguments keep ggplot2’s names where they exist: <code>bins</code>, <code>binwidth</code>, <code>boundary</code>, <code>breaks</code>, <code>position</code>, <code>method</code>, <code>se</code>, <code>level</code>, <code>span</code>, <code>adjust</code>, <code>h</code>, <code>n</code>, <code>coef</code>, <code>outliers</code>, <code>width</code>, <code>hjust</code>, <code>vjust</code>, <code>angle</code>, <code>nudge_x</code> (as <code>nudgeX</code>), <code>fun.data</code> (as <code>funData</code>), <code>contour_var</code> (as <code>contourVar</code>), and <code>inherit.aes</code> (as <code>inheritAes</code>). <code>position</code> takes the strings <code>'stack'</code>, <code>'dodge'</code>, <code>'fill'</code>, and <code>'identity'</code>.</p>
+<p>Geom arguments keep ggplot2’s names, such as <code>bins</code>, <code>binwidth</code>, <code>method</code>, <code>span</code>, <code>coef</code>, and <code>width</code>. These differ:</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 50%">
+<col style="width: 50%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>ggplot2</th>
+<th>phiz</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>nudge_x</code>, <code>nudge_y</code></td>
+<td><code>nudgeX</code>, <code>nudgeY</code> (in pixels)</td>
+</tr>
+<tr class="even">
+<td><code>fun.data</code>, <code>fun.min</code>, <code>fun.max</code></td>
+<td><code>funData</code>, <code>funMin</code>, <code>funMax</code></td>
+</tr>
+<tr class="odd">
+<td><code>contour_var</code></td>
+<td><code>contourVar</code></td>
+</tr>
+<tr class="even">
+<td><code>inherit.aes</code></td>
+<td><code>inheritAes</code></td>
+</tr>
+<tr class="odd">
+<td><code>position = position_dodge()</code></td>
+<td><code>position: 'dodge'</code> (also <code>'stack'</code>, <code>'fill'</code>, <code>'identity'</code>)</td>
+</tr>
+</tbody>
+</table>
 </section>
 <section id="scales-coordinates-facets-and-themes" class="level2">
 <h2 class="anchored" data-anchor-id="scales-coordinates-facets-and-themes">Scales, coordinates, facets, and themes</h2>
@@ -866,13 +901,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="differences" class="level2">
 <h2 class="anchored" data-anchor-id="differences">Differences</h2>
-<p>These differences follow from Vega-Lite rendering the plot.</p>
 <ul>
 <li><strong>Sizes.</strong> Point <code>size</code> is an area in square pixels, as in Vega-Lite, rather than a diameter in millimeters. The default is 30. <code>linewidth</code> is in pixels.</li>
 <li><strong>Bins.</strong> <code>bins:</code> is a maximum, and Vega-Lite rounds the boundaries. Use <code>binwidth:</code> and <code>boundary:</code> for exact bins.</li>
 <li><strong>Limits.</strong> <code>xlim()</code> and <code>ylim()</code> zoom without removing data. ggplot2 removes the data outside the limits, which changes statistics computed from it.</li>
 <li><strong>Densities.</strong> The default bandwidth is Vega-Lite’s. <code>adjust:</code> multiplies R’s <code>bw.nrd0</code>, so <code>adjust: 1</code> reproduces ggplot2’s default.</li>
-<li><strong>Smoothers.</strong> Loess, <code>lm</code>, <code>quad</code>, and <code>poly</code> fits and their confidence bands are computed in PHP and match R. Loess matches <code>loess(surface = "direct")</code>; ggplot2 interpolates the loess surface, which moves the curve slightly. Above 3,000 rows, loess falls back to Vega-Lite’s transform without a band, where ggplot2 switches to a GAM. There is no <code>gam</code> method.</li>
+<li><strong>Smoothers.</strong> Loess, <code>lm</code>, <code>quad</code>, and <code>poly</code> fits and their bands are computed in PHP. Loess follows R’s <code>loess(surface = "direct")</code>, while ggplot2 interpolates the loess surface, so its curve can differ slightly. Above 3,000 rows, loess falls back to Vega-Lite’s transform without a band, where ggplot2 switches to a GAM. There is no <code>gam</code> method.</li>
 <li><strong>Colors.</strong> Categorical colors come from Vega-Lite’s palette by default. <code>theme('gray')</code> switches to ggplot2’s <code>hue_pal()</code> colors, computed for the number of levels. <code>scaleColor(values:)</code> or <code>scheme:</code> sets them explicitly.</li>
 <li><strong>Panels.</strong> A discrete axis is 300 pixels by default, the same as a continuous axis, and grows by 20 pixels per level beyond 15 levels.</li>
 <li><strong>Violins.</strong> <code>violin()</code> draws each violin as a Vega-Lite trail, whose ends are rounded. There is no <code>draw_quantiles</code> option; layer a <code>boxplot()</code> instead.</li>
@@ -882,7 +916,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="additions" class="level2">
 <h2 class="anchored" data-anchor-id="additions">Additions</h2>
-<p>phiz adds features that ggplot2 leaves to other packages:</p>
+<p>phiz also has features that ggplot2 leaves to other packages:</p>
 <ul>
 <li>tooltips, pan and zoom, brushing, legend highlighting, and sliders (see <a href="./interaction.html">Interaction</a>)</li>
 <li>linked views across compositions</li>

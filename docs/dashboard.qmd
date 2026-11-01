@@ -2,7 +2,10 @@
 title: "Dashboards with Livewire"
 ---
 
-Build Livewire components whose phiz charts follow the component's state: first one chart with one filter, then a dashboard of three linked charts.
+Build Livewire components whose phiz charts follow the component's state. The page has two separate examples:
+
+- **A minimal component** charts revenue from an application's own `orders` table, with one filter.
+- **A linked dashboard** charts the bundled `mpg` car data, so it runs as written, with three charts that share filters.
 
 **Requirements:** a Laravel application with Livewire 3, and `composer require phpstats/phiz phpstats/phibble phpstats/phplyr`.
 

@@ -244,6 +244,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 })();</script>
 
 
+<link rel="stylesheet" href="docs.css">
 </head>
 
 <body class="nav-sidebar docked quarto-light">
@@ -531,6 +532,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
    
   <ul>
   <li><a href="#tests" id="toc-tests" class="nav-link active" data-scroll-target="#tests">Tests</a></li>
+  <li><a href="#benchmarks" id="toc-benchmarks" class="nav-link" data-scroll-target="#benchmarks">Benchmarks</a></li>
   <li><a href="#gallery" id="toc-gallery" class="nav-link" data-scroll-target="#gallery">Gallery</a></li>
   <li><a href="#documentation" id="toc-documentation" class="nav-link" data-scroll-target="#documentation">Documentation</a></li>
   </ul>
@@ -572,6 +574,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p>The statistics tests build model designs with <code>Phit\model_matrix()</code>. They run on the phit extension when it is loaded and on <code>phpstats/phit-polyfill</code>, a development dependency, when it is not. The saved fits in <code>tests/fixtures/fits.json</code> let them check results against R.</p>
 <p>CI runs the suite on PHP 8.3, 8.4, and 8.5. The tests in <code>tests/Pipes/</code> use the pipe operator, so <code>phpunit.xml</code> runs them only on PHP 8.5. Code in <code>src/</code> must parse on PHP 8.3.</p>
 </section>
+<section id="benchmarks" class="level2">
+<h2 class="anchored" data-anchor-id="benchmarks">Benchmarks</h2>
+<p><code>php -d memory_limit=-1 scripts/bench-large-data.php</code> times the PHP binning geoms on a million-row phibble table and prints the environment and a Markdown table. Timings in the documentation come from the Linux benchmark machine.</p>
+</section>
 <section id="gallery" class="level2">
 <h2 class="anchored" data-anchor-id="gallery">Gallery</h2>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode sh code-with-copy"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="ex">php</span> examples/gallery.php <span class="pp">[</span><span class="ss">output.html</span><span class="pp">]</span> <span class="pp">[--</span><span class="ss">svg=dir</span><span class="pp">]</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
@@ -581,13 +587,14 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <h2 class="anchored" data-anchor-id="documentation">Documentation</h2>
 <p>The documentation is a Quarto website in <code>docs/</code>. The pages include generated fragments for their examples:</p>
 <ol type="1">
-<li>Each file in <code>docs/examples/</code> returns a chart. An example that uses the pipe operator has a method-chain twin, <code>{name}.chain.php</code>, and the page shows the two in tabs labeled “PHP 8.5+” and “PHP 8.3–8.4”.</li>
-<li><code>php scripts/docs-examples.php</code> runs every example and checks that each twin builds the same specification. For each example it writes the code and the specification to <code>docs/_generated/</code>, and an SVG to <code>docs/figures/</code> when vl-convert is found. It also writes the gallery fragment from <code>examples/catalog.php</code>.</li>
-<li><code>php scripts/docs-reference.php</code> writes the API reference fragments from the signatures and docblocks in <code>src/</code>.</li>
+<li>Each file in <code>docs/examples/</code> returns a chart. An example that uses the pipe operator has a method-chain twin, <code>{name}.chain.php</code>, and the page shows the two in tabs labeled “PHP 8.5+” and “PHP 8.3–8.4”. A <code>{name}-preview.php</code> file shows only its chart, and <code>{name}-hero.php</code> shows its chart before the code.</li>
+<li>The pages under <code>docs/examples/</code> show complete scripts from <code>docs/examples/scripts/</code>. The generator runs each in an empty directory beside <code>vendor</code>, displays it without the opening tag and autoloader, and shows the chart it produced.</li>
+<li><code>php scripts/docs-examples.php</code> runs every example and checks that each twin builds the same specification. It writes the code and the chart to <code>docs/_generated/</code>, and an SVG to <code>docs/figures/</code> when vl-convert is found. It also writes the gallery fragment from <code>examples/catalog.php</code>. Charts are sized to the page by <code>scripts/docs-fit.php</code>: a plot without a width fills the content column.</li>
+<li><code>php scripts/docs-reference.php</code> writes the API reference fragments from the signatures and docblocks in <code>src/</code>. A function without a docblock gets a generated description: a fill or y twin points to its color or x original, and a pipe wrapper to its method. Write a docblock for anything else.</li>
 <li><code>quarto render docs</code> builds the site into <code>docs/_site/</code>.</li>
-<li><code>scripts/render-docs</code> runs steps 2 to 4, then copies the site into <code>docs/</code>.</li>
+<li><code>scripts/render-docs</code> runs steps 3 to 5, then copies the site into <code>docs/</code>.</li>
 </ol>
-<p>phpstats.org imports the committed HTML in <code>docs/</code> and publishes it at <a href="https://phiz.phpstats.org/docs" class="uri">https://phiz.phpstats.org/docs</a>, so commit the rendered pages with their sources. GitHub Pages serves the <code>gh-pages</code> branch, which holds only redirects from the old <code>phpstats.github.io/phiz/</code> addresses to the same pages on phpstats.org. The pipe examples need PHP 8.5, and the SVGs need vl-convert 1.9.0, the version the committed figures were made with:</p>
+<p>phpstats.org imports the committed HTML in <code>docs/</code> and publishes it at <a href="https://phiz.phpstats.org/docs" class="uri">https://phiz.phpstats.org/docs</a>, so commit the rendered pages with their sources. GitHub Pages serves only redirects: <code>.github/workflows/pages.yml</code> generates one for each page in <code>docs/</code>, pointing to the same page on phpstats.org. The pipe examples need PHP 8.5, and the SVGs need vl-convert 1.9.0, the version the committed figures were made with:</p>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode sh code-with-copy"><code class="sourceCode bash"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="va">PHP</span><span class="op">=</span>php8.5 <span class="va">PHIZ_VL_CONVERT</span><span class="op">=</span>/path/to/vl-convert <span class="ex">scripts/render-docs</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>A render rewrites every <code>lastmod</code> in <code>docs/sitemap.xml</code> from the file times on the rendering machine. Keep the committed dates, and change the date only for pages whose content changed.</p>
 <p>Some statistics examples build designs from model formulas with <code>Phit\model_matrix()</code>. phit-polyfill provides it when the phit extension is not loaded, so the documentation build needs no extension.</p>

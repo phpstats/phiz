@@ -17,25 +17,37 @@ final class Datasets
     /** @var array<string, list<array<string, mixed>>> */
     private static array $cache = [];
 
-    /** @return list<array<string, mixed>> */
+    /**
+     * ggplot2's mpg: 234 cars from 1999 and 2008 with displacement (displ, liters), city and highway mpg (cty, hwy), drive (drv), and class.
+     *
+     * @return list<array<string, mixed>> */
     public static function mpg(): array
     {
         return self::load('mpg');
     }
 
-    /** @return list<array<string, mixed>> */
+    /**
+     * R's mtcars: 32 cars with mpg, cylinders (cyl), weight (wt, 1,000 lb), horsepower (hp), transmission (am, 1 manual), and the model name.
+     *
+     * @return list<array<string, mixed>> */
     public static function mtcars(): array
     {
         return self::load('mtcars');
     }
 
-    /** @return list<array<string, mixed>> */
+    /**
+     * ggplot2's economics: 574 monthly US rows from 1967 with date, pce ($bn), pop (thousands), psavert (%), uempmed (weeks), and unemploy (thousands).
+     *
+     * @return list<array<string, mixed>> */
     public static function economics(): array
     {
         return self::load('economics');
     }
 
-    /** @return list<array<string, mixed>> */
+    /**
+     * R's faithful: 272 Old Faithful eruptions with their length (eruptions) and the wait before them (waiting), in minutes.
+     *
+     * @return list<array<string, mixed>> */
     public static function faithful(): array
     {
         return self::load('faithful');

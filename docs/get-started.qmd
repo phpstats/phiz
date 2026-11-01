@@ -8,41 +8,23 @@ title: "Get started"
 composer require phpstats/phiz
 ```
 
-phiz supports PHP 8.3, 8.4, and 8.5 (composer.json allows `>=8.3 <8.6`), and CI tests all three on Linux. macOS is supported too. Examples written with the pipe operator `|>` need PHP 8.5, and each one also has a method-chain version for PHP 8.3 and 8.4. phiz needs only the `json` extension, which PHP includes by default, and has no required Composer dependencies.
+phiz supports PHP 8.3, 8.4, and 8.5 (composer.json allows `>=8.3 <8.6`). CI tests all three on Linux, and macOS is supported too. phiz needs only the `json` extension, which PHP includes by default, and has no required Composer dependencies. Examples that use the pipe operator `|>` need PHP 8.5, and each has a method-chain version for PHP 8.3 and 8.4.
 
-These features are optional:
+| Optional | Adds | Details |
+| --- | --- | --- |
+| vl-convert 1.9.0 (a standalone binary) | `svg()`, `png()`, `pdf()`, and image files from `save()` | [Installing vl-convert](rendering.qmd#installing-vl-convert) |
+| Laravel (tested on 12) | the `<x-phiz>` Blade component and `@phizScripts`, discovered automatically | [Laravel and Livewire](laravel.qmd) |
+| phit, or `phpstats/phit-polyfill` | predictions from formula fits | [Statistics](statistics.qmd#requirements) |
 
-- **vl-convert**, a standalone binary, adds `svg()`, `png()`, `pdf()`, and `save()` with those extensions. Version 1.9.0 is tested. [Installing vl-convert](rendering.qmd#installing-vl-convert) gives the commands for Linux and macOS.
-- **Laravel** adds the `<x-phiz>` Blade component and the `@phizScripts` directive. The service provider is discovered automatically. The component's tests run on Laravel 12. [Laravel and Livewire](laravel.qmd) covers it.
-- **phit**, the extension or its pure-PHP polyfill `phpstats/phit-polyfill`, builds design rows from a fit's formula. Predictions for formula fits in `effect_plot()`, `predictions()`, and `marginal_means()` need it unless `design:` is given, and so do random-slope design columns in `random_effects_plot()` when it rebuilds conditional variances from the data. The documentation fits are checked against polyfill 0.3.0. [Statistics](statistics.qmd) describes the fit arrays the helpers read.
+## A first chart
 
-## A complete first chart
-
-In a new directory, run `composer require phpstats/phiz`, then save this script as `chart.php` beside the `vendor` directory:
-
-```php
-<?php
-
-require __DIR__.'/vendor/autoload.php';
-
-use Phiz\Datasets;
-use Phiz\Plot;
-
-$plot = Plot::of(Datasets::mpg())
-    ->aes(x: 'displ', y: 'hwy', color: 'drv')
-    ->point()
-    ->labs(x: 'Displacement (L)', y: 'Highway mpg', color: 'Drive');
-
-$plot->save('chart.html');
-```
-
-`php chart.php` writes `chart.html`, a standalone page. Open it in a browser to see the chart. The page loads vega, vega-lite, and vega-embed from the jsDelivr CDN, so viewing it needs a network connection. `save('chart.svg')`, `save('chart.png')`, and `save('chart.pdf')` write static files instead and need the vl-convert binary ([Rendering](rendering.qmd)).
-
-## Data, mappings, and geoms
-
-A plot starts with data and aesthetic mappings. `Plot::of()` takes the data, `aes()` maps fields to visual channels, and a geom such as `point()` adds a layer. The bundled `Datasets` class provides a few classic datasets for examples.
+`Plot::of()` takes the data, `aes()` maps fields to visual channels, and a geom such as `point()` adds a layer. `Datasets` provides the classic datasets used in these pages.
 
 {{< include _generated/start-point.md >}}
+
+`$plot->save('chart.html')` writes a page that draws the chart in a browser. The page loads vega, vega-lite, and vega-embed from the jsDelivr CDN, so it needs a network connection. Image formats need vl-convert ([Save a chart to a file](examples/save.qmd)).
+
+## Mappings and fixed properties
 
 Mapping another field to `color` gives each class its own color and adds a legend. Fixed properties, such as a point size or an opacity, are geom arguments.
 
@@ -50,7 +32,7 @@ Mapping another field to `color` gives each class its own color and adds a legen
 
 ## Layers
 
-Each geom adds a layer, and layers inherit the plot's mappings. This plot overlays a loess smoother on the points and labels the axes.
+Each geom adds a layer, and layers inherit the plot's mappings.
 
 {{< include _generated/start-layers.md >}}
 
@@ -70,25 +52,29 @@ PHP 8.5's pipe operator composes ggplot2-style functions. `ggplot()` starts a pl
 
 {{< include _generated/start-pipe.md >}}
 
-The functions and the methods accept the same arguments. On PHP 8.3 and 8.4, `apply()` also takes the functions, after `use function Phiz\{aes, geom_point, ggplot, labs};`: `ggplot(Datasets::mpg(), aes(x: 'displ', y: 'hwy'))->apply(geom_point(), labs(x: 'Displacement (L)'))`. A plot can also apply reusable fragments with `apply()`:
+The functions and the methods take the same arguments. On PHP 8.3 and 8.4, `apply()` takes the functions instead of the pipe, and it also applies reusable fragments:
 
 ```php
-$house = fn (Plot $plot) => $plot->theme('minimal', baseSize: 12)->size(480, 300);
+$house = fn (Plot $plot) => $plot
+    ->theme('minimal', baseSize: 12)
+    ->size(480, 300);
 
-$plot = Plot::of(Datasets::mpg())->aes(x: 'displ', y: 'hwy')->point()->apply($house);
+$plot = Plot::of(Datasets::mpg())
+    ->aes(x: 'displ', y: 'hwy')
+    ->point()
+    ->apply($house);
 ```
 
 ## Output
 
-A plot compiles to a Vega-Lite specification on demand.
+A plot compiles to a Vega-Lite specification when output is requested.
 
-```php
-$plot->toArray();        // the specification as a PHP array
-$plot->toJson();         // as JSON
-$plot->embed();          // an HTML fragment with the container and script tags
-$plot->html();           // a standalone HTML page
-$plot->svg();            // SVG through vl-convert
-$plot->save('plot.pdf'); // the file extension picks the format
-```
+| Method | Returns |
+| --- | --- |
+| `toArray()`, `toJson()` | the specification as a PHP array or JSON |
+| `embed()` | an HTML fragment: the chart container and the script tags |
+| `html()` | a complete HTML page |
+| `svg()`, `png()`, `pdf()` | an image, through vl-convert |
+| `save($path)` | a file whose extension picks the format |
 
-[Rendering](rendering.qmd) covers the options for each output, and [Laravel and Livewire](laravel.qmd) covers the Blade component.
+[Rendering](rendering.qmd) covers each output, and [Laravel and Livewire](laravel.qmd) covers the Blade component.

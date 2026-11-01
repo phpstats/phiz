@@ -29,11 +29,13 @@ final class Compose extends Chart
         }
     }
 
+    /** Charts side by side in one row, as patchwork's p1 + p2 (a Vega-Lite hconcat). */
     public static function beside(Chart ...$charts): self
     {
         return new self('hconcat', array_values($charts));
     }
 
+    /** Charts stacked in one column, as patchwork's p1 / p2 (a Vega-Lite vconcat). */
     public static function stack(Chart ...$charts): self
     {
         return new self('vconcat', array_values($charts));
@@ -49,6 +51,7 @@ final class Compose extends Chart
         return new self('concat', array_values($charts), $columns);
     }
 
+    /** A title and subtitle over the whole composition. */
     public function title(string $title, ?string $subtitle = null): self
     {
         return $this->with(title: $subtitle === null ? $title : ['text' => $title, 'subtitle' => $subtitle]);
@@ -68,6 +71,7 @@ final class Compose extends Chart
         return $this->with(resolve: $resolve);
     }
 
+    /** Deep-merges raw Vega-Lite into the composition's top level, as Plot::raw() does. */
     public function raw(array $spec): self
     {
         return $this->with(raw: Theme::merge($this->raw, $spec));
@@ -79,6 +83,7 @@ final class Compose extends Chart
         return new self(...$changes + get_object_vars($this));
     }
 
+    /** The composition's Vega-Lite specification. */
     public function toArray(): array
     {
         $spec = ['$schema' => Assets::SCHEMA] + $this->toSpec();

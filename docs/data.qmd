@@ -4,17 +4,34 @@ title: "Data and fields"
 
 ## Data inputs
 
-`Plot::of()` and each geom's `data:` argument accept data in several shapes:
+`Plot::of()` and each geom's `data:` argument accept these inputs:
 
-- a list of row arrays, such as `[['x' => 1, 'y' => 2], ...]`
-- an array of equal-length columns, such as `['x' => [1, 2], 'y' => [2, 3]]`
-- a phibble table, or any object with `toRows()` or `toColumns()`
-- a Laravel Collection, or any object with `toArray()`
-- any iterable of rows, where rows may be arrays or objects
-- `Data::url('cars.csv')`, which Vega-Lite fetches in the browser
-- `Data::named('live')`, a data source the page supplies at runtime
+| Input | Example | Where it lives |
+| --- | --- | --- |
+| a list of rows | `[['x' => 1, 'y' => 2], ...]` | embedded in the specification |
+| equal-length columns | `['x' => [1, 2], 'y' => [2, 3]]` | embedded |
+| a phibble table, or an object with `toRows()` or `toColumns()` | `DataFrame::fromRows($rows)` | embedded |
+| a Laravel Collection, or an object with `toArray()` | `Car::all()` | embedded |
+| any iterable of array or object rows | a generator | embedded |
+| a URL | `Data::url('cars.csv')` | fetched by the browser |
+| a named data source | `Data::named('live')` | supplied by the page at runtime |
 
-Inline data is embedded in the specification. Values are made safe for JSON: `DateTimeInterface` values become ISO 8601 strings, enums become their values, and `NAN` and `INF` become null, which Vega-Lite treats as missing. A phibble `Time` (phibble 0.6 and later, like R's hms) becomes its number of seconds, so a time column is quantitative. As with ggplot2's `scale_x_time()`, its x or y axis is labeled the way hms prints times, such as `08:30:00`, or `-01:15:00` and `27:00:00` for durations, with breaks on whole seconds, minutes, hours, or days. Labels set with `scaleX(labels:)` or `scaleY(labels:)` replace that formatting. Tooltips show the seconds.
+Embedded values are converted for JSON:
+
+| PHP value | In the specification |
+| --- | --- |
+| `DateTimeInterface` | an ISO 8601 string, read as temporal |
+| a backed enum | its value |
+| a pure enum | its case name |
+| `NAN`, `INF`, `-INF` | null, which Vega-Lite treats as missing |
+| phibble `Time` (phibble 0.6+) | its number of seconds, read as quantitative |
+
+A phibble `Time` axis is labeled the way R's hms prints times, as `scale_x_time()` does in ggplot2:
+
+- Labels look like `08:30:00`, or `-01:15:00` and `27:00:00` for durations.
+- Breaks fall on whole seconds, minutes, hours, or days.
+- `scaleX(labels:)` or `scaleY(labels:)` replaces the labels.
+- Tooltips show the number of seconds.
 
 {{< include _generated/data-columns.md >}}
 
