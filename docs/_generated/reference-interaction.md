@@ -33,7 +33,7 @@ Function: [`interactive()`]{#interactive-function}.
 ): Plot
 ```
 
-A drag-to-select interval named $name. Unselected marks of the first layer turn $unselected; other layers can react with filter: ['param' => $name], and linked plots in a composition share it.
+A drag-to-select interval named \$name. Unselected marks of the first layer turn \$unselected; other layers can react with filter: ['param' => \$name], and linked plots in a composition share it.
 
 Function: [`brush()`]{#brush-function}.
 
@@ -48,7 +48,7 @@ Function: [`brush()`]{#brush-function}.
 ): Plot
 ```
 
-Click legend entries (or marks, with bind: null) to highlight their group; others fade to $opacity.
+Click legend entries (or marks, with bind: null) to highlight their group; others fade to \$opacity.
 
 Function: [`highlight()`]{#highlight-function}.
 
@@ -65,7 +65,7 @@ Function: [`highlight()`]{#highlight-function}.
 ): Plot
 ```
 
-A slider bound to a parameter; use expr($name) in geoms or a filter to react to it.
+A slider bound to a parameter; use expr(\$name) in geoms or a filter to react to it.
 
 ### `dropdown()` {#dropdown}
 

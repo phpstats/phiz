@@ -1,8 +1,8 @@
 ---
-title: "API reference"
+title: "API conventions"
 ---
 
-The reference is generated from the public signatures and docblocks in `src/`, and is split into pages by topic. Each page starts with an index of its methods and functions, and every entry has its own anchor.
+The reference is generated from the public signatures and docblocks in `src/`. [Functions and methods](functions.qmd) lists every entry, and each reference page lists its entries in the page's table of contents.
 
 | Page | Contents |
 | --- | --- |
@@ -15,33 +15,3 @@ The reference is generated from the public signatures and docblocks in `src/`, a
 | [Output API](reference-output.qmd) | specifications, HTML, static export, and the escape hatches into raw Vega-Lite |
 | [Statistics API](reference-statistics.qmd) | coefficient plots, diagnostics, predictions, marginal means, and posterior intervals |
 
-## Conventions
-
-Every `Plot` method that adds or changes something returns a new `Plot`, and the plot it was called on is unchanged.
-
-Most functions in the `Phiz\` namespace return a closure that applies the `Plot` method of the same name, for PHP 8.5's pipe operator and for `apply()`. They take the same arguments as that method. Each method's entry lists the functions that wrap it. A function with arguments of its own, such as `scale_color_manual()`, also has an entry.
-
-## Aesthetics
-
-`aes()` and every geom's `aes` argument accept these names: `x`, `y`, `xmin`, `xmax`, `ymin`, `ymax`, `xend`, `yend`, `color` (or `colour`), `fill`, `size`, `shape`, `opacity` (or `alpha`), `linetype`, `group`, `detail`, `tooltip`, `label` (or `text`), `order`, `href`, `theta`, `radius`, `xintercept`, `yintercept`, `sample`, `key`, and `description`.
-
-## Exceptions
-
-- `InvalidArgumentException` for input phiz cannot use, such as an unknown aesthetic, scale type, theme, or legend position, a geom without an aesthetic it needs, data that is neither rows nor columns, or a plot with no layers. The message names the problem.
-- `Phiz\Exceptions\VlConvertNotFound` when static export cannot find the vl-convert binary.
-- `Phiz\Exceptions\ExportFailed` when vl-convert fails, times out, or writes nothing, or when a file cannot be written.
-
-Both export exceptions implement `Phiz\Exceptions\PhizException`.
-
-## Other classes
-
-These classes are used through the methods above and are not documented entry by entry.
-
-| Class | Purpose |
-| --- | --- |
-| `Field` | field definitions and shorthand parsing, created by `field()`, `factor()`, and `calc()` |
-| `Scale`, `Theme`, `Style` | scale, theme, and style translation |
-| `Palette` | ggplot2's hue palette and R's `hcl()` colors |
-| `Config` | large-data thresholds: `$serverRows` and `$warnRows` ([Large data](large-data.qmd)) |
-| `Stats\Charts` | the implementations behind the statistics functions |
-| `Stats\Fit` | least squares, smoothing bands, and normal and t quantiles |

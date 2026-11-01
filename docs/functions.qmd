@@ -1,0 +1,15 @@
+---
+title: "Functions and methods"
+toc-depth: 2
+---
+
+Every public function and method, from the source, grouped by reference page. Each function in the `Phiz\` namespace is listed with the `Plot` method it calls, for the pipe operator and `apply()`.
+
+| Notation | Meaning |
+| --- | --- |
+| `geom_point()` | a function in the `Phiz\` namespace |
+| `->point()` | a `Plot` instance method |
+| `Plot::of()`, `Data::from()` | a static method |
+| `$data->has()` | an instance method of the named class |
+
+{{< include _generated/reference-index.md >}}

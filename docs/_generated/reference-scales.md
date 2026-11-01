@@ -116,6 +116,8 @@ Function: [`xlim()`](#xlim-function).
 ->ylim(string|int|float $min, string|int|float $max): Plot
 ```
 
+Fixes the y domain. Unlike ggplot2's ylim(), data outside it is clipped rather than dropped.
+
 Function: [`ylim()`](#ylim-function).
 
 ## Functions

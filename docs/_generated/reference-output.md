@@ -16,11 +16,15 @@
 ->toArray(): array
 ```
 
+The Vega-Lite specification as a PHP array, with \$schema and config.
+
 ### `toSpec()` {#to-spec}
 
 ```php
 ->toSpec(): array
 ```
+
+The specification for nesting in a composition: without \$schema or config.
 
 ### `toJson()` {#to-json}
 
@@ -40,7 +44,7 @@ The specification as JSON; pretty adds indentation.
 ): string
 ```
 
-An HTML fragment that renders the chart: a container div plus, unless $assets is false, the script tags.
+An HTML fragment that renders the chart: a container div plus, unless \$assets is false, the script tags.
 
 ### `html()` {#html}
 
@@ -48,7 +52,7 @@ An HTML fragment that renders the chart: a container div plus, unless $assets is
 ->html(?string $title = null, array $options = [], ?Assets $assets = null): string
 ```
 
-A standalone HTML page.
+A complete HTML page that draws the chart, loading the libraries from the CDN unless assets says otherwise.
 
 ### `svg()` {#svg}
 
@@ -167,6 +171,8 @@ A complete HTML page that draws the chart, or holds body when chart is null; ass
 ```php
 Html::attributes(array $attributes): string
 ```
+
+HTML attributes from a name => value map: true writes a bare attribute, and null or false leaves it out.
 
 ## Assets {#class-assets}
 

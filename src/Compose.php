@@ -112,6 +112,7 @@ final class Compose extends Chart
         return $spec;
     }
 
+    /** The composition's specification for nesting in another composition: without $schema or config. */
     public function toSpec(): array
     {
         $spec = [];

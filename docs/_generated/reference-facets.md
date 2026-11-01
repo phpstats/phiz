@@ -156,6 +156,8 @@ The composition's Vega-Lite specification.
 ->toSpec(): array
 ```
 
+The composition's specification for nesting in another composition: without \$schema or config.
+
 ## Functions
 
 ### `coord_flip()` {#coord_flip}

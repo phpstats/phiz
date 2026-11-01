@@ -70,7 +70,10 @@ final class Html
             ."</head>\n<body>\n".$content."\n</body>\n</html>\n";
     }
 
-    /** @param array<string, string|int|bool|null> $attributes */
+    /**
+     * HTML attributes from a name => value map: true writes a bare attribute, and null or false leaves it out.
+     *
+     * @param array<string, string|int|bool|null> $attributes */
     public static function attributes(array $attributes): string
     {
         $out = '';

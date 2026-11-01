@@ -53,7 +53,7 @@ The documentation is at <https://phiz.phpstats.org/docs>:
 - [Get started](https://phiz.phpstats.org/docs/get-started) builds and saves a first chart.
 - [Coming from ggplot2](https://phiz.phpstats.org/docs/ggplot2) translates ggplot2 code and lists the differences.
 - [Gallery](https://phiz.phpstats.org/docs/gallery) shows the 46 examples in `examples/catalog.php` with their code.
-- [API reference](https://phiz.phpstats.org/docs/reference) lists every method and function with its signature.
+- [Functions and methods](https://phiz.phpstats.org/docs/functions) lists every function and method, with links to their signatures.
 
 ## Development
 

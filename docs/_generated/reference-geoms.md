@@ -211,7 +211,7 @@ Function: [`geom_col()`]{#geom_col}.
 ): Plot
 ```
 
-Binned counts of x: bins (a maximum; Vega-Lite picks nice boundaries) or binwidth. density: true scales to unit area. compute: 'server' bins in PHP (exactly bins equal-width bins), 'browser' in Vega-Lite, and 'auto' (the default) in PHP above Config::$serverRows rows.
+Binned counts of x: bins (a maximum; Vega-Lite picks nice boundaries) or binwidth. density: true scales to unit area. compute: 'server' bins in PHP (exactly bins equal-width bins), 'browser' in Vega-Lite, and 'auto' (the default) in PHP above Config::\$serverRows rows.
 
 Function: [`geom_histogram()`]{#geom_histogram}.
 
@@ -496,7 +496,7 @@ Function: [`geom_text()`]{#geom_text}.
 ): Plot
 ```
 
-Bold text labels.
+Text from the label aesthetic in bold, standing in for geom_label(); Vega-Lite draws no box behind it.
 
 Function: [`geom_label()`]{#geom_label}.
 
@@ -529,7 +529,7 @@ Function: [`geom_tile()`]{#geom_tile}.
 ): Plot
 ```
 
-Alias of tile().
+Heatmap tiles, as tile() draws them; ggplot2's geom_raster() name.
 
 Function: [`geom_raster()`]{#geom_raster}.
 
@@ -967,7 +967,7 @@ Function: [`geom_arc()`]{#geom_arc}.
 ): Plot
 ```
 
-Alias of arc().
+Pie or donut slices, as arc() draws them; innerRadius in pixels makes a donut.
 
 ### `layer()` {#layer}
 

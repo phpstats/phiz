@@ -120,7 +120,15 @@
                 "path": "large-data.qmd"
             },
             {
-                "title": "API reference",
+                "title": "Design and compatibility",
+                "path": "design.qmd"
+            },
+            {
+                "title": "Functions and methods",
+                "path": "functions.qmd"
+            },
+            {
+                "title": "API conventions",
                 "path": "reference.qmd"
             },
             {
@@ -170,10 +178,6 @@
             {
                 "title": "Gallery",
                 "path": "gallery.qmd"
-            },
-            {
-                "title": "Design and compatibility",
-                "path": "design.qmd"
             },
             {
                 "title": "Development",

@@ -18,9 +18,9 @@ website:
     style: docked
     search: true
     contents:
-      - index.qmd
       - section: "Getting started"
         contents:
+          - index.qmd
           - get-started.qmd
           - ggplot2.qmd
       - section: "Guides"
@@ -36,8 +36,10 @@ website:
           - laravel.qmd
           - dashboard.qmd
           - large-data.qmd
-      - section: "Reference"
+          - design.qmd
+      - section: "Functions and methods"
         contents:
+          - functions.qmd
           - reference.qmd
           - reference-plots.qmd
           - reference-geoms.qmd
@@ -53,9 +55,6 @@ website:
           - examples/facets.qmd
           - examples/save.qmd
           - gallery.qmd
-      - section: "Compatibility and limitations"
-        contents:
-          - design.qmd
       - section: "Contributing"
         contents:
           - development.qmd

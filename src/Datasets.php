@@ -53,7 +53,10 @@ final class Datasets
         return self::load('faithful');
     }
 
-    /** @return list<array<string, mixed>> */
+    /**
+     * A bundled dataset by name, from resources/data/{name}.csv, cached after the first load; an unknown name throws.
+     *
+     * @return list<array<string, mixed>> */
     public static function load(string $name): array
     {
         if (isset(self::$cache[$name])) {

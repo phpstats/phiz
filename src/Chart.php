@@ -43,7 +43,7 @@ abstract class Chart implements JsonSerializable
         return Html::embed($this, $options, $assets, $attributes);
     }
 
-    /** A standalone HTML page. */
+    /** A complete HTML page that draws the chart, loading the libraries from the CDN unless assets says otherwise. */
     public function html(?string $title = null, array $options = [], ?Assets $assets = null): string
     {
         return Html::page($this, $title, $options, $assets);

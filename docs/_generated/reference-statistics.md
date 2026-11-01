@@ -54,7 +54,7 @@ residual_plot(), qq_plot(), scale_location_plot(), and fitted_plot() in a two-by
 effect_plot(array $fit, mixed $data, string $x, mixed ...$options): Plot
 ```
 
-Predicted values with confidence bands as x varies (by levels of $by), other variables held at typical values.
+Predicted values with confidence bands as x varies (by levels of \$by), other variables held at typical values.
 
 ### `predictions()` {#predictions-function}
 

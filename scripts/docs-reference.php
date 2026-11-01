@@ -87,7 +87,15 @@ function reference_summary(ReflectionFunctionAbstract $f): string
         $text[] = str_replace('*/', '', $line);
     }
 
-    return trim(preg_replace('/\s+/', ' ', implode(' ', $text)));
+    return reference_escape(trim(preg_replace('/\s+/', ' ', implode(' ', $text))));
+}
+
+/** Escapes dollar signs outside code spans, which Pandoc would otherwise read as math. */
+function reference_escape(string $text): string
+{
+    $parts = preg_split('/(`[^`]*`)/', $text, -1, PREG_SPLIT_DELIM_CAPTURE);
+
+    return implode('', array_map(fn ($part) => str_starts_with($part, '`') ? $part : preg_replace('/(?<!\\\\)\$/', '\\\\$', $part), $parts));
 }
 
 /**
@@ -143,19 +151,28 @@ function reference_entry(string $heading, string $anchor, ReflectionFunctionAbst
     return $out;
 }
 
+/** The first sentence of a description, without links, for a table cell. */
+function reference_purpose(string $summary): string
+{
+    $summary = preg_replace('/\[(`[^`]*`)\]\([^)]*\)/', '$1', $summary);
+    $first = preg_split('/(?<=[.!?])\s+(?=[A-Z`(])/', $summary, 2)[0] ?? '';
+
+    return str_replace('|', '\\|', trim($first));
+}
+
 /** The index line for a group of entries. */
 function reference_index(string $label, array $links): string
 {
     return $links === [] ? '' : "**{$label}:** ".implode(' · ', $links)."\n\n";
 }
 
-/** The public methods a class declares itself, in source order. */
+/** The public methods a class declares itself, in source order, without those marked @internal. */
 function reference_methods(string $class): array
 {
     $reflection = new ReflectionClass($class);
     $methods = [];
     foreach ($reflection->getMethods(ReflectionMethod::IS_PUBLIC) as $method) {
-        if ($method->getDeclaringClass()->getName() === $class && ! str_starts_with($method->getName(), '__')) {
+        if ($method->getDeclaringClass()->getName() === $class && ! str_starts_with($method->getName(), '__') && ! str_contains((string) $method->getDocComment(), '@internal')) {
             $methods[$method->getStartLine()] = $method;
         }
     }
@@ -216,6 +233,10 @@ foreach (get_defined_functions()['user'] as $name) {
 }
 ksort($standalone);
 
+// The rows of the functions-and-methods index, by page: the functions, the method, and the purpose.
+$indexRows = [];
+$counts = ['functions' => 0, 'plot methods' => 0, 'class methods' => 0];
+
 foreach ($pages as $page => $spec) {
     $index = '';
     $body = '';
@@ -236,6 +257,13 @@ foreach ($pages as $page => $spec) {
             foreach ($wrapping as $line => $function) {
                 $functions[$line] = $function['entry'] ?? $function['name'];
             }
+            $indexRows[$page][] = [
+                'functions' => array_map(fn ($function) => "[`{$function['name']}()`](reference-{$page}.qmd#".reference_function_anchor($function['name']).')', array_values($wrapping)),
+                'method' => "[`".($static ? "Plot::{$name}()" : "->{$name}()")."`](reference-{$page}.qmd#{$anchor})",
+                'purpose' => reference_purpose(reference_summary($method)),
+            ];
+            $counts['plot methods']++;
+            $counts['functions'] += count($wrapping);
         }
         $index .= reference_index($multiple ? $section : 'Methods', $links);
         $body .= ($multiple ? "## {$section}\n\n" : '').$entries;
@@ -251,6 +279,8 @@ foreach ($pages as $page => $spec) {
             $anchor = strtolower($short).'-'.reference_anchor($name);
             $links[] = "[`{$heading}`](#{$anchor})";
             $entries .= reference_entry($heading, $anchor, $method, $method->isStatic() ? "{$short}::" : '->');
+            $indexRows[$page][] = ['functions' => [], 'method' => "[`{$heading}`](reference-{$page}.qmd#{$anchor})", 'purpose' => reference_purpose(reference_summary($method))];
+            $counts['class methods']++;
         }
         $index .= reference_index($short, $links);
         $body .= "## {$short} {#class-".strtolower($short)."}\n\n".$entries;
@@ -276,6 +306,18 @@ foreach ($pages as $page => $spec) {
             if (! is_string($function)) {
                 $entries .= reference_entry("{$name}()", $anchor, $function, '', fallback: reference_fallback($function, $wraps));
             }
+            if (! is_string($function) && ! isset($wraps[$name])) {
+                $link = "[`{$name}()`](reference-{$page}.qmd#{$anchor})";
+                $counts['functions']++;
+                // A function that starts a plot, as ggplot() does, pairs with Plot::of().
+                $source = implode('', array_slice(file($function->getFileName()), $function->getStartLine() - 1, $function->getEndLine() - $function->getStartLine() + 1));
+                $of = array_key_first(array_filter($indexRows[$page] ?? [], fn ($row) => str_contains($row['method'] ?? '', '`Plot::of()`')));
+                if ($of !== null && str_contains($source, 'Plot::of(')) {
+                    $indexRows[$page][$of]['functions'][] = $link;
+                } else {
+                    $indexRows[$page][] = ['functions' => [$link], 'method' => null, 'purpose' => reference_purpose(reference_summary($function) ?: reference_fallback($function, $wraps))];
+                }
+            }
         }
         $index .= reference_index('Functions', $links);
         if ($entries !== '') {
@@ -290,6 +332,19 @@ if ($standalone !== []) {
     fwrite(STDERR, 'Functions on no reference page: '.implode(', ', array_map(fn ($f) => $f->getShortName(), $standalone))."\n");
     exit(1);
 }
+// The index: one table per reference page, titled as the page is.
+$markdown = '';
+foreach ($indexRows as $page => $rows) {
+    preg_match('/^title: "(.+?)(?: API)?"$/m', (string) file_get_contents(dirname($docs)."/reference-{$page}.qmd"), $title);
+    $markdown .= '## ['.($title[1] ?? $page)."](reference-{$page}.qmd)\n\n| Function | Method | Purpose |\n| --- | --- | --- |\n";
+    foreach ($rows as $row) {
+        $markdown .= '| '.(implode(', ', $row['functions']) ?: '')." | {$row['method']} | {$row['purpose']} |\n";
+    }
+    $markdown .= "\n";
+}
+file_put_contents("{$docs}/reference-index.md", $markdown);
+fwrite(STDERR, sprintf("Indexed %d functions, %d Plot methods, and %d class methods.\n", $counts['functions'], $counts['plot methods'], $counts['class methods']));
+
 foreach (['plot', 'classes', 'functions'] as $old) {
     @unlink("{$docs}/reference-{$old}.md");
 }

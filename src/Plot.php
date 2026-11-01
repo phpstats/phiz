@@ -74,6 +74,7 @@ final class Plot extends Chart
         return $this->with(aes: $this->aes->merge(Aes::of(...$mappings)));
     }
 
+    /** Replaces the plot's data with any supported input, keeping the mappings and layers. */
     public function data(mixed $data): self
     {
         return $this->with(data: Data::from($data));
@@ -235,7 +236,7 @@ final class Plot extends Chart
         return $this->add('text', $aes, $data, [], compact('size', 'color', 'angle', 'nudgeX', 'nudgeY', 'hjust', 'vjust') + $style, $inheritAes, $filter);
     }
 
-    /** Bold text labels. */
+    /** Text from the label aesthetic in bold, standing in for geom_label(); Vega-Lite draws no box behind it. */
     public function label(Aes|array|null $aes = null, mixed $data = null, int|float|null $size = null, ?string $color = null, int|float|null $nudgeX = null, int|float|null $nudgeY = null, bool $inheritAes = true, string|array|null $filter = null, mixed ...$style): self
     {
         return $this->add('label', $aes, $data, [], compact('size', 'color', 'nudgeX', 'nudgeY') + $style, $inheritAes, $filter);
@@ -247,7 +248,7 @@ final class Plot extends Chart
         return $this->add('tile', $aes, $data, [], compact('color', 'alpha') + $style, $inheritAes, $filter);
     }
 
-    /** Alias of tile(). */
+    /** Heatmap tiles, as tile() draws them; ggplot2's geom_raster() name. */
     public function raster(Aes|array|null $aes = null, mixed $data = null, bool $inheritAes = true, mixed ...$style): self
     {
         return $this->add('raster', $aes, $data, [], $style, $inheritAes);
@@ -432,7 +433,7 @@ final class Plot extends Chart
         return $this->add('arc', $aes, $data, compact('innerRadius'), compact('color') + $style, $inheritAes, $filter);
     }
 
-    /** Alias of arc(). */
+    /** Pie or donut slices, as arc() draws them; innerRadius in pixels makes a donut. */
     public function pie(Aes|array|null $aes = null, mixed $data = null, int|float|null $innerRadius = null, mixed ...$style): self
     {
         return $this->arc($aes, $data, $innerRadius, ...$style);
@@ -547,6 +548,7 @@ final class Plot extends Chart
         return $this->coordCartesian(xlim: [$min, $max]);
     }
 
+    /** Fixes the y domain. Unlike ggplot2's ylim(), data outside it is clipped rather than dropped. */
     public function ylim(int|float|string $min, int|float|string $max): self
     {
         return $this->coordCartesian(ylim: [$min, $max]);
@@ -691,6 +693,7 @@ final class Plot extends Chart
         return $this->with(height: $height);
     }
 
+    /** A text description of the chart, which vega-embed uses as its accessible name. */
     public function description(string $description): self
     {
         return $this->with(description: $description);
@@ -812,11 +815,13 @@ final class Plot extends Chart
         return new self(...$changes + get_object_vars($this));
     }
 
+    /** The Vega-Lite specification as a PHP array, with $schema and config. */
     public function toArray(): array
     {
         return Compiler::compile($this);
     }
 
+    /** The specification for nesting in a composition: without $schema or config. */
     public function toSpec(): array
     {
         $spec = Compiler::compile($this, topLevel: false);

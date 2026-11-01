@@ -2,7 +2,7 @@
 
 **Mappings and data:** [`aes()`](#aes) · [`data()`](#data)
 
-**Data:** [`Data::from()`](#data-from) · [`Data::url()`](#data-url) · [`Data::named()`](#data-named) · [`$data->isInline()`](#data-is-inline) · [`$data->isEmpty()`](#data-is-empty) · [`$data->count()`](#data-count) · [`$data->source()`](#data-source) · [`$data->toSpec()`](#data-to-spec) · [`$data->fields()`](#data-fields) · [`$data->has()`](#data-has) · [`$data->column()`](#data-column) · [`$data->type()`](#data-type) · [`$data->isTime()`](#data-is-time) · [`$data->levels()`](#data-levels) · [`$data->withRows()`](#data-with-rows) · [`Data::value()`](#data-value)
+**Data:** [`Data::from()`](#data-from) · [`Data::url()`](#data-url) · [`Data::named()`](#data-named) · [`$data->isInline()`](#data-is-inline) · [`$data->isEmpty()`](#data-is-empty) · [`$data->count()`](#data-count) · [`$data->toSpec()`](#data-to-spec) · [`$data->fields()`](#data-fields) · [`$data->has()`](#data-has) · [`$data->column()`](#data-column) · [`$data->type()`](#data-type) · [`$data->isTime()`](#data-is-time) · [`$data->levels()`](#data-levels) · [`$data->withRows()`](#data-with-rows) · [`Data::value()`](#data-value)
 
 **Datasets:** [`Datasets::mpg()`](#datasets-mpg) · [`Datasets::mtcars()`](#datasets-mtcars) · [`Datasets::economics()`](#datasets-economics) · [`Datasets::faithful()`](#datasets-faithful) · [`Datasets::load()`](#datasets-load)
 
@@ -35,6 +35,8 @@ Adds plot-wide aesthetic mappings: x, y, color, fill, size, shape, alpha, group,
 ```php
 ->data(mixed $data): Plot
 ```
+
+Replaces the plot's data with any supported input, keeping the mappings and layers.
 
 ## Data {#class-data}
 
@@ -85,14 +87,6 @@ Whether inline data has no rows. URL and named data count as empty.
 ```
 
 The number of inline rows, without building them.
-
-### `$data->source()` {#data-source}
-
-```php
-->source(): mixed
-```
-
-What the binning helpers read: the table, the columns, or the rows.
 
 ### `$data->toSpec()` {#data-to-spec}
 
@@ -164,6 +158,8 @@ New inline data holding the given rows.
 Data::value(mixed $value): mixed
 ```
 
+One value made JSON-safe: non-finite floats become null, dates ISO 8601 strings, phibble times seconds, enums their values or case names, and Stringable objects strings.
+
 ## Datasets {#class-datasets}
 
 ### `Datasets::mpg()` {#datasets-mpg}
@@ -188,7 +184,7 @@ R's mtcars: 32 cars with mpg, cylinders (cyl), weight (wt, 1,000 lb), horsepower
 Datasets::economics(): array
 ```
 
-ggplot2's economics: 574 monthly US rows from 1967 with date, pce ($bn), pop (thousands), psavert (%), uempmed (weeks), and unemploy (thousands).
+ggplot2's economics: 574 monthly US rows from 1967 with date, pce (\$bn), pop (thousands), psavert (%), uempmed (weeks), and unemploy (thousands).
 
 ### `Datasets::faithful()` {#datasets-faithful}
 
@@ -203,6 +199,8 @@ R's faithful: 272 Old Faithful eruptions with their length (eruptions) and the w
 ```php
 Datasets::load(string $name): array
 ```
+
+A bundled dataset by name, from resources/data/{name}.csv, cached after the first load; an unknown name throws.
 
 ## Bin {#class-bin}
 
@@ -267,7 +265,7 @@ Bin::lttb(
 ): array
 ```
 
-Downsamples a line to about $threshold points with Largest-Triangle-Three-Buckets, which keeps the visual shape (peaks and troughs). Rows are sorted by x; groups are downsampled separately.
+Downsamples a line to about \$threshold points with Largest-Triangle-Three-Buckets, which keeps the visual shape (peaks and troughs). Rows are sorted by x; groups are downsampled separately.
 
 ### `Bin::sample()` {#bin-sample}
 

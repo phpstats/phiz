@@ -399,6 +399,10 @@ final class Data
         return $rows;
     }
 
+    /**
+     * One value made JSON-safe: non-finite floats become null, dates ISO 8601 strings, phibble times seconds, enums
+     * their values or case names, and Stringable objects strings.
+     */
     public static function value(mixed $value): mixed
     {
         return match (true) {

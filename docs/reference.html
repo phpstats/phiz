@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>API reference – phiz</title>
+<title>API conventions – phiz</title>
 <style>
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
@@ -221,7 +221,7 @@ ul.task-list li input[type="checkbox"] {
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./reference.html">Reference</a></li><li class="breadcrumb-item"><a href="./reference.html">API reference</a></li></ol></nav>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./functions.html">Functions and methods</a></li><li class="breadcrumb-item"><a href="./reference.html">API conventions</a></li></ol></nav>
         <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
         </a>
       <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
@@ -246,12 +246,6 @@ ul.task-list li input[type="checkbox"] {
         </div>
     <div class="sidebar-menu-container"> 
     <ul class="list-unstyled mt-1">
-        <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="./index.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">phiz</span></a>
-  </div>
-</li>
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
             <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true">
@@ -261,6 +255,12 @@ ul.task-list li input[type="checkbox"] {
           </a> 
       </div>
       <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">phiz</span></a>
+  </div>
+</li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./get-started.html" class="sidebar-item-text sidebar-link">
@@ -350,12 +350,18 @@ ul.task-list li input[type="checkbox"] {
  <span class="menu-text">Large data</span></a>
   </div>
 </li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./design.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Design and compatibility</span></a>
+  </div>
+</li>
       </ul>
   </li>
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
             <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true">
- <span class="menu-text">Reference</span></a>
+ <span class="menu-text">Functions and methods</span></a>
           <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true" aria-label="Toggle section">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
@@ -363,8 +369,14 @@ ul.task-list li input[type="checkbox"] {
       <ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth1 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
+  <a href="./functions.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Functions and methods</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
   <a href="./reference.html" class="sidebar-item-text sidebar-link active">
- <span class="menu-text">API reference</span></a>
+ <span class="menu-text">API conventions</span></a>
   </div>
 </li>
           <li class="sidebar-item">
@@ -455,29 +467,12 @@ ul.task-list li input[type="checkbox"] {
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
             <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" role="navigation" aria-expanded="true">
- <span class="menu-text">Compatibility and limitations</span></a>
+ <span class="menu-text">Contributing</span></a>
           <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" role="navigation" aria-expanded="true" aria-label="Toggle section">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
       </div>
       <ul id="quarto-sidebar-section-5" class="collapse list-unstyled sidebar-section depth1 show">  
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="./design.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Design and compatibility</span></a>
-  </div>
-</li>
-      </ul>
-  </li>
-        <li class="sidebar-item sidebar-item-section">
-      <div class="sidebar-item-container"> 
-            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" role="navigation" aria-expanded="true">
- <span class="menu-text">Contributing</span></a>
-          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" role="navigation" aria-expanded="true" aria-label="Toggle section">
-            <i class="bi bi-chevron-right ms-2"></i>
-          </a> 
-      </div>
-      <ul id="quarto-sidebar-section-6" class="collapse list-unstyled sidebar-section depth1 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./development.html" class="sidebar-item-text sidebar-link">
@@ -491,24 +486,15 @@ ul.task-list li input[type="checkbox"] {
 </nav>
 <div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
 <!-- margin-sidebar -->
-    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
-        <nav id="TOC" role="doc-toc" class="toc-active">
-    <h2 id="toc-title">On this page</h2>
-   
-  <ul>
-  <li><a href="#conventions" id="toc-conventions" class="nav-link active" data-scroll-target="#conventions">Conventions</a></li>
-  <li><a href="#aesthetics" id="toc-aesthetics" class="nav-link" data-scroll-target="#aesthetics">Aesthetics</a></li>
-  <li><a href="#exceptions" id="toc-exceptions" class="nav-link" data-scroll-target="#exceptions">Exceptions</a></li>
-  <li><a href="#other-classes" id="toc-other-classes" class="nav-link" data-scroll-target="#other-classes">Other classes</a></li>
-  </ul>
-<div class="toc-actions"><ul><li><a href="https://github.com/phpstats/phiz/blob/main/reference.qmd" class="toc-action"><i class="bi bi-github"></i>View source</a></li><li><a href="https://github.com/phpstats/phiz/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></nav>
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar zindex-bottom">
+        
     </div>
 <!-- main -->
 <main class="content" id="quarto-document-content">
 
-<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./reference.html">Reference</a></li><li class="breadcrumb-item"><a href="./reference.html">API reference</a></li></ol></nav>
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./functions.html">Functions and methods</a></li><li class="breadcrumb-item"><a href="./reference.html">API conventions</a></li></ol></nav>
 <div class="quarto-title">
-<h1 class="title">API reference</h1>
+<h1 class="title">API conventions</h1>
 </div>
 
 
@@ -525,7 +511,7 @@ ul.task-list li input[type="checkbox"] {
 </header>
 
 
-<p>The reference is generated from the public signatures and docblocks in <code>src/</code>, and is split into pages by topic. Each page starts with an index of its methods and functions, and every entry has its own anchor.</p>
+<p>The reference is generated from the public signatures and docblocks in <code>src/</code>. <a href="./functions.html">Functions and methods</a> lists every entry, and each reference page lists its entries in the page’s table of contents.</p>
 <table class="caption-top table">
 <thead>
 <tr class="header">
@@ -568,64 +554,8 @@ ul.task-list li input[type="checkbox"] {
 </tr>
 </tbody>
 </table>
-<section id="conventions" class="level2">
-<h2 class="anchored" data-anchor-id="conventions">Conventions</h2>
-<p>Every <code>Plot</code> method that adds or changes something returns a new <code>Plot</code>, and the plot it was called on is unchanged.</p>
-<p>Most functions in the <code>Phiz\</code> namespace return a closure that applies the <code>Plot</code> method of the same name, for PHP 8.5’s pipe operator and for <code>apply()</code>. They take the same arguments as that method. Each method’s entry lists the functions that wrap it. A function with arguments of its own, such as <code>scale_color_manual()</code>, also has an entry.</p>
-</section>
-<section id="aesthetics" class="level2">
-<h2 class="anchored" data-anchor-id="aesthetics">Aesthetics</h2>
-<p><code>aes()</code> and every geom’s <code>aes</code> argument accept these names: <code>x</code>, <code>y</code>, <code>xmin</code>, <code>xmax</code>, <code>ymin</code>, <code>ymax</code>, <code>xend</code>, <code>yend</code>, <code>color</code> (or <code>colour</code>), <code>fill</code>, <code>size</code>, <code>shape</code>, <code>opacity</code> (or <code>alpha</code>), <code>linetype</code>, <code>group</code>, <code>detail</code>, <code>tooltip</code>, <code>label</code> (or <code>text</code>), <code>order</code>, <code>href</code>, <code>theta</code>, <code>radius</code>, <code>xintercept</code>, <code>yintercept</code>, <code>sample</code>, <code>key</code>, and <code>description</code>.</p>
-</section>
-<section id="exceptions" class="level2">
-<h2 class="anchored" data-anchor-id="exceptions">Exceptions</h2>
-<ul>
-<li><code>InvalidArgumentException</code> for input phiz cannot use, such as an unknown aesthetic, scale type, theme, or legend position, a geom without an aesthetic it needs, data that is neither rows nor columns, or a plot with no layers. The message names the problem.</li>
-<li><code>Phiz\Exceptions\VlConvertNotFound</code> when static export cannot find the vl-convert binary.</li>
-<li><code>Phiz\Exceptions\ExportFailed</code> when vl-convert fails, times out, or writes nothing, or when a file cannot be written.</li>
-</ul>
-<p>Both export exceptions implement <code>Phiz\Exceptions\PhizException</code>.</p>
-</section>
-<section id="other-classes" class="level2">
-<h2 class="anchored" data-anchor-id="other-classes">Other classes</h2>
-<p>These classes are used through the methods above and are not documented entry by entry.</p>
-<table class="caption-top table">
-<thead>
-<tr class="header">
-<th>Class</th>
-<th>Purpose</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td><code>Field</code></td>
-<td>field definitions and shorthand parsing, created by <code>field()</code>, <code>factor()</code>, and <code>calc()</code></td>
-</tr>
-<tr class="even">
-<td><code>Scale</code>, <code>Theme</code>, <code>Style</code></td>
-<td>scale, theme, and style translation</td>
-</tr>
-<tr class="odd">
-<td><code>Palette</code></td>
-<td>ggplot2’s hue palette and R’s <code>hcl()</code> colors</td>
-</tr>
-<tr class="even">
-<td><code>Config</code></td>
-<td>large-data thresholds: <code>$serverRows</code> and <code>$warnRows</code> (<a href="./large-data.html">Large data</a>)</td>
-</tr>
-<tr class="odd">
-<td><code>Stats\Charts</code></td>
-<td>the implementations behind the statistics functions</td>
-</tr>
-<tr class="even">
-<td><code>Stats\Fit</code></td>
-<td>least squares, smoothing bands, and normal and t quantiles</td>
-</tr>
-</tbody>
-</table>
 
 
-</section>
 
 </main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
@@ -1033,4 +963,4 @@ ul.task-list li input[type="checkbox"] {
 
 
 
-<footer class="footer"><div class="nav-footer"><div class="nav-footer-center"><div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.com/phpstats/phiz/blob/main/reference.qmd" class="toc-action"><i class="bi bi-github"></i>View source</a></li><li><a href="https://github.com/phpstats/phiz/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></div></div></footer></body></html>
+<footer class="footer"><div class="nav-footer"><div class="nav-footer-center"><div class="toc-actions"><ul><li><a href="https://github.com/phpstats/phiz/blob/main/reference.qmd" class="toc-action"><i class="bi bi-github"></i>View source</a></li><li><a href="https://github.com/phpstats/phiz/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></div></div></footer></body></html>

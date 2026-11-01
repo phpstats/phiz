@@ -1,6 +1,6 @@
 ---
 title: "Labels and themes API"
-toc-depth: 2
+toc-depth: 3
 ---
 
 These methods set the titles, axis and legend labels, caption, theme, and size of a plot. [Themes](themes.qmd) shows the theme presets and options.

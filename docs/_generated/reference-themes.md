@@ -87,6 +87,8 @@ The height in pixels (per panel when faceted), or 'container' to fill the parent
 ->description(string $description): Plot
 ```
 
+A text description of the chart, which vega-embed uses as its accessible name.
+
 ## Functions
 
 ### `ggtitle()` {#ggtitle-function}

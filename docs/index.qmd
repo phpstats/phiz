@@ -32,7 +32,7 @@ phiz supports PHP 8.3, 8.4, and 8.5 and has no required dependencies. Examples t
 | The `<x-phiz>` Blade component and Livewire | [Laravel and Livewire](laravel.qmd) |
 | Data too large to embed | [Large data](large-data.qmd) |
 
-[Get started](get-started.qmd) builds a first chart, and [Coming from ggplot2](ggplot2.qmd) translates ggplot2 code.
+[Get started](get-started.qmd) builds a first chart, [Coming from ggplot2](ggplot2.qmd) translates ggplot2 code, and [Functions and methods](functions.qmd) lists every function and method.
 
 ## The phpstats family
 
