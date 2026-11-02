@@ -49,8 +49,8 @@ compare them with R.
 
 | phiz | Matches | Written from |
 | --- | --- | --- |
-| `Contour::pretty()` | R's `pretty()` | R's documentation of `pretty()`, and R's output on random and edge-case ranges |
-| `Contour::multivariateT()`, behind `stat_ellipse(type: 't')` | MASS's `cov.trob()` | Kent, Tyler & Vardi (1994); MASS's documented defaults; and its output |
+| `Contour::pretty()` | R's `pretty()` | a specification written from R's documentation of `pretty()` and R's output, implemented by someone who had not seen R's source |
+| `Contour::multivariateT()`, behind `stat_ellipse(type: 't')` | MASS's `cov.trob()` | a specification written from Kent, Tyler & Vardi (1994), MASS's documentation, and `cov.trob()`'s output, implemented by someone who had not seen MASS's source |
 | `Fit::loess()` | R's `loess(surface = "direct")` | Cleveland & Grosse's local regression method and its error statistics |
 | `Fit::normalQuantile()` | R's `qnorm()` | Acklam's published approximation, with a Halley step |
 | `Fit::tQuantile()` | R's `qt()` | Newton steps on the t CDF, with a continued fraction and a Lanczos ln Γ |

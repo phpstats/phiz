@@ -2,7 +2,8 @@
 
 ## v0.6.3
 
-- `Contour::pretty()`, behind contour levels and binned-axis ticks, and the multivariate t fit behind `stat_ellipse(type: 't')` are rewritten from R's documentation, Kent, Tyler & Vardi (1994), MASS's documented defaults, and observed output. Results are unchanged: they match R's `pretty()` on 1,512 random and edge-case ranges and ggplot2's ellipses on three datasets.
+- `Contour::pretty()`, behind contour levels and binned-axis ticks, and the multivariate t fit behind `stat_ellipse(type: 't')` are reimplemented in a clean room: from specifications written from R's documentation, Kent, Tyler & Vardi (1994), MASS's documentation, and observed output, by an implementer who had not seen R's or MASS's source. Results are unchanged: they match R's `pretty()` on 11,564 random and edge-case ranges and ggplot2's ellipses on three datasets to 1e-13.
+- Developed against phibble 0.8 and phplyr 0.4.8.
 - THIRD_PARTY_NOTICES.md lists the projects whose behavior parts of phiz follow, the sources of independently written routines, and the bundled datasets' licenses.
 
 ## v0.6.2
