@@ -142,8 +142,8 @@
             "rule": "tight",
             "n_compared": 104,
             "status": "pass",
-            "max_abs_error": 6.394884621840902e-14,
-            "max_rel_error": 1.4760243158532052e-15
+            "max_abs_error": 2.842170943040401e-14,
+            "max_rel_error": 2.9520486317064104e-15
         },
         {
             "name": "faithful",
@@ -153,6 +153,33 @@
             "status": "pass",
             "max_abs_error": 2.7000623958883807e-13,
             "max_rel_error": 8.442632076775425e-15
+        },
+        {
+            "name": "mpg displ and hwy",
+            "quantity": "stat_ellipse(type = \"t\") polygon x and y",
+            "rule": "tight",
+            "n_compared": 104,
+            "status": "pass",
+            "max_abs_error": 7.105427357601002e-14,
+            "max_rel_error": 2.394020327331443e-14
+        },
+        {
+            "name": "mtcars wt and mpg",
+            "quantity": "stat_ellipse(type = \"t\") polygon x and y",
+            "rule": "tight",
+            "n_compared": 104,
+            "status": "pass",
+            "max_abs_error": 1.4210854715202004e-14,
+            "max_rel_error": 7.552681481458317e-16
+        },
+        {
+            "name": "1512 random and edge-case ranges",
+            "quantity": "pretty() breaks, scaled by their largest value",
+            "rule": "tight",
+            "n_compared": 22102,
+            "status": "pass",
+            "max_abs_error": 4.440892098500626e-16,
+            "max_rel_error": 3.747002708109889e-15
         },
         {
             "name": "mpg hwy by class",
@@ -195,8 +222,8 @@
     "source": "site/verifications/r-distributions.json",
     "data": "tests/fixtures/r-references.json",
     "environment": {
-        "date": "2026-11-01",
-        "commit": "ca0fb12",
+        "date": "2026-11-02",
+        "commit": "b9272c6",
         "php": "8.5.11",
         "os": "Linux, Debian GNU/Linux 13 (trixie) (aarch64)"
     },

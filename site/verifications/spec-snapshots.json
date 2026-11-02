@@ -57,8 +57,8 @@
     ],
     "source": "scripts/evidence-tests.php",
     "environment": {
-        "date": "2026-11-01",
-        "commit": "ca0fb12",
+        "date": "2026-11-02",
+        "commit": "b9272c6",
         "php": "8.5.11",
         "os": "Linux, Debian GNU/Linux 13 (trixie) (aarch64)"
     }
