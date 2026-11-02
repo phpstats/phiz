@@ -84,7 +84,8 @@ final class Charts
             ->pointrange(position: $labelled && count($fits) > 1 ? 'dodge' : null)
             ->labs(x: "{$what} ({$percent}% CI)", y: null)
             ->height(max(120, count($order) * ($labelled && count($fits) > 1 ? 18 * count($fits) + 12 : 36)))
-            ->tooltip(['term', ...($labelled ? ['model'] : []), 'estimate', 'lower', 'upper', 'std_error', 'p_value']);
+            // Standard errors and p-values only when the fit reports them, rather than as null.
+            ->tooltip(['term', ...($labelled ? ['model'] : []), 'estimate', 'lower', 'upper', ...array_values(array_filter(['std_error', 'p_value'], fn ($key) => array_filter(array_column($rows, $key), fn ($v) => $v !== null) !== []))]);
 
         return $exponentiate ? $plot->scaleX(type: 'log') : $plot;
     }
@@ -193,7 +194,7 @@ final class Charts
 
         return $plot
             ->geom('ribbon', aes(ymin: 'lower', ymax: 'upper', fill: $by === null ? null : \Phiz\factor($by)), style: ['alpha' => 0.2] + ($by === null ? ['fill' => '#3366FF'] : []))
-            ->line(linewidth: 2, color: $by === null ? '#3366FF' : null)
+            ->line(...['linewidth' => 2] + ($by === null ? ['style' => 'phiz-fit'] : []))
             ->labs(y: $onLink ? "{$response} ({$link} scale)" : $response, fill: $by, color: $by);
     }
 
@@ -610,11 +611,11 @@ final class Charts
             ->vline(0, color: '#CCCCCC')
             ->rule(aes(x: 'll', xend: 'hh'), linewidth: 1.5, color: '#6497B1');
         if ($inner) {
-            $plot = $plot->rule(aes(x: 'l', xend: 'h'), linewidth: 5, color: '#03396C');
+            $plot = $plot->rule(aes(x: 'l', xend: 'h'), linewidth: 5, style: 'phiz-inner');
         }
 
         return $plot
-            ->point(aes(x: 'm'), size: 70, fill: '#FFFFFF', stroke: '#03396C', strokeWidth: 1.5, filled: true)
+            ->point(aes(x: 'm'), size: 70, fill: '#FFFFFF', strokeWidth: 1.5, filled: true, style: 'phiz-inner')
             ->height(max(120, 30 * count($rows)))
             ->labs(x: 'value', y: null, subtitle: ($inner ? $percent($prob).' and ' : '').$percent($probOuter).' intervals, '.$pointEst)
             ->tooltip(['variable', 'm', 'll', 'hh']);

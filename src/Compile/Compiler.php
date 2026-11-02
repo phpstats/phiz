@@ -85,6 +85,8 @@ final class Compiler
                 if ($plot->tooltip !== null) {
                     $spec = self::tooltip($spec, $plot->tooltip, $unit['context']->data, $unit['context']->computed !== null || self::derived($spec));
                 }
+                $spec['encoding'] = self::flatLabels($spec['encoding'], $unit['context']->data, $plot);
+                $spec['encoding'] = self::binnedTicks($spec['encoding'], $unit['context']->data);
                 if ($plot->flip) {
                     $spec['encoding'] = self::flip($spec['encoding']);
                     if (is_array($spec['mark'] ?? null) && (isset($spec['mark']['width']) || isset($spec['mark']['height']))) {
@@ -479,6 +481,65 @@ final class Compiler
     }
 
     /**
+     * Ticks for an axis binned in the browser, which Vega-Lite places at every bin boundary whatever the tick count:
+     * R's pretty() breaks of the field's range, as ggplot2 draws them.
+     */
+    private static function binnedTicks(array $encoding, Data $data): array
+    {
+        foreach (['x', 'y'] as $channel) {
+            $def = $encoding[$channel] ?? null;
+            if (! is_array($def) || ! isset($def['field']) || empty($def['bin']) || $def['bin'] === 'binned' || isset($def['axis']['values']) || ($def['axis'] ?? true) === null || ! $data->isInline()) {
+                continue;
+            }
+            $values = array_filter($data->column(stripslashes((string) $def['field'])), fn ($v) => is_int($v) || is_float($v));
+            if (count($values) < 2 || min($values) == max($values)) {
+                continue;
+            }
+            $encoding[$channel]['axis'] = ($def['axis'] ?? []) + ['values' => \Phiz\Stats\Contour::pretty((float) min($values), (float) max($values), 5)];
+        }
+
+        return $encoding;
+    }
+
+    /**
+     * Discrete x labels stay horizontal, as ggplot2 draws them, when the longest fits its band. Vega-Lite turns them
+     * 270 degrees whenever the width is a number; that rotation is kept only where labels would collide. With a
+     * container width the axis decides in the browser from its width. An angle set through a theme or scale is kept,
+     * and a flipped plot, whose discrete axis is y, is left alone.
+     */
+    private static function flatLabels(array $encoding, Data $data, Plot $plot): array
+    {
+        $def = $encoding['x'] ?? null;
+        if ($plot->flip || ! is_array($def) || ! isset($def['field']) || ! in_array($def['type'] ?? null, ['nominal', 'ordinal'], true) || isset($def['bin']) || isset($def['timeUnit'])
+            || isset($def['axis']['labelAngle']) || ($def['axis'] ?? true) === null || isset($plot->config['axisX']['labelAngle']) || isset($plot->config['axis']['labelAngle']) || ! $data->isInline()) {
+            return $encoding;
+        }
+        $levels = $data->levels(stripslashes((string) $def['field']));
+        if ($levels === []) {
+            return $encoding;
+        }
+        $labels = array_map(fn ($level) => is_array($def['axis']['labelExpr'] ?? null) ? '' : (string) (is_bool($level) ? json_encode($level) : $level), $levels);
+        $fontSize = (float) ($plot->config['axisX']['labelFontSize'] ?? $plot->config['axis']['labelFontSize'] ?? Theme::base()['axis']['labelFontSize']);
+        $widest = max(array_map(fn ($label) => mb_strlen($label) * $fontSize * 0.6 + 4, $labels));
+        if ($plot->width !== 'container' || $plot->facet !== null) {
+            if ($widest <= (is_int($plot->width) ? $plot->width : max(300, 20 * count($levels))) / count($levels)) {
+                $encoding['x']['axis'] = ($def['axis'] ?? []) + ['labelAngle' => 0];
+            }
+
+            return $encoding;
+        }
+        // A container width is known only in the browser, so the axis turns its labels there, when they would collide.
+        $collide = 'width < '.(int) ceil($widest * count($levels));
+        $encoding['x']['axis'] = ($def['axis'] ?? []) + [
+            'labelAngle' => ['expr' => "{$collide} ? 270 : 0"],
+            'labelAlign' => ['expr' => "{$collide} ? 'right' : 'center'"],
+            'labelBaseline' => ['expr' => "{$collide} ? 'middle' : 'top'"],
+        ];
+
+        return $encoding;
+    }
+
+    /**
      * Whether a layer draws rows other than the plot's: a fit, density, quantile, or aggregate computed in the
      * browser, or binned or aggregated encodings.
      */
@@ -531,6 +592,10 @@ final class Compiler
         if (isset($spec['encoding']['tooltip']) || (is_array($spec['mark']) && isset($spec['mark']['tooltip']))) {
             return $spec;
         }
+        $type = is_array($spec['mark'] ?? null) ? ($spec['mark']['type'] ?? null) : ($spec['mark'] ?? null);
+        if ($type === 'rule') {
+            return $spec; // Reference lines and interval rules carry no data worth a tooltip.
+        }
         if ($derived) {
             $items = self::derivedTooltip($spec['encoding'] ?? []);
             if ($items !== []) {
@@ -538,6 +603,14 @@ final class Compiler
             }
 
             return $spec;
+        }
+        if (is_array($tooltip) && $data->isInline()) {
+            // A field the layer's own rows lack would show as undefined.
+            $fields = $data->fields();
+            $tooltip = array_values(array_filter($tooltip, fn ($field) => is_array($field) || in_array((string) Field::of($field)->name, $fields, true)));
+            if ($tooltip === []) {
+                return $spec;
+            }
         }
         if ($tooltip === true) {
             $spec['mark'] = (is_array($spec['mark']) ? $spec['mark'] : ['type' => $spec['mark']]) + ['tooltip' => true];
@@ -547,8 +620,12 @@ final class Compiler
                     return $field;
                 }
                 $field = Field::of($field);
+                $def = $field->toEncoding($data->type((string) $field->name) ?? 'nominal');
+                if (($def['type'] ?? null) === 'quantitative' && ! isset($def['format']) && ! isset($def['bin'])) {
+                    $def['format'] = '.4~r';
+                }
 
-                return $field->toEncoding($data->type((string) $field->name) ?? 'nominal');
+                return $def;
             }, $tooltip);
         }
 

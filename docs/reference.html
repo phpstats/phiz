@@ -83,8 +83,8 @@ ul.task-list li input[type="checkbox"] {
  * renders like any other.
  *
  * The page is dark when <html> has the class dark, or, with the theme: 'auto' option, when the system prefers dark.
- * A dark page gets each spec's dark variant (usermeta.phiz.dark) merged over its config, and dark tooltips. Charts
- * redraw when the page switches.
+ * A dark page gets each spec's dark variant (usermeta.phiz.dark) merged over its config, sequential schemes trimmed of
+ * their darkest end, faint points lifted, and dark tooltips. Charts redraw when the page switches.
  */
 (function () {
   if (window.Phiz) return;
@@ -109,6 +109,28 @@ ul.task-list li input[type="checkbox"] {
       out[k] = o && typeof o === 'object' && !Array.isArray(o) && b && typeof b === 'object' && !Array.isArray(b) ? merge(b, o) : o;
     });
     return out;
+  }
+
+  // Sequential schemes whose darkest colors sink into a dark page: those that start dark, and those that end dark.
+  var startsDark = ['viridis', 'magma', 'inferno', 'plasma', 'cividis', 'turbo'];
+  var endsDark = ['blues', 'greens', 'greys', 'oranges', 'purples', 'reds', 'bluegreen', 'bluepurple', 'greenblue', 'orangered',
+    'purpleblue', 'purplebluegreen', 'purplered', 'redpurple', 'yellowgreen', 'yellowgreenblue', 'yelloworangebrown', 'yelloworangered'];
+
+  // Adapts a spec for a dark page: trims the dark end of sequential schemes, and lifts faint points.
+  function darken(node) {
+    if (Array.isArray(node)) { node.forEach(darken); return; }
+    if (!node || typeof node !== 'object') return;
+    var scheme = node.scheme;
+    var name = typeof scheme === 'string' ? scheme : (scheme && typeof scheme === 'object' && !scheme.extent ? scheme.name : null);
+    if (typeof name === 'string') {
+      var lower = name.toLowerCase();
+      if (startsDark.indexOf(lower) >= 0) node.scheme = { name: name, extent: [0.15, 1] };
+      else if (endsDark.indexOf(lower) >= 0) node.scheme = { name: name, extent: [0, 0.75] };
+    }
+    if ((node.type === 'point' || node.type === 'circle' || node.type === 'square') && typeof node.opacity === 'number' && node.opacity < 0.7) {
+      node.opacity = Math.min(1, node.opacity + 0.25);
+    }
+    Object.keys(node).forEach(function (k) { if (k !== 'data' && k !== 'datasets') darken(node[k]); });
   }
 
   function target(el) {
@@ -139,7 +161,7 @@ ul.task-list li input[type="checkbox"] {
     }
     if (isDark) {
       var variant = spec.usermeta && spec.usermeta.phiz && spec.usermeta.phiz.dark;
-      if (variant) spec.config = merge(spec.config, variant);
+      if (variant) { spec.config = merge(spec.config, variant); darken(spec); }
       if (options.tooltip !== false) options.tooltip = merge({ theme: 'dark' }, typeof options.tooltip === 'object' ? options.tooltip : {});
     }
     if (state && state.view) state.view.finalize();

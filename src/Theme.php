@@ -18,16 +18,22 @@ final class Theme
     public const PRESETS = ['vega', 'gray', 'grey', 'ggplot2', 'bw', 'linedraw', 'minimal', 'classic', 'light', 'dark', 'void'];
 
     /** @return array<string, mixed> */
-    /** Font sizes scaled from a base size in pixels, with ggplot2's proportions. */
+    /**
+     * Font sizes from a base size in points, as ggplot2's base_size is, with its proportions: axis and legend labels
+     * at 0.8 and the title at 1.2. Vega-Lite sizes text in pixels, so points are converted at 96 dpi; the default
+     * base of 11 points gives labels of 11.7 pixels.
+     */
     public static function fonts(int|float $baseSize = 11): array
     {
-        $small = round($baseSize * 0.8, 1);
+        $px = $baseSize * 4 / 3;
+        $small = round($px * 0.8, 1);
+        $px = round($px, 1);
 
         return [
-            'axis' => ['labelFontSize' => $small, 'titleFontSize' => $baseSize],
-            'legend' => ['labelFontSize' => $small, 'titleFontSize' => $baseSize],
-            'header' => ['labelFontSize' => $small, 'titleFontSize' => $baseSize],
-            'title' => ['fontSize' => round($baseSize * 1.2, 1), 'subtitleFontSize' => $baseSize],
+            'axis' => ['labelFontSize' => $small, 'titleFontSize' => $px],
+            'legend' => ['labelFontSize' => $small, 'titleFontSize' => $px],
+            'header' => ['labelFontSize' => $small, 'titleFontSize' => $px],
+            'title' => ['fontSize' => round($baseSize * 4 / 3 * 1.2, 1), 'subtitleFontSize' => $px],
             'caption' => ['fontSize' => $small],
         ];
     }
@@ -195,19 +201,30 @@ final class Theme
     }
 
     /**
-     * The config every specification starts from: about five ticks on continuous axes, as R's pretty() gives, and the
-     * named mark styles that fitted lines and confidence bands use, so a theme or the dark variant can recolor them.
+     * The config every specification starts from: readable label and title sizes, about five ticks on continuous axes,
+     * as R's pretty() gives, and the named mark styles that fitted lines and confidence bands use, so a theme or the
+     * dark variant can recolor them.
      *
      * @return array<string, mixed>
      */
     public static function base(): array
     {
         return [
+            // Vega-Lite's defaults (10-pixel labels, 11-pixel titles) are hard to read; themes set their own sizes.
+            'axis' => ['labelFontSize' => 11, 'titleFontSize' => 12],
+            'legend' => ['labelFontSize' => 11, 'titleFontSize' => 12],
+            'header' => ['labelFontSize' => 11, 'titleFontSize' => 12],
             'axisQuantitative' => ['tickCount' => 5],
+            'axisTemporal' => ['tickCount' => 6],
             'style' => [
                 'phiz-fit' => ['color' => '#3366FF'],
                 'phiz-band' => ['color' => '#999999', 'opacity' => 0.4],
+                'phiz-outline' => ['stroke' => '#000000'],
+                'phiz-fill' => ['fill' => '#333333'],
+                'phiz-inner' => ['color' => '#03396C', 'stroke' => '#03396C'],
+                'phiz-interval' => ['color' => '#4C78A8'],
             ],
+            'errorbar' => ['rule' => ['color' => '#4C78A8'], 'ticks' => ['color' => '#4C78A8']],
         ];
     }
 
@@ -231,8 +248,8 @@ final class Theme
         $dark = [
             'background' => 'transparent',
             // A theme that removes the panel border keeps it removed; any other border, Vega-Lite's default included, is muted.
-            'view' => ['fill' => $grayPanel ? '#27272A' : null] + (array_key_exists('stroke', $config['view'] ?? []) && $config['view']['stroke'] === null ? [] : ['stroke' => '#3F3F46']),
-            'axis' => ['gridColor' => $grayPanel ? '#3F3F46' : 'rgba(255, 255, 255, 0.12)', 'gridOpacity' => 1, 'domainColor' => $line, 'tickColor' => $line, 'labelColor' => $muted, 'titleColor' => $text],
+            'view' => ['fill' => $grayPanel ? 'rgba(255, 255, 255, 0.04)' : null] + (array_key_exists('stroke', $config['view'] ?? []) && $config['view']['stroke'] === null ? [] : ['stroke' => '#3F3F46']),
+            'axis' => ['gridColor' => 'rgba(255, 255, 255, 0.12)', 'gridOpacity' => 1, 'domainColor' => $line, 'tickColor' => $line, 'labelColor' => $muted, 'titleColor' => $text],
             'legend' => ['labelColor' => $text, 'titleColor' => $text],
             'header' => ['labelColor' => $text, 'titleColor' => $text],
             'title' => ['color' => $text, 'subtitleColor' => $muted],
@@ -244,8 +261,23 @@ final class Theme
             'style' => [
                 'phiz-fit' => ['color' => '#A5C8FF'],
                 'phiz-band' => ['color' => '#FFFFFF', 'opacity' => 0.16],
+                'phiz-outline' => ['stroke' => '#D4D4D8'],
+                'phiz-fill' => ['fill' => '#D4D4D8'],
+                'phiz-inner' => ['color' => '#8AB4F8', 'stroke' => '#8AB4F8'],
+                'phiz-interval' => ['color' => $mark],
             ],
+            'errorbar' => ['rule' => ['color' => $mark], 'ticks' => ['color' => $mark]],
+            // Boxplot whiskers and outliers, which Vega-Lite draws in near-black.
+            'boxplot' => ['rule' => ['color' => $muted], 'outliers' => ['color' => $muted]],
+            // The brush rectangle, which Vega-Lite fills with #333 at 12.5%.
+            'selection' => ['interval' => ['mark' => ['fill' => '#FFFFFF', 'fillOpacity' => 0.15, 'stroke' => '#E4E4E7']]],
+            // Sequential colors whose darkest end would sink into a dark page.
+            'range' => ['ramp' => ['scheme' => 'blues', 'extent' => [0.1, 0.75]], 'heatmap' => ['scheme' => 'viridis', 'extent' => [0.15, 1]]],
         ];
+        if (! isset($config['range']['category'])) {
+            // Vega's tableau10 at lighter values, for contrast on a dark page; a theme's own palette is kept.
+            $dark['range']['category'] = ['#8AB4F8', '#FDBA74', '#F28B82', '#81C995', '#FDD663', '#C58AF9', '#78D9EC', '#FF8BCB', '#E8EAED', '#A8C7FA'];
+        }
         if (isset($config['caption'])) {
             $dark['caption'] = ['color' => $muted];
         }

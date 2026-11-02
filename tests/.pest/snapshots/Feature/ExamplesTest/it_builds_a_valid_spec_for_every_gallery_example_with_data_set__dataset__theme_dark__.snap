@@ -47,21 +47,9 @@
         }
     },
     "config": {
-        "axisQuantitative": {
-            "tickCount": 5
-        },
-        "style": {
-            "phiz-fit": {
-                "color": "#3366FF"
-            },
-            "phiz-band": {
-                "color": "#999999",
-                "opacity": 0.4
-            }
-        },
         "axis": {
-            "labelFontSize": 8.8,
-            "titleFontSize": 11,
+            "labelFontSize": 11.7,
+            "titleFontSize": 14.7,
             "titleFontWeight": "normal",
             "grid": true,
             "gridColor": "#424242",
@@ -71,21 +59,57 @@
             "titleColor": "#EEEEEE"
         },
         "legend": {
-            "labelFontSize": 8.8,
-            "titleFontSize": 11,
+            "labelFontSize": 11.7,
+            "titleFontSize": 14.7,
             "titleFontWeight": "normal",
             "labelColor": "#CCCCCC",
             "titleColor": "#EEEEEE"
         },
         "header": {
-            "labelFontSize": 8.8,
-            "titleFontSize": 11,
+            "labelFontSize": 11.7,
+            "titleFontSize": 14.7,
             "labelColor": "#CCCCCC",
             "titleColor": "#EEEEEE"
         },
+        "axisQuantitative": {
+            "tickCount": 5
+        },
+        "axisTemporal": {
+            "tickCount": 6
+        },
+        "style": {
+            "phiz-fit": {
+                "color": "#3366FF"
+            },
+            "phiz-band": {
+                "color": "#999999",
+                "opacity": 0.4
+            },
+            "phiz-outline": {
+                "stroke": "#000000"
+            },
+            "phiz-fill": {
+                "fill": "#333333"
+            },
+            "phiz-inner": {
+                "color": "#03396C",
+                "stroke": "#03396C"
+            },
+            "phiz-interval": {
+                "color": "#4C78A8"
+            }
+        },
+        "errorbar": {
+            "rule": {
+                "color": "#4C78A8"
+            },
+            "ticks": {
+                "color": "#4C78A8"
+            }
+        },
         "title": {
-            "fontSize": 13.2,
-            "subtitleFontSize": 11,
+            "fontSize": 17.6,
+            "subtitleFontSize": 14.7,
             "anchor": "start",
             "fontWeight": "normal",
             "color": "#EEEEEE",

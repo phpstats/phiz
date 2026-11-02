@@ -97,7 +97,7 @@ it('places a caption below the plot and styles it from the theme', function () {
     $plot = Plot::of(sample())->aes(x: 'x', y: 'y')->point()->labs(caption: 'Source')->theme('gray', baseSize: 20, captionColor: '#475569');
     $spec = $plot->toArray();
 
-    expect($spec['title'])->toBe(['text' => 'Source', 'orient' => 'bottom', 'anchor' => 'end', 'fontWeight' => 'normal', 'fontSize' => 16.0, 'color' => '#475569'])
+    expect($spec['title'])->toBe(['text' => 'Source', 'orient' => 'bottom', 'anchor' => 'end', 'fontWeight' => 'normal', 'fontSize' => 21.3, 'color' => '#475569'])
         ->and($spec['config'])->not->toHaveKey('caption')
         ->and($spec)->toHaveKey('encoding');
 });

@@ -1,5 +1,25 @@
 # Changelog
 
+## v0.6.1
+
+### Charts
+
+- **Text sizes.** `theme(baseSize:)` is in points, as ggplot2's `base_size` is, converted at 96 dpi: the default of 11 gives axis labels of 11.7 pixels and titles of 14.7. Charts without a theme have 11-pixel labels and 12-pixel titles, in place of Vega-Lite's 10 and 11.
+- **Discrete labels.** Labels on a discrete x axis stay horizontal unless they would collide. With a container width, the browser decides from the chart's width. Flipped plots and angles set through a theme or scale are left alone.
+- **Ticks.** Binned axes get R's `pretty()` breaks in place of a tick at every bin, and date axes about six ticks.
+- **Tooltips.** Rules, such as reference lines and interval bars, have no tooltip. A layer shows only the plot's tooltip fields it has. Numbers are formatted to four significant digits, and `coefplot()` lists standard errors and p-values only when the fit reports them.
+- **Dark mode.**
+  - The gray theme's panel is a faint lift, with grid lines like the other themes'.
+  - Category colors are lighter.
+  - Sequential schemes lose their darkest end.
+  - Faint points are more opaque.
+  - Boxplot whiskers, the brush rectangle, crossbars, ellipses, intervals, and `interval_plot()` and `effect_plot()` lines take light colors.
+- **Styles.** Interval, outline, fill, and inner-interval colors come from named styles in the config (`phiz-interval`, `phiz-outline`, `phiz-fill`, and `phiz-inner`), and errorbars from `config.errorbar`. Light colors are unchanged.
+
+### Documentation
+
+- The violin and boxplot examples use theme colors with visible points, the landing example's output is regenerated, and the project is named PHPstats in prose.
+
 ## v0.6.0
 
 ### Charts

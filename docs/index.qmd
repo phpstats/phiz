@@ -34,6 +34,6 @@ phiz supports PHP 8.3, 8.4, and 8.5 and has no required dependencies. Examples t
 
 [Get started](get-started.qmd) builds a first chart, [Coming from ggplot2](ggplot2.qmd) translates ggplot2 code, and [Functions and methods](functions.qmd) lists every function and method.
 
-## The phpstats family
+## The PHPstats family
 
-phiz plots the tables and results of the other phpstats packages: [phibble](https://github.com/phpstats/phibble) data frames, [phplyr](https://github.com/phpstats/phplyr) summaries, [phit](https://github.com/phpstats/phit) model fits, and [CmdStanPHP](https://github.com/phpstats/CmdStanPHP) draws. It depends on none of them.
+phiz plots the tables and results of the other PHPstats packages: [phibble](https://github.com/phpstats/phibble) data frames, [phplyr](https://github.com/phpstats/phplyr) summaries, [phit](https://github.com/phpstats/phit) model fits, and [CmdStanPHP](https://github.com/phpstats/CmdStanPHP) draws. It depends on none of them.

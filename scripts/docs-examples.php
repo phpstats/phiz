@@ -112,7 +112,7 @@ foreach (glob("{$docs}/examples/scripts/*.php") as $file) {
     $svgFile = array_key_first(array_filter($files, fn ($bytes, $path) => str_ends_with($path, '.svg'), ARRAY_FILTER_USE_BOTH));
     if ($svgFile !== null) {
         file_put_contents("{$docs}/examples/charts/{$name}.svg", $files[$svgFile]);
-        $figure = "<img src=\"charts/{$name}.svg\" alt=\"{$label}\" loading=\"lazy\" style=\"max-width:100%;height:auto\">";
+        $figure = "<img src=\"charts/{$name}.svg\" alt=\"{$label}\" loading=\"lazy\">";
     } else {
         $figure = Html::deferred("charts/{$name}.json", ['actions' => false], ['aria-label' => $label]);
     }

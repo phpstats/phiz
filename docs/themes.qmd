@@ -16,7 +16,7 @@ title: "Themes"
 | `dark` | dark background |
 | `void` | no axes or grid |
 
-`baseSize:` scales every font size, with ggplot2's proportions. Themes are written into the specification as Vega-Lite `config`, so HTML and static exports look the same.
+`baseSize:` scales every font size, in points as ggplot2's `base_size` is, with its proportions. The default of 11 points gives axis labels of 11.7 pixels. Themes are written into the specification as Vega-Lite `config`, so HTML and static exports look the same.
 
 {{< include _generated/theme-gray.md >}}
 

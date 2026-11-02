@@ -243,10 +243,32 @@ it('carries a dark variant of its theme for dark pages', function () {
         ->and($light['config']['style']['phiz-band'])->toBe(['color' => '#999999', 'opacity' => 0.4])
         ->and($light['usermeta']['phiz']['dark']['style']['phiz-band'])->toBe(['color' => '#FFFFFF', 'opacity' => 0.16])
         ->and($light['usermeta']['phiz']['dark']['background'])->toBe('transparent')
-        ->and($gray['usermeta']['phiz']['dark']['view']['fill'])->toBe('#27272A')
+        ->and($gray['usermeta']['phiz']['dark']['view']['fill'])->toBe('rgba(255, 255, 255, 0.04)')
         ->and($dark)->not->toHaveKey('usermeta');
 });
 
 it('asks for about five ticks on continuous axes, as R\'s pretty() gives', function () {
     expect(Plot::of(Phiz\Datasets::mpg())->aes(x: 'displ', y: 'hwy')->point()->toArray()['config']['axisQuantitative'])->toBe(['tickCount' => 5]);
+});
+
+it('leaves rules without tooltips and drops tooltip fields a layer lacks', function () {
+    $spec = Plot::of(Phiz\Datasets::mtcars())->aes(x: 'wt', y: 'mpg')->point()->hline(20)->text(aes(label: 'model'), data: [['wt' => 3, 'mpg' => 30, 'model' => 'note']])
+        ->tooltip(['model', 'cyl', 'mpg'])->toArray();
+    [$points, $rule, $text] = $spec['layer'];
+
+    expect(array_column($points['encoding']['tooltip'], 'field'))->toBe(['model', 'cyl', 'mpg'])
+        ->and($points['encoding']['tooltip'][2]['format'])->toBe('.4~r')
+        ->and($rule['encoding'] ?? [])->not->toHaveKey('tooltip')
+        ->and(array_column($text['encoding']['tooltip'], 'field'))->toBe(['model', 'mpg']);
+});
+
+it('keeps short discrete labels horizontal and puts pretty() ticks on binned axes', function () {
+    $short = Plot::of(Phiz\Datasets::mpg())->aes(x: 'drv', y: 'hwy')->boxplot()->toArray();
+    $long = Plot::of(Phiz\Datasets::mpg())->aes(x: 'manufacturer')->bar()->toArray();
+    $histogram = Plot::of(Phiz\Datasets::faithful())->aes(x: 'waiting')->histogram(bins: 30)->toArray();
+
+    expect($short['encoding']['x']['axis']['labelAngle'])->toBe(0)
+        ->and($long['encoding']['x'])->not->toHaveKey('axis')
+        ->and(Plot::of(Phiz\Datasets::mpg())->aes(x: 'class')->bar()->width('container')->toArray()['encoding']['x']['axis']['labelAngle'])->toBe(['expr' => 'width < 490 ? 270 : 0'])
+        ->and($histogram['encoding']['x']['axis']['values'])->toBe([40.0, 50.0, 60.0, 70.0, 80.0, 90.0, 100.0]);
 });

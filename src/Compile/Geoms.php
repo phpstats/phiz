@@ -24,7 +24,6 @@ use Phiz\Style;
 final class Geoms
 {
 
-    private const INTERVAL_COLOR = '#4C78A8';
 
     /** The most rows for which smooth(method: 'loess') computes its confidence band in PHP by default. */
     private const LOESS_ROWS = 3000;
@@ -537,7 +536,7 @@ final class Geoms
     {
         $encoding = self::ranged($c, self::rangeMap($c) + ['color' => 'color', 'group' => 'detail', 'detail' => 'detail'] + self::COMMON);
         $style = $c->layer->style;
-        $mark = ['type' => 'errorbar', 'ticks' => true] + (self::intervalColor($c) === null ? [] : ['color' => self::INTERVAL_COLOR]);
+        $mark = ['type' => 'errorbar', 'ticks' => true]; // Unmapped, its rule and ticks take config.errorbar's color.
         foreach (['color' => 'color', 'colour' => 'color', 'alpha' => 'opacity', 'opacity' => 'opacity', 'linewidth' => 'thickness', 'size' => 'thickness', 'width' => 'size'] as $from => $to) {
             if (isset($style[$from])) {
                 $mark[$to] = $style[$from];
@@ -557,18 +556,20 @@ final class Geoms
         $encoding = self::ranged($c, self::rangeMap($c) + ['color' => 'color', 'size' => 'strokeWidth', 'linetype' => 'strokeDash', 'group' => 'detail', 'detail' => 'detail'] + self::COMMON);
 
         $mark = $c->mark('rule', 'line');
-        $mark['color'] ??= self::intervalColor($c);
+        if (! isset($mark['color']) && self::intervalColor($c)) {
+            $mark['style'] = 'phiz-interval';
+        }
 
         return ['mark' => array_filter($mark, fn ($v) => $v !== null), 'encoding' => self::dodge($c, $encoding)];
     }
 
     /**
-     * Vega-Lite draws rules black by default, which vanishes on dark backgrounds. Unmapped intervals take the default
-     * mark color instead, the same as their points.
+     * Vega-Lite draws rules black by default, which vanishes on dark backgrounds. Unmapped intervals take the phiz-interval
+     * style instead, the default mark color, which the dark theme variant lightens.
      */
-    private static function intervalColor(Context $c): ?string
+    private static function intervalColor(Context $c): bool
     {
-        return $c->has('color') || isset($c->layer->style['color']) || isset($c->layer->style['colour']) ? null : self::INTERVAL_COLOR;
+        return ! ($c->has('color') || isset($c->layer->style['color']) || isset($c->layer->style['colour']));
     }
 
     private static function pointrange(Context $c): array
@@ -579,10 +580,10 @@ final class Geoms
         $range = self::ranged($c, $map + ['color' => 'color', 'group' => 'detail', 'detail' => 'detail'] + self::COMMON);
         $style = array_filter(Style::mark($c->layer->style, 'point'), fn ($v) => $v !== null);
         $style['linewidth'] = $c->layer->style['linewidth'] ?? null;
-        $style['color'] ??= self::intervalColor($c);
-        $rule = ['type' => 'rule'] + array_filter(['strokeWidth' => $style['linewidth'] ?? 1.5, 'color' => $style['color'] ?? null, 'opacity' => $style['opacity'] ?? null], fn ($v) => $v !== null);
+        $themed = ! isset($style['color']) && self::intervalColor($c) ? ['style' => 'phiz-interval'] : [];
+        $rule = ['type' => 'rule'] + array_filter(['strokeWidth' => $style['linewidth'] ?? 1.5, 'color' => $style['color'] ?? null, 'opacity' => $style['opacity'] ?? null], fn ($v) => $v !== null) + $themed;
         $point = $c->encode([$horizontal ? 'x' : 'y' => $horizontal ? 'x' : 'y', $horizontal ? 'y' : 'x' => $horizontal ? 'y' : 'x', 'color' => 'color', 'fill' => 'fill', 'shape' => 'shape'] + self::COMMON);
-        $dot = ['type' => 'point', 'filled' => true] + array_filter(['size' => $style['size'] ?? 50, 'color' => $style['color'] ?? null, 'fill' => $style['fill'] ?? null, 'opacity' => $style['opacity'] ?? null, 'shape' => $style['shape'] ?? null], fn ($v) => $v !== null);
+        $dot = ['type' => 'point', 'filled' => true] + array_filter(['size' => $style['size'] ?? 50, 'color' => $style['color'] ?? null, 'fill' => $style['fill'] ?? null, 'opacity' => $style['opacity'] ?? null, 'shape' => $style['shape'] ?? null], fn ($v) => $v !== null) + $themed;
 
         return [['mark' => $rule, 'encoding' => self::dodge($c, $range)], ['mark' => $dot, 'encoding' => self::dodge($c, $point)]];
     }
@@ -1101,7 +1102,7 @@ final class Geoms
         }
         $defaults = ['strokeWidth' => $c->has('color') || isset($c->layer->style['color']) || isset($c->layer->style['colour']) ? 1 : 0];
         if (! $c->has('fill')) {
-            $defaults['fill'] = '#333333';
+            $defaults['style'] = 'phiz-fill';
         }
         if (isset($encoding['fill']) && ! array_key_exists('legend', $encoding['fill'])) {
             $encoding['fill']['legend'] = ['symbolType' => 'square', 'symbolStrokeWidth' => 0];
@@ -1383,11 +1384,11 @@ final class Geoms
         $band = ['band' => $c->param('width', 0.9)];
         $size = [$horizontal ? 'height' : 'width' => $band];
         $box = self::ranged($c, $map + ['fill' => 'fill', 'color' => 'stroke', 'group' => 'detail'] + self::COMMON);
-        $boxMark = $c->mark('bar', 'filled', $size + ['stroke' => '#000000', 'strokeWidth' => 1] + ($c->has('fill') ? [] : ['fill' => 'transparent']));
+        $boxMark = $c->mark('bar', 'filled', $size + ['style' => 'phiz-outline', 'strokeWidth' => 1] + ($c->has('fill') ? [] : ['fill' => 'transparent']));
         $line = $c->encode([$horizontal ? 'y' : 'x' => $horizontal ? 'y' : 'x', 'color' => 'stroke', 'group' => 'detail'] + self::COMMON);
         $line[$main] = $c->def($main, $main);
         $line[$main.'2'] = ['field' => $c->ref($main)];
-        $lineMark = ['type' => 'bar'] + $size + ['fill' => 'transparent', 'stroke' => $boxMark['stroke'], 'strokeWidth' => 2.5 * ($boxMark['strokeWidth'] ?? 1)];
+        $lineMark = ['type' => 'bar'] + $size + ['fill' => 'transparent'] + (isset($boxMark['stroke']) ? ['stroke' => $boxMark['stroke']] : ['style' => 'phiz-outline']) + ['strokeWidth' => 2.5 * ($boxMark['strokeWidth'] ?? 1)];
         $box = self::dodge($c, $box);
         $line = self::dodge($c, $line);
 
@@ -1437,7 +1438,7 @@ final class Geoms
         $encoding['order'] = ['field' => '__order', 'type' => 'quantitative'];
         $encoding['detail'] = ['field' => '__ellipse', 'type' => 'nominal'];
         if ($filled) {
-            return [['mark' => $c->mark('line', 'filled', ['strokeWidth' => 0, 'opacity' => 0.3] + ($c->has('fill') ? [] : ['fill' => '#333333'])), 'encoding' => $encoding]];
+            return [['mark' => $c->mark('line', 'filled', ['strokeWidth' => 0, 'opacity' => 0.3] + ($c->has('fill') ? [] : ['style' => 'phiz-fill'])), 'encoding' => $encoding]];
         }
 
         return [['mark' => $c->mark('line', 'line'), 'encoding' => $encoding]];

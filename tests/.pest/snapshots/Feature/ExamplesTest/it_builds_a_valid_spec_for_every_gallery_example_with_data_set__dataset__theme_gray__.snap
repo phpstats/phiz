@@ -69,21 +69,9 @@
         }
     },
     "config": {
-        "axisQuantitative": {
-            "tickCount": 5
-        },
-        "style": {
-            "phiz-fit": {
-                "color": "#3366FF"
-            },
-            "phiz-band": {
-                "color": "#999999",
-                "opacity": 0.4
-            }
-        },
         "axis": {
-            "labelFontSize": 8.8,
-            "titleFontSize": 11,
+            "labelFontSize": 11.7,
+            "titleFontSize": 14.7,
             "titleFontWeight": "normal",
             "grid": true,
             "gridColor": "#FFFFFF",
@@ -93,19 +81,55 @@
             "titleColor": "#000000"
         },
         "legend": {
-            "labelFontSize": 8.8,
-            "titleFontSize": 11,
+            "labelFontSize": 11.7,
+            "titleFontSize": 14.7,
             "titleFontWeight": "normal",
             "labelLimit": 320
         },
         "header": {
-            "labelFontSize": 8.8,
-            "titleFontSize": 11,
+            "labelFontSize": 11.7,
+            "titleFontSize": 14.7,
             "labelColor": "#1A1A1A"
         },
+        "axisQuantitative": {
+            "tickCount": 5
+        },
+        "axisTemporal": {
+            "tickCount": 6
+        },
+        "style": {
+            "phiz-fit": {
+                "color": "#3366FF"
+            },
+            "phiz-band": {
+                "color": "#999999",
+                "opacity": 0.4
+            },
+            "phiz-outline": {
+                "stroke": "#000000"
+            },
+            "phiz-fill": {
+                "fill": "#333333"
+            },
+            "phiz-inner": {
+                "color": "#03396C",
+                "stroke": "#03396C"
+            },
+            "phiz-interval": {
+                "color": "#4C78A8"
+            }
+        },
+        "errorbar": {
+            "rule": {
+                "color": "#4C78A8"
+            },
+            "ticks": {
+                "color": "#4C78A8"
+            }
+        },
         "title": {
-            "fontSize": 13.2,
-            "subtitleFontSize": 11,
+            "fontSize": 17.6,
+            "subtitleFontSize": 14.7,
             "anchor": "start",
             "fontWeight": "normal"
         },
@@ -135,10 +159,10 @@
             "dark": {
                 "background": "transparent",
                 "view": {
-                    "fill": "#27272A"
+                    "fill": "rgba(255, 255, 255, 0.04)"
                 },
                 "axis": {
-                    "gridColor": "#3F3F46",
+                    "gridColor": "rgba(255, 255, 255, 0.12)",
                     "gridOpacity": 1,
                     "domainColor": "#71717A",
                     "tickColor": "#71717A",
@@ -179,6 +203,60 @@
                     "phiz-band": {
                         "color": "#FFFFFF",
                         "opacity": 0.16
+                    },
+                    "phiz-outline": {
+                        "stroke": "#D4D4D8"
+                    },
+                    "phiz-fill": {
+                        "fill": "#D4D4D8"
+                    },
+                    "phiz-inner": {
+                        "color": "#8AB4F8",
+                        "stroke": "#8AB4F8"
+                    },
+                    "phiz-interval": {
+                        "color": "#8AB4F8"
+                    }
+                },
+                "errorbar": {
+                    "rule": {
+                        "color": "#8AB4F8"
+                    },
+                    "ticks": {
+                        "color": "#8AB4F8"
+                    }
+                },
+                "boxplot": {
+                    "rule": {
+                        "color": "#A1A1AA"
+                    },
+                    "outliers": {
+                        "color": "#A1A1AA"
+                    }
+                },
+                "selection": {
+                    "interval": {
+                        "mark": {
+                            "fill": "#FFFFFF",
+                            "fillOpacity": 0.15,
+                            "stroke": "#E4E4E7"
+                        }
+                    }
+                },
+                "range": {
+                    "ramp": {
+                        "scheme": "blues",
+                        "extent": [
+                            0.1,
+                            0.75
+                        ]
+                    },
+                    "heatmap": {
+                        "scheme": "viridis",
+                        "extent": [
+                            0.15,
+                            1
+                        ]
                     }
                 },
                 "caption": {

@@ -31,7 +31,7 @@
             "mark": {
                 "type": "rule",
                 "strokeWidth": 1.5,
-                "color": "#4C78A8"
+                "style": "phiz-interval"
             },
             "encoding": {
                 "x": {
@@ -42,7 +42,10 @@
                         6,
                         8
                     ],
-                    "title": "cyl"
+                    "title": "cyl",
+                    "axis": {
+                        "labelAngle": 0
+                    }
                 },
                 "y": {
                     "field": "lower",
@@ -54,25 +57,7 @@
                 },
                 "y2": {
                     "field": "upper"
-                },
-                "tooltip": [
-                    {
-                        "field": "cyl",
-                        "type": "quantitative"
-                    },
-                    {
-                        "field": "estimate",
-                        "type": "quantitative"
-                    },
-                    {
-                        "field": "lower",
-                        "type": "quantitative"
-                    },
-                    {
-                        "field": "upper",
-                        "type": "quantitative"
-                    }
-                ]
+                }
             }
         },
         {
@@ -80,7 +65,7 @@
                 "type": "point",
                 "filled": true,
                 "size": 50,
-                "color": "#4C78A8"
+                "style": "phiz-interval"
             },
             "encoding": {
                 "y": {
@@ -99,32 +84,54 @@
                         6,
                         8
                     ],
-                    "title": "cyl"
+                    "title": "cyl",
+                    "axis": {
+                        "labelAngle": 0
+                    }
                 },
                 "tooltip": [
                     {
                         "field": "cyl",
-                        "type": "quantitative"
+                        "type": "quantitative",
+                        "format": ".4~r"
                     },
                     {
                         "field": "estimate",
-                        "type": "quantitative"
+                        "type": "quantitative",
+                        "format": ".4~r"
                     },
                     {
                         "field": "lower",
-                        "type": "quantitative"
+                        "type": "quantitative",
+                        "format": ".4~r"
                     },
                     {
                         "field": "upper",
-                        "type": "quantitative"
+                        "type": "quantitative",
+                        "format": ".4~r"
                     }
                 ]
             }
         }
     ],
     "config": {
+        "axis": {
+            "labelFontSize": 11,
+            "titleFontSize": 12
+        },
+        "legend": {
+            "labelFontSize": 11,
+            "titleFontSize": 12
+        },
+        "header": {
+            "labelFontSize": 11,
+            "titleFontSize": 12
+        },
         "axisQuantitative": {
             "tickCount": 5
+        },
+        "axisTemporal": {
+            "tickCount": 6
         },
         "style": {
             "phiz-fit": {
@@ -133,6 +140,27 @@
             "phiz-band": {
                 "color": "#999999",
                 "opacity": 0.4
+            },
+            "phiz-outline": {
+                "stroke": "#000000"
+            },
+            "phiz-fill": {
+                "fill": "#333333"
+            },
+            "phiz-inner": {
+                "color": "#03396C",
+                "stroke": "#03396C"
+            },
+            "phiz-interval": {
+                "color": "#4C78A8"
+            }
+        },
+        "errorbar": {
+            "rule": {
+                "color": "#4C78A8"
+            },
+            "ticks": {
+                "color": "#4C78A8"
             }
         }
     },
@@ -186,7 +214,73 @@
                     "phiz-band": {
                         "color": "#FFFFFF",
                         "opacity": 0.16
+                    },
+                    "phiz-outline": {
+                        "stroke": "#D4D4D8"
+                    },
+                    "phiz-fill": {
+                        "fill": "#D4D4D8"
+                    },
+                    "phiz-inner": {
+                        "color": "#8AB4F8",
+                        "stroke": "#8AB4F8"
+                    },
+                    "phiz-interval": {
+                        "color": "#8AB4F8"
                     }
+                },
+                "errorbar": {
+                    "rule": {
+                        "color": "#8AB4F8"
+                    },
+                    "ticks": {
+                        "color": "#8AB4F8"
+                    }
+                },
+                "boxplot": {
+                    "rule": {
+                        "color": "#A1A1AA"
+                    },
+                    "outliers": {
+                        "color": "#A1A1AA"
+                    }
+                },
+                "selection": {
+                    "interval": {
+                        "mark": {
+                            "fill": "#FFFFFF",
+                            "fillOpacity": 0.15,
+                            "stroke": "#E4E4E7"
+                        }
+                    }
+                },
+                "range": {
+                    "ramp": {
+                        "scheme": "blues",
+                        "extent": [
+                            0.1,
+                            0.75
+                        ]
+                    },
+                    "heatmap": {
+                        "scheme": "viridis",
+                        "extent": [
+                            0.15,
+                            1
+                        ]
+                    },
+                    "category": [
+                        "#8AB4F8",
+                        "#FDBA74",
+                        "#F28B82",
+                        "#81C995",
+                        "#FDD663",
+                        "#C58AF9",
+                        "#78D9EC",
+                        "#FF8BCB",
+                        "#E8EAED",
+                        "#A8C7FA"
+                    ]
                 }
             }
         }
