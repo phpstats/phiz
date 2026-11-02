@@ -47,6 +47,18 @@
         }
     },
     "config": {
+        "axisQuantitative": {
+            "tickCount": 5
+        },
+        "style": {
+            "phiz-fit": {
+                "color": "#3366FF"
+            },
+            "phiz-band": {
+                "color": "#999999",
+                "opacity": 0.4
+            }
+        },
         "axis": {
             "labelFontSize": 8.8,
             "titleFontSize": 11,

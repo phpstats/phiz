@@ -72,7 +72,6 @@ function fuel_dashboard(
         ->smooth(
             aes(x: 'displ', y: 'hwy'),
             method: 'lm',
-            color: '#333333',
             inheritAes: false,
         )
         ->tooltip([
@@ -184,7 +183,6 @@ function fuel_dashboard(
         ->smooth(
             aes(x: 'displ', y: 'hwy'),
             method: 'lm',
-            color: '#333333',
             inheritAes: false,
         )
         ->tooltip([

@@ -102,8 +102,10 @@ final class Compose extends Chart
         if (($config['range']['category'] ?? null) === 'hue') {
             $config['range']['category'] = Palette::hue(8);
         }
-        if ($config !== []) {
-            $spec['config'] = $config;
+        $spec['config'] = $config = Theme::merge(Theme::base(), $config);
+        if (($dark = Theme::dark($config)) !== []) {
+            // The dark variant, which phiz's loader merges over the config when the page is dark.
+            $spec['usermeta'] = ['phiz' => ['dark' => $dark]];
         }
 
         $spec = $this->raw === [] ? $spec : Theme::merge($spec, $this->raw);

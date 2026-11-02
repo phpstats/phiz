@@ -51,7 +51,7 @@ class RentChart extends Component
 </div>
 ```
 
-`'theme' => 'auto'` follows the reader's light or dark mode. [Dashboards with Livewire](dashboard.qmd) builds components with one chart and with several linked charts.
+`'theme' => 'auto'` follows the reader's system color scheme; a `dark` class on `<html>` switches charts to dark too ([Rendering](rendering.qmd#in-the-browser)). [Dashboards with Livewire](dashboard.qmd) builds components with one chart and with several linked charts.
 
 ## Configuration
 

@@ -216,5 +216,74 @@
                 }
             }
         }
-    ]
+    ],
+    "config": {
+        "axisQuantitative": {
+            "tickCount": 5
+        },
+        "style": {
+            "phiz-fit": {
+                "color": "#3366FF"
+            },
+            "phiz-band": {
+                "color": "#999999",
+                "opacity": 0.4
+            }
+        }
+    },
+    "usermeta": {
+        "phiz": {
+            "dark": {
+                "background": "transparent",
+                "view": {
+                    "fill": null,
+                    "stroke": "#3F3F46"
+                },
+                "axis": {
+                    "gridColor": "rgba(255, 255, 255, 0.12)",
+                    "gridOpacity": 1,
+                    "domainColor": "#71717A",
+                    "tickColor": "#71717A",
+                    "labelColor": "#A1A1AA",
+                    "titleColor": "#E4E4E7"
+                },
+                "legend": {
+                    "labelColor": "#E4E4E7",
+                    "titleColor": "#E4E4E7"
+                },
+                "header": {
+                    "labelColor": "#E4E4E7",
+                    "titleColor": "#E4E4E7"
+                },
+                "title": {
+                    "color": "#E4E4E7",
+                    "subtitleColor": "#A1A1AA"
+                },
+                "mark": {
+                    "color": "#8AB4F8"
+                },
+                "point": {
+                    "color": "#8AB4F8"
+                },
+                "line": {
+                    "color": "#8AB4F8"
+                },
+                "text": {
+                    "color": "#E4E4E7"
+                },
+                "rule": {
+                    "color": "#A1A1AA"
+                },
+                "style": {
+                    "phiz-fit": {
+                        "color": "#A5C8FF"
+                    },
+                    "phiz-band": {
+                        "color": "#FFFFFF",
+                        "opacity": 0.16
+                    }
+                }
+            }
+        }
+    }
 }

@@ -19,6 +19,8 @@ These escape hatches reach the parts of Vega-Lite that phiz does not wrap:
 
 The container holds the specification in a `data-phiz` attribute. phiz's loader script draws every such container with vega-embed and redraws it when the attribute changes, so the same markup works in static pages, Blade views, and Livewire components.
 
+Charts follow the page's dark mode. The page is dark when `<html>` has the class `dark`, or, with the vega-embed option `['theme' => 'auto']`, when the system prefers a dark color scheme. In dark mode the loader applies a dark variant of the chart's theme: a transparent background, muted grid lines, light text, and lighter default marks, fitted lines, and bands. Tooltips are dark too. Colors set explicitly on a layer or scale are kept, and `theme('dark')` charts are unchanged. Charts redraw when the page switches.
+
 ## Library sources and offline pages
 
 By default the page loads vega, vega-lite, and vega-embed from the jsDelivr CDN, with subresource integrity, so it needs a network connection. `Assets` chooses another source:

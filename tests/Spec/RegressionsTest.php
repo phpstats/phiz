@@ -222,3 +222,31 @@ it('estimates violin densities per group with R bandwidths', function () {
         ->and($computed[1]['__width'])->toEqualWithDelta(0.17899231 / 0.46597958, 1e-3)
         ->and($rows['transform'][0]['density'] ?? null)->toBe('eruptions');
 });
+
+it('gives fitted layers tooltips of their own fields, not the plot\'s', function () {
+    $spec = Plot::of(Phiz\Datasets::mpg())->aes(x: 'displ', y: 'hwy')->point()->smooth(method: 'lm')
+        ->tooltip(['manufacturer', 'model', 'displ', 'hwy'])->toArray();
+    [$points, $band, $line] = $spec['layer'];
+
+    expect(array_column($points['encoding']['tooltip'], 'field'))->toBe(['manufacturer', 'model', 'displ', 'hwy'])
+        ->and(array_column($band['encoding']['tooltip'], 'title'))->toBe(['displ', 'lower', 'upper'])
+        ->and(array_column($line['encoding']['tooltip'], 'field'))->toBe(['displ', 'hwy'])
+        ->and($line['encoding']['tooltip'][1]['format'])->toBe('.4~r');
+});
+
+it('carries a dark variant of its theme for dark pages', function () {
+    $light = Plot::of(Phiz\Datasets::mpg())->aes(x: 'displ', y: 'hwy')->point()->smooth()->toArray();
+    $gray = Plot::of(Phiz\Datasets::mpg())->aes(x: 'displ', y: 'hwy')->point()->theme('gray')->toArray();
+    $dark = Plot::of(Phiz\Datasets::mpg())->aes(x: 'displ', y: 'hwy')->point()->theme('dark')->toArray();
+
+    expect($light['layer'][1]['mark'])->toBe(['type' => 'area', 'style' => 'phiz-band'])
+        ->and($light['config']['style']['phiz-band'])->toBe(['color' => '#999999', 'opacity' => 0.4])
+        ->and($light['usermeta']['phiz']['dark']['style']['phiz-band'])->toBe(['color' => '#FFFFFF', 'opacity' => 0.16])
+        ->and($light['usermeta']['phiz']['dark']['background'])->toBe('transparent')
+        ->and($gray['usermeta']['phiz']['dark']['view']['fill'])->toBe('#27272A')
+        ->and($dark)->not->toHaveKey('usermeta');
+});
+
+it('asks for about five ticks on continuous axes, as R\'s pretty() gives', function () {
+    expect(Plot::of(Phiz\Datasets::mpg())->aes(x: 'displ', y: 'hwy')->point()->toArray()['config']['axisQuantitative'])->toBe(['tickCount' => 5]);
+});

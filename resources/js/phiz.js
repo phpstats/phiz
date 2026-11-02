@@ -2,6 +2,10 @@
  * phiz: renders [data-phiz] elements with vega-embed, and re-renders when their spec changes (Livewire morphs).
  * A [data-phiz-deferred] element fetches its spec from its [data-phiz-spec] link when it nears the viewport, then
  * renders like any other.
+ *
+ * The page is dark when <html> has the class dark, or, with the theme: 'auto' option, when the system prefers dark.
+ * A dark page gets each spec's dark variant (usermeta.phiz.dark) merged over its config, and dark tooltips. Charts
+ * redraw when the page switches.
  */
 (function () {
   if (window.Phiz) return;
@@ -11,6 +15,21 @@
   function parse(json, fallback) {
     if (!json) return fallback;
     try { return JSON.parse(json); } catch (e) { console.error('phiz: invalid JSON', e); return fallback; }
+  }
+
+  function pageDark(options) {
+    return document.documentElement.classList.contains('dark') || (options.theme === 'auto' && !!dark && dark.matches);
+  }
+
+  // Merges objects recursively; arrays and scalars in the override replace the base's.
+  function merge(base, override) {
+    var out = {};
+    Object.keys(base || {}).forEach(function (k) { out[k] = base[k]; });
+    Object.keys(override).forEach(function (k) {
+      var b = out[k], o = override[k];
+      out[k] = o && typeof o === 'object' && !Array.isArray(o) && b && typeof b === 'object' && !Array.isArray(b) ? merge(b, o) : o;
+    });
+    return out;
   }
 
   function target(el) {
@@ -29,14 +48,20 @@
     if (!embed) { pending = true; return; }
     var json = el.getAttribute('data-phiz');
     var optionsJson = el.getAttribute('data-phiz-options') || '';
-    var key = json + '\u0000' + optionsJson + '\u0000' + (dark && dark.matches ? 'dark' : 'light');
+    var options = parse(optionsJson, {});
+    var isDark = pageDark(options);
+    var key = json + '\u0000' + optionsJson + '\u0000' + (isDark ? 'dark' : 'light');
     var state = views.get(el);
     if (state && state.key === key) return;
     var spec = parse(json, null);
     if (!spec) return;
-    var options = parse(optionsJson, {});
     if (options.theme === 'auto') {
-      if (dark && dark.matches) options.theme = 'dark'; else delete options.theme;
+      if (isDark) options.theme = 'dark'; else delete options.theme;
+    }
+    if (isDark) {
+      var variant = spec.usermeta && spec.usermeta.phiz && spec.usermeta.phiz.dark;
+      if (variant) spec.config = merge(spec.config, variant);
+      if (options.tooltip !== false) options.tooltip = merge({ theme: 'dark' }, typeof options.tooltip === 'object' ? options.tooltip : {});
     }
     if (state && state.view) state.view.finalize();
     // Each render draws into its own element, so a slow, superseded render cannot replace a newer chart.
@@ -123,6 +148,12 @@
   }).observe(document.documentElement, { subtree: true, childList: true, attributes: true, attributeFilter: ['data-phiz', 'data-phiz-options'] });
 
   if (dark && dark.addEventListener) dark.addEventListener('change', function () { Phiz.scan(); });
+  // Redraw when the page's dark class changes.
+  var wasDark = document.documentElement.classList.contains('dark');
+  new MutationObserver(function () {
+    var isDark = document.documentElement.classList.contains('dark');
+    if (isDark !== wasDark) { wasDark = isDark; Phiz.scan(); }
+  }).observe(document.documentElement, { attributes: true, attributeFilter: ['class'] });
 
   function start() { pending = false; Phiz.scan(); }
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', start); else start();

@@ -83,7 +83,7 @@ final class Compiler
                     $spec = self::limit($spec, $plot->limits);
                 }
                 if ($plot->tooltip !== null) {
-                    $spec = self::tooltip($spec, $plot->tooltip, $unit['context']->data);
+                    $spec = self::tooltip($spec, $plot->tooltip, $unit['context']->data, $unit['context']->computed !== null || self::derived($spec));
                 }
                 if ($plot->flip) {
                     $spec['encoding'] = self::flip($spec['encoding']);
@@ -134,7 +134,7 @@ final class Compiler
         } else {
             $spec += $size + $unit;
         }
-        $config = $plot->config;
+        $config = Theme::merge(Theme::base(), $plot->config);
         $captionStyle = $config['caption'] ?? []; // phiz's own key: Vega-Lite has no captions.
         unset($config['caption']);
         if (($config['range']['category'] ?? null) === 'hue') {
@@ -147,8 +147,10 @@ final class Compiler
         if (isset($plot->labels['caption'])) {
             $spec = self::caption($spec, $plot->labels['caption'], $captionStyle, $config);
         }
-        if ($config !== []) {
-            $spec['config'] = $config;
+        $spec['config'] = $config;
+        if ($topLevel && ($dark = Theme::dark($config + ($captionStyle === [] ? [] : ['caption' => $captionStyle]))) !== []) {
+            // The dark variant, which phiz's loader merges over the config when the page is dark.
+            $spec['usermeta'] = ['phiz' => ['dark' => $dark]];
         }
 
         $spec = $plot->raw === [] ? $spec : Theme::merge($spec, $plot->raw);
@@ -476,9 +478,65 @@ final class Compiler
         return $spec;
     }
 
-    private static function tooltip(array $spec, bool|array $tooltip, Data $data): array
+    /**
+     * Whether a layer draws rows other than the plot's: a fit, density, quantile, or aggregate computed in the
+     * browser, or binned or aggregated encodings.
+     */
+    private static function derived(array $spec): bool
+    {
+        foreach ($spec['transform'] ?? [] as $transform) {
+            if (array_intersect(['loess', 'regression', 'density', 'quantile', 'aggregate', 'bin'], array_keys($transform)) !== []) {
+                return true;
+            }
+        }
+        foreach ($spec['encoding'] ?? [] as $def) {
+            if (is_array($def) && ! array_is_list($def) && (isset($def['aggregate']) || ! empty($def['bin']))) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * The tooltip of a layer whose rows are derived: its own positions, as the x value, the fitted or summarized y,
+     * and a band's lower and upper bounds, to four significant digits. The plot's other fields do not exist there.
+     */
+    private static function derivedTooltip(array $encoding): array
+    {
+        $items = [];
+        foreach (['x', 'x2', 'y', 'y2'] as $channel) {
+            $def = $encoding[$channel] ?? null;
+            if (! is_array($def) || array_is_list($def) || (! isset($def['field']) && ! isset($def['aggregate']))) {
+                continue;
+            }
+            $item = array_intersect_key($def, array_flip(['field', 'type', 'aggregate', 'bin', 'timeUnit']));
+            $item['type'] ??= $encoding[$channel[0]]['type'] ?? 'quantitative';
+            $title = $def['title'] ?? null;
+            if (isset($encoding['y2']) && in_array($channel, ['y', 'y2'], true) && ($channel === 'y2' || ! isset($encoding['y']['aggregate']))) {
+                $title = $channel === 'y' ? 'lower' : 'upper';
+            }
+            $item['title'] = $title ?? (isset($def['field']) ? ltrim((string) $def['field'], '_') : $def['aggregate']);
+            if (($item['type'] ?? null) === 'quantitative' && empty($item['bin'])) {
+                $item['format'] = '.4~r';
+            }
+            $items[] = $item;
+        }
+
+        return $items;
+    }
+
+    private static function tooltip(array $spec, bool|array $tooltip, Data $data, bool $derived = false): array
     {
         if (isset($spec['encoding']['tooltip']) || (is_array($spec['mark']) && isset($spec['mark']['tooltip']))) {
+            return $spec;
+        }
+        if ($derived) {
+            $items = self::derivedTooltip($spec['encoding'] ?? []);
+            if ($items !== []) {
+                $spec['encoding']['tooltip'] = $items;
+            }
+
             return $spec;
         }
         if ($tooltip === true) {

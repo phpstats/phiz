@@ -23,7 +23,6 @@ use Phiz\Style;
  */
 final class Geoms
 {
-    private const SMOOTH_COLOR = '#3366FF';
 
     private const INTERVAL_COLOR = '#4C78A8';
 
@@ -833,7 +832,7 @@ final class Geoms
             throw new InvalidArgumentException('smooth needs n >= 2 points.');
         }
         $colorMapped = $c->has('color');
-        $lineMark = $c->mark('line', 'line', ['strokeWidth' => 2] + ($colorMapped ? [] : ['color' => self::SMOOTH_COLOR]));
+        $lineMark = $c->mark('line', 'line', ['strokeWidth' => 2] + ($colorMapped ? [] : ['style' => 'phiz-fit']));
         $lineEncoding = $c->encode(['x' => 'x', 'y' => 'y', 'color' => 'color', 'linetype' => 'strokeDash', 'group' => 'detail']);
         if ($lineEncoding['x']['type'] !== 'temporal') {
             $lineEncoding['x']['type'] = 'quantitative';
@@ -881,7 +880,7 @@ final class Geoms
         }
 
         return [
-            ['mark' => ['type' => 'area', 'color' => $c->layer->style['fill'] ?? '#999999', 'opacity' => 0.4], 'encoding' => $band],
+            ['mark' => isset($c->layer->style['fill']) ? ['type' => 'area', 'color' => $c->layer->style['fill'], 'opacity' => 0.4] : ['type' => 'area', 'style' => 'phiz-band'], 'encoding' => $band],
             ['mark' => $lineMark, 'encoding' => $lineEncoding],
         ];
     }
@@ -1264,7 +1263,7 @@ final class Geoms
         $encoding += $c->encode(['color' => 'color', 'linetype' => 'strokeDash'] + self::COMMON);
         $mapped = $levelColor || $c->has('color');
 
-        return [['mark' => $c->mark('line', 'line', $mapped ? [] : ['color' => self::SMOOTH_COLOR]), 'encoding' => $encoding]];
+        return [['mark' => $c->mark('line', 'line', $mapped ? [] : ['style' => 'phiz-fit']), 'encoding' => $encoding]];
     }
 
     /**

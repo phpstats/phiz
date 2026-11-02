@@ -194,6 +194,65 @@ final class Theme
         return $config;
     }
 
+    /**
+     * The config every specification starts from: about five ticks on continuous axes, as R's pretty() gives, and the
+     * named mark styles that fitted lines and confidence bands use, so a theme or the dark variant can recolor them.
+     *
+     * @return array<string, mixed>
+     */
+    public static function base(): array
+    {
+        return [
+            'axisQuantitative' => ['tickCount' => 5],
+            'style' => [
+                'phiz-fit' => ['color' => '#3366FF'],
+                'phiz-band' => ['color' => '#999999', 'opacity' => 0.4],
+            ],
+        ];
+    }
+
+    /**
+     * Config that turns a light theme dark, for pages in dark mode: a transparent background, muted grid lines,
+     * light text, and mark colors with enough contrast on a dark page. phiz's loader merges it over the spec's config
+     * when the page is dark. A spec that is already dark, as theme('dark') makes it, needs none.
+     *
+     * @param array<string, mixed> $config The spec's config.
+     * @return array<string, mixed>
+     */
+    public static function dark(array $config): array
+    {
+        if (in_array($config['background'] ?? null, ['#1F1F1F', '#000000', 'black'], true)) {
+            return [];
+        }
+        $panel = $config['view']['fill'] ?? null;
+        $grayPanel = is_string($panel) && ! in_array(strtoupper($panel), ['#FFFFFF', 'WHITE'], true);
+        [$text, $muted, $line] = ['#E4E4E7', '#A1A1AA', '#71717A'];
+        $mark = '#8AB4F8';
+        $dark = [
+            'background' => 'transparent',
+            // A theme that removes the panel border keeps it removed; any other border, Vega-Lite's default included, is muted.
+            'view' => ['fill' => $grayPanel ? '#27272A' : null] + (array_key_exists('stroke', $config['view'] ?? []) && $config['view']['stroke'] === null ? [] : ['stroke' => '#3F3F46']),
+            'axis' => ['gridColor' => $grayPanel ? '#3F3F46' : 'rgba(255, 255, 255, 0.12)', 'gridOpacity' => 1, 'domainColor' => $line, 'tickColor' => $line, 'labelColor' => $muted, 'titleColor' => $text],
+            'legend' => ['labelColor' => $text, 'titleColor' => $text],
+            'header' => ['labelColor' => $text, 'titleColor' => $text],
+            'title' => ['color' => $text, 'subtitleColor' => $muted],
+            'mark' => ['color' => $mark],
+            'point' => ['color' => $mark],
+            'line' => ['color' => $mark],
+            'text' => ['color' => $text],
+            'rule' => ['color' => $muted],
+            'style' => [
+                'phiz-fit' => ['color' => '#A5C8FF'],
+                'phiz-band' => ['color' => '#FFFFFF', 'opacity' => 0.16],
+            ],
+        ];
+        if (isset($config['caption'])) {
+            $dark['caption'] = ['color' => $muted];
+        }
+
+        return $dark;
+    }
+
     /** Recursive merge where later scalars and lists replace earlier ones. */
     public static function merge(array $base, array ...$overrides): array
     {
