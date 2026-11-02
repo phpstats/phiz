@@ -2,6 +2,14 @@
 title: "Gallery"
 ---
 
-Each chart below is drawn from the code under it. The code uses the bundled datasets, loaded as `$mpg = Datasets::mpg()`, `$mtcars = Datasets::mtcars()`, `$economics = Datasets::economics()`, and `$faithful = Datasets::faithful()`. The statistics examples use a linear model fit and posterior draws defined at the top of [`examples/catalog.php`](https://github.com/phpstats/phiz/blob/main/examples/catalog.php), which holds every example.
+Each chart below is drawn from the code under it, with real data defined at the top of [`examples/catalog.php`](https://github.com/phpstats/phiz/blob/main/examples/catalog.php):
+
+| Variable | Data |
+| --- | --- |
+| `$mpg`, `$mtcars`, `$economics`, `$faithful` | the bundled datasets: ggplot2's `mpg` and `economics`, and R's `mtcars` and `faithful`, from `Datasets` |
+| `$gapminder` | [gapminder](https://github.com/phpstats/datasets#gapminder): life expectancy, population, and GDP per capita of 142 countries, 1952 to 2007 |
+| `$fit`, `$reduced` | linear models of `mtcars` fuel economy, fitted in PHP |
+| `$schools` | posterior draws of the [eight schools](https://github.com/phpstats/datasets#schools) model, sampled with CmdStanPHP |
+| `$hwyMean`, `$hwySd` | the mean and standard deviation of highway mpg in `mpg` |
 
 {{< include _generated/gallery.md >}}

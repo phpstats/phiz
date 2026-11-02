@@ -79,27 +79,19 @@ Plot::of($economics)
 
 ### Stacked area {#area}
 
-Made-up monthly orders by channel. Areas stack by fill, so the top edge is the total.
+Population of the 142 gapminder countries by continent. Areas stack by fill, so the top edge is their total.
 
 ```{=html}
 <div class="phiz-figure"><div data-phiz-deferred data-phiz-options="{&quot;actions&quot;:false}" aria-label="Stacked area"><div data-phiz-view wire:ignore><a data-phiz-spec href="gallery/area.json">Vega-Lite specification</a></div></div></div>
 ```
 
 ```php
-Plot::of(array_merge(...array_map(
-    fn ($month) => [
-        ['month' => $month, 'channel' => 'Web',
-            'orders' => 400 + 12 * $month],
-        ['month' => $month, 'channel' => 'App',
-            'orders' => 150 + 20 * $month],
-        ['month' => $month, 'channel' => 'Store',
-            'orders' => 300 - 6 * $month],
-    ],
-    range(1, 24),
-)))
-    ->aes(x: 'month', y: 'orders', fill: 'channel')
+Plot::of($gapminder)
+    ->aes(x: 'year', y: 'sum(pop)', fill: 'continent')
     ->area(alpha: 0.8)
-    ->labs(x: 'Month', y: 'Orders', fill: 'Channel');
+    ->scaleX(format: 'd')
+    ->scaleY(labels: label_number(scale: 1e-9, suffix: ' bn'))
+    ->labs(x: null, y: 'Population', fill: 'Continent');
 ```
 
 ### Labels {#text}
@@ -743,14 +735,17 @@ effect_plot(
 
 ### Posterior intervals {#posterior-intervals}
 
-From CmdStanPHP draws_columns(), as bayesplot's mcmc_intervals() draws them.
+Draws of the eight schools model (Rubin 1981), sampled with CmdStanPHP, as bayesplot's mcmc_intervals() draws them.
 
 ```{=html}
 <div class="phiz-figure"><div data-phiz-deferred data-phiz-options="{&quot;actions&quot;:false}" aria-label="Posterior intervals"><div data-phiz-view wire:ignore><a data-phiz-spec href="gallery/posterior-intervals.json">Vega-Lite specification</a></div></div></div>
 ```
 
 ```php
-interval_plot($draws);
+interval_plot(
+    $schools,
+    variables: ['mu', 'tau', 'theta'],
+);
 ```
 
 ### Means with error bars {#errorbars}
@@ -810,32 +805,25 @@ Plot::of($mpg)
 
 ### Functions {#curve}
 
-curve() draws a PHP function, here the normal density over a histogram.
+curve() draws a PHP function, here a normal density with the mean and standard deviation of highway mpg.
 
 ```{=html}
 <div class="phiz-figure"><div data-phiz-deferred data-phiz-options="{&quot;actions&quot;:false}" aria-label="Functions"><div data-phiz-view wire:ignore><a data-phiz-spec href="gallery/curve.json">Vega-Lite specification</a></div></div></div>
 ```
 
 ```php
-Plot::of(array_map(
-    fn ($i) => [
-        'z' => Fit::normalQuantile(($i + 0.5) / 500),
-    ],
-    range(0, 499),
-))
-    ->aes(x: 'z')
-    ->histogram(
-        binwidth: 0.25,
-        density: true,
-        fill: '#DDDDDD',
-    )
+Plot::of($mpg)
+    ->aes(x: 'hwy')
+    ->histogram(binwidth: 2, density: true, fill: '#DDDDDD')
     ->curve(
-        fn (float $x) => exp(-$x * $x / 2) / sqrt(2 * M_PI),
-        -3.5,
-        3.5,
-        aes: aes(x: 'z', y: 'density'),
+        fn (float $x) => exp(-0.5 * (($x - $hwyMean) / $hwySd) ** 2)
+            / ($hwySd * sqrt(2 * M_PI)),
+        10,
+        46,
+        aes: aes(x: 'hwy', y: 'density'),
         color: '#D62728',
         linewidth: 2,
-    );
+    )
+    ->labs(x: 'Highway mpg', y: 'Density');
 ```
 

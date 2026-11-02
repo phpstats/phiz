@@ -3,15 +3,45 @@
     "data": {
         "values": [
             {
-                "z": -3.090232306167814
+                "manufacturer": "audi",
+                "model": "a4",
+                "displ": 1.8,
+                "year": 1999,
+                "cyl": 4,
+                "trans": "auto(l5)",
+                "drv": "f",
+                "cty": 18,
+                "hwy": 29,
+                "fl": "p",
+                "class": "compact"
             },
             {
-                "z": -2.747781385444993
+                "manufacturer": "audi",
+                "model": "a4",
+                "displ": 1.8,
+                "year": 1999,
+                "cyl": 4,
+                "trans": "manual(m5)",
+                "drv": "f",
+                "cty": 21,
+                "hwy": 29,
+                "fl": "p",
+                "class": "compact"
             },
             {
-                "z": -2.5758293035489013
+                "manufacturer": "audi",
+                "model": "a4",
+                "displ": 2,
+                "year": 2008,
+                "cyl": 4,
+                "trans": "manual(m6)",
+                "drv": "f",
+                "cty": 20,
+                "hwy": 31,
+                "fl": "p",
+                "class": "compact"
             },
-            "... 497 more rows"
+            "... 231 more rows"
         ]
     },
     "layer": [
@@ -19,9 +49,9 @@
             "transform": [
                 {
                     "bin": {
-                        "step": 0.25
+                        "step": 2
                     },
-                    "field": "z",
+                    "field": "hwy",
                     "as": [
                         "__bin_start",
                         "__bin_end"
@@ -65,7 +95,7 @@
                     "bin": {
                         "binned": true
                     },
-                    "title": "z"
+                    "title": "Highway mpg"
                 },
                 "x2": {
                     "field": "__bin_end"
@@ -73,7 +103,7 @@
                 "y": {
                     "field": "density",
                     "type": "quantitative",
-                    "title": "density"
+                    "title": "Density"
                 }
             }
         },
@@ -81,16 +111,16 @@
             "data": {
                 "values": [
                     {
-                        "z": -3.5,
-                        "density": 0.0008726826950457602
+                        "hwy": 10.0,
+                        "density": 0.005245738203061425
                     },
                     {
-                        "z": -3.43,
-                        "density": 0.0011122297072655649
+                        "hwy": 10.36,
+                        "density": 0.006001716040568171
                     },
                     {
-                        "z": -3.36,
-                        "density": 0.001410602256941385
+                        "hwy": 10.72,
+                        "density": 0.0068415878245394425
                     },
                     "... 98 more rows"
                 ]
@@ -102,12 +132,14 @@
             },
             "encoding": {
                 "x": {
-                    "field": "z",
-                    "type": "quantitative"
+                    "field": "hwy",
+                    "type": "quantitative",
+                    "title": "Highway mpg"
                 },
                 "y": {
                     "field": "density",
-                    "type": "quantitative"
+                    "type": "quantitative",
+                    "title": "Density"
                 }
             }
         }

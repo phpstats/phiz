@@ -618,7 +618,37 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </header>
 
 
-<p>Each chart below is drawn from the code under it. The code uses the bundled datasets, loaded as <code>$mpg = Datasets::mpg()</code>, <code>$mtcars = Datasets::mtcars()</code>, <code>$economics = Datasets::economics()</code>, and <code>$faithful = Datasets::faithful()</code>. The statistics examples use a linear model fit and posterior draws defined at the top of <a href="https://github.com/phpstats/phiz/blob/main/examples/catalog.php"><code>examples/catalog.php</code></a>, which holds every example.</p>
+<p>Each chart below is drawn from the code under it, with real data defined at the top of <a href="https://github.com/phpstats/phiz/blob/main/examples/catalog.php"><code>examples/catalog.php</code></a>:</p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Variable</th>
+<th>Data</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>$mpg</code>, <code>$mtcars</code>, <code>$economics</code>, <code>$faithful</code></td>
+<td>the bundled datasets: ggplot2’s <code>mpg</code> and <code>economics</code>, and R’s <code>mtcars</code> and <code>faithful</code>, from <code>Datasets</code></td>
+</tr>
+<tr class="even">
+<td><code>$gapminder</code></td>
+<td><a href="https://github.com/phpstats/datasets#gapminder">gapminder</a>: life expectancy, population, and GDP per capita of 142 countries, 1952 to 2007</td>
+</tr>
+<tr class="odd">
+<td><code>$fit</code>, <code>$reduced</code></td>
+<td>linear models of <code>mtcars</code> fuel economy, fitted in PHP</td>
+</tr>
+<tr class="even">
+<td><code>$schools</code></td>
+<td>posterior draws of the <a href="https://github.com/phpstats/datasets#schools">eight schools</a> model, sampled with CmdStanPHP</td>
+</tr>
+<tr class="odd">
+<td><code>$hwyMean</code>, <code>$hwySd</code></td>
+<td>the mean and standard deviation of highway mpg in <code>mpg</code></td>
+</tr>
+</tbody>
+</table>
 <section id="basics" class="level2">
 <h2 class="anchored" data-anchor-id="basics">Basics</h2>
 <section id="scatter" class="level3">
@@ -677,22 +707,14 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="area" class="level3">
 <h3 class="anchored" data-anchor-id="area">Stacked area</h3>
-<p>Made-up monthly orders by channel. Areas stack by fill, so the top edge is the total.</p>
+<p>Population of the 142 gapminder countries by continent. Areas stack by fill, so the top edge is their total.</p>
 <div class="phiz-figure"><div data-phiz-deferred="" data-phiz-options="{&quot;actions&quot;:false}" aria-label="Stacked area"><div data-phiz-view="" wire:ignore=""><a data-phiz-spec="" href="gallery/area.json">Vega-Lite specification</a></div></div></div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="sourceCode php code-with-copy"><code class="sourceCode php"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>Plot::of(<span class="fu">array_merge</span>(...<span class="fu">array_map</span>(</span>
-<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>    <span class="kw">fn</span> (<span class="va">$month</span>) =&gt; [</span>
-<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>        [<span class="st">'month'</span> =&gt; <span class="va">$month</span><span class="ot">,</span> <span class="st">'channel'</span> =&gt; <span class="st">'Web'</span><span class="ot">,</span></span>
-<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>            <span class="st">'orders'</span> =&gt; <span class="dv">400</span> <span class="op">+</span> <span class="dv">12</span> <span class="op">*</span> <span class="va">$month</span>]<span class="ot">,</span></span>
-<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>        [<span class="st">'month'</span> =&gt; <span class="va">$month</span><span class="ot">,</span> <span class="st">'channel'</span> =&gt; <span class="st">'App'</span><span class="ot">,</span></span>
-<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>            <span class="st">'orders'</span> =&gt; <span class="dv">150</span> <span class="op">+</span> <span class="dv">20</span> <span class="op">*</span> <span class="va">$month</span>]<span class="ot">,</span></span>
-<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>        [<span class="st">'month'</span> =&gt; <span class="va">$month</span><span class="ot">,</span> <span class="st">'channel'</span> =&gt; <span class="st">'Store'</span><span class="ot">,</span></span>
-<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>            <span class="st">'orders'</span> =&gt; <span class="dv">300</span> <span class="op">-</span> <span class="dv">6</span> <span class="op">*</span> <span class="va">$month</span>]<span class="ot">,</span></span>
-<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>    ]<span class="ot">,</span></span>
-<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a>    <span class="fu">range</span>(<span class="dv">1</span><span class="ot">,</span> <span class="dv">24</span>)<span class="ot">,</span></span>
-<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a>)))</span>
-<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a>    -&gt;aes(x<span class="ot">:</span> <span class="st">'month'</span><span class="ot">,</span> y<span class="ot">:</span> <span class="st">'orders'</span><span class="ot">,</span> fill<span class="ot">:</span> <span class="st">'channel'</span>)</span>
-<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a>    -&gt;area(alpha<span class="ot">:</span> <span class="fl">0.8</span>)</span>
-<span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a>    -&gt;labs(x<span class="ot">:</span> <span class="st">'Month'</span><span class="ot">,</span> y<span class="ot">:</span> <span class="st">'Orders'</span><span class="ot">,</span> fill<span class="ot">:</span> <span class="st">'Channel'</span>)<span class="ot">;</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="sourceCode php code-with-copy"><code class="sourceCode php"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>Plot::of(<span class="va">$gapminder</span>)</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>    -&gt;aes(x<span class="ot">:</span> <span class="st">'year'</span><span class="ot">,</span> y<span class="ot">:</span> <span class="st">'sum(pop)'</span><span class="ot">,</span> fill<span class="ot">:</span> <span class="st">'continent'</span>)</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>    -&gt;area(alpha<span class="ot">:</span> <span class="fl">0.8</span>)</span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>    -&gt;scaleX(format<span class="ot">:</span> <span class="st">'d'</span>)</span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>    -&gt;scaleY(labels<span class="ot">:</span> label_number(scale<span class="ot">:</span> <span class="fl">1e-9</span><span class="ot">,</span> suffix<span class="ot">:</span> <span class="st">' bn'</span>))</span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>    -&gt;labs(x<span class="ot">:</span> <span class="kw">null</span><span class="ot">,</span> y<span class="ot">:</span> <span class="st">'Population'</span><span class="ot">,</span> fill<span class="ot">:</span> <span class="st">'Continent'</span>)<span class="ot">;</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </section>
 <section id="text" class="level3">
 <h3 class="anchored" data-anchor-id="text">Labels</h3>
@@ -1123,9 +1145,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="posterior-intervals" class="level3">
 <h3 class="anchored" data-anchor-id="posterior-intervals">Posterior intervals</h3>
-<p>From CmdStanPHP draws_columns(), as bayesplot’s mcmc_intervals() draws them.</p>
+<p>Draws of the eight schools model (Rubin 1981), sampled with CmdStanPHP, as bayesplot’s mcmc_intervals() draws them.</p>
 <div class="phiz-figure"><div data-phiz-deferred="" data-phiz-options="{&quot;actions&quot;:false}" aria-label="Posterior intervals"><div data-phiz-view="" wire:ignore=""><a data-phiz-spec="" href="gallery/posterior-intervals.json">Vega-Lite specification</a></div></div></div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb43"><pre class="sourceCode php code-with-copy"><code class="sourceCode php"><span id="cb43-1"><a href="#cb43-1" aria-hidden="true" tabindex="-1"></a>interval_plot(<span class="va">$draws</span>)<span class="ot">;</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb43"><pre class="sourceCode php code-with-copy"><code class="sourceCode php"><span id="cb43-1"><a href="#cb43-1" aria-hidden="true" tabindex="-1"></a>interval_plot(</span>
+<span id="cb43-2"><a href="#cb43-2" aria-hidden="true" tabindex="-1"></a>    <span class="va">$schools</span><span class="ot">,</span></span>
+<span id="cb43-3"><a href="#cb43-3" aria-hidden="true" tabindex="-1"></a>    variables<span class="ot">:</span> [<span class="st">'mu'</span><span class="ot">,</span> <span class="st">'tau'</span><span class="ot">,</span> <span class="st">'theta'</span>]<span class="ot">,</span></span>
+<span id="cb43-4"><a href="#cb43-4" aria-hidden="true" tabindex="-1"></a>)<span class="ot">;</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </section>
 <section id="errorbars" class="level3">
 <h3 class="anchored" data-anchor-id="errorbars">Means with error bars</h3>
@@ -1172,28 +1197,21 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="curve" class="level3">
 <h3 class="anchored" data-anchor-id="curve">Functions</h3>
-<p>curve() draws a PHP function, here the normal density over a histogram.</p>
+<p>curve() draws a PHP function, here a normal density with the mean and standard deviation of highway mpg.</p>
 <div class="phiz-figure"><div data-phiz-deferred="" data-phiz-options="{&quot;actions&quot;:false}" aria-label="Functions"><div data-phiz-view="" wire:ignore=""><a data-phiz-spec="" href="gallery/curve.json">Vega-Lite specification</a></div></div></div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb46"><pre class="sourceCode php code-with-copy"><code class="sourceCode php"><span id="cb46-1"><a href="#cb46-1" aria-hidden="true" tabindex="-1"></a>Plot::of(<span class="fu">array_map</span>(</span>
-<span id="cb46-2"><a href="#cb46-2" aria-hidden="true" tabindex="-1"></a>    <span class="kw">fn</span> (<span class="va">$i</span>) =&gt; [</span>
-<span id="cb46-3"><a href="#cb46-3" aria-hidden="true" tabindex="-1"></a>        <span class="st">'z'</span> =&gt; Fit::normalQuantile((<span class="va">$i</span> <span class="op">+</span> <span class="fl">0.5</span>) <span class="op">/</span> <span class="dv">500</span>)<span class="ot">,</span></span>
-<span id="cb46-4"><a href="#cb46-4" aria-hidden="true" tabindex="-1"></a>    ]<span class="ot">,</span></span>
-<span id="cb46-5"><a href="#cb46-5" aria-hidden="true" tabindex="-1"></a>    <span class="fu">range</span>(<span class="dv">0</span><span class="ot">,</span> <span class="dv">499</span>)<span class="ot">,</span></span>
-<span id="cb46-6"><a href="#cb46-6" aria-hidden="true" tabindex="-1"></a>))</span>
-<span id="cb46-7"><a href="#cb46-7" aria-hidden="true" tabindex="-1"></a>    -&gt;aes(x<span class="ot">:</span> <span class="st">'z'</span>)</span>
-<span id="cb46-8"><a href="#cb46-8" aria-hidden="true" tabindex="-1"></a>    -&gt;histogram(</span>
-<span id="cb46-9"><a href="#cb46-9" aria-hidden="true" tabindex="-1"></a>        binwidth<span class="ot">:</span> <span class="fl">0.25</span><span class="ot">,</span></span>
-<span id="cb46-10"><a href="#cb46-10" aria-hidden="true" tabindex="-1"></a>        density<span class="ot">:</span> <span class="kw">true</span><span class="ot">,</span></span>
-<span id="cb46-11"><a href="#cb46-11" aria-hidden="true" tabindex="-1"></a>        fill<span class="ot">:</span> <span class="st">'#DDDDDD'</span><span class="ot">,</span></span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb46"><pre class="sourceCode php code-with-copy"><code class="sourceCode php"><span id="cb46-1"><a href="#cb46-1" aria-hidden="true" tabindex="-1"></a>Plot::of(<span class="va">$mpg</span>)</span>
+<span id="cb46-2"><a href="#cb46-2" aria-hidden="true" tabindex="-1"></a>    -&gt;aes(x<span class="ot">:</span> <span class="st">'hwy'</span>)</span>
+<span id="cb46-3"><a href="#cb46-3" aria-hidden="true" tabindex="-1"></a>    -&gt;histogram(binwidth<span class="ot">:</span> <span class="dv">2</span><span class="ot">,</span> density<span class="ot">:</span> <span class="kw">true</span><span class="ot">,</span> fill<span class="ot">:</span> <span class="st">'#DDDDDD'</span>)</span>
+<span id="cb46-4"><a href="#cb46-4" aria-hidden="true" tabindex="-1"></a>    -&gt;curve(</span>
+<span id="cb46-5"><a href="#cb46-5" aria-hidden="true" tabindex="-1"></a>        <span class="kw">fn</span> (<span class="dt">float</span> <span class="va">$x</span>) =&gt; <span class="fu">exp</span>(<span class="op">-</span><span class="fl">0.5</span> <span class="op">*</span> ((<span class="va">$x</span> <span class="op">-</span> <span class="va">$hwyMean</span>) <span class="op">/</span> <span class="va">$hwySd</span>) <span class="op">**</span> <span class="dv">2</span>)</span>
+<span id="cb46-6"><a href="#cb46-6" aria-hidden="true" tabindex="-1"></a>            <span class="op">/</span> (<span class="va">$hwySd</span> <span class="op">*</span> <span class="fu">sqrt</span>(<span class="dv">2</span> <span class="op">*</span> <span class="cn">M_PI</span>))<span class="ot">,</span></span>
+<span id="cb46-7"><a href="#cb46-7" aria-hidden="true" tabindex="-1"></a>        <span class="dv">10</span><span class="ot">,</span></span>
+<span id="cb46-8"><a href="#cb46-8" aria-hidden="true" tabindex="-1"></a>        <span class="dv">46</span><span class="ot">,</span></span>
+<span id="cb46-9"><a href="#cb46-9" aria-hidden="true" tabindex="-1"></a>        aes<span class="ot">:</span> aes(x<span class="ot">:</span> <span class="st">'hwy'</span><span class="ot">,</span> y<span class="ot">:</span> <span class="st">'density'</span>)<span class="ot">,</span></span>
+<span id="cb46-10"><a href="#cb46-10" aria-hidden="true" tabindex="-1"></a>        color<span class="ot">:</span> <span class="st">'#D62728'</span><span class="ot">,</span></span>
+<span id="cb46-11"><a href="#cb46-11" aria-hidden="true" tabindex="-1"></a>        linewidth<span class="ot">:</span> <span class="dv">2</span><span class="ot">,</span></span>
 <span id="cb46-12"><a href="#cb46-12" aria-hidden="true" tabindex="-1"></a>    )</span>
-<span id="cb46-13"><a href="#cb46-13" aria-hidden="true" tabindex="-1"></a>    -&gt;curve(</span>
-<span id="cb46-14"><a href="#cb46-14" aria-hidden="true" tabindex="-1"></a>        <span class="kw">fn</span> (<span class="dt">float</span> <span class="va">$x</span>) =&gt; <span class="fu">exp</span>(<span class="op">-</span><span class="va">$x</span> <span class="op">*</span> <span class="va">$x</span> <span class="op">/</span> <span class="dv">2</span>) <span class="op">/</span> <span class="fu">sqrt</span>(<span class="dv">2</span> <span class="op">*</span> <span class="cn">M_PI</span>)<span class="ot">,</span></span>
-<span id="cb46-15"><a href="#cb46-15" aria-hidden="true" tabindex="-1"></a>        <span class="op">-</span><span class="fl">3.5</span><span class="ot">,</span></span>
-<span id="cb46-16"><a href="#cb46-16" aria-hidden="true" tabindex="-1"></a>        <span class="fl">3.5</span><span class="ot">,</span></span>
-<span id="cb46-17"><a href="#cb46-17" aria-hidden="true" tabindex="-1"></a>        aes<span class="ot">:</span> aes(x<span class="ot">:</span> <span class="st">'z'</span><span class="ot">,</span> y<span class="ot">:</span> <span class="st">'density'</span>)<span class="ot">,</span></span>
-<span id="cb46-18"><a href="#cb46-18" aria-hidden="true" tabindex="-1"></a>        color<span class="ot">:</span> <span class="st">'#D62728'</span><span class="ot">,</span></span>
-<span id="cb46-19"><a href="#cb46-19" aria-hidden="true" tabindex="-1"></a>        linewidth<span class="ot">:</span> <span class="dv">2</span><span class="ot">,</span></span>
-<span id="cb46-20"><a href="#cb46-20" aria-hidden="true" tabindex="-1"></a>    )<span class="ot">;</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb46-13"><a href="#cb46-13" aria-hidden="true" tabindex="-1"></a>    -&gt;labs(x<span class="ot">:</span> <span class="st">'Highway mpg'</span><span class="ot">,</span> y<span class="ot">:</span> <span class="st">'Density'</span>)<span class="ot">;</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 
 
 </section>

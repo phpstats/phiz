@@ -3,21 +3,30 @@
     "data": {
         "values": [
             {
-                "month": 1,
-                "channel": "Web",
-                "orders": 412
+                "country": "Afghanistan",
+                "continent": "Asia",
+                "year": 1952,
+                "lifeExp": 28.801,
+                "pop": 8425333,
+                "gdpPercap": 779.4453145
             },
             {
-                "month": 1,
-                "channel": "App",
-                "orders": 170
+                "country": "Afghanistan",
+                "continent": "Asia",
+                "year": 1957,
+                "lifeExp": 30.332,
+                "pop": 9240934,
+                "gdpPercap": 820.8530296
             },
             {
-                "month": 1,
-                "channel": "Store",
-                "orders": 294
+                "country": "Afghanistan",
+                "continent": "Asia",
+                "year": 1962,
+                "lifeExp": 31.997,
+                "pop": 10267083,
+                "gdpPercap": 853.10071
             },
-            "... 69 more rows"
+            "... 1701 more rows"
         ]
     },
     "mark": {
@@ -26,19 +35,26 @@
     },
     "encoding": {
         "x": {
-            "field": "month",
+            "field": "year",
             "type": "quantitative",
-            "title": "Month"
+            "title": null,
+            "axis": {
+                "format": "d"
+            }
         },
         "y": {
-            "field": "orders",
+            "field": "pop",
             "type": "quantitative",
-            "title": "Orders"
+            "aggregate": "sum",
+            "title": "Population",
+            "axis": {
+                "labelExpr": "format(datum.value * 1.0E-9, ',~f') + \" bn\""
+            }
         },
         "color": {
-            "field": "channel",
+            "field": "continent",
             "type": "nominal",
-            "title": "Channel"
+            "title": "Continent"
         }
     },
     "config": {

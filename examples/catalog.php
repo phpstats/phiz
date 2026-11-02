@@ -4,9 +4,10 @@ declare(strict_types=1);
 
 /*
  * The phiz example catalog: id => [section, title, description, build]. The description is empty when the title says
- * enough. Each build returns a Plot or Compose built from the bundled datasets, or from a small made-up dataset.
- * examples/gallery.php renders them to one HTML page; the tests validate every spec and, when vl-convert is
- * available, render each to SVG. Example code shown in the gallery is the build function's body.
+ * enough. Each build returns a Plot or Compose built from real data: the bundled datasets, a copy of gapminder, and
+ * posterior draws of the eight schools model. examples/gallery.php renders them to one HTML page; the tests validate
+ * every spec and, when vl-convert is available, render each to SVG. Example code shown in the gallery is the build
+ * function's body.
  */
 
 use Phiz\Compose;
@@ -24,6 +25,7 @@ use function Phiz\geom_point;
 use function Phiz\geom_smooth;
 use function Phiz\ggplot;
 use function Phiz\interval_plot;
+use function Phiz\label_number;
 use function Phiz\labs;
 use function Phiz\theme_minimal;
 
@@ -51,18 +53,28 @@ $reduced = (function () use ($mtcars) {
     return $fit + ['columns' => ['(Intercept)', 'wt', 'hp'], 't_statistics' => []];
 })();
 
-// Posterior draws in the shape CmdStanPHP's draws_columns() returns.
-$draws = (function () {
-    $draws = [];
-    $params = ['mu' => [1.2, 0.3], 'tau' => [0.6, 0.25], 'theta[1]' => [1.9, 0.7], 'theta[2]' => [0.8, 0.6], 'theta[3]' => [1.1, 0.5]];
-    foreach ($params as $name => [$mean, $sd]) {
-        for ($i = 0; $i < 400; $i++) {
-            $draws[$name][] = $mean + $sd * Fit::normalQuantile(fmod(($i + 0.5) * 0.618034, 1.0));
-        }
-    }
+// Posterior draws of the eight schools model (Rubin 1981), sampled with CmdStanPHP, as draws_columns() returns them.
+$schools = json_decode((string) file_get_contents(__DIR__.'/../docs/examples/fits/eight-schools-draws.json'), true);
 
-    return $draws;
+// gapminder (Gapminder Foundation, via the gapminder R package 1.0.1, CC0): a copy of csv/gapminder.csv from
+// github.com/phpstats/datasets, read with its numeric columns as numbers.
+$gapminder = (function () {
+    $handle = fopen(__DIR__.'/data/gapminder.csv', 'r');
+    $header = fgetcsv($handle, escape: '');
+    $rows = [];
+    while (($row = fgetcsv($handle, escape: '')) !== false) {
+        $row = array_combine($header, $row);
+        $rows[] = ['country' => $row['country'], 'continent' => $row['continent'], 'year' => (int) $row['year'], 'lifeExp' => (float) $row['lifeExp'], 'pop' => (int) $row['pop'], 'gdpPercap' => (float) $row['gdpPercap']];
+    }
+    fclose($handle);
+
+    return $rows;
 })();
+
+// The mean and standard deviation of highway mpg, for the normal density in the curve() example.
+$hwy = array_column($mpg, 'hwy');
+$hwyMean = array_sum($hwy) / count($hwy);
+$hwySd = sqrt(array_sum(array_map(fn ($v) => ($v - $hwyMean) ** 2, $hwy)) / (count($hwy) - 1));
 
 return [
     // Basics.
@@ -105,20 +117,12 @@ return [
             y: 'Unemployed (thousands)',
         )],
 
-    'area' => ['Basics', 'Stacked area', 'Made-up monthly orders by channel. Areas stack by fill, so the top edge is the total.', fn () => Plot::of(array_merge(...array_map(
-        fn ($month) => [
-            ['month' => $month, 'channel' => 'Web',
-                'orders' => 400 + 12 * $month],
-            ['month' => $month, 'channel' => 'App',
-                'orders' => 150 + 20 * $month],
-            ['month' => $month, 'channel' => 'Store',
-                'orders' => 300 - 6 * $month],
-        ],
-        range(1, 24),
-    )))
-        ->aes(x: 'month', y: 'orders', fill: 'channel')
+    'area' => ['Basics', 'Stacked area', 'Population of the 142 gapminder countries by continent. Areas stack by fill, so the top edge is their total.', fn () => Plot::of($gapminder)
+        ->aes(x: 'year', y: 'sum(pop)', fill: 'continent')
         ->area(alpha: 0.8)
-        ->labs(x: 'Month', y: 'Orders', fill: 'Channel')],
+        ->scaleX(format: 'd')
+        ->scaleY(labels: label_number(scale: 1e-9, suffix: ' bn'))
+        ->labs(x: null, y: 'Population', fill: 'Continent')],
 
     'text' => ['Basics', 'Labels', 'nudgeY moves each label above its point.', fn () => Plot::of(array_slice($mtcars, 0, 12))
         ->aes(x: 'wt', y: 'mpg', label: 'model')
@@ -391,7 +395,10 @@ return [
             fill: 'Manual',
         )],
 
-    'posterior-intervals' => ['Statistics', 'Posterior intervals', 'From CmdStanPHP draws_columns(), as bayesplot\'s mcmc_intervals() draws them.', fn () => interval_plot($draws)],
+    'posterior-intervals' => ['Statistics', 'Posterior intervals', 'Draws of the eight schools model (Rubin 1981), sampled with CmdStanPHP, as bayesplot\'s mcmc_intervals() draws them.', fn () => interval_plot(
+        $schools,
+        variables: ['mu', 'tau', 'theta'],
+    )],
 
     'errorbars' => ['Statistics', 'Means with error bars', 'Precomputed means with normal-approximation 95% intervals.', fn () => Plot::of(array_map(
         function ($class) use ($mpg) {
@@ -428,24 +435,17 @@ return [
         ->summary(funData: 'mean_cl_normal', color: '#D62728')
         ->labs(x: null, y: 'Highway mpg')],
 
-    'curve' => ['Statistics', 'Functions', 'curve() draws a PHP function, here the normal density over a histogram.', fn () => Plot::of(array_map(
-        fn ($i) => [
-            'z' => Fit::normalQuantile(($i + 0.5) / 500),
-        ],
-        range(0, 499),
-    ))
-        ->aes(x: 'z')
-        ->histogram(
-            binwidth: 0.25,
-            density: true,
-            fill: '#DDDDDD',
-        )
+    'curve' => ['Statistics', 'Functions', 'curve() draws a PHP function, here a normal density with the mean and standard deviation of highway mpg.', fn () => Plot::of($mpg)
+        ->aes(x: 'hwy')
+        ->histogram(binwidth: 2, density: true, fill: '#DDDDDD')
         ->curve(
-            fn (float $x) => exp(-$x * $x / 2) / sqrt(2 * M_PI),
-            -3.5,
-            3.5,
-            aes: aes(x: 'z', y: 'density'),
+            fn (float $x) => exp(-0.5 * (($x - $hwyMean) / $hwySd) ** 2)
+                / ($hwySd * sqrt(2 * M_PI)),
+            10,
+            46,
+            aes: aes(x: 'hwy', y: 'density'),
             color: '#D62728',
             linewidth: 2,
-        )],
+        )
+        ->labs(x: 'Highway mpg', y: 'Density')],
 ];
