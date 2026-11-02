@@ -154,6 +154,21 @@ function evidence_parity(array $fixture): array
         $points = Contour::ellipse($ex, $wy, $type);
         $cases[] = evidence_case('faithful', "stat_ellipse(type = \"{$type}\") polygon x and y", [...array_column($points, 0), ...array_column($points, 1)], [...$ref['ellipse'][$type]['x'], ...$ref['ellipse'][$type]['y']], 'tight');
     }
+    foreach (['mpg' => [$mpg, 'displ', 'hwy'], 'mtcars' => [$mtcars, 'wt', 'mpg']] as $name => [$rows, $xf, $yf]) {
+        $points = Contour::ellipse(array_map(floatval(...), array_column($rows, $xf)), array_map(floatval(...), array_column($rows, $yf)), 't');
+        $more = $ref['ellipse_more'][$name];
+        $cases[] = evidence_case("{$name} {$xf} and {$yf}", 'stat_ellipse(type = "t") polygon x and y', [...array_column($points, 0), ...array_column($points, 1)], [...$more['x'], ...$more['y']], 'tight');
+    }
+    [$got, $want] = [[], []];
+    foreach ($ref['pretty'] as $case) {
+        $breaks = Contour::pretty((float) $case['lo'], (float) $case['hi'], (int) $case['n']);
+        $expected = array_map(floatval(...), (array) $case['out']);
+        // A different count fails the comparison; equal counts compare value by value, relative to the range.
+        $scale = max(1e-300, max(array_map(abs(...), $expected)));
+        $got[] = count($breaks) === count($expected) ? array_map(fn ($b) => $b / $scale, $breaks) : array_fill(0, count($expected), INF);
+        $want[] = array_map(fn ($e) => $e / $scale, $expected);
+    }
+    $cases[] = evidence_case(count($ref['pretty']).' random and edge-case ranges', 'pretty() breaks, scaled by their largest value', array_merge(...$got), array_merge(...$want), 'tight');
     $summary = Plot::of($mpg)->aes(x: 'class', y: 'hwy')->summary(funData: 'mean_cl_normal')->toArray()['layer'][0]['data']['values'];
     $byClass = array_column($summary, null, 'class');
     $cases[] = evidence_case('mpg hwy by class', 'mean_cl_normal mean, lower, and upper for 7 classes', array_merge(...array_map(fn ($r) => [$byClass[$r['class']]['hwy'], $byClass[$r['class']]['ymin'], $byClass[$r['class']]['ymax']], $ref['summary'])), array_merge(...array_map(fn ($r) => [$r['mean'], $r['lower'], $r['upper']], $ref['summary'])), 'tight');

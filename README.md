@@ -77,4 +77,4 @@ composer lint
 
 ## License
 
-phiz is released under the [MIT license](LICENSE). The bundled datasets keep their own licenses: `mpg` and `economics` come from ggplot2, `mtcars` and `faithful` from R's datasets package, and the gallery's copy of gapminder from the gapminder R package (CC0).
+phiz is released under the [MIT license](LICENSE). [Third-party notices](THIRD_PARTY_NOTICES.md) lists the projects whose behavior parts of phiz follow, and the bundled datasets' sources and licenses.

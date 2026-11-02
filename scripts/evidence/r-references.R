@@ -64,6 +64,25 @@ ellipse <- function(type) {
 }
 ref$ellipse <- list(t = ellipse("t"), norm = ellipse("norm"))
 
+# stat_ellipse(type = "t") on two more datasets, for the multivariate t fit.
+ellipse_on <- function(data, x, y) {
+  d <- layer_data(ggplot(data, aes(.data[[x]], .data[[y]])) + stat_ellipse(type = "t"))
+  list(x = d$x, y = d$y)
+}
+ref$ellipse_more <- list(mpg = ellipse_on(mpg, "displ", "hwy"), mtcars = ellipse_on(mtcars, "wt", "mpg"))
+
+# pretty() on 1,500 seeded random ranges and some edge cases.
+set.seed(20261102)
+ref$pretty <- lapply(1:1500, function(i) {
+  size <- 10^runif(1, -9, 9)
+  lo <- (runif(1) - 0.5) * size * sample(c(0.1, 1, 10), 1)
+  hi <- lo + abs(rnorm(1)) * size * 10^runif(1, -10, 1)
+  n <- sample(1:25, 1)
+  list(lo = lo, hi = hi, n = n, out = pretty(c(lo, hi), n = n))
+})
+for (e in list(c(0, 0), c(5, 5), c(-2, -2), c(1, 15), c(43, 96), c(0.000123, 0.0371)))
+  for (n in c(5, 10)) ref$pretty[[length(ref$pretty) + 1]] <- list(lo = e[1], hi = e[2], n = n, out = pretty(e, n = n))
+
 # stat_summary(fun.data = mean_cl_normal) on mpg hwy by class: the mean and t interval, as t.test() computes them.
 classes <- sort(unique(mpg$class))
 ref$summary <- lapply(classes, function(cl) {
