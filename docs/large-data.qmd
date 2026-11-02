@@ -4,7 +4,7 @@ title: "Large data"
 
 phiz embeds inline data in the specification, and the browser keeps every row in memory to draw it. Summarize large data in PHP before it reaches the page.
 
-## Sizes to expect
+## Size guidance {#sizes-to-expect}
 
 These ranges are rough guidance, not measurements. The limits depend on the mark type, the number of layers and interactions, the browser, and the device. Only the warning threshold is set by phiz.
 
@@ -31,7 +31,7 @@ Histograms computed in PHP use exactly `bins` equal-width bins, or `binwidth` an
 
 {{< include _generated/large-histogram.md >}}
 
-## Tables stay columnar
+## Columnar tables {#tables-stay-columnar}
 
 A phibble table or an array of columns is kept as given. The binning geoms read it column by column, and rows are built only if the specification embeds them.
 

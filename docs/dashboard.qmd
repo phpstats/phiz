@@ -201,7 +201,7 @@ When the data is small enough to send to the page, a composition can link charts
 
 {{< include _generated/dashboard-client.md >}}
 
-## Choosing where to compute
+## Server or browser computation {#choosing-where-to-compute}
 
 - **Server-side summaries** send only summarized rows. They suit large tables, database queries, and statistics computed in PHP, such as model fits. Each interaction is a Livewire request.
 - **Browser-side linking** sends the raw rows once and responds without a request. It suits up to a few thousand rows ([Large data](large-data.qmd)).

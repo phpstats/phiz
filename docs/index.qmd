@@ -9,7 +9,7 @@ Build charts in PHP with data, mappings, and layers. Render interactive charts w
 
 phiz compiles each plot to a [Vega-Lite](https://vega.github.io/vega-lite/) specification, a JSON description of the chart. The browser draws it with vega-embed, and the [vl-convert](https://github.com/vega/vl-convert) binary renders it to SVG, PNG, or PDF. No JavaScript is written by hand.
 
-## Install
+## Installation {#install}
 
 ```sh
 composer require phpstats/phiz
@@ -17,7 +17,7 @@ composer require phpstats/phiz
 
 phiz supports PHP 8.3, 8.4, and 8.5 and has no required dependencies. Examples that use the pipe operator `|>` need PHP 8.5 and have a method-chain version for PHP 8.3 and 8.4. [Installation](get-started.qmd#installation) lists the optional pieces.
 
-## What phiz covers
+## Features {#what-phiz-covers}
 
 | Area | Guide |
 | --- | --- |

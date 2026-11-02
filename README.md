@@ -34,6 +34,17 @@ $plot = Plot::of(Datasets::mpg())
 $plot->save('chart.html');
 ```
 
+## Features
+
+- Layers of points, lines, bars, distributions, intervals, fitted curves, and contours
+- ggplot2's scales, label formatters, guides, coordinates, facets, and themes
+- Tooltips, zoom, brushing, legend highlighting, and sliders
+- Plots of model fits and posterior draws
+- HTML output, and SVG, PNG, and PDF export through vl-convert
+- The `<x-phiz>` Blade component, which redraws with Livewire
+- Charts that follow a page's dark mode
+- Binning and downsampling in PHP for large data
+
 ## Installation
 
 ```bash

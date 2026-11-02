@@ -278,8 +278,8 @@
     "objectID": "index.html#install",
     "href": "index.html#install",
     "title": "phiz",
-    "section": "Install",
-    "text": "Install\ncomposer require phpstats/phiz\nphiz supports PHP 8.3, 8.4, and 8.5 and has no required dependencies. Examples that use the pipe operator |&gt; need PHP 8.5 and have a method-chain version for PHP 8.3 and 8.4. Installation lists the optional pieces.",
+    "section": "Installation",
+    "text": "Installation\ncomposer require phpstats/phiz\nphiz supports PHP 8.3, 8.4, and 8.5 and has no required dependencies. Examples that use the pipe operator |&gt; need PHP 8.5 and have a method-chain version for PHP 8.3 and 8.4. Installation lists the optional pieces.",
     "crumbs": [
       "Getting started",
       "phiz"
@@ -289,8 +289,8 @@
     "objectID": "index.html#what-phiz-covers",
     "href": "index.html#what-phiz-covers",
     "title": "phiz",
-    "section": "What phiz covers",
-    "text": "What phiz covers\n\n\n\nArea\nGuide\n\n\n\n\nData, field types, and aggregates\nData and fields\n\n\nLayers: points, lines, bars, distributions, intervals, fits, and contours\nGeoms\n\n\nScales, label formatters, guides, and coordinates\nScales, coordinates, and labels\n\n\nFacets and compositions\nFacets and composition\n\n\nThemes modeled on ggplot2’s complete themes\nThemes\n\n\nTooltips, zoom, brushing, highlighting, and sliders\nInteraction\n\n\nPlots of model results and posterior draws\nStatistics\n\n\nHTML, offline assets, and static export\nRendering\n\n\nThe &lt;x-phiz&gt; Blade component and Livewire\nLaravel and Livewire\n\n\nData too large to embed\nLarge data\n\n\n\nGet started builds a first chart, Coming from ggplot2 translates ggplot2 code, and Functions and methods lists every function and method.",
+    "section": "Features",
+    "text": "Features\n\n\n\nArea\nGuide\n\n\n\n\nData, field types, and aggregates\nData and fields\n\n\nLayers: points, lines, bars, distributions, intervals, fits, and contours\nGeoms\n\n\nScales, label formatters, guides, and coordinates\nScales, coordinates, and labels\n\n\nFacets and compositions\nFacets and composition\n\n\nThemes modeled on ggplot2’s complete themes\nThemes\n\n\nTooltips, zoom, brushing, highlighting, and sliders\nInteraction\n\n\nPlots of model results and posterior draws\nStatistics\n\n\nHTML, offline assets, and static export\nRendering\n\n\nThe &lt;x-phiz&gt; Blade component and Livewire\nLaravel and Livewire\n\n\nData too large to embed\nLarge data\n\n\n\nGet started builds a first chart, Coming from ggplot2 translates ggplot2 code, and Functions and methods lists every function and method.",
     "crumbs": [
       "Getting started",
       "phiz"
@@ -718,8 +718,8 @@
     "objectID": "dashboard.html#choosing-where-to-compute",
     "href": "dashboard.html#choosing-where-to-compute",
     "title": "Dashboards with Livewire",
-    "section": "Choosing where to compute",
-    "text": "Choosing where to compute\n\nServer-side summaries send only summarized rows. They suit large tables, database queries, and statistics computed in PHP, such as model fits. Each interaction is a Livewire request.\nBrowser-side linking sends the raw rows once and responds without a request. It suits up to a few thousand rows (Large data).\nBoth can share a page: a Livewire filter chooses the rows, and a brush explores them in the browser.",
+    "section": "Server or browser computation",
+    "text": "Server or browser computation\n\nServer-side summaries send only summarized rows. They suit large tables, database queries, and statistics computed in PHP, such as model fits. Each interaction is a Livewire request.\nBrowser-side linking sends the raw rows once and responds without a request. It suits up to a few thousand rows (Large data).\nBoth can share a page: a Livewire filter chooses the rows, and a brush explores them in the browser.",
     "crumbs": [
       "Guides",
       "Dashboards with Livewire"
@@ -1257,8 +1257,8 @@
     "objectID": "large-data.html#sizes-to-expect",
     "href": "large-data.html#sizes-to-expect",
     "title": "Large data",
-    "section": "Sizes to expect",
-    "text": "Sizes to expect\nThese ranges are rough guidance, not measurements. The limits depend on the mark type, the number of layers and interactions, the browser, and the device. Only the warning threshold is set by phiz.\n\n\n\n\n\n\n\nRows embedded\nTypical effect\n\n\n\n\nup to a few thousand\ndraws quickly, with responsive interaction\n\n\n5,000 to 20,000\ndraws, but brushing and tooltips can lag\n\n\nabove 20,000\nphiz raises a warning, and the page grows by megabytes\n\n\nmillions\nsummarize in PHP or in the database\n\n\n\nConfig::$warnRows sets the warning threshold (20,000 by default, or null to turn it off). In Laravel it is config('phiz.warn_rows'). The warning is an E_USER_WARNING that names the alternatives below.",
+    "section": "Size guidance",
+    "text": "Size guidance\nThese ranges are rough guidance, not measurements. The limits depend on the mark type, the number of layers and interactions, the browser, and the device. Only the warning threshold is set by phiz.\n\n\n\n\n\n\n\nRows embedded\nTypical effect\n\n\n\n\nup to a few thousand\ndraws quickly, with responsive interaction\n\n\n5,000 to 20,000\ndraws, but brushing and tooltips can lag\n\n\nabove 20,000\nphiz raises a warning, and the page grows by megabytes\n\n\nmillions\nsummarize in PHP or in the database\n\n\n\nConfig::$warnRows sets the warning threshold (20,000 by default, or null to turn it off). In Laravel it is config('phiz.warn_rows'). The warning is an E_USER_WARNING that names the alternatives below.",
     "crumbs": [
       "Guides",
       "Large data"
@@ -1279,8 +1279,8 @@
     "objectID": "large-data.html#tables-stay-columnar",
     "href": "large-data.html#tables-stay-columnar",
     "title": "Large data",
-    "section": "Tables stay columnar",
-    "text": "Tables stay columnar\nA phibble table or an array of columns is kept as given. The binning geoms read it column by column, and rows are built only if the specification embeds them.\nLarge-data binning lists the time and memory to bin a million-row phibble table with hex(), bin2d(), and histogram(), with the machine and method.",
+    "section": "Columnar tables",
+    "text": "Columnar tables\nA phibble table or an array of columns is kept as given. The binning geoms read it column by column, and rows are built only if the specification embeds them.\nLarge-data binning lists the time and memory to bin a million-row phibble table with hex(), bin2d(), and histogram(), with the machine and method.",
     "crumbs": [
       "Guides",
       "Large data"

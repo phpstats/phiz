@@ -2,7 +2,7 @@
 title: "Design and compatibility"
 ---
 
-## Vega-Lite does the drawing
+## Rendering with Vega-Lite {#vega-lite-does-the-drawing}
 
 phiz does not draw graphics. It translates a ggplot2-style description into a Vega-Lite specification. Vega-Lite then resolves scales, lays out facets and legends, runs transforms, handles interaction, and renders to canvas or SVG. The PHP side stays small, and plots behave the same in the browser and in static export.
 
