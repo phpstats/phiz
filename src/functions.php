@@ -284,24 +284,24 @@ function highlight(mixed ...$args): Closure { return chain('highlight', $args); 
 // Statistics helpers: plain functions returning ordinary plots (see Phiz\Stats\Charts).
 
 /** Coefficient plot of one fit, or of several keyed by label (dodged side by side). */
-function coefplot(array $fits, mixed ...$options): Plot { return Stats\Charts::coefficients($fits, ...$options); }
+function coefplot(array|object $fits, mixed ...$options): Plot { return Stats\Charts::coefficients($fits, ...$options); }
 /** Residuals against fitted values, with a reference line at zero. */
-function residual_plot(array $fit): Plot { return Stats\Charts::residuals($fit); }
+function residual_plot(array|object $fit): Plot { return Stats\Charts::residuals($fit); }
 /** A normal QQ plot of a fit's residuals, or of a list of values; standardize scales them first. */
-function qq_plot(array $fitOrValues, bool $standardize = false): Plot { return Stats\Charts::qq($fitOrValues, $standardize); }
+function qq_plot(array|object $fitOrValues, bool $standardize = false): Plot { return Stats\Charts::qq($fitOrValues, $standardize); }
 /** Observed against fitted values, with the identity line; observed defaults to fitted plus residuals. */
-function fitted_plot(array $fit, ?array $observed = null): Plot { return Stats\Charts::fitted($fit, $observed); }
+function fitted_plot(array|object $fit, ?array $observed = null): Plot { return Stats\Charts::fitted($fit, $observed); }
 /** The square root of the absolute residuals divided by sigma, against fitted values, as R's plot(fit, 3). */
-function scale_location_plot(array $fit): Plot { return Stats\Charts::scaleLocation($fit); }
+function scale_location_plot(array|object $fit): Plot { return Stats\Charts::scaleLocation($fit); }
 /** residual_plot(), qq_plot(), scale_location_plot(), and fitted_plot() in a two-by-two grid. */
-function diagnostic_plots(array $fit, mixed ...$options): Compose { return Stats\Charts::diagnostics($fit, ...$options); }
+function diagnostic_plots(array|object $fit, mixed ...$options): Compose { return Stats\Charts::diagnostics($fit, ...$options); }
 /** Predicted values with confidence bands as x varies (by levels of $by), other variables held at typical values. */
-function effect_plot(array $fit, mixed $data, string $x, mixed ...$options): Plot { return Stats\Charts::effects($fit, $data, $x, ...$options); }
+function effect_plot(array|object $fit, mixed $data, string $x, mixed ...$options): Plot { return Stats\Charts::effects($fit, $data, $x, ...$options); }
 /** The predicted rows behind effect_plot() for a grid of rows, without plotting them: each row with estimate, lower, upper, and std_error. */
-function predictions(array $fit, array $grid, mixed ...$options): array { return Stats\Charts::predictions($fit, $grid, ...$options); }
+function predictions(array|object $fit, array $grid, mixed ...$options): array { return Stats\Charts::predictions($fit, $grid, ...$options); }
 /** Posterior intervals from draws columns or a summary, as bayesplot's mcmc_intervals. */
 function interval_plot(array $draws, mixed ...$options): Plot { return Stats\Charts::intervals($draws, ...$options); }
 /** Estimated marginal means of a factor with confidence intervals, as emmeans. */
-function marginal_means(array $fit, mixed $data, string $factor, mixed ...$options): Plot { return Stats\Charts::marginalMeans($fit, $data, $factor, ...$options); }
+function marginal_means(array|object $fit, mixed $data, string $factor, mixed ...$options): Plot { return Stats\Charts::marginalMeans($fit, $data, $factor, ...$options); }
 /** A caterpillar plot of a mixed model's random effects with conditional intervals, as lme4's dotplot(ranef()). */
-function random_effects_plot(array $fit, mixed $data = null, mixed ...$options): Plot { return Stats\Charts::randomEffects($fit, $data, ...$options); }
+function random_effects_plot(array|object $fit, mixed $data = null, mixed ...$options): Plot { return Stats\Charts::randomEffects($fit, $data, ...$options); }

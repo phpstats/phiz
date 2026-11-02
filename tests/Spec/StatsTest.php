@@ -235,3 +235,52 @@ it('reproduces the documentation fits with phit', function (string $file) {
     expect($fit['coefficients'])->toEqualWithDelta($saved['coefficients'], 1e-9)
         ->and($fit['covariance'])->toEqualWithDelta($saved['covariance'], 1e-9);
 })->with(array_values(array_filter(glob(__DIR__.'/../../docs/examples/fits/*.json'), fn ($f) => ! str_contains($f, 'draws'))));
+
+it('accepts fit objects with toArray(), as phit 0.6 returns them', function () {
+    // A stand-in for Phit\Fit: read-only ArrayAccess over the same array, and toArray().
+    $object = fn (array $fit) => new class($fit) implements ArrayAccess
+    {
+        public function __construct(private array $fit) {}
+
+        public function toArray(): array
+        {
+            return $this->fit;
+        }
+
+        public function offsetExists(mixed $key): bool
+        {
+            return isset($this->fit[$key]);
+        }
+
+        public function offsetGet(mixed $key): mixed
+        {
+            return $this->fit[$key];
+        }
+
+        public function offsetSet(mixed $key, mixed $value): void
+        {
+            throw new LogicException('read-only');
+        }
+
+        public function offsetUnset(mixed $key): void
+        {
+            throw new LogicException('read-only');
+        }
+    };
+    $lm = fits()['lm'];
+    $cars = Datasets::mtcars();
+    $design = fn ($r) => [1, $r['wt'], $r['hp']];
+
+    expect(coefplot($object($lm))->toJson())->toBe(coefplot($lm)->toJson())
+        ->and(coefplot(['a' => $object($lm), 'b' => $object(fits()['lm_reduced'])])->toJson())->toBe(coefplot(['a' => $lm, 'b' => fits()['lm_reduced']])->toJson())
+        ->and(residual_plot($object($lm))->toJson())->toBe(residual_plot($lm)->toJson())
+        ->and(qq_plot($object($lm))->toJson())->toBe(qq_plot($lm)->toJson())
+        ->and(diagnostic_plots($object($lm))->toJson())->toBe(diagnostic_plots($lm)->toJson())
+        ->and(Phiz\predictions($object(olsFit()), [['wt' => 3.0, 'hp' => 150]], design: $design))->toBe(Phiz\predictions(olsFit(), [['wt' => 3.0, 'hp' => 150]], design: $design))
+        ->and(marginal_means($object(fits()['lm_factors']), $cars, 'cyl')->toJson())->toBe(marginal_means(fits()['lm_factors'], $cars, 'cyl')->toJson())
+        ->and(random_effects_plot($object(fits()['lmer_intercept']), Datasets::mpg())->toJson())->toBe(random_effects_plot(fits()['lmer_intercept'], Datasets::mpg())->toJson());
+});
+
+it('rejects objects that are not fits', function () {
+    coefplot(new stdClass);
+})->throws(InvalidArgumentException::class, 'toArray');

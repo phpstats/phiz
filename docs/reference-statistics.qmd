@@ -3,6 +3,6 @@ title: "Statistics API"
 toc-depth: 3
 ---
 
-These functions turn model results from phit and draws from CmdStanPHP into plots. Each returns an ordinary `Plot` or `Compose`, which any plot method can restyle. [Statistics](statistics.qmd) describes the fit arrays they accept and shows each one.
+These functions turn model results from phit and draws from CmdStanPHP into plots. Each returns an ordinary `Plot` or `Compose`, which any plot method can restyle. Fits are phit's fit objects (`Phit\Fit`, from phit 0.6) or arrays in the same shape. [Statistics](statistics.qmd) describes the keys each one reads and shows each one.
 
 {{< include _generated/reference-statistics.md >}}

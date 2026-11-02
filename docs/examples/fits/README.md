@@ -1,7 +1,7 @@
 # Saved model fits
 
-These are the arrays phit returns, saved as JSON so the documentation examples and the statistics tests run without
-the phit extension. `tests/Spec/StatsTest.php` refits each one with `phpstats/phit-polyfill` 0.4.1 and checks the
+These are phit's fits as arrays (what `toArray()` returns on a `Phit\Fit` from phit 0.6), saved as JSON so the
+documentation examples and the statistics tests run without the phit extension. `tests/Spec/StatsTest.php` refits each one with `phpstats/phit-polyfill` 0.4.1 and checks the
 coefficients and covariance matrix to 1e-9.
 
 | File | phit call | Data |

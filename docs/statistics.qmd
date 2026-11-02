@@ -2,13 +2,13 @@
 title: "Statistics"
 ---
 
-The statistics helpers turn model results into ordinary plots, which any `Plot` method can restyle. They read the arrays that [phit](https://github.com/phpstats/phit) returns from its extension or its PHP polyfill, and the draws that CmdStanPHP returns. The fits on this page are saved in `docs/examples/fits/`, from the `mtcars` and `mpg` data.
+The statistics helpers turn model results into ordinary plots, which any `Plot` method can restyle. They read [phit](https://github.com/phpstats/phit)'s fits, from its extension or its PHP polyfill: fit objects (`Phit\Fit`, from phit 0.6) or arrays in the same shape, as earlier versions return. They also read the draws that CmdStanPHP returns. The fits on this page are saved in `docs/examples/fits/`, from the `mtcars` and `mpg` data.
 
 ## Requirements {#requirements}
 
-Plotting a fit array needs no extension. `Phit\model_matrix()`, from the phit extension or `phpstats/phit-polyfill`, is needed only where noted below. Without it, those calls throw an `InvalidArgumentException`.
+Plotting a fit needs no extension. `Phit\model_matrix()`, from the phit extension or `phpstats/phit-polyfill`, is needed only where noted below. Without it, those calls throw an `InvalidArgumentException`.
 
-Each helper reads these keys of the fit array:
+Each helper reads these keys of the fit:
 
 | Helper | Fit keys |
 | --- | --- |

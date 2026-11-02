@@ -14,9 +14,9 @@ use function Phiz\aes;
 /**
  * Plots of fitted models and posterior draws, built from ordinary Plot layers so they can be restyled and extended.
  *
- * Fits are the arrays phit returns: formula fits from Phit\fit_ols, fit_generalized_linear, fit_mixed_gaussian, and
- * fit_mixed_logistic name their coefficients in 'columns'; matrix fits from fit_ols_matrix and fit_logistic_matrix
- * need names:. Each needs 'coefficients', and
+ * Fits are phit's fit objects (Phit\Fit, from phit 0.6) or arrays in the same shape, as earlier phit versions return:
+ * formula fits from Phit\fit_ols, fit_generalized_linear, fit_mixed_gaussian, and fit_mixed_logistic name their
+ * coefficients in 'columns'; matrix fits from fit_ols_matrix and fit_logistic_matrix need names:. Each needs 'coefficients', and
  * 'std_errors' or 'conf_int'; the residual plots need 'fitted' and 'residuals'.
  */
 final class Charts
@@ -31,10 +31,11 @@ final class Charts
      * @param bool $exponentiate Show exp(estimate), as odds or rate ratios, on a log scale with the reference at 1.
      * @param list<string>|null $terms Only these terms, in this order.
      */
-    public static function coefficients(array $fits, ?array $names = null, bool $intercept = false, ?float $level = null, bool $exponentiate = false, ?array $terms = null, bool $sort = false): Plot
+    public static function coefficients(array|object $fits, ?array $names = null, bool $intercept = false, ?float $level = null, bool $exponentiate = false, ?array $terms = null, bool $sort = false): Plot
     {
+        $fits = self::fit($fits);
         $labelled = ! isset($fits['coefficients']);
-        $fits = $labelled ? $fits : ['model' => $fits];
+        $fits = $labelled ? array_map(self::fit(...), $fits) : ['model' => $fits];
         if ($fits === []) {
             throw new InvalidArgumentException('coefplot needs a fit.');
         }
@@ -91,8 +92,9 @@ final class Charts
     }
 
     /** Residuals against fitted values, with a zero line and a loess trend (R's plot(fit, 1)). */
-    public static function residuals(array $fit): Plot
+    public static function residuals(array|object $fit): Plot
     {
+        $fit = self::fit($fit);
         return Plot::of(self::fitRows($fit))
             ->aes(x: 'fitted', y: 'residual')
             ->hline(0, linetype: 'dashed', color: '#888888')
@@ -101,9 +103,28 @@ final class Charts
             ->labs(title: 'Residuals vs fitted', x: 'Fitted values', y: 'Residuals');
     }
 
-    /** Normal QQ plot of a fit's residuals (or any list of values), with the line through the quartiles. */
-    public static function qq(array $fitOrValues, bool $standardize = false): Plot
+    /**
+     * A fit as an array: phit's fit objects (phit 0.6 and later) by toArray(), arrays as they are. Other objects with
+     * toArray() convert the same way.
+     *
+     * @return array<mixed>
+     */
+    private static function fit(array|object $fit): array
     {
+        if (is_array($fit)) {
+            return $fit;
+        }
+        if (method_exists($fit, 'toArray')) {
+            return $fit->toArray();
+        }
+
+        throw new InvalidArgumentException('A fit must be an array or an object with toArray(), as phit returns; got '.$fit::class.'.');
+    }
+
+    /** Normal QQ plot of a fit's residuals (or any list of values), with the line through the quartiles. */
+    public static function qq(array|object $fitOrValues, bool $standardize = false): Plot
+    {
+        $fitOrValues = self::fit($fitOrValues);
         if (isset($fitOrValues['residuals'])) {
             $values = $fitOrValues['residuals'];
             $label = 'Residuals';
@@ -129,8 +150,9 @@ final class Charts
     }
 
     /** Observed against fitted values with the identity line. */
-    public static function fitted(array $fit, ?array $observed = null): Plot
+    public static function fitted(array|object $fit, ?array $observed = null): Plot
     {
+        $fit = self::fit($fit);
         $rows = self::fitRows($fit, $observed);
 
         return Plot::of($rows)
@@ -141,8 +163,9 @@ final class Charts
     }
 
     /** sqrt(|residual / sigma|) against fitted values, to check for non-constant variance (R's plot(fit, 3)). */
-    public static function scaleLocation(array $fit): Plot
+    public static function scaleLocation(array|object $fit): Plot
     {
+        $fit = self::fit($fit);
         $rows = self::fitRows($fit);
         $residuals = array_column($rows, 'residual');
         $sigma = $fit['sigma'] ?? sqrt(array_sum(array_map(fn ($r) => $r * $r, $residuals)) / max(1, ($fit['df_residual'] ?? count($residuals) - 1)));
@@ -159,8 +182,9 @@ final class Charts
     }
 
     /** The four standard diagnostic panels in a grid. */
-    public static function diagnostics(array $fit, int $width = 260, int $height = 200): Compose
+    public static function diagnostics(array|object $fit, int $width = 260, int $height = 200): Compose
     {
+        $fit = self::fit($fit);
         $panels = [self::residuals($fit), self::qq($fit), self::scaleLocation($fit), self::fitted($fit)];
 
         return Compose::grid(array_map(fn (Plot $p) => $p->size($width, $height), $panels), columns: 2);
@@ -175,8 +199,9 @@ final class Charts
      * [1, $row['x'], ...].
      * GLM predictions are on the response scale, with the interval computed on the link scale.
      */
-    public static function effects(array $fit, mixed $data, string $x, ?string $by = null, int $n = 50, float $level = 0.95, ?callable $design = null, bool $points = true, string $scale = 'response'): Plot
+    public static function effects(array|object $fit, mixed $data, string $x, ?string $by = null, int $n = 50, float $level = 0.95, ?callable $design = null, bool $points = true, string $scale = 'response'): Plot
     {
+        $fit = self::fit($fit);
         $rows = Data::from($data)->rows ?? [];
         if ($rows === []) {
             throw new InvalidArgumentException('effect_plot needs the data the model was fitted on.');
@@ -205,8 +230,9 @@ final class Charts
      * @param list<array<string, mixed>> $data The fitting data, so factor levels match (formula fits only).
      * @return list<array<string, mixed>>
      */
-    public static function predictions(array $fit, array $grid, float $level = 0.95, ?callable $design = null, array $data = [], string $scale = 'response'): array
+    public static function predictions(array|object $fit, array $grid, float $level = 0.95, ?callable $design = null, array $data = [], string $scale = 'response'): array
     {
+        $fit = self::fit($fit);
         $matrix = $design !== null ? array_map(fn ($row) => array_values($design($row)), $grid) : self::design($fit, $grid, $data);
 
         return self::linear($fit, $grid, $matrix, $level, $scale);
@@ -219,8 +245,9 @@ final class Charts
      *
      * @return Plot Points with intervals; ->data->rows holds the means.
      */
-    public static function marginalMeans(array $fit, mixed $data, string $factor, ?string $by = null, float $level = 0.95, ?callable $design = null, string $scale = 'response', ?array $variables = null): Plot
+    public static function marginalMeans(array|object $fit, mixed $data, string $factor, ?string $by = null, float $level = 0.95, ?callable $design = null, string $scale = 'response', ?array $variables = null): Plot
     {
+        $fit = self::fit($fit);
         $rows = Data::from($data)->rows ?? [];
         if ($rows === [] || ! array_key_exists($factor, $rows[0])) {
             throw new InvalidArgumentException("marginal_means needs the fitting data with a '{$factor}' column.");
@@ -299,8 +326,9 @@ final class Charts
      * The conditional covariance is (Z_j'W_j Z_j / sigma^2 + G^-1)^-1 for group j, treating the fixed effects and
      * variance components as known, as lme4's ranef(condVar = TRUE) does; W holds GLMM working weights.
      */
-    public static function randomEffects(array $fit, mixed $data = null, ?string $group = null, float $level = 0.95): Plot
+    public static function randomEffects(array|object $fit, mixed $data = null, ?string $group = null, float $level = 0.95): Plot
     {
+        $fit = self::fit($fit);
         $terms = $fit['random'] ?? throw new InvalidArgumentException('random_effects_plot needs a mixed-model fit (fit_mixed_gaussian or fit_mixed_logistic).');
         $term = null;
         foreach ($terms as $candidate) {

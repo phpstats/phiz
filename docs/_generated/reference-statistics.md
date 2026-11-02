@@ -3,7 +3,7 @@
 ### `coefplot()` {#coefplot-function}
 
 ```php
-coefplot(array $fits, mixed ...$options): Plot
+coefplot(object|array $fits, mixed ...$options): Plot
 ```
 
 Coefficient plot of one fit, or of several keyed by label (dodged side by side).
@@ -11,7 +11,7 @@ Coefficient plot of one fit, or of several keyed by label (dodged side by side).
 ### `residual_plot()` {#residual_plot}
 
 ```php
-residual_plot(array $fit): Plot
+residual_plot(object|array $fit): Plot
 ```
 
 Residuals against fitted values, with a reference line at zero.
@@ -19,7 +19,7 @@ Residuals against fitted values, with a reference line at zero.
 ### `qq_plot()` {#qq_plot}
 
 ```php
-qq_plot(array $fitOrValues, bool $standardize = false): Plot
+qq_plot(object|array $fitOrValues, bool $standardize = false): Plot
 ```
 
 A normal QQ plot of a fit's residuals, or of a list of values; standardize scales them first.
@@ -27,7 +27,7 @@ A normal QQ plot of a fit's residuals, or of a list of values; standardize scale
 ### `fitted_plot()` {#fitted_plot}
 
 ```php
-fitted_plot(array $fit, ?array $observed = null): Plot
+fitted_plot(object|array $fit, ?array $observed = null): Plot
 ```
 
 Observed against fitted values, with the identity line; observed defaults to fitted plus residuals.
@@ -35,7 +35,7 @@ Observed against fitted values, with the identity line; observed defaults to fit
 ### `scale_location_plot()` {#scale_location_plot}
 
 ```php
-scale_location_plot(array $fit): Plot
+scale_location_plot(object|array $fit): Plot
 ```
 
 The square root of the absolute residuals divided by sigma, against fitted values, as R's plot(fit, 3).
@@ -43,7 +43,7 @@ The square root of the absolute residuals divided by sigma, against fitted value
 ### `diagnostic_plots()` {#diagnostic_plots}
 
 ```php
-diagnostic_plots(array $fit, mixed ...$options): Compose
+diagnostic_plots(object|array $fit, mixed ...$options): Compose
 ```
 
 residual_plot(), qq_plot(), scale_location_plot(), and fitted_plot() in a two-by-two grid.
@@ -51,7 +51,7 @@ residual_plot(), qq_plot(), scale_location_plot(), and fitted_plot() in a two-by
 ### `effect_plot()` {#effect_plot}
 
 ```php
-effect_plot(array $fit, mixed $data, string $x, mixed ...$options): Plot
+effect_plot(object|array $fit, mixed $data, string $x, mixed ...$options): Plot
 ```
 
 Predicted values with confidence bands as x varies (by levels of \$by), other variables held at typical values.
@@ -59,7 +59,7 @@ Predicted values with confidence bands as x varies (by levels of \$by), other va
 ### `predictions()` {#predictions-function}
 
 ```php
-predictions(array $fit, array $grid, mixed ...$options): array
+predictions(object|array $fit, array $grid, mixed ...$options): array
 ```
 
 The predicted rows behind effect_plot() for a grid of rows, without plotting them: each row with estimate, lower, upper, and std_error.
@@ -75,7 +75,12 @@ Posterior intervals from draws columns or a summary, as bayesplot's mcmc_interva
 ### `marginal_means()` {#marginal_means}
 
 ```php
-marginal_means(array $fit, mixed $data, string $factor, mixed ...$options): Plot
+marginal_means(
+    object|array $fit,
+    mixed $data,
+    string $factor,
+    mixed ...$options,
+): Plot
 ```
 
 Estimated marginal means of a factor with confidence intervals, as emmeans.
@@ -83,7 +88,7 @@ Estimated marginal means of a factor with confidence intervals, as emmeans.
 ### `random_effects_plot()` {#random_effects_plot}
 
 ```php
-random_effects_plot(array $fit, mixed $data = null, mixed ...$options): Plot
+random_effects_plot(object|array $fit, mixed $data = null, mixed ...$options): Plot
 ```
 
 A caterpillar plot of a mixed model's random effects with conditional intervals, as lme4's dotplot(ranef()).

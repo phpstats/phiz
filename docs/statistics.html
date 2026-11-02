@@ -612,11 +612,11 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </header>
 
 
-<p>The statistics helpers turn model results into ordinary plots, which any <code>Plot</code> method can restyle. They read the arrays that <a href="https://github.com/phpstats/phit">phit</a> returns from its extension or its PHP polyfill, and the draws that CmdStanPHP returns. The fits on this page are saved in <code>docs/examples/fits/</code>, from the <code>mtcars</code> and <code>mpg</code> data.</p>
+<p>The statistics helpers turn model results into ordinary plots, which any <code>Plot</code> method can restyle. They read <a href="https://github.com/phpstats/phit">phit</a>’s fits, from its extension or its PHP polyfill: fit objects (<code>Phit\Fit</code>, from phit 0.6) or arrays in the same shape, as earlier versions return. They also read the draws that CmdStanPHP returns. The fits on this page are saved in <code>docs/examples/fits/</code>, from the <code>mtcars</code> and <code>mpg</code> data.</p>
 <section id="requirements" class="level2">
 <h2 class="anchored" data-anchor-id="requirements">Requirements</h2>
-<p>Plotting a fit array needs no extension. <code>Phit\model_matrix()</code>, from the phit extension or <code>phpstats/phit-polyfill</code>, is needed only where noted below. Without it, those calls throw an <code>InvalidArgumentException</code>.</p>
-<p>Each helper reads these keys of the fit array:</p>
+<p>Plotting a fit needs no extension. <code>Phit\model_matrix()</code>, from the phit extension or <code>phpstats/phit-polyfill</code>, is needed only where noted below. Without it, those calls throw an <code>InvalidArgumentException</code>.</p>
+<p>Each helper reads these keys of the fit:</p>
 <table class="caption-top table">
 <colgroup>
 <col style="width: 50%">

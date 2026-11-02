@@ -1,5 +1,19 @@
 # Changelog
 
+## v0.6.2
+
+### Statistics
+
+- The statistics helpers accept phit's fit objects (`Phit\Fit`, from phit 0.6) as well as fit arrays: `coefplot()`, including a labelled list of fits, `residual_plot()`, `qq_plot()`, `fitted_plot()`, `scale_location_plot()`, `diagnostic_plots()`, `effect_plot()`, `predictions()`, `marginal_means()`, and `random_effects_plot()`. An object converts with its `toArray()`; any other object throws an `InvalidArgumentException`.
+
+### Documentation
+
+- Plain headings (Features, Installation, and noun labels), and the README states the MIT license with a link and the bundled datasets' sources.
+
+### Development
+
+- Developed against phibble 0.5 to 0.8.
+
 ## v0.6.1
 
 ### Charts
